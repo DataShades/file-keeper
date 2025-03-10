@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-
+from collections.abc import Callable, Hashable, Iterator
 from io import BufferedReader, BytesIO
-from collections.abc import Hashable, Iterator, Callable
 from typing import TYPE_CHECKING, Any, Protocol
+
 from typing_extensions import TypeAlias, TypeVar
 
 if TYPE_CHECKING:
@@ -14,7 +14,9 @@ K = TypeVar("K", default=str, bound=Hashable)
 V = TypeVar("V")
 T = TypeVar("T")
 
-UploadFactory: TypeAlias = "Callable[[Any], Upload | BytesIO | BufferedReader | bytes | bytearray | None]"
+UploadFactory: TypeAlias = (
+    "Callable[[Any], Upload | BytesIO | BufferedReader | bytes | bytearray | None]"
+)
 
 
 class PStream(Protocol):
@@ -35,7 +37,6 @@ class PData(Protocol):
     content_type: str
     hash: str
     storage_data: dict[str, Any]
-
 
 
 __all__ = [

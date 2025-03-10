@@ -1,15 +1,16 @@
 from __future__ import annotations
-from collections.abc import Callable
+
 import os
-from typing import Any
 import uuid
 from datetime import datetime
-
+from typing import Any
+from collections.abc import Callable
 import pytz
-from . import utils, upload
+
+from . import upload, utils
 
 strategies = utils.Registry[
-    "Callable[[str, upload.Upload | None, dict[str, Any]], str]"
+    Callable[[str, "upload.Upload | None", "dict[str, Any]"], str]
 ]({})
 
 

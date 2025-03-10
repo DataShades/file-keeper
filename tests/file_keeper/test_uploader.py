@@ -5,7 +5,7 @@ import pytest
 from faker import Faker
 from werkzeug.datastructures import FileStorage
 
-from file_keeper import make_upload, Upload
+from file_keeper import Upload, make_upload
 
 
 class TestMakeUpload:

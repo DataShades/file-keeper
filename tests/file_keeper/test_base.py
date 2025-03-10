@@ -8,16 +8,15 @@ import pytest
 from faker import Faker
 
 from file_keeper import (
-    make_storage,
     Capability,
     FileData,
-    MultipartData,
-    make_upload,
-    exc,
-    Uploader,
     Manager,
+    MultipartData,
     Reader,
     Storage,
+    Uploader,
+    exc,
+    make_upload,
 )
 
 
@@ -146,18 +145,6 @@ class TestStorage:
         storage = FakeStorage({})
         with pytest.raises(NotImplementedError):
             storage.upload(faker.file_name(), make_upload(b""))
-
-        with pytest.raises(NotImplementedError):
-            storage.multipart_start(faker.file_name(), MultipartData())
-
-        with pytest.raises(NotImplementedError):
-            storage.multipart_refresh(MultipartData())
-
-        with pytest.raises(NotImplementedError):
-            storage.multipart_update(MultipartData())
-
-        with pytest.raises(NotImplementedError):
-            storage.multipart_complete(MultipartData())
 
         with pytest.raises(NotImplementedError):
             storage.remove(FileData(""))

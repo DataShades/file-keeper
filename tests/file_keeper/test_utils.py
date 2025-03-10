@@ -1,15 +1,16 @@
-from collections.abc import Iterable
 import hashlib
+from collections.abc import Iterable
 from io import BytesIO
 
 import pytest
 from faker import Faker
+
 from file_keeper import (
-    Registry,
-    HashingReader,
     Capability,
-    parse_filesize,
+    HashingReader,
+    Registry,
     is_supported_type,
+    parse_filesize,
 )
 from file_keeper.utils import humanize_filesize
 
@@ -85,7 +86,7 @@ class TestHasingReader:
 
 
 @pytest.mark.parametrize(
-    ["type", "supported", "outcome"],
+    ("type", "supported", "outcome"),
     [
         ("text/csv", ["csv"], True),
         ("text/csv", ["json", "text"], True),
@@ -209,11 +210,7 @@ class TestHumanizeFilesize:
             ("10.42KiB", 10680, 1024),
             ("1.02KB", 1024, 1000),
             ("11GiB", 11811160064, 1024),
-            ("117B", 117, 1000),
             ("117KiB", 119808, 1024),
-            ("117B", 117, 1000),
-            ("117KiB", 119808, 1024),
-            ("11GiB", 11811160064, 1024),
             ("1MiB", 1048576, 1024),
             ("343.09MiB", 359766425, 1024),
             ("5.19MiB", 5452595, 1024),

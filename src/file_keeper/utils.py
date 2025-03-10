@@ -12,11 +12,9 @@ import enum
 import hashlib
 import itertools
 import logging
-
 import re
 from collections.abc import Iterable, Iterator
 from typing import Generic
-
 
 from . import types
 
@@ -26,6 +24,8 @@ log = logging.getLogger(__name__)
 RE_FILESIZE = re.compile(r"^(?P<size>\d+(?:\.\d+)?)\s*(?P<unit>\w*)$")
 CHUNK_SIZE = 16 * 1024
 SAMPLE_SIZE = 1024 * 2
+BINARY_BASE = 1024
+SI_BASE = 1000
 
 UNITS = {
     "": 1,
@@ -257,7 +257,7 @@ def parse_filesize(value: str) -> int:
     return int(float(size) * multiplier)
 
 
-def humanize_filesize(value: int | float, base: int = 1000) -> str:
+def humanize_filesize(value: int | float, base: int = SI_BASE) -> str:
     """Transform an integer into human-readable filesize.
 
     Args:
@@ -278,9 +278,9 @@ def humanize_filesize(value: int | float, base: int = 1000) -> str:
         ```
 
     """
-    if base == 1000:
+    if base == SI_BASE:
         suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB"]
-    elif base == 1024:
+    elif base == BINARY_BASE:
         suffixes = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"]
     else:
         raise ValueError(base)

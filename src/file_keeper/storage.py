@@ -11,16 +11,18 @@ cycles.
 
 from __future__ import annotations
 
-import logging
-import abc
 import dataclasses
 import itertools
-from io import BytesIO
-from typing import Any, Iterable, cast
-from typing_extensions import ParamSpec, Concatenate
-import file_keeper
+import logging
 from collections.abc import Callable
-from . import exceptions, utils, upload, types, data
+from io import BytesIO
+from typing import Any, ClassVar, Iterable, cast
+
+from typing_extensions import Concatenate, ParamSpec
+
+import file_keeper
+
+from . import data, exceptions, types, upload, utils
 from .location import strategies as location_strategies
 
 P = ParamSpec("P")
@@ -271,8 +273,15 @@ class Settings:
     max_size: int = 0
     location_strategy: str = "transparent"
 
+    _required_options: ClassVar[list[str]] = []
 
-class Storage(abc.ABC):
+    def __post_init__(self):
+        for attr in self._required_options:
+            if not getattr(self, attr):
+                raise exceptions.MissingStorageConfigurationError(self.name, attr)
+
+
+class Storage:
     """Base class for storage implementation.
 
     Args:
@@ -299,7 +308,7 @@ class Storage(abc.ABC):
     # services inside constructor.
     capabilities = utils.Capability.NONE
 
-    settings: Settings
+    # settings: Settings
 
     UploaderFactory = Uploader
     ManagerFactory = Manager
@@ -339,7 +348,10 @@ class Storage(abc.ABC):
             | self.reader.capabilities
         )
 
-    def make_settings(self, settings: dict[str, Any]):
+    def make_settings(self, settings: dict[str, Any] | Settings):
+        if isinstance(settings, Settings):
+            return settings
+
         fields = dataclasses.fields(self.SettingsFactory)
         names = {field.name for field in fields}
 

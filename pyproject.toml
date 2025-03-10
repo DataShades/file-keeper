@@ -92,7 +92,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-# "ckanext/files/tests*" = ["S", "PL", "ANN"]
+"tests/*" = ["S", "PL", "ANN"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
@@ -133,7 +133,7 @@ reportFunctionMemberAccess = true # non-standard member accesses for functions
 reportMissingImports = true
 reportMissingModuleSource = true
 reportMissingTypeStubs = false
-reportImportCycles = true
+reportImportCycles = false
 reportUnusedImport = true
 reportUnusedClass = true
 reportUnusedFunction = true

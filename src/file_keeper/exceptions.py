@@ -90,13 +90,18 @@ class UnsupportedOperationError(StorageError):
 class InvalidStorageConfigurationError(StorageError):
     """Storage cannot be initialized with given configuration."""
 
-    def __init__(self, adapter: type, problem: str):
-        self.adapter = adapter
+    def __init__(self, adapter_or_storage: type | str, problem: str):
+        self.adapter_or_storage = adapter_or_storage
         self.problem = problem
 
     def __str__(self):
+        if isinstance(self.adapter_or_storage, str):
+            what = f"storage adapter {self.adapter_or_storage}"
+        else:
+            what = f"storage adapter {self.adapter_or_storage.__name__}"
+
         return (
-            f"Cannot initialize storage adapter {self.adapter.__name__}"
+            f"Cannot initialize {what}"
             + f" due to following error: {self.problem}"
         )
 
@@ -121,9 +126,9 @@ class PermissionError(StorageError):
 class MissingStorageConfigurationError(InvalidStorageConfigurationError):
     """Storage cannot be initialized due to missing option."""
 
-    def __init__(self, adapter: type, option: str):
+    def __init__(self, adapter_or_storage: type | str, option: str):
         super().__init__(
-            adapter,
+            adapter_or_storage,
             f"{option} option is required",
         )
 

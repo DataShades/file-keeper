@@ -1,22 +1,31 @@
 __version__ = "0.0.1"
 
 import file_keeper.exceptions as exc
-
+from file_keeper.data import BaseData, FileData, MultipartData
+from file_keeper.storage import (
+    Manager,
+    Reader,
+    Settings,
+    Storage,
+    Uploader,
+    adapters,
+    make_storage,
+)
+from file_keeper.upload import Upload, make_upload
 from file_keeper.utils import (
-    parse_filesize,
+    Capability,
     HashingReader,
     IterableBytesReader,
-    humanize_filesize,
-    Capability,
     Registry,
+    humanize_filesize,
     is_supported_type,
+    parse_filesize,
 )
-from file_keeper.upload import make_upload, Upload
-from file_keeper.data import FileData, MultipartData
-from file_keeper.storage import make_storage, Storage, Reader, Uploader, Manager, Settings
 
 __all__ = [
+    "adapters",
     "FileData",
+    "BaseData",
     "MultipartData",
     "is_supported_type",
     "Registry",

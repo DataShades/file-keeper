@@ -1,21 +1,19 @@
 from __future__ import annotations
+
 import contextlib
-from io import BufferedReader, BytesIO, TextIOWrapper
+import dataclasses
 import mimetypes
 import tempfile
+from io import BufferedReader, BytesIO, TextIOWrapper
 from typing import Any, cast
-
-import dataclasses
 
 import magic
 
-
-from . import utils, types
-
+from . import types, utils
 
 SAMPLE_SIZE = 1024 * 2
 
-upload_factories: "utils.Registry[types.UploadFactory, type]" = utils.Registry()
+upload_factories: utils.Registry[types.UploadFactory, type] = utils.Registry()
 
 
 @dataclasses.dataclass

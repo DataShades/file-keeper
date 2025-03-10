@@ -14,10 +14,10 @@ from __future__ import annotations
 import copy
 import dataclasses
 from typing import Any, Generic
+
 from typing_extensions import TypeVar
 
 from . import types
-
 
 TData = TypeVar("TData", bound=types.PData, default=Any)
 
