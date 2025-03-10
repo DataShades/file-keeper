@@ -18,9 +18,6 @@ SAMPLE_SIZE = 1024 * 2
 upload_factories: "utils.Registry[types.UploadFactory, type]" = utils.Registry()
 
 
-register_factory = upload_factories.decorated
-
-
 @dataclasses.dataclass
 class Upload:
     """Standard upload details.
@@ -90,7 +87,7 @@ class Upload:
 with contextlib.suppress(ImportError):  # pragma: no cover
     import cgi
 
-    @register_factory(cgi.FieldStorage)
+    @upload_factories.decorated(cgi.FieldStorage)
     def cgi_field_storage_into_upload(value: cgi.FieldStorage):
         if not value.filename or not value.file:
             return None
@@ -115,7 +112,7 @@ with contextlib.suppress(ImportError):  # pragma: no cover
 with contextlib.suppress(ImportError):  # pragma: no cover
     from werkzeug.datastructures import FileStorage
 
-    @register_factory(FileStorage)
+    @upload_factories.decorated(FileStorage)
     def werkzeug_file_storage_into_upload(value: FileStorage):
         name: str = value.filename or value.name or ""
         if value.content_length:
@@ -131,7 +128,7 @@ with contextlib.suppress(ImportError):  # pragma: no cover
         return Upload(value.stream, name, size, mime)
 
 
-@register_factory(tempfile.SpooledTemporaryFile)
+@upload_factories.decorated(tempfile.SpooledTemporaryFile)
 def tempfile_into_upload(value: tempfile.SpooledTemporaryFile[bytes]):
     mime = magic.from_buffer(value.read(SAMPLE_SIZE), True)
     _ = value.seek(0, 2)
@@ -141,7 +138,7 @@ def tempfile_into_upload(value: tempfile.SpooledTemporaryFile[bytes]):
     return Upload(value, value.name or "", size, mime)
 
 
-@register_factory(TextIOWrapper)
+@upload_factories.decorated(TextIOWrapper)
 def textiowrapper_into_upload(value: TextIOWrapper):
     return cast(BufferedReader, value.buffer)
 

@@ -15,67 +15,31 @@ import logging
 import abc
 import dataclasses
 import itertools
-import os
-import uuid
-from datetime import datetime
 from io import BytesIO
 from typing import Any, Iterable, cast
-from collections.abc import Callable
+from typing_extensions import ParamSpec, Concatenate
 import file_keeper
-import pytz
+from collections.abc import Callable
 from . import exceptions, utils, upload, types, data
+from .location import strategies as location_strategies
 
+P = ParamSpec("P")
 
 adapters = utils.Registry["type[Storage]"]({})
-location_strategies = utils.Registry[
-    "Callable[[str, upload.Upload | None, dict[str, Any]], str]"
-]({})
 
 log = logging.getLogger(__name__)
 
 
-@location_strategies.decorated("transparent")
-def transparent_strategy(
-    location: str, upload: upload.Upload | None, extras: dict[str, Any]
-) -> str:
-    return location
+def requires_capability(capability: utils.Capability):
+    def decorator(func: Callable[Concatenate[Storage, P], types.T]):
+        def method(self: Storage, *args: P.args, **kwargs: P.kwargs) -> types.T:
+            if not self.supports(capability):
+                raise exceptions.UnsupportedOperationError(str(capability.name), self)
+            return func(self, *args, **kwargs)
 
+        return method
 
-@location_strategies.decorated("uuid")
-def uuid_strategy(
-    location: str, upload: upload.Upload | None, extras: dict[str, Any]
-) -> str:
-    return str(uuid.uuid4())
-
-
-@location_strategies.decorated("uuid_prefix")
-def uuid_prefix_strategy(
-    location: str, upload: upload.Upload | None, extras: dict[str, Any]
-) -> str:
-    return str(uuid.uuid4()) + location
-
-
-@location_strategies.decorated("uuid_with_extension")
-def uuid_with_extension_strategy(
-    location: str, upload: upload.Upload | None, extras: dict[str, Any]
-) -> str:
-    _path, ext = os.path.splitext(location)
-    return str(uuid.uuid4()) + ext
-
-
-@location_strategies.decorated("datetime_prefix")
-def datetime_prefix_strategy(
-    location: str, upload: upload.Upload | None, extras: dict[str, Any]
-) -> str:
-    return datetime.now(pytz.utc).isoformat() + location
-
-
-@location_strategies.decorated("datetime_with_extension")
-def datetime_with_extension_strategy(
-    location: str, upload: upload.Upload | None, extras: dict[str, Any]
-) -> str:
-    _path, ext = os.path.splitext(location)
-    return datetime.now(pytz.utc).isoformat() + ext
+    return decorator
 
 
 class StorageService:
@@ -418,16 +382,6 @@ class Storage(abc.ABC):
 
         raise exceptions.NameStrategyError(name)
 
-    def upload(
-        self, location: str, upload: upload.Upload, /, **kwargs: Any
-    ) -> data.FileData:
-        if not self.supports(utils.Capability.CREATE):
-            raise exceptions.UnsupportedOperationError("upload", self)
-
-        self.validate(upload, **kwargs)
-
-        return self.uploader.upload(location, upload, kwargs)
-
     def validate(self, upload: upload.Upload, /, **kwargs: Any):
         if self.max_size and upload.size > self.max_size:
             raise exceptions.LargeUploadError(upload.size, self.max_size)
@@ -438,6 +392,15 @@ class Storage(abc.ABC):
         ):
             raise exceptions.WrongUploadTypeError(upload.content_type)
 
+    @requires_capability(utils.Capability.CREATE)
+    def upload(
+        self, location: str, upload: upload.Upload, /, **kwargs: Any
+    ) -> data.FileData:
+        self.validate(upload, **kwargs)
+
+        return self.uploader.upload(location, upload, kwargs)
+
+    @requires_capability(utils.Capability.MULTIPART)
     def multipart_start(
         self,
         name: str,
@@ -447,53 +410,47 @@ class Storage(abc.ABC):
     ) -> data.MultipartData:
         return self.uploader.multipart_start(name, data, kwargs)
 
+    @requires_capability(utils.Capability.MULTIPART)
     def multipart_refresh(
         self, data: data.MultipartData, /, **kwargs: Any
     ) -> data.MultipartData:
         return self.uploader.multipart_refresh(data, kwargs)
 
+    @requires_capability(utils.Capability.MULTIPART)
     def multipart_update(
         self, data: data.MultipartData, /, **kwargs: Any
     ) -> data.MultipartData:
         return self.uploader.multipart_update(data, kwargs)
 
+    @requires_capability(utils.Capability.MULTIPART)
     def multipart_complete(
         self, data: data.MultipartData, /, **kwargs: Any
     ) -> data.FileData:
         return self.uploader.multipart_complete(data, kwargs)
 
+    @requires_capability(utils.Capability.EXISTS)
     def exists(self, data: data.FileData, /, **kwargs: Any) -> bool:
-        if not self.supports(utils.Capability.EXISTS):
-            raise exceptions.UnsupportedOperationError("exists", self)
-
         return self.manager.exists(data, kwargs)
 
+    @requires_capability(utils.Capability.REMOVE)
     def remove(
         self, data: data.FileData | data.MultipartData, /, **kwargs: Any
     ) -> bool:
-        if not self.supports(utils.Capability.REMOVE):
-            raise exceptions.UnsupportedOperationError("remove", self)
-
         return self.manager.remove(data, kwargs)
 
+    @requires_capability(utils.Capability.SCAN)
     def scan(self, **kwargs: Any) -> Iterable[str]:
-        if not self.supports(utils.Capability.SCAN):
-            raise exceptions.UnsupportedOperationError("scan", self)
-
         return self.manager.scan(kwargs)
 
+    @requires_capability(utils.Capability.ANALYZE)
     def analyze(self, location: str, /, **kwargs: Any) -> data.FileData:
-        if not self.supports(utils.Capability.ANALYZE):
-            raise exceptions.UnsupportedOperationError("analyze", self)
-
         return self.manager.analyze(location, kwargs)
 
+    @requires_capability(utils.Capability.STREAM)
     def stream(self, data: data.FileData, /, **kwargs: Any) -> Iterable[bytes]:
-        if not self.supports(utils.Capability.STREAM):
-            raise exceptions.UnsupportedOperationError("stream", self)
-
         return self.reader.stream(data, kwargs)
 
+    @requires_capability(utils.Capability.RANGE)
     def range(
         self,
         data: data.FileData,
@@ -503,15 +460,10 @@ class Storage(abc.ABC):
         **kwargs: Any,
     ) -> Iterable[bytes]:
         """Return byte-stream of the file content."""
-        if self.supports(utils.Capability.RANGE):
-            return self.reader.range(data, start, end, kwargs)
+        return self.reader.range(data, start, end, kwargs)
 
-        raise exceptions.UnsupportedOperationError("range", self)
-
+    @requires_capability(utils.Capability.STREAM)
     def content(self, data: data.FileData, /, **kwargs: Any) -> bytes:
-        if not self.supports(utils.Capability.STREAM):
-            raise exceptions.UnsupportedOperationError("content", self)
-
         return self.reader.content(data, kwargs)
 
     def copy(
@@ -576,6 +528,7 @@ class Storage(abc.ABC):
             data.content_type,
         )
 
+    @requires_capability(utils.Capability.APPEND)
     def append(
         self,
         data: data.FileData,
@@ -583,10 +536,7 @@ class Storage(abc.ABC):
         /,
         **kwargs: Any,
     ) -> data.FileData:
-        if self.supports(utils.Capability.APPEND):
-            return self.manager.append(data, upload, kwargs)
-
-        raise exceptions.UnsupportedOperationError("append", self)
+        return self.manager.append(data, upload, kwargs)
 
     def move(
         self,
@@ -610,7 +560,7 @@ class Storage(abc.ABC):
             storage.remove(data)
             return result
 
-        raise exceptions.UnsupportedOperationError("copy", self)
+        raise exceptions.UnsupportedOperationError("move", self)
 
     def public_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
         if self.supports(utils.Capability.PUBLIC_LINK):

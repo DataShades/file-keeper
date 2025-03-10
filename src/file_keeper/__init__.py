@@ -13,7 +13,7 @@ from file_keeper.utils import (
 )
 from file_keeper.upload import make_upload, Upload
 from file_keeper.data import FileData, MultipartData
-from file_keeper.base import make_storage, Storage, Reader, Uploader, Manager, Settings
+from file_keeper.storage import make_storage, Storage, Reader, Uploader, Manager, Settings
 
 __all__ = [
     "FileData",

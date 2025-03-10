@@ -1,30 +1,64 @@
+from collections.abc import Iterable
 import hashlib
 from io import BytesIO
 
 import pytest
 from faker import Faker
-from file_keeper import Registry, HashingReader, Capability, parse_filesize
+from file_keeper import (
+    Registry,
+    HashingReader,
+    Capability,
+    parse_filesize,
+    is_supported_type,
+)
+from file_keeper.utils import humanize_filesize
 
 
-def test_registry(faker: Faker):
-    """Brief test of registry functionality."""
-    registry = Registry[object]()
-    key = faker.word()
-    value = object()
+class TestRegistry:
+    def test_missing_key(self, faker: Faker):
+        registry = Registry[object]()
+        key = faker.word()
 
-    assert registry.get(key) is None
-    with pytest.raises(KeyError):
-        registry[key]
+        assert registry.get(key) is None
+        with pytest.raises(KeyError):
+            registry[key]
 
-    registry.register(key, value)
-    assert registry.get(key) is value
-    assert registry[key] is value
+    def test_existing_key(self, faker: Faker):
+        registry = Registry[object]()
+        key = faker.word()
+        value = object()
 
-    assert list(registry) == [key]
+        registry.register(key, value)
+        assert registry.get(key) is value
+        assert registry[key] is value
 
-    registry.reset()
-    assert registry.get(key) is None
-    assert list(registry) == []
+    def test_listing_and_reset(self, faker: Faker):
+        registry = Registry[object]()
+        key = faker.word()
+        registry.register(key, object())
+
+        assert list(registry) == [key]
+        registry.reset()
+        assert list(registry) == []
+
+    def test_removal(self, faker: Faker):
+        registry = Registry[object]()
+        key = faker.word()
+        value = object()
+        registry.register(key, value)
+
+        assert registry.pop(key) is value
+        assert registry.pop(key) is None
+
+    def test_decorator(self, faker: Faker):
+        registry = Registry[object]()
+        key = faker.word()
+
+        @registry.decorated(key)
+        def value():
+            pass
+
+        assert registry[key] is value
 
 
 class TestHasingReader:
@@ -48,6 +82,22 @@ class TestHasingReader:
 
         assert output == content
         assert reader.get_hash() == expected
+
+
+@pytest.mark.parametrize(
+    ["type", "supported", "outcome"],
+    [
+        ("text/csv", ["csv"], True),
+        ("text/csv", ["json", "text"], True),
+        ("text/csv", ["application/json", "text/plain", "text/csv", "image/png"], True),
+        ("text/csv", ["json", "image"], False),
+        ("text/csv", ["application/csv"], False),
+        ("text/csv", ["text/plain"], False),
+        ("text/csv", ["non-csv"], False),
+    ],
+)
+def test_is_supported_type(type: str, supported: Iterable[str], outcome: bool):
+    assert is_supported_type(type, supported) is outcome
 
 
 class TestCapabilities:
@@ -137,3 +187,42 @@ class TestParseFilesize:
         """Empty string causes an exception."""
         with pytest.raises(ValueError):  # noqa: PT011
             parse_filesize("1PB")
+
+
+class TestHumanizeFilesize:
+    @pytest.mark.parametrize(
+        ("text", "size", "base"),
+        [
+            ("1B", 1, 1000),
+            ("1B", 1, 1024),
+            ("1KB", 10**3, 1000),
+            ("1KiB", 2**10, 1024),
+            ("1MB", 10**6, 1000),
+            ("1MiB", 2**20, 1024),
+            ("1GB", 10**9, 1000),
+            ("1GiB", 2**30, 1024),
+            ("1TB", 10**12, 1000),
+            ("1TiB", 2**40, 1024),
+            ("117B", 117, 1000),
+            ("716.79KiB", 734003, 1024),
+            ("1KiB", 1024, 1024),
+            ("10.42KiB", 10680, 1024),
+            ("1.02KB", 1024, 1000),
+            ("11GiB", 11811160064, 1024),
+            ("117B", 117, 1000),
+            ("117KiB", 119808, 1024),
+            ("117B", 117, 1000),
+            ("117KiB", 119808, 1024),
+            ("11GiB", 11811160064, 1024),
+            ("1MiB", 1048576, 1024),
+            ("343.09MiB", 359766425, 1024),
+            ("5.19MiB", 5452595, 1024),
+            ("58KiB", 59392, 1024),
+        ],
+    )
+    def test_valid_bases(self, text: str, size: int, base: int):
+        assert humanize_filesize(size, base) == text
+
+    def test_invalid_base(self):
+        with pytest.raises(ValueError):  # noqa: PT011
+            humanize_filesize(1, 42)

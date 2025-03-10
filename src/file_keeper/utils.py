@@ -91,8 +91,8 @@ class Registry(Generic[types.V, types.K]):
         def decorator(value: types.V):
             self.register(key, value)
             return value
-        return decorator
 
+        return decorator
 
 
 class HashingReader:
@@ -156,12 +156,11 @@ class HashingReader:
             pass
 
 
-def is_supported_type(content_type: str, supported: Iterable[str]) -> str | None:
-    """Return content type if it matches supported types."""
+def is_supported_type(content_type: str, supported: Iterable[str]) -> bool:
+    """Check whether content_type it matches supported types."""
     maintype, subtype = content_type.split("/")
-    for st in supported:
-        if st in [content_type, maintype, subtype]:
-            return content_type
+    desired = {content_type, maintype, subtype}
+    return any(st in desired for st in supported)
 
 
 class Capability(enum.Flag):
@@ -258,7 +257,7 @@ def parse_filesize(value: str) -> int:
     return int(float(size) * multiplier)
 
 
-def humanize_filesize(value: int | float, /, base: int = 1000) -> str:
+def humanize_filesize(value: int | float, base: int = 1000) -> str:
     """Transform an integer into human-readable filesize.
 
     Args:
@@ -268,7 +267,7 @@ def humanize_filesize(value: int | float, /, base: int = 1000) -> str:
         base: 1000 for SI(KB, MB) or 1024 for binary(KiB, MiB)
 
     Raises:
-        KeyError: base is not recognized
+        ValueError: base is not recognized
 
     Example:
         ```python
@@ -284,16 +283,19 @@ def humanize_filesize(value: int | float, /, base: int = 1000) -> str:
     elif base == 1024:
         suffixes = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"]
     else:
-        raise KeyError(base)
+        raise ValueError(base)
 
     iteration = 0
 
-    while value > base:
+    while value >= base:
         iteration += 1
         value /= base
 
     value = int(value * 100) / 100
-    return f"{value:.2f}{suffixes[iteration]}"
+
+    num_format = ".2f" if iteration and not value.is_integer() else ".0f"
+
+    return f"{value:{num_format}}{suffixes[iteration]}"
 
 
 class IterableBytesReader:
