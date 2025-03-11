@@ -42,7 +42,7 @@ text = "AGPL"
 Homepage = "https://github.com/DataShades/file-keeper"
 
 [project.optional-dependencies]
-test = [ "pytest-cov", "pytest-faker", "freezegun", "responses", ]
+test = [ "pytest-cov", "pytest-faker", "freezegun", "responses" ]
 docs = [ "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]",]
 dev = [ "pytest-cov", "pytest-faker", "freezegun", "responses", "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]",]
 s3 = [ "boto3", "boto3-stubs[essential]"]
@@ -51,7 +51,7 @@ opendal = [ "opendal",]
 libcloud = [ "apache-libcloud", "cryptography",]
 
 [project.entry-points."file_keeper_ext"]
-core = "file_keeper_default"
+default = "file_keeper.default"
 
 [tool.ruff]
 target-version = "py38"

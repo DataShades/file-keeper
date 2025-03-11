@@ -3,7 +3,6 @@ from __future__ import annotations
 from collections.abc import Hashable
 from typing import TYPE_CHECKING, Any, Callable, Generic
 from typing_extensions import TypeAlias, TypeVar
-from file_keeper.ext import plugin
 
 if TYPE_CHECKING:
     import io
@@ -79,37 +78,10 @@ class Registry(Generic[V, K]):
         return decorator
 
 
-def collect_strategies() -> dict[str, LocationStrategy]:
-    result: dict[str, LocationStrategy] = {}
-    for item in plugin.hook.collect_location_strategies():
-        result.update(item)
-    return result
-
-
-def collect_adapters() -> dict[str, type[Storage]]:
-    result: dict[str, type[Storage]] = {}
-    for item in plugin.hook.collect_adapters():
-        result.update(item)
-    return result
-
-
-def collect_upload_factories() -> dict[type, UploadFactory]:
-    result: dict[type, UploadFactory] = {}
-    for item in plugin.hook.collect_upload_factories():
-        result.update(item)
-    return result
-
 
 upload_factories: Registry[UploadFactory, type] = Registry(
-    collector=collect_upload_factories
 )
 
-adapters = Registry["type[Storage]"](collector=collect_adapters)
+adapters = Registry["type[Storage[Any]]"]()
 
-location_strategies = Registry[LocationStrategy](collector=collect_strategies)
-
-
-def collect_all():
-    location_strategies.collect()
-    upload_factories.collect()
-    adapters.collect()
+location_strategies = Registry[LocationStrategy]()

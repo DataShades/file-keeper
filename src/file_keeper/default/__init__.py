@@ -11,10 +11,9 @@ from typing import Any, cast
 import magic
 import pytz
 
-from file_keeper.upload import Upload
-from file_keeper import Upload, ext, Storage
-from file_keeper.registry import LocationStrategy, UploadFactory
-
+from file_keeper import Upload, ext, Storage, Registry
+from file_keeper.core.registry import LocationStrategy, UploadFactory
+from . import adapters
 
 from pluggy import HookimplMarker
 
@@ -23,15 +22,13 @@ SAMPLE_SIZE = 1024 * 2
 
 
 @ext.hookimpl
-def collect_location_strategies() -> dict[str, LocationStrategy]:
-    return {
-        "transparent": transparent_strategy,
-        "uuid": uuid_strategy,
-        "uuid_prefix": uuid_prefix_strategy,
-        "uuid_with_extension": uuid_with_extension_strategy,
-        "datetime_prefix": datetime_prefix_strategy,
-        "datetime_with_extension": datetime_with_extension_strategy,
-    }
+def register_location_strategies(registry: Registry[LocationStrategy]):
+    registry.register("transparent", transparent_strategy)
+    registry.register("uuid", uuid_strategy)
+    registry.register("uuid_prefix", uuid_prefix_strategy)
+    registry.register("uuid_with_extension", uuid_with_extension_strategy)
+    registry.register("datetime_prefix", datetime_prefix_strategy)
+    registry.register("datetime_with_extension", datetime_with_extension_strategy)
 
 
 def transparent_strategy(
@@ -71,21 +68,17 @@ def datetime_with_extension_strategy(
 
 
 @ext.hookimpl
-def collect_upload_factories() -> dict[type, UploadFactory]:
-    return {
-        tempfile.SpooledTemporaryFile: tempfile_into_upload,
-        io.TextIOWrapper: textiowrapper_into_upload,
-    }
+def register_upload_factories(registry: Registry[UploadFactory, type]):
+    registry.register(tempfile.SpooledTemporaryFile, tempfile_into_upload)
+    registry.register(io.TextIOWrapper, textiowrapper_into_upload)
 
 
 with contextlib.suppress(ImportError):  # pragma: no cover
     import cgi
 
-    @ext.hookimpl(specname="collect_upload_factories")
-    def _() -> dict[type, UploadFactory]:
-        return {
-            cgi.FieldStorage: cgi_field_storage_into_upload,
-        }
+    @ext.hookimpl(specname="register_upload_factories")
+    def _(registry: Registry[UploadFactory, type]):
+        registry.register(cgi.FieldStorage, cgi_field_storage_into_upload)
 
     def cgi_field_storage_into_upload(value: cgi.FieldStorage):
         if not value.filename or not value.file:
@@ -111,9 +104,9 @@ with contextlib.suppress(ImportError):  # pragma: no cover
 with contextlib.suppress(ImportError):  # pragma: no cover
     from werkzeug.datastructures import FileStorage
 
-    @ext.hookimpl(specname="collect_upload_factories")
-    def _() -> dict[type, UploadFactory]:
-        return {FileStorage: werkzeug_file_storage_into_upload}
+    @ext.hookimpl(specname="register_upload_factories")
+    def _(registry: Registry[UploadFactory, type]):
+        registry.register(FileStorage, werkzeug_file_storage_into_upload)
 
     def werkzeug_file_storage_into_upload(value: FileStorage):
         name: str = value.filename or value.name or ""
@@ -144,4 +137,5 @@ def textiowrapper_into_upload(value: io.TextIOWrapper):
 
 
 @ext.hookimpl
-def collect_adapters() -> dict[str, type[Storage]]: ...
+def register_adapters(registry: Registry[type[Storage]]):
+    registry.register("file_keeper:fs", adapters.FsStorage)

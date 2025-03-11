@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING
 from pluggy import HookspecMarker
 
 if TYPE_CHECKING:
-    from file_keeper.storage import Storage
-    from file_keeper.registry import LocationStrategy, UploadFactory
+    from file_keeper.core.storage import Storage
+    from file_keeper.core.registry import LocationStrategy, UploadFactory, Registry
 
 
 name = "file_keeper_ext"
@@ -14,12 +14,12 @@ hookspec = HookspecMarker(name)
 
 
 @hookspec
-def collect_adapters() -> dict[str, type[Storage]]: ...
+def register_adapters(registry: Registry[type[Storage]]): ...
 
 
 @hookspec
-def collect_upload_factories() -> dict[type, UploadFactory]: ...
+def register_upload_factories(registry: Registry[UploadFactory, type]): ...
 
 
 @hookspec
-def collect_location_strategies() -> dict[str, LocationStrategy]: ...
+def register_location_strategies(registry: Registry[LocationStrategy]): ...

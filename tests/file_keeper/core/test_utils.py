@@ -12,7 +12,7 @@ from file_keeper import (
     is_supported_type,
     parse_filesize,
 )
-from file_keeper.utils import humanize_filesize
+from file_keeper.core.utils import humanize_filesize
 
 
 class TestRegistry:

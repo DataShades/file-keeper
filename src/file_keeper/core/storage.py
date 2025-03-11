@@ -25,6 +25,7 @@ from .registry import location_strategies, adapters
 
 P = ParamSpec("P")
 T = TypeVar("T")
+# S = TypeVar("S", bound="Settings", default="Settings")
 
 
 log = logging.getLogger(__name__)
@@ -306,7 +307,7 @@ class Storage:
     # services inside constructor.
     capabilities = utils.Capability.NONE
 
-    SettingsFactory = Settings
+    SettingsFactory: type[Settings] = Settings
 
     UploaderFactory: Callable[[Storage], Uploader] = Uploader
     ManagerFactory: Callable[[Storage], Manager] = Manager
@@ -331,8 +332,9 @@ class Storage:
     def make_reader(self):
         return self.ReaderFactory(self)
 
-    def configure(self, settings: dict[str, Any]):
-        fields = dataclasses.fields(self.SettingsFactory)
+    @classmethod
+    def configure(cls, settings: dict[str, Any]) -> Any:
+        fields = dataclasses.fields(cls.SettingsFactory)
         names = {field.name for field in fields}
 
         valid = {}
@@ -343,13 +345,14 @@ class Storage:
             else:
                 invalid.append(k)
 
+        cfg = cls.SettingsFactory(**valid)
         if invalid:
             log.debug(
                 "Storage %s received unknow settings: %s",
-                self.settings.name,
+                cfg.name,
                 invalid,
             )
-        return self.SettingsFactory(**valid)
+        return cfg
 
     def compute_capabilities(self) -> utils.Capability:
         return (

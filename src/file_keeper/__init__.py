@@ -1,9 +1,9 @@
 __version__ = "0.0.1"
 
-import file_keeper.exceptions as exc
-from file_keeper.registry import Registry, adapters, collect_all
-from file_keeper.data import BaseData, FileData, MultipartData
-from file_keeper.storage import (
+from .core import exceptions as exc
+from .core.registry import Registry, adapters
+from .core.data import BaseData, FileData, MultipartData
+from .core.storage import (
     Manager,
     Reader,
     Settings,
@@ -11,8 +11,8 @@ from file_keeper.storage import (
     Uploader,
     make_storage,
 )
-from file_keeper.upload import Upload, make_upload
-from file_keeper.utils import (
+from .core.upload import Upload, make_upload
+from .core.utils import (
     Capability,
     HashingReader,
     IterableBytesReader,
@@ -20,7 +20,7 @@ from file_keeper.utils import (
     is_supported_type,
     parse_filesize,
 )
-from file_keeper import ext
+from . import ext
 
 
 __all__ = [
@@ -47,6 +47,4 @@ __all__ = [
     "ext",
 ]
 
-
-ext.plugin.load_setuptools_entrypoints(ext.spec.name)
-collect_all()
+# ext.setup()
