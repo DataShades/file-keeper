@@ -3,14 +3,20 @@ from typing import Any
 
 import pytest
 from faker import Faker
-from werkzeug.datastructures import FileStorage
 
 from file_keeper import Upload, make_upload
 
+try:
+    from werkzeug.datastructures import FileStorage
+except ImportError:
+    FileStorage: Any = None
+
 
 class TestMakeUpload:
+    @pytest.mark.skipif(not FileStorage, reason="werkzeug is not installed")
     def test_file_storage(self):
         """FileStorage instances returned as-is."""
+
         result = make_upload(FileStorage())
         assert isinstance(result, Upload)
 

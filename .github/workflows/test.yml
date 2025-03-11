@@ -1,0 +1,31 @@
+---
+
+name: Test
+
+on:
+  pull_request:
+  push:
+
+concurrency:
+  group: >-
+    ${{
+        github.workflow
+    }}-${{
+        github.event.pull_request.number || github.sha
+    }}
+  cancel-in-progress: true
+
+jobs:
+  tox-matrix:
+    name: >-  # Short name for UI, or use 🧑‍💻, it's even shorter
+      [m]
+    # REPRODUCIBILITY NOTE: Replace the `main` version with a stable tag
+    uses: tox-dev/workflow/.github/workflows/tox.yml@main
+    with:  # all of these inputs are absolutely optional
+      max-python:  3.12
+      min-python:  3.8
+      # tox-target:  # Regex to filter the detected tox envs
+      # tox-version:  # Tox PyPI package w/ version spec for pip
+      # YOLO: true  # Rely on the unstable version of the underlying GHA
+
+...
