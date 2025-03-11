@@ -1,22 +1,7 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Hashable, Iterator
-from io import BufferedReader, BytesIO
-from typing import TYPE_CHECKING, Any, Protocol
-
-from typing_extensions import TypeAlias, TypeVar
-
-if TYPE_CHECKING:
-    from .upload import Upload
-
-
-K = TypeVar("K", default=str, bound=Hashable)
-V = TypeVar("V")
-T = TypeVar("T")
-
-UploadFactory: TypeAlias = (
-    "Callable[[Any], Upload | BytesIO | BufferedReader | bytes | bytearray | None]"
-)
+from collections.abc import Iterator
+from typing import Any, Protocol
 
 
 class PStream(Protocol):
@@ -40,10 +25,7 @@ class PData(Protocol):
 
 
 __all__ = [
+    "PData",
     "PStream",
     "PSeekableStream",
-    "UploadFactory",
-    "K",
-    "V",
-    "T",
 ]

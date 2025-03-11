@@ -14,12 +14,10 @@ import itertools
 import logging
 import re
 from collections.abc import Iterable, Iterator
-from typing import Generic
 
 from . import types
 
 log = logging.getLogger(__name__)
-
 
 RE_FILESIZE = re.compile(r"^(?P<size>\d+(?:\.\d+)?)\s*(?P<unit>\w*)$")
 CHUNK_SIZE = 16 * 1024
@@ -45,54 +43,6 @@ UNITS = {
     "tib": 2**40,
     "pib": 2**50,
 }
-
-
-class Registry(Generic[types.V, types.K]):
-    """Mutable collection of objects.
-
-    Example:
-    >>> col = Registry()
-    >>>
-    >>> col.register("one", 1)
-    >>> assert col.get("one") == 1
-    >>>
-    >>> col.reset()
-    >>> assert col.get("one") is None
-    """
-
-    def __init__(self, members: dict[types.K, types.V] | None = None):
-        if members is None:
-            members = {}
-        self.members = members
-
-    def __iter__(self):
-        return iter(self.members)
-
-    def __getitem__(self, key: types.K):
-        return self.members[key]
-
-    def reset(self):
-        """Remove all members from registry."""
-        self.members.clear()
-
-    def register(self, key: types.K, member: types.V):
-        """Add a member to registry."""
-        self.members[key] = member
-
-    def get(self, key: types.K) -> types.V | None:
-        """Get the optional member from registry."""
-        return self.members.get(key)
-
-    def pop(self, key: types.K) -> types.V | None:
-        """Remove the member from registry."""
-        return self.members.pop(key, None)
-
-    def decorated(self, key: types.K):
-        def decorator(value: types.V):
-            self.register(key, value)
-            return value
-
-        return decorator
 
 
 class HashingReader:
@@ -200,7 +150,7 @@ class Capability(enum.Flag):
     RANGE = enum.auto()
     # return file details from the storage, as if file was uploaded just now
     ANALYZE = enum.auto()
-    # make permanent download link for private file
+    # make permanent download link for private file (dangerous)
     PERMANENT_LINK = enum.auto()
     # make expiring download link for private file
     TEMPORAL_LINK = enum.auto()

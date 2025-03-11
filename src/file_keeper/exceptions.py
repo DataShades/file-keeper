@@ -19,7 +19,7 @@ Hierarchy:
                 * MissingStorageConfigurationError
             * UploadError
                 * WrongUploadTypeError
-                * NameStrategyError
+                * LocationStrategyError
                 * ContentError
                 * LargeUploadError
                     * UploadOutOfBoundError
@@ -233,7 +233,7 @@ class WrongUploadTypeError(UploadError):
         return f"Type {self.content_type} is not supported by storage"
 
 
-class NameStrategyError(UploadError):
+class LocationStrategyError(UploadError):
     """Undefined name strategy."""
 
     def __init__(self, strategy: str):

@@ -220,5 +220,5 @@ class TestStorage:
         """`datetime_with_extension` name strategy produces valid UUID."""
         storage = FakeStorage({})
         storage.settings.location_strategy = "wrong_strategy"
-        with pytest.raises(exc.NameStrategyError):
+        with pytest.raises(exc.LocationStrategyError):
             storage.compute_location("test")

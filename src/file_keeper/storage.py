@@ -18,23 +18,21 @@ from collections.abc import Callable
 from io import BytesIO
 from typing import Any, ClassVar, Iterable, cast
 
-from typing_extensions import Concatenate, ParamSpec
-
-import file_keeper
+from typing_extensions import Concatenate, ParamSpec, TypeVar
 
 from . import data, exceptions, types, upload, utils
-from .location import strategies as location_strategies
+from .registry import location_strategies, adapters
 
 P = ParamSpec("P")
+T = TypeVar("T")
 
-adapters = utils.Registry["type[Storage]"]({})
 
 log = logging.getLogger(__name__)
 
 
 def requires_capability(capability: utils.Capability):
-    def decorator(func: Callable[Concatenate[Storage, P], types.T]):
-        def method(self: Storage, *args: P.args, **kwargs: P.kwargs) -> types.T:
+    def decorator(func: Callable[Concatenate[Storage, P], T]):
+        def method(self: Storage, *args: P.args, **kwargs: P.kwargs) -> T:
             if not self.supports(capability):
                 raise exceptions.UnsupportedOperationError(str(capability.name), self)
             return func(self, *args, **kwargs)
@@ -308,50 +306,32 @@ class Storage:
     # services inside constructor.
     capabilities = utils.Capability.NONE
 
-    # settings: Settings
-
-    UploaderFactory = Uploader
-    ManagerFactory = Manager
-    ReaderFactory = Reader
     SettingsFactory = Settings
+
+    UploaderFactory: Callable[[Storage], Uploader] = Uploader
+    ManagerFactory: Callable[[Storage], Manager] = Manager
+    ReaderFactory: Callable[[Storage], Reader] = Reader
 
     def __str__(self):
         return self.settings.name
 
     def __init__(self, settings: dict[str, Any], /):
-        self.settings = self.make_settings(settings)
-
+        self.settings = self.configure(settings)
         self.uploader = self.make_uploader()
         self.manager = self.make_manager()
         self.reader = self.make_reader()
-
         self.capabilities = self.compute_capabilities()
 
-    @property
-    def max_size(self) -> int:
-        """Max allowed upload size.
+    def make_uploader(self):
+        return self.UploaderFactory(self)
 
-        Max size set to 0 removes all limitations.
+    def make_manager(self):
+        return self.ManagerFactory(self)
 
-        """
-        return self.settings.max_size
+    def make_reader(self):
+        return self.ReaderFactory(self)
 
-    @property
-    def supported_types(self) -> list[str]:
-        """List of supported MIMEtypes or their parts."""
-        return self.settings.supported_types
-
-    def compute_capabilities(self) -> utils.Capability:
-        return (
-            self.uploader.capabilities
-            | self.manager.capabilities
-            | self.reader.capabilities
-        )
-
-    def make_settings(self, settings: dict[str, Any] | Settings):
-        if isinstance(settings, Settings):
-            return settings
-
+    def configure(self, settings: dict[str, Any]):
         fields = dataclasses.fields(self.SettingsFactory)
         names = {field.name for field in fields}
 
@@ -363,23 +343,37 @@ class Storage:
             else:
                 invalid.append(k)
 
-        result = self.SettingsFactory(**valid)
+        if invalid:
+            log.debug(
+                "Storage %s received unknow settings: %s",
+                self.settings.name,
+                invalid,
+            )
+        return self.SettingsFactory(**valid)
 
-        log.debug("Storage %s received unknow settings: %s", result.name, invalid)
-
-        return result
-
-    def make_uploader(self):
-        return self.UploaderFactory(self)
-
-    def make_manager(self):
-        return self.ManagerFactory(self)
-
-    def make_reader(self):
-        return self.ReaderFactory(self)
+    def compute_capabilities(self) -> utils.Capability:
+        return (
+            self.uploader.capabilities
+            | self.manager.capabilities
+            | self.reader.capabilities
+        )
 
     def supports(self, operation: utils.Capability) -> bool:
         return self.capabilities.can(operation)
+
+    # @property
+    # def max_size(self) -> int:
+    #     """Max allowed upload size.
+
+    #     Max size set to 0 removes all limitations.
+
+    #     """
+    #     return self.settings.max_size
+
+    # @property
+    # def supported_types(self) -> list[str]:
+    #     """List of supported MIMEtypes or their parts."""
+    #     return self.settings.supported_types
 
     def compute_location(
         self,
@@ -392,35 +386,45 @@ class Storage:
         if strategy := location_strategies.get(name):
             return strategy(location, upload, kwargs)
 
-        raise exceptions.NameStrategyError(name)
+        raise exceptions.LocationStrategyError(name)
 
-    def validate(self, upload: upload.Upload, /, **kwargs: Any):
-        if self.max_size and upload.size > self.max_size:
-            raise exceptions.LargeUploadError(upload.size, self.max_size)
+    def _validate_size(self, size: int):
+        if self.settings.max_size and size > self.settings.max_size:
+            raise exceptions.LargeUploadError(size, self.settings.max_size)
 
-        if self.supported_types and not utils.is_supported_type(
-            upload.content_type,
-            self.supported_types,
+    def _validate_type(self, content_type: str):
+        if self.settings.supported_types and not utils.is_supported_type(
+            content_type,
+            self.settings.supported_types,
         ):
-            raise exceptions.WrongUploadTypeError(upload.content_type)
+            raise exceptions.WrongUploadTypeError(content_type)
+
+    def validate_upload(self, upload: upload.Upload, /, **kwargs: Any):
+        self._validate_size(upload.size)
+        self._validate_type(upload.content_type)
+
+    def validate_data(self, data: data.BaseData, /, **kwargs: Any):
+        self._validate_size(data.size)
+        self._validate_type(data.content_type)
 
     @requires_capability(utils.Capability.CREATE)
     def upload(
         self, location: str, upload: upload.Upload, /, **kwargs: Any
     ) -> data.FileData:
-        self.validate(upload, **kwargs)
+        self.validate_upload(upload, **kwargs)
 
         return self.uploader.upload(location, upload, kwargs)
 
     @requires_capability(utils.Capability.MULTIPART)
     def multipart_start(
         self,
-        name: str,
+        location: str,
         data: data.MultipartData,
         /,
         **kwargs: Any,
     ) -> data.MultipartData:
-        return self.uploader.multipart_start(name, data, kwargs)
+        self.validate_data(data, **kwargs)
+        return self.uploader.multipart_start(location, data, kwargs)
 
     @requires_capability(utils.Capability.MULTIPART)
     def multipart_refresh(
@@ -481,18 +485,18 @@ class Storage:
     def copy(
         self,
         data: data.FileData,
-        storage: Storage,
+        dest_storage: Storage,
         location: str,
         /,
         **kwargs: Any,
     ) -> data.FileData:
-        if storage is self and self.supports(utils.Capability.COPY):
+        if dest_storage is self and self.supports(utils.Capability.COPY):
             return self.manager.copy(data, location, kwargs)
 
-        if self.supports(utils.Capability.STREAM) and storage.supports(
+        if self.supports(utils.Capability.STREAM) and dest_storage.supports(
             utils.Capability.CREATE,
         ):
-            return storage.upload(
+            return dest_storage.upload(
                 location,
                 self.stream_as_upload(data, **kwargs),
                 **kwargs,
@@ -502,26 +506,26 @@ class Storage:
 
     def compose(
         self,
-        storage: Storage,
+        dest_storage: Storage,
         location: str,
         /,
-        *datas: data.FileData,
+        *files: data.FileData,
         **kwargs: Any,
     ) -> data.FileData:
-        if storage is self and self.supports(utils.Capability.COMPOSE):
-            return self.manager.compose(datas, location, kwargs)
+        if dest_storage is self and self.supports(utils.Capability.COMPOSE):
+            return self.manager.compose(files, location, kwargs)
 
-        if self.supports(utils.Capability.STREAM) and storage.supports(
+        if self.supports(utils.Capability.STREAM) and dest_storage.supports(
             utils.Capability.CREATE | utils.Capability.APPEND,
         ):
-            dest_data = storage.upload(location, file_keeper.make_upload(b""), **kwargs)
-            for data in datas:
-                dest_data = storage.append(
-                    dest_data,
-                    self.stream_as_upload(data, **kwargs),
+            result = dest_storage.upload(location, upload.make_upload(b""), **kwargs)
+            for item in files:
+                result = dest_storage.append(
+                    result,
+                    self.stream_as_upload(item, **kwargs),
                     **kwargs,
                 )
-            return dest_data
+            return result
 
         raise exceptions.UnsupportedOperationError("compose", self)
 
@@ -553,23 +557,23 @@ class Storage:
     def move(
         self,
         data: data.FileData,
-        storage: Storage,
+        dest_storage: Storage,
         location: str,
         /,
         **kwargs: Any,
     ) -> data.FileData:
-        if storage is self and self.supports(utils.Capability.MOVE):
+        if dest_storage is self and self.supports(utils.Capability.MOVE):
             return self.manager.move(data, location, kwargs)
 
         if self.supports(
             utils.Capability.STREAM | utils.Capability.REMOVE,
-        ) and storage.supports(utils.Capability.CREATE):
-            result = storage.upload(
+        ) and dest_storage.supports(utils.Capability.CREATE):
+            result = dest_storage.upload(
                 location,
                 self.stream_as_upload(data, **kwargs),
                 **kwargs,
             )
-            storage.remove(data)
+            dest_storage.remove(data)
             return result
 
         raise exceptions.UnsupportedOperationError("move", self)

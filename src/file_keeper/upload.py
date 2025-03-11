@@ -1,19 +1,13 @@
 from __future__ import annotations
 
-import contextlib
 import dataclasses
-import mimetypes
-import tempfile
-from io import BufferedReader, BytesIO, TextIOWrapper
+from io import BufferedReader, BytesIO
 from typing import Any, cast
-
 import magic
 
-from . import types, utils
+from . import types, utils, registry
 
 SAMPLE_SIZE = 1024 * 2
-
-upload_factories: utils.Registry[types.UploadFactory, type] = utils.Registry()
 
 
 @dataclasses.dataclass
@@ -82,65 +76,6 @@ class Upload:
         return utils.HashingReader(self.stream, **kwargs)
 
 
-with contextlib.suppress(ImportError):  # pragma: no cover
-    import cgi
-
-    @upload_factories.decorated(cgi.FieldStorage)
-    def cgi_field_storage_into_upload(value: cgi.FieldStorage):
-        if not value.filename or not value.file:
-            return None
-
-        mime, _encoding = mimetypes.guess_type(value.filename)
-        if not mime:
-            mime = magic.from_buffer(value.file.read(SAMPLE_SIZE), True)
-            _ = value.file.seek(0)
-
-        _ = value.file.seek(0, 2)
-        size = value.file.tell()
-        _ = value.file.seek(0)
-
-        return Upload(
-            value.file,
-            value.filename,
-            size,
-            mime,
-        )
-
-
-with contextlib.suppress(ImportError):  # pragma: no cover
-    from werkzeug.datastructures import FileStorage
-
-    @upload_factories.decorated(FileStorage)
-    def werkzeug_file_storage_into_upload(value: FileStorage):
-        name: str = value.filename or value.name or ""
-        if value.content_length:
-            size = value.content_length
-        else:
-            _ = value.stream.seek(0, 2)
-            size = value.stream.tell()
-            _ = value.stream.seek(0)
-
-        mime = magic.from_buffer(value.stream.read(SAMPLE_SIZE), True)
-        _ = value.stream.seek(0)
-
-        return Upload(value.stream, name, size, mime)
-
-
-@upload_factories.decorated(tempfile.SpooledTemporaryFile)
-def tempfile_into_upload(value: tempfile.SpooledTemporaryFile[bytes]):
-    mime = magic.from_buffer(value.read(SAMPLE_SIZE), True)
-    _ = value.seek(0, 2)
-    size = value.tell()
-    _ = value.seek(0)
-
-    return Upload(value, value.name or "", size, mime)
-
-
-@upload_factories.decorated(TextIOWrapper)
-def textiowrapper_into_upload(value: TextIOWrapper):
-    return cast(BufferedReader, value.buffer)
-
-
 def make_upload(value: Any) -> Upload:
     """Convert value into Upload object.
 
@@ -169,15 +104,15 @@ def make_upload(value: Any) -> Upload:
     initial_type: type = type(value)
 
     fallback_factory = None
-    for t in upload_factories:
+    for t in registry.upload_factories:
         if initial_type is t:
-            transformed_value = upload_factories[t](value)
+            transformed_value = registry.upload_factories[t](value)
             if transformed_value is not None:
                 value = transformed_value
                 break
 
         if not fallback_factory and issubclass(initial_type, t):
-            fallback_factory = upload_factories[t]
+            fallback_factory = registry.upload_factories[t]
 
     else:
         if fallback_factory:

@@ -22,7 +22,7 @@ classifiers = [
 ]
 keywords = [ "file-management", "cloud", "filesystem", "DAL" ]
 requires-python = ">= 3.8"
-dependencies = [ "typing_extensions", ]
+dependencies = [ "typing_extensions", "pluggy", ]
 authors = [
     {name = "DataShades", email = "datashades@linkdigital.com.au"},
     {name = "Sergey Motornyuk", email = "sergey.motornyuk@linkdigital.com.au"},
@@ -49,6 +49,9 @@ s3 = [ "boto3", "boto3-stubs[essential]"]
 gcs = [ "google-cloud-storage",]
 opendal = [ "opendal",]
 libcloud = [ "apache-libcloud", "cryptography",]
+
+[project.entry-points."file_keeper_ext"]
+core = "file_keeper_default"
 
 [tool.ruff]
 target-version = "py38"
