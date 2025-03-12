@@ -1,14 +1,15 @@
 __version__ = "0.0.1"
 
 from .core import exceptions as exc
-from .core.registry import Registry, adapters
 from .core.data import BaseData, FileData, MultipartData
+from .core.registry import Registry
 from .core.storage import (
     Manager,
     Reader,
     Settings,
     Storage,
     Uploader,
+    adapters,
     make_storage,
 )
 from .core.upload import Upload, make_upload
@@ -20,8 +21,7 @@ from .core.utils import (
     is_supported_type,
     parse_filesize,
 )
-from . import ext
-
+from .ext import hookimpl  # must be the last line to avoid circular imports
 
 __all__ = [
     "adapters",
@@ -44,7 +44,5 @@ __all__ = [
     "Uploader",
     "Manager",
     "Settings",
-    "ext",
+    "hookimpl",
 ]
-
-# ext.setup()

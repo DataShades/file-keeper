@@ -14,14 +14,13 @@ from __future__ import annotations
 import dataclasses
 import itertools
 import logging
-from collections.abc import Callable
 from io import BytesIO
-from typing import Any, ClassVar, Iterable, cast
+from typing import Any, ClassVar, Iterable, cast, Callable
 
-from typing_extensions import Concatenate, ParamSpec, TypeVar
+from typing_extensions import Concatenate, ParamSpec, TypeAlias, TypeVar
 
 from . import data, exceptions, types, upload, utils
-from .registry import location_strategies, adapters
+from .registry import Registry
 
 P = ParamSpec("P")
 T = TypeVar("T")
@@ -29,6 +28,13 @@ T = TypeVar("T")
 
 
 log = logging.getLogger(__name__)
+
+LocationStrategy: TypeAlias = Callable[
+    [str, "upload.Upload | None", "dict[str, Any]"], str
+]
+
+adapters = Registry["type[Storage]"]()
+location_strategies = Registry[LocationStrategy]()
 
 
 def requires_capability(capability: utils.Capability):
@@ -274,7 +280,7 @@ class Settings:
 
     _required_options: ClassVar[list[str]] = []
 
-    def __post_init__(self):
+    def __post_init__(self, **kwargs: Any):
         for attr in self._required_options:
             if not getattr(self, attr):
                 raise exceptions.MissingStorageConfigurationError(self.name, attr)

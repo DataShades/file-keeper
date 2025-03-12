@@ -2,13 +2,20 @@ from __future__ import annotations
 
 import dataclasses
 from io import BufferedReader, BytesIO
-from typing import Any, cast
-import magic
+from typing import Any, Callable, cast
 
-from . import types, utils, registry
+import magic
+from typing_extensions import TypeAlias
+
+from . import registry, types, utils
 
 SAMPLE_SIZE = 1024 * 2
 
+UploadFactory: TypeAlias = Callable[
+    [Any], "Upload | BytesIO | BufferedReader | bytes | bytearray | None"
+]
+
+upload_factories = registry.Registry[UploadFactory, type]()
 
 @dataclasses.dataclass
 class Upload:
@@ -104,15 +111,15 @@ def make_upload(value: Any) -> Upload:
     initial_type: type = type(value)
 
     fallback_factory = None
-    for t in registry.upload_factories:
+    for t in upload_factories:
         if initial_type is t:
-            transformed_value = registry.upload_factories[t](value)
+            transformed_value = upload_factories[t](value)
             if transformed_value is not None:
                 value = transformed_value
                 break
 
         if not fallback_factory and issubclass(initial_type, t):
-            fallback_factory = registry.upload_factories[t]
+            fallback_factory = upload_factories[t]
 
     else:
         if fallback_factory:

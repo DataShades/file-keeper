@@ -1,22 +1,36 @@
+from __future__ import annotations
+
 import hashlib
 import os
 from io import BytesIO
 from pathlib import Path
-from uuid import UUID
 
 import pytest
 from faker import Faker
-import file_keeper as fk
 
-Storage = fk.adapters["file_keeper:fs"]
+import file_keeper as fk
+import file_keeper.default.adapters.fs as fs
 
 
 @pytest.fixture()
 def storage(tmp_path: Path):
-    return fk.make_storage("test", {"type": "file_keeper:fs", "path": str(tmp_path)})
+    return fs.FsStorage({"name": "test", "path": str(tmp_path)})
+
+
+class TestSettings:
+    def test_creation(self):
+        """Test how settings initialized with and without required option."""
+        with pytest.raises(fk.exc.MissingStorageConfigurationError):
+            fs.Settings()
+
+        fs.Settings(path="test")
 
 
 class TestUploader:
+    def test_capabilities(self, storage: fk.Storage):
+        assert storage.supports(fk.Capability.CREATE)
+        assert storage.supports(fk.Capability.MULTIPART)
+
     def test_key(self, storage: fk.Storage, faker: Faker):
         filename = faker.file_name()
         result = storage.upload(filename, fk.make_upload(b""))
@@ -179,7 +193,7 @@ class TestReader:
 class TestStorage:
     def test_missing_path(self, tmp_path: Path):
         with pytest.raises(fk.exc.InvalidStorageConfigurationError):
-            Storage(
+            fs.FsStorage(
                 {"path": os.path.join(str(tmp_path), "not-real")},
             )
 
@@ -187,5 +201,5 @@ class TestStorage:
         path = os.path.join(str(tmp_path), "not-real")
         assert not os.path.exists(path)
 
-        Storage({"path": path, "create_path": True})
+        fs.FsStorage({"path": path, "create_path": True})
         assert os.path.exists(path)

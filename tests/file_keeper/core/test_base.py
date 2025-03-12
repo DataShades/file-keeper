@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import uuid
 from datetime import datetime
 from io import BytesIO
@@ -96,7 +97,6 @@ class TestStorage:
             Capability.REMOVE | Capability.STREAM | Capability.CREATE
         )
 
-
     def test_supports(self):
         """Storage can tell whether it supports certain capabilities."""
         storage = FakeStorage({})
@@ -191,7 +191,6 @@ class TestStorage:
     def test_compute_location_datetime_prefix(
         self,
         faker: Faker,
-        files_stopped_time: datetime,
     ):
         """`datetime_prefix` name strategy produces valid UUID."""
         storage = FakeStorage({})
@@ -200,12 +199,13 @@ class TestStorage:
         name = faker.file_name(extension=extension)
         result = storage.compute_location(name)
 
-        assert result == files_stopped_time.isoformat() + name
+        assert result[-len(name) :] == name
+
+        assert datetime.fromisoformat(result[: -len(name)])
 
     def test_compute_location_datetime_with_extension(
         self,
         faker: Faker,
-        files_stopped_time: datetime,
     ):
         """`datetime_with_extension` name strategy produces valid UUID."""
         storage = FakeStorage({})
@@ -214,7 +214,10 @@ class TestStorage:
         name = faker.file_name(extension=extension)
         result = storage.compute_location(name)
 
-        assert result == files_stopped_time.isoformat() + "." + extension
+        ext = os.path.splitext(name)[1]
+        assert result[-len(ext) :] == ext
+
+        assert datetime.fromisoformat(result[: -len(ext)])
 
     def test_compute_location_with_wrong_strategy(self):
         """`datetime_with_extension` name strategy produces valid UUID."""

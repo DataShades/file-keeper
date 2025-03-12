@@ -1,18 +1,11 @@
 from __future__ import annotations
 
-from collections.abc import Hashable
-from typing import TYPE_CHECKING, Any, Callable, Generic
-from typing_extensions import TypeAlias, TypeVar
+from typing import Callable, Generic, Hashable
 
-if TYPE_CHECKING:
-    import io
-    from .upload import Upload
-    from .storage import Storage
+from typing_extensions import TypeVar
 
 K = TypeVar("K", default=str, bound=Hashable)
 V = TypeVar("V")
-UploadFactory: TypeAlias = "Callable[[Any], Upload | io.BytesIO | io.BufferedReader | bytes | bytearray | None]"
-LocationStrategy: TypeAlias = Callable[[str, "Upload | None", "dict[str, Any]"], str]
 
 
 class Registry(Generic[V, K]):
@@ -27,6 +20,8 @@ class Registry(Generic[V, K]):
     >>> col.reset()
     >>> assert col.get("one") is None
     """
+
+    __slots__ = ("members", "collector")
 
     def __init__(
         self,
@@ -76,12 +71,3 @@ class Registry(Generic[V, K]):
             return value
 
         return decorator
-
-
-
-upload_factories: Registry[UploadFactory, type] = Registry(
-)
-
-adapters = Registry["type[Storage[Any]]"]()
-
-location_strategies = Registry[LocationStrategy]()

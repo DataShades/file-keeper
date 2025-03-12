@@ -42,7 +42,7 @@ text = "AGPL"
 Homepage = "https://github.com/DataShades/file-keeper"
 
 [project.optional-dependencies]
-test = [ "pytest-cov", "pytest-faker", "freezegun", "responses" ]
+test = [ "pytest-cov", "pytest-faker", "responses" ]
 docs = [ "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]",]
 dev = [ "pytest-cov", "pytest-faker", "freezegun", "responses", "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]",]
 s3 = [ "boto3", "boto3-stubs[essential]"]
@@ -95,7 +95,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S", "PL", "ANN"]
+"tests/*" = ["S", "PL", "ANN", "D"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
@@ -195,3 +195,17 @@ reportMatchNotExhaustive = true
 [tool.coverage.run]
 branch = true
 omit = ["files_keeper/tests/*"]
+
+[tool.tox]
+requires = ["tox>=4"]
+env_list = ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8"]
+
+[tool.tox.env_run_base]
+
+description = "run unit tests"
+deps = [
+    "pytest>=8",
+    "pytest-sugar"
+]
+commands = [["pytest", { replace = "posargs", default = ["tests"], extend = true }]]
+extras = ["test"]

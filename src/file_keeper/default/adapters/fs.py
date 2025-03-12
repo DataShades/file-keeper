@@ -7,11 +7,11 @@ import logging
 import os
 import shutil
 from io import BytesIO
-from typing import IO, Any, Iterable
+from typing import IO, Any, ClassVar, Iterable
 
-import file_keeper as fk
 import magic
 
+import file_keeper as fk
 
 log = logging.getLogger(__name__)
 CHUNK_SIZE = 16384
@@ -19,15 +19,19 @@ CHUNK_SIZE = 16384
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
+    """Settings for FS storage.
+
+    Args:
+        create_path: create `path` if it does not exist
+        recursive: expect files inside subfolders the `path`
+        path: non-empty location for storage folder
+    """
+
     create_path: bool = False
     recursive: bool = False
-
     path: str = ""
 
-    def __post_init__(self):
-        for attr in ["path"]:
-            if not getattr(self, attr):
-                raise fk.exc.MissingStorageConfigurationError(FsStorage, attr)
+    _required_options: ClassVar[list[str]] = ["path"]
 
 
 class Uploader(fk.Uploader):
@@ -41,6 +45,7 @@ class Uploader(fk.Uploader):
         extras: dict[str, Any],
     ) -> fk.FileData:
         location = self.storage.compute_location(location, upload, **extras)
+
         dest = os.path.join(self.storage.settings.path, location)
 
         if os.path.exists(dest) and not self.storage.settings.override_existing:

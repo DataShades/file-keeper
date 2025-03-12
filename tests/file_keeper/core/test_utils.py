@@ -1,6 +1,7 @@
 import hashlib
 from io import BytesIO
 from typing import Iterable
+
 import pytest
 from faker import Faker
 

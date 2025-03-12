@@ -13,7 +13,7 @@ import hashlib
 import itertools
 import logging
 import re
-from collections.abc import Iterable, Iterator
+from typing import Iterable, Iterator
 
 from . import types
 
