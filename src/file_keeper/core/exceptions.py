@@ -11,8 +11,9 @@ Hierarchy:
             * UnknownStorageError
             * UnsupportedOperationError
             * PermissionError
-            * MissingFileError
-            * ExistingFileError
+            * LocationError
+                * MissingFileError
+                * ExistingFileError
             * ExtrasError
                 * MissingExtrasError
             * InvalidStorageConfigurationError
@@ -100,10 +101,7 @@ class InvalidStorageConfigurationError(StorageError):
         else:
             what = f"storage adapter {self.adapter_or_storage.__name__}"
 
-        return (
-            f"Cannot initialize {what}"
-            + f" due to following error: {self.problem}"
-        )
+        return f"Cannot initialize {what}" + f" due to following error: {self.problem}"
 
 
 class PermissionError(StorageError):
@@ -133,26 +131,29 @@ class MissingStorageConfigurationError(InvalidStorageConfigurationError):
         )
 
 
-class MissingFileError(StorageError):
+class LocationError(StorageError):
+    """Storage cannot use given location."""
+
+    def __init__(self, storage: Storage, location: str):
+        self.storage = storage
+        self.location = location
+
+    def __str__(self):
+        return f"{self.storage} cannot use location {self.location}"
+
+
+class MissingFileError(LocationError):
     """File does not exist."""
 
-    def __init__(self, storage: Storage, filename: str):
-        self.storage = storage
-        self.filename = filename
-
     def __str__(self):
-        return f"File {self.filename} does not exist inside storage {self.storage}"
+        return f"File {self.location} does not exist inside storage {self.storage}"
 
 
-class ExistingFileError(StorageError):
+class ExistingFileError(LocationError):
     """File already exists."""
 
-    def __init__(self, storage: Storage, filename: str):
-        self.storage = storage
-        self.filename = filename
-
     def __str__(self):
-        return f"File {self.filename} already exists inside storage {self.storage}"
+        return f"File {self.location} already exists inside storage {self.storage}"
 
 
 class UploadError(StorageError):

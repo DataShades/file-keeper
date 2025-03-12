@@ -4,6 +4,7 @@ import hashlib
 import os
 from io import BytesIO
 from pathlib import Path
+from typing import Any
 
 import pytest
 from faker import Faker
@@ -13,8 +14,13 @@ import file_keeper.default.adapters.fs as fs
 
 
 @pytest.fixture()
-def storage(tmp_path: Path):
-    return fs.FsStorage({"name": "test", "path": str(tmp_path)})
+def storage(tmp_path: Path, request: pytest.FixtureRequest):
+    settings = {"name": "test", "path": str(tmp_path)}
+    marks: Any = request.node.iter_markers("fk_storage_option")
+    for mark in marks:
+        settings[mark.args[0]] = mark.args[1]
+
+    return fs.FsStorage(settings)
 
 
 class TestSettings:
@@ -31,35 +37,59 @@ class TestUploader:
         assert storage.supports(fk.Capability.CREATE)
         assert storage.supports(fk.Capability.MULTIPART)
 
-    def test_key(self, storage: fk.Storage, faker: Faker):
+    def test_empty_upload(self, storage: fk.Storage, faker: Faker):
+        """Empty file can be created."""
         filename = faker.file_name()
         result = storage.upload(filename, fk.make_upload(b""))
 
-        assert result.location == filename
         assert result.size == 0
 
         filepath = os.path.join(storage.settings.path, result.location)
-
         assert os.path.exists(filepath)
-        assert os.path.getsize(filepath) == 0
+        assert storage.content(result) == b""
 
     def test_content(self, storage: fk.Storage, faker: Faker):
+        """Content matches the uploaded data"""
         content = faker.binary(100)
         result = storage.upload(faker.file_name(), fk.make_upload(BytesIO(content)))
 
         assert result.size == 100
-
-        filepath = os.path.join(storage.settings.path, result.location)
-        with open(filepath, "rb") as src:
-            assert src.read() == content
+        assert storage.content(result) == content
 
     def test_hash(self, storage: fk.Storage, faker: Faker):
+        """Hash computed using full content."""
         result = storage.upload(faker.file_name(), fk.make_upload(b""))
         assert result.hash == hashlib.md5().hexdigest()
 
         content = faker.binary(100)
         result = storage.upload(faker.file_name(), fk.make_upload(BytesIO(content)))
         assert result.hash == hashlib.md5(content).hexdigest()
+
+    @pytest.mark.fk_storage_option("recursive", True)
+    def test_sub_directory_allowed(self, storage: fk.Storage, faker: Faker):
+        """Can upload into nested dirs when `recursive` enabled."""
+        path = faker.file_path(absolute=False)
+        result = storage.upload(path, fk.make_upload(b""))
+        assert result.location == path
+
+    def test_sub_directory_not_allowed(self, storage: fk.Storage, faker: Faker):
+        """Cannot upload into nested dirs by default."""
+        with pytest.raises(fk.exc.LocationError):
+            storage.upload(faker.file_path(absolute=False), fk.make_upload(b""))
+
+    @pytest.mark.fk_storage_option("recursive", True)
+    def test_absolute_sub_path_sanitized(self, storage: fk.Storage, faker: Faker):
+        """Cannot upload to absolute path."""
+        path = faker.file_path(absolute=True)
+        result = storage.upload(path, fk.make_upload(b""))
+        assert result.location == path.lstrip("/")
+
+    @pytest.mark.fk_storage_option("recursive", True)
+    def test_parent_sub_path_sanitized(self, storage: fk.Storage, faker: Faker):
+        """Cannot upload to parent dir."""
+        path = faker.file_path(absolute=False)
+        result = storage.upload(f"../../{path}", fk.make_upload(b""))
+        assert result.location == path
 
 
 class TestMultipartUploader:

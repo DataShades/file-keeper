@@ -24,14 +24,11 @@ from .registry import Registry
 
 P = ParamSpec("P")
 T = TypeVar("T")
-# S = TypeVar("S", bound="Settings", default="Settings")
 
 
 log = logging.getLogger(__name__)
 
-LocationStrategy: TypeAlias = Callable[
-    [str, "upload.Upload | None", "dict[str, Any]"], str
-]
+LocationStrategy: TypeAlias = Callable[[str, "dict[str, Any]"], str]
 
 adapters = Registry["type[Storage]"]()
 location_strategies = Registry[LocationStrategy]()
@@ -201,7 +198,11 @@ class Manager(StorageService):
         """List all locations(filenames) in storage."""
         raise NotImplementedError
 
-    def analyze(self, location: str, extras: dict[str, Any]) -> data.FileData:
+    def analyze(
+        self,
+        location: str,
+        extras: dict[str, Any],
+    ) -> data.FileData:
         """Return all details about filename."""
         raise NotImplementedError
 
@@ -370,30 +371,10 @@ class Storage:
     def supports(self, operation: utils.Capability) -> bool:
         return self.capabilities.can(operation)
 
-    # @property
-    # def max_size(self) -> int:
-    #     """Max allowed upload size.
-
-    #     Max size set to 0 removes all limitations.
-
-    #     """
-    #     return self.settings.max_size
-
-    # @property
-    # def supported_types(self) -> list[str]:
-    #     """List of supported MIMEtypes or their parts."""
-    #     return self.settings.supported_types
-
-    def compute_location(
-        self,
-        location: str,
-        upload: upload.Upload | None = None,
-        /,
-        **kwargs: Any,
-    ) -> str:
+    def prepare_location(self, location: str, /, **kwargs: Any) -> str:
         name = self.settings.location_strategy
         if strategy := location_strategies.get(name):
-            return strategy(location, upload, kwargs)
+            return strategy(location, kwargs)
 
         raise exceptions.LocationStrategyError(name)
 
@@ -421,7 +402,6 @@ class Storage:
         self, location: str, upload: upload.Upload, /, **kwargs: Any
     ) -> data.FileData:
         self.validate_upload(upload, **kwargs)
-
         return self.uploader.upload(location, upload, kwargs)
 
     @requires_capability(utils.Capability.MULTIPART)

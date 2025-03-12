@@ -44,7 +44,22 @@ class Uploader(fk.Uploader):
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
-        location = self.storage.compute_location(location, upload, **extras)
+        """Upload file to computed location.
+
+        File is always stored under the configured `path`. If `recursive`
+        uploads allowed, nested directories may be created.
+
+        When an attempt to upload file using an absolute path or path that
+        resolves to parent directory is detected, problematic part is stripped
+        and only valid relative subpath is used.
+        """
+        subpath, basename = os.path.split(location)
+        subpath = os.path.normpath(subpath).lstrip("./")
+
+        if subpath and not self.storage.settings.recursive:
+            raise fk.exc.LocationError(self.storage, subpath)
+
+        location = os.path.join(subpath, basename)
 
         dest = os.path.join(self.storage.settings.path, location)
 
@@ -77,8 +92,7 @@ class Uploader(fk.Uploader):
             data.content_type,
         )
 
-        # validation happens here
-        tmp_result = self.storage.upload(location, upload, **extras)
+        tmp_result = self.upload(location, upload, extras)
 
         data.location = tmp_result.location
         data.storage_data = dict(tmp_result.storage_data, uploaded=0)
@@ -169,7 +183,6 @@ class Manager(fk.Manager):
         extras: dict[str, Any],
     ) -> fk.FileData:
         """Combine multipe file inside the storage into a new one."""
-        location = self.storage.compute_location(location, **extras)
         dest = os.path.join(self.storage.settings.path, location)
         if os.path.exists(dest) and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, dest)
@@ -209,7 +222,6 @@ class Manager(fk.Manager):
         extras: dict[str, Any],
     ) -> fk.FileData:
         """Copy file inside the storage."""
-        location = self.storage.compute_location(location, **extras)
         src = os.path.join(str(self.storage.settings.path), data.location)
         dest = os.path.join(str(self.storage.settings.path), location)
 
@@ -231,7 +243,6 @@ class Manager(fk.Manager):
         extras: dict[str, Any],
     ) -> fk.FileData:
         """Move file to a different location inside the storage."""
-        location = self.storage.compute_location(location, **extras)
         src = os.path.join(str(self.storage.settings.path), data.location)
         dest = os.path.join(str(self.storage.settings.path), location)
 

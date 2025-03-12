@@ -33,38 +33,28 @@ def register_location_strategies(registry: Registry[LocationStrategy]):
     registry.register("datetime_with_extension", datetime_with_extension_strategy)
 
 
-def transparent_strategy(
-    location: str, upload: Upload | None, extras: dict[str, Any]
-) -> str:
+def transparent_strategy(location: str, extras: dict[str, Any]) -> str:
     return location
 
 
-def uuid_strategy(location: str, upload: Upload | None, extras: dict[str, Any]) -> str:
+def uuid_strategy(location: str, extras: dict[str, Any]) -> str:
     return str(uuid.uuid4())
 
 
-def uuid_prefix_strategy(
-    location: str, upload: Upload | None, extras: dict[str, Any]
-) -> str:
+def uuid_prefix_strategy(location: str, extras: dict[str, Any]) -> str:
     return str(uuid.uuid4()) + location
 
 
-def uuid_with_extension_strategy(
-    location: str, upload: Upload | None, extras: dict[str, Any]
-) -> str:
+def uuid_with_extension_strategy(location: str, extras: dict[str, Any]) -> str:
     _path, ext = os.path.splitext(location)
     return str(uuid.uuid4()) + ext
 
 
-def datetime_prefix_strategy(
-    location: str, upload: Upload | None, extras: dict[str, Any]
-) -> str:
+def datetime_prefix_strategy(location: str, extras: dict[str, Any]) -> str:
     return datetime.now(pytz.utc).isoformat() + location
 
 
-def datetime_with_extension_strategy(
-    location: str, upload: Upload | None, extras: dict[str, Any]
-) -> str:
+def datetime_with_extension_strategy(location: str, extras: dict[str, Any]) -> str:
     _path, ext = os.path.splitext(location)
     return datetime.now(pytz.utc).isoformat() + ext
 
