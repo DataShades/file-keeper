@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import hashlib
 import os
-from io import BytesIO
 from pathlib import Path
 from typing import Any
 
@@ -37,34 +36,6 @@ class TestUploader:
         assert storage.supports(fk.Capability.CREATE)
         assert storage.supports(fk.Capability.MULTIPART)
 
-    def test_empty_upload(self, storage: fk.Storage, faker: Faker):
-        """Empty file can be created."""
-        filename = faker.file_name()
-        result = storage.upload(filename, fk.make_upload(b""))
-
-        assert result.size == 0
-
-        filepath = os.path.join(storage.settings.path, result.location)
-        assert os.path.exists(filepath)
-        assert storage.content(result) == b""
-
-    def test_content(self, storage: fk.Storage, faker: Faker):
-        """Content matches the uploaded data"""
-        content = faker.binary(100)
-        result = storage.upload(faker.file_name(), fk.make_upload(BytesIO(content)))
-
-        assert result.size == 100
-        assert storage.content(result) == content
-
-    def test_hash(self, storage: fk.Storage, faker: Faker):
-        """Hash computed using full content."""
-        result = storage.upload(faker.file_name(), fk.make_upload(b""))
-        assert result.hash == hashlib.md5().hexdigest()
-
-        content = faker.binary(100)
-        result = storage.upload(faker.file_name(), fk.make_upload(BytesIO(content)))
-        assert result.hash == hashlib.md5(content).hexdigest()
-
     @pytest.mark.fk_storage_option("recursive", True)
     def test_sub_directory_allowed(self, storage: fk.Storage, faker: Faker):
         """Can upload into nested dirs when `recursive` enabled."""
@@ -91,23 +62,81 @@ class TestUploader:
         result = storage.upload(f"../../{path}", fk.make_upload(b""))
         assert result.location == path
 
+    def test_empty_upload(self, storage: fs.FsStorage, faker: Faker):
+        """Empty file can be created."""
+        filename = faker.file_name()
+        result = storage.upload(filename, fk.make_upload(b""))
+
+        assert result.size == 0
+
+        filepath = os.path.join(storage.settings.path, result.location)
+        assert os.path.exists(filepath)
+        assert storage.content(result) == b""
+
+    def test_content(self, storage: fk.Storage, faker: Faker):
+        """Content matches the uploaded data"""
+        content = faker.binary(100)
+        result = storage.upload(faker.file_name(), fk.make_upload(content))
+
+        assert result.size == 100
+        assert storage.content(result) == content
+
+    def test_hash(self, storage: fk.Storage, faker: Faker):
+        """Hash computed using full content."""
+        result = storage.upload(faker.file_name(), fk.make_upload(b""))
+        assert result.hash == hashlib.md5().hexdigest()
+
+        content = faker.binary(100)
+        result = storage.upload(faker.file_name(), fk.make_upload(content))
+        assert result.hash == hashlib.md5(content).hexdigest()
+
 
 class TestMultipartUploader:
-    def test_initialization_large(self, storage: fk.Storage, faker: Faker):
-        storage.settings.max_size = 5
-        with pytest.raises(fk.exc.LargeUploadError):
-            storage.multipart_start(faker.file_name(), fk.MultipartData(size=10))
-
     def test_initialization(self, storage: fk.Storage, faker: Faker):
-        content = b"hello world"
+        """`multipart_start` creates an empty file."""
+        size = faker.pyint(0, storage.settings.max_size)
+        data = storage.multipart_start(
+            faker.file_name(),
+            fk.MultipartData(size=size),
+        )
+        assert data.size == size
+        assert data.storage_data["uploaded"] == 0
+        assert storage.content(fk.FileData(data.location)) == b""
+
+    def test_refresh(self, faker: Faker, storage: fs.FsStorage):
+        """`multipart_refresh` synchronized filesize."""
+        content = faker.binary(10)
         data = storage.multipart_start(
             faker.file_name(),
             fk.MultipartData(size=len(content)),
         )
-        assert data.size == len(content)
-        assert data.storage_data["uploaded"] == 0
+        with open(os.path.join(storage.settings.path, data.location), "wb") as dest:
+            dest.write(content)
+
+        data = storage.multipart_refresh(data)
+        assert data.storage_data["uploaded"] == len(content)
 
     def test_update(self, storage: fk.Storage, faker: Faker):
+        """`multipart_update` appends parts by default."""
+        size = 100
+        step = size // 10
+
+        content = faker.binary(size)
+        data = storage.multipart_start(
+            faker.file_name(),
+            fk.MultipartData(size=size),
+        )
+
+        for pos in range(0, size, step):
+            data = storage.multipart_update(
+                data,
+                upload=fk.make_upload(content[pos : pos + step]),
+            )
+            assert data.size == size
+            assert data.storage_data["uploaded"] == min(size, pos + step)
+
+    def test_update_with_position(self, storage: fk.Storage, faker: Faker):
+        """`multipart_update` can override existing parts."""
         content = b"hello world"
         data = storage.multipart_start(
             faker.file_name(),
@@ -116,31 +145,32 @@ class TestMultipartUploader:
 
         data = storage.multipart_update(
             data,
-            upload=fk.make_upload(BytesIO(content[:5])),
+            upload=fk.make_upload(content),
         )
-        assert data.size == len(content)
-        assert data.storage_data["uploaded"] == 5
 
         data = storage.multipart_update(
             data,
-            upload=fk.make_upload(BytesIO(content[:5])),
-            position=3,
-        )
-        assert data.size == len(content)
-        assert data.storage_data["uploaded"] == 8
-
-        with pytest.raises(fk.exc.UploadOutOfBoundError):
-            storage.multipart_update(data, upload=fk.make_upload(BytesIO(content)))
-
-        missing_size = data.size - data.storage_data["uploaded"]
-        data = storage.multipart_update(
-            data,
-            upload=fk.make_upload(BytesIO(content[-missing_size:])),
+            upload=fk.make_upload(b"LLO W"),
+            position=2,
         )
         assert data.size == len(content)
         assert data.storage_data["uploaded"] == len(content)
 
+        assert storage.content(fk.FileData(data.location)) == b"heLLO World"
+
+    def test_update_out_of_bound(self, storage: fk.Storage, faker: Faker):
+        """`multipart_update` controls size of the upload."""
+        content = b"hello world"
+        data = storage.multipart_start(
+            faker.file_name(),
+            fk.MultipartData(size=len(content) // 2),
+        )
+
+        with pytest.raises(fk.exc.UploadOutOfBoundError):
+            storage.multipart_update(data, upload=fk.make_upload(content))
+
     def test_complete(self, storage: fk.Storage, faker: Faker):
+        """File parameters validated upon completion."""
         content = b"hello world"
         data = storage.multipart_start(
             faker.file_name(),
@@ -152,33 +182,25 @@ class TestMultipartUploader:
 
         data = storage.multipart_update(
             data,
-            upload=fk.make_upload(BytesIO(content)),
+            upload=fk.make_upload(content),
         )
         data = storage.multipart_complete(data)
         assert data.size == len(content)
         assert data.hash == hashlib.md5(content).hexdigest()
 
-    def test_show(self, storage: fk.Storage, faker: Faker):
-        content = b"hello world"
-
-        data = storage.multipart_start(
-            faker.file_name(),
-            fk.MultipartData(content_type="text/plain", size=len(content)),
-        )
-        assert storage.multipart_refresh(data) == data
-
-        data = storage.multipart_update(
-            data,
-            upload=fk.make_upload(BytesIO(content)),
-        )
-        assert storage.multipart_refresh(data) == data
-
-        storage.multipart_complete(data)
-        assert storage.multipart_refresh(data) == data
-
 
 class TestManager:
-    def test_removal(self, storage: fk.Storage, faker: Faker):
+    def test_capabilities(self, storage: fk.Storage):
+        assert storage.supports(fk.Capability.REMOVE)
+        assert storage.supports(fk.Capability.SCAN)
+        assert storage.supports(fk.Capability.EXISTS)
+        assert storage.supports(fk.Capability.ANALYZE)
+        assert storage.supports(fk.Capability.COPY)
+        assert storage.supports(fk.Capability.MOVE)
+        assert storage.supports(fk.Capability.COMPOSE)
+        assert storage.supports(fk.Capability.APPEND)
+
+    def test_removal(self, storage: fs.FsStorage, faker: Faker):
         result = storage.upload(faker.file_name(), fk.make_upload(b""))
         filepath = os.path.join(storage.settings.path, result.location)
         assert os.path.exists(filepath)
@@ -195,7 +217,7 @@ class TestManager:
 class TestReader:
     def test_stream(self, storage: fk.Storage, faker: Faker):
         data = faker.binary(100)
-        result = storage.upload(faker.file_name(), fk.make_upload(BytesIO(data)))
+        result = storage.upload(faker.file_name(), fk.make_upload(data))
 
         stream = storage.stream(result)
 
@@ -203,7 +225,7 @@ class TestReader:
 
     def test_content(self, storage: fk.Storage, faker: Faker):
         data = faker.binary(100)
-        result = storage.upload(faker.file_name(), fk.make_upload(BytesIO(data)))
+        result = storage.upload(faker.file_name(), fk.make_upload(data))
 
         content = storage.content(result)
 

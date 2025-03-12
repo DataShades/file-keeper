@@ -14,7 +14,6 @@ import magic
 import file_keeper as fk
 
 log = logging.getLogger(__name__)
-CHUNK_SIZE = 16384
 
 
 @dataclasses.dataclass()
@@ -52,8 +51,18 @@ class Uploader(fk.Uploader):
         When an attempt to upload file using an absolute path or path that
         resolves to parent directory is detected, problematic part is stripped
         and only valid relative subpath is used.
+
+        Raises:
+            ExistingFileError: file exists and overrides are not allowed
+            LocationError: unallowed usage of subdirectory
+
+        Returns:
+            New file data
         """
         subpath, basename = os.path.split(location)
+
+        # TODO: consider adding `strict` option and report attempts to create
+        # file outside of the storage location
         subpath = os.path.normpath(subpath).lstrip("./")
 
         if subpath and not self.storage.settings.recursive:
@@ -66,7 +75,11 @@ class Uploader(fk.Uploader):
         if os.path.exists(dest) and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, dest)
 
+        # `recursive` is checked earlier and either subpath is empty(no
+        # directories created on the next line) or `reqursive` is
+        # enabled(creation of intermediate path is allowed)
         os.makedirs(os.path.dirname(dest), exist_ok=True)
+
         reader = fk.HashingReader(upload.stream)
         with open(dest, "wb") as fd:
             for chunk in reader:
@@ -85,6 +98,14 @@ class Uploader(fk.Uploader):
         data: fk.MultipartData,
         extras: dict[str, Any],
     ) -> fk.MultipartData:
+        """Create an empty file using `upload` method.
+
+        Put `uploaded=0` into `data.storage_data` and copy the `location` from
+        the newly created empty file.
+
+        Returns:
+            New file data
+        """
         upload = fk.Upload(
             BytesIO(),
             location,
@@ -103,10 +124,22 @@ class Uploader(fk.Uploader):
         data: fk.MultipartData,
         extras: dict[str, Any],
     ) -> fk.MultipartData:
+        """Synchronize `storage_data["uploaded"]` with actual value.
+
+        Raises:
+            MissingFileError: location does not exist
+
+        Returns:
+            Updated file data
+        """
         filepath = os.path.join(
-            str(self.storage.settings.path),
+            self.storage.settings.path,
             data.location,
         )
+
+        if not os.path.exists(filepath):
+            raise fk.exc.MissingFileError(self.storage, filepath)
+
         data.storage_data["uploaded"] = os.path.getsize(filepath)
 
         return data
@@ -116,20 +149,53 @@ class Uploader(fk.Uploader):
         data: fk.MultipartData,
         extras: dict[str, Any],
     ) -> fk.MultipartData:
+        """Add part to existing multipart upload.
+
+        The content of upload is taken from `extras["upload"]`.
+
+        By default, upload continues from the position specified by
+        `storage_data["uploaded"]`. But if `extras["position"]` is set, it is
+        used as starting point instead.
+
+        In the end, `storage_data["uploaded"]` is set to the actial space taken
+        by the file in the system after the update.
+
+        Raises:
+            UploadOutOfBoundError: part exceeds allocated file size
+            MissingExtrasError: extra parameters are missing
+
+        Returns:
+            Updated file data
+        """
+        # this is the point from which upload continues. It is not used often,
+        # but in specific scenario one can override previously uploaded part
+        # rewinding the `position`.
         extras.setdefault("position", data.storage_data["uploaded"])
+
+        if "upload" not in extras:
+            raise fk.exc.MissingExtrasError("upload")
+
         upload: fk.Upload = extras["upload"]
 
-        expected_size = extras["position"] + upload.size
+        # when re-uploading existing parts via explicit `position`, `uploaded`
+        # can be greater than `position` + part size. For example, existing
+        # content is `hello world` with size 11. One can override the first
+        # word by providing content `HELLO` and position 0, resulting in
+        # `position` + part size equal 5, while existing upload size remains
+        # 11.
+        expected_size = max(
+            extras["position"] + upload.size,
+            data.storage_data["uploaded"],
+        )
+
         if expected_size > data.size:
             raise fk.exc.UploadOutOfBoundError(expected_size, data.size)
 
-        filepath = os.path.join(
-            str(self.storage.settings.path),
-            data.location,
-        )
+        filepath = os.path.join(self.storage.settings.path, data.location)
         with open(filepath, "rb+") as dest:
             dest.seek(extras["position"])
-            dest.write(upload.stream.read())
+            for chunk in upload.stream:
+                dest.write(chunk)
 
         data.storage_data["uploaded"] = os.path.getsize(filepath)
         return data
@@ -139,10 +205,17 @@ class Uploader(fk.Uploader):
         data: fk.MultipartData,
         extras: dict[str, Any],
     ) -> fk.FileData:
-        filepath = os.path.join(
-            str(self.storage.settings.path),
-            data.location,
-        )
+        """Finalize the upload.
+
+        Raises:
+            UploadSizeMismatchError: actual and expected sizes are different
+            UploadTypeMismatchError: actual and expected content types are different
+            UploadHashMismatchError: actual and expected content hashes are different
+
+        Returns:
+            File data
+        """
+        filepath = os.path.join(self.storage.settings.path, data.location)
         size = os.path.getsize(filepath)
         if size != data.size:
             raise fk.exc.UploadSizeMismatchError(size, data.size)
@@ -182,14 +255,19 @@ class Manager(fk.Manager):
         location: str,
         extras: dict[str, Any],
     ) -> fk.FileData:
-        """Combine multipe file inside the storage into a new one."""
+        """Combine multipe file inside the storage into a new one.
+
+        Raises:
+            ExistingFileError: file exists and overrides are not allowed
+            MissingFileError: source file does not exist
+        """
         dest = os.path.join(self.storage.settings.path, location)
         if os.path.exists(dest) and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, dest)
 
         sources: list[str] = []
         for data in datas:
-            src = os.path.join(str(self.storage.settings.path), data.location)
+            src = os.path.join(self.storage.settings.path, data.location)
 
             if not os.path.exists(src):
                 raise fk.exc.MissingFileError(self.storage, src)
@@ -209,7 +287,7 @@ class Manager(fk.Manager):
         extras: dict[str, Any],
     ) -> fk.FileData:
         """Append content to existing file."""
-        dest = os.path.join(str(self.storage.settings.path), data.location)
+        dest = os.path.join(self.storage.settings.path, data.location)
         with open(dest, "ab") as fd:
             fd.write(upload.stream.read())
 
@@ -221,9 +299,14 @@ class Manager(fk.Manager):
         location: str,
         extras: dict[str, Any],
     ) -> fk.FileData:
-        """Copy file inside the storage."""
-        src = os.path.join(str(self.storage.settings.path), data.location)
-        dest = os.path.join(str(self.storage.settings.path), location)
+        """Copy file inside the storage.
+
+        Raises:
+            ExistingFileError: file exists and overrides are not allowed
+            MissingFileError: source file does not exist
+        """
+        src = os.path.join(self.storage.settings.path, data.location)
+        dest = os.path.join(self.storage.settings.path, location)
 
         if not os.path.exists(src):
             raise fk.exc.MissingFileError(self.storage, src)
@@ -242,9 +325,14 @@ class Manager(fk.Manager):
         location: str,
         extras: dict[str, Any],
     ) -> fk.FileData:
-        """Move file to a different location inside the storage."""
-        src = os.path.join(str(self.storage.settings.path), data.location)
-        dest = os.path.join(str(self.storage.settings.path), location)
+        """Move file to a different location inside the storage.
+
+        Raises:
+            ExistingFileError: file exists and overrides are not allowed
+            MissingFileError: source file does not exist
+        """
+        src = os.path.join(self.storage.settings.path, data.location)
+        dest = os.path.join(self.storage.settings.path, location)
 
         if not os.path.exists(src):
             raise fk.exc.MissingFileError(self.storage, src)
@@ -261,13 +349,13 @@ class Manager(fk.Manager):
         return new_data
 
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        filepath = os.path.join(str(self.storage.settings.path), data.location)
+        filepath = os.path.join(self.storage.settings.path, data.location)
         return os.path.exists(filepath)
 
     def remove(
         self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]
     ) -> bool:
-        filepath = os.path.join(str(self.storage.settings.path), data.location)
+        filepath = os.path.join(self.storage.settings.path, data.location)
         if not os.path.exists(filepath):
             return False
 
@@ -287,8 +375,12 @@ class Manager(fk.Manager):
             yield os.path.relpath(entry, path)
 
     def analyze(self, location: str, extras: dict[str, Any]) -> fk.FileData:
-        """Return all details about location."""
-        filepath = os.path.join(str(self.storage.settings.path), location)
+        """Return all details about location.
+
+        Raises:
+            MissingFileError: file does not exist
+        """
+        filepath = os.path.join(self.storage.settings.path, location)
         if not os.path.exists(filepath):
             raise fk.exc.MissingFileError(self.storage, filepath)
 
@@ -310,7 +402,12 @@ class Reader(fk.Reader):
     capabilities = fk.Capability.STREAM | fk.Capability.TEMPORAL_LINK
 
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> IO[bytes]:
-        filepath = os.path.join(str(self.storage.settings.path), data.location)
+        """...
+
+        Raises:
+            MissingFileError: file does not exist
+        """
+        filepath = os.path.join(self.storage.settings.path, data.location)
         if not os.path.exists(filepath):
             raise fk.exc.MissingFileError(self.storage, filepath)
 
@@ -320,7 +417,7 @@ class Reader(fk.Reader):
 class FsStorage(fk.Storage):
     """Store files in local filesystem."""
 
-    settings: Settings
+    settings: Settings  # type: ignore
 
     SettingsFactory = Settings
     UploaderFactory = Uploader
@@ -329,6 +426,11 @@ class FsStorage(fk.Storage):
 
     @classmethod
     def configure(cls, settings: dict[str, Any]):
+        """...
+
+        Raises:
+            InvalidStorageConfigurationError: incorrect configuration value
+        """
         cfg: Settings = super().configure(settings)
 
         path = cfg.path

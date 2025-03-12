@@ -15,7 +15,7 @@ import dataclasses
 import itertools
 import logging
 from io import BytesIO
-from typing import Any, ClassVar, Iterable, cast, Callable
+from typing import Any, Callable, ClassVar, Iterable, cast
 
 from typing_extensions import Concatenate, ParamSpec, TypeAlias, TypeVar
 
@@ -314,6 +314,7 @@ class Storage:
     # services inside constructor.
     capabilities = utils.Capability.NONE
 
+    settings: Settings
     SettingsFactory: type[Settings] = Settings
 
     UploaderFactory: Callable[[Storage], Uploader] = Uploader

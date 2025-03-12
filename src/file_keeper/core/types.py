@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-
-from typing import Any, Protocol, Iterator
+from typing import Any, Iterator, Protocol
 
 
 class PStream(Protocol):

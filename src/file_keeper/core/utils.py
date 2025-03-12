@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import enum
 import hashlib
+import io
 import itertools
 import logging
 import re
@@ -20,7 +21,7 @@ from . import types
 log = logging.getLogger(__name__)
 
 RE_FILESIZE = re.compile(r"^(?P<size>\d+(?:\.\d+)?)\s*(?P<unit>\w*)$")
-CHUNK_SIZE = 16 * 1024
+CHUNK_SIZE = io.DEFAULT_BUFFER_SIZE
 SAMPLE_SIZE = 1024 * 2
 BINARY_BASE = 1024
 SI_BASE = 1000
