@@ -160,8 +160,8 @@ class Manager(StorageService):
 
     def compose(
         self,
-        datas: Iterable[data.FileData],
         location: str,
+        datas: Iterable[data.FileData],
         extras: dict[str, Any],
     ) -> data.FileData:
         """Combine multipe file inside the storage into a new one."""
@@ -178,8 +178,8 @@ class Manager(StorageService):
 
     def copy(
         self,
-        data: data.FileData,
         location: str,
+        data: data.FileData,
         extras: dict[str, Any],
     ) -> data.FileData:
         """Copy file inside the storage."""
@@ -187,8 +187,8 @@ class Manager(StorageService):
 
     def move(
         self,
-        data: data.FileData,
         location: str,
+        data: data.FileData,
         extras: dict[str, Any],
     ) -> data.FileData:
         """Move file to a different location inside the storage."""
@@ -271,6 +271,31 @@ class Reader(StorageService):
         raise NotImplementedError
 
 
+class Validator(StorageService):
+    """Service responsible for validation of data and uploads."""
+
+    def size(self, size: int):
+        max_size = self.storage.settings.max_size
+        if max_size and size > max_size:
+            raise exceptions.LargeUploadError(size, max_size)
+
+    def content_type(self, content_type: str):
+        supported_types = self.storage.settings.supported_types
+        if supported_types and not utils.is_supported_type(
+            content_type,
+            supported_types,
+        ):
+            raise exceptions.WrongUploadTypeError(content_type)
+
+    def upload(self, upload: upload.Upload, /, **kwargs: Any):
+        self.size(upload.size)
+        self.content_type(upload.content_type)
+
+    def data(self, data: data.BaseData, /, **kwargs: Any):
+        self.size(data.size)
+        self.content_type(data.content_type)
+
+
 @dataclasses.dataclass()
 class Settings:
     name: str = "unknown"
@@ -320,6 +345,7 @@ class Storage:
     UploaderFactory: Callable[[Storage], Uploader] = Uploader
     ManagerFactory: Callable[[Storage], Manager] = Manager
     ReaderFactory: Callable[[Storage], Reader] = Reader
+    ValidatorFactory: Callable[[Storage], Validator] = Validator
 
     def __str__(self):
         return self.settings.name
@@ -329,7 +355,12 @@ class Storage:
         self.uploader = self.make_uploader()
         self.manager = self.make_manager()
         self.reader = self.make_reader()
+        self.validator = self.make_validator()
+
         self.capabilities = self.compute_capabilities()
+
+    def make_validator(self):
+        return self.ValidatorFactory(self)
 
     def make_uploader(self):
         return self.UploaderFactory(self)
@@ -379,30 +410,11 @@ class Storage:
 
         raise exceptions.LocationStrategyError(name)
 
-    def _validate_size(self, size: int):
-        if self.settings.max_size and size > self.settings.max_size:
-            raise exceptions.LargeUploadError(size, self.settings.max_size)
-
-    def _validate_type(self, content_type: str):
-        if self.settings.supported_types and not utils.is_supported_type(
-            content_type,
-            self.settings.supported_types,
-        ):
-            raise exceptions.WrongUploadTypeError(content_type)
-
-    def validate_upload(self, upload: upload.Upload, /, **kwargs: Any):
-        self._validate_size(upload.size)
-        self._validate_type(upload.content_type)
-
-    def validate_data(self, data: data.BaseData, /, **kwargs: Any):
-        self._validate_size(data.size)
-        self._validate_type(data.content_type)
-
     @requires_capability(utils.Capability.CREATE)
     def upload(
         self, location: str, upload: upload.Upload, /, **kwargs: Any
     ) -> data.FileData:
-        self.validate_upload(upload, **kwargs)
+        self.validator.upload(upload, **kwargs)
         return self.uploader.upload(location, upload, kwargs)
 
     @requires_capability(utils.Capability.MULTIPART)
@@ -413,7 +425,7 @@ class Storage:
         /,
         **kwargs: Any,
     ) -> data.MultipartData:
-        self.validate_data(data, **kwargs)
+        self.validator.data(data, **kwargs)
         return self.uploader.multipart_start(location, data, kwargs)
 
     @requires_capability(utils.Capability.MULTIPART)
@@ -474,14 +486,14 @@ class Storage:
 
     def copy(
         self,
+        location: str,
         data: data.FileData,
         dest_storage: Storage,
-        location: str,
         /,
         **kwargs: Any,
     ) -> data.FileData:
         if dest_storage is self and self.supports(utils.Capability.COPY):
-            return self.manager.copy(data, location, kwargs)
+            return self.manager.copy(location, data, kwargs)
 
         if self.supports(utils.Capability.STREAM) and dest_storage.supports(
             utils.Capability.CREATE,
@@ -496,14 +508,14 @@ class Storage:
 
     def compose(
         self,
-        dest_storage: Storage,
         location: str,
+        dest_storage: Storage,
         /,
         *files: data.FileData,
         **kwargs: Any,
     ) -> data.FileData:
         if dest_storage is self and self.supports(utils.Capability.COMPOSE):
-            return self.manager.compose(files, location, kwargs)
+            return self.manager.compose(location, files, kwargs)
 
         if self.supports(utils.Capability.STREAM) and dest_storage.supports(
             utils.Capability.CREATE | utils.Capability.APPEND,
@@ -546,14 +558,14 @@ class Storage:
 
     def move(
         self,
+        location: str,
         data: data.FileData,
         dest_storage: Storage,
-        location: str,
         /,
         **kwargs: Any,
     ) -> data.FileData:
         if dest_storage is self and self.supports(utils.Capability.MOVE):
-            return self.manager.move(data, location, kwargs)
+            return self.manager.move(location, data, kwargs)
 
         if self.supports(
             utils.Capability.STREAM | utils.Capability.REMOVE,

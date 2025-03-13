@@ -122,16 +122,16 @@ class TestStorage:
 
         with pytest.raises(exc.UnsupportedOperationError):
             Storage({}).copy(
+                "",
                 FileData(""),
                 Storage({}),
-                "",
             )
 
         with pytest.raises(exc.UnsupportedOperationError):
             Storage({}).move(
+                "",
                 FileData(""),
                 Storage({}),
-                "",
             )
 
     def test_upload_checks_max_size(self, faker: Faker):
@@ -150,10 +150,10 @@ class TestStorage:
             storage.remove(FileData(""))
 
         with pytest.raises(NotImplementedError):
-            storage.copy(FileData(""), storage, "")
+            storage.copy("", FileData(""), storage)
 
         with pytest.raises(NotImplementedError):
-            storage.move(FileData(""), storage, "")
+            storage.move("", FileData(""), storage)
 
     def test_prepare_location_uuid(self, faker: Faker):
         """`uuid`(default) name strategy produces valid UUID."""

@@ -236,6 +236,26 @@ class Uploader(fk.Uploader):
         return fk.FileData(data.location, size, content_type, reader.get_hash())
 
 
+class Reader(fk.Reader):
+    storage: FsStorage
+    capabilities = fk.Capability.STREAM
+
+    def stream(self, data: fk.FileData, extras: dict[str, Any]) -> IO[bytes]:
+        """Return file open in binary-read mode.
+
+        Raises:
+            MissingFileError: file does not exist
+
+        Returns:
+            File content iterator
+        """
+        filepath = os.path.join(self.storage.settings.path, data.location)
+        if not os.path.exists(filepath):
+            raise fk.exc.MissingFileError(self.storage, filepath)
+
+        return open(filepath, "rb")  # noqa: SIM115
+
+
 class Manager(fk.Manager):
     storage: FsStorage
     capabilities = (
@@ -251,15 +271,20 @@ class Manager(fk.Manager):
 
     def compose(
         self,
-        datas: Iterable[fk.FileData],
         location: str,
+        datas: Iterable[fk.FileData],
         extras: dict[str, Any],
     ) -> fk.FileData:
         """Combine multipe file inside the storage into a new one.
 
+        If final content type is not supported by the storage, the file is
+        removed.
+
         Raises:
             ExistingFileError: file exists and overrides are not allowed
             MissingFileError: source file does not exist
+            LargeUploadError: composed result too big
+            WrongUploadTypeError: composed type is not supported
         """
         dest = os.path.join(self.storage.settings.path, location)
         if os.path.exists(dest) and not self.storage.settings.override_existing:
@@ -271,14 +296,28 @@ class Manager(fk.Manager):
 
             if not os.path.exists(src):
                 raise fk.exc.MissingFileError(self.storage, src)
+
             sources.append(src)
+
+        # validate expected size here to cause an early exit when immense file
+        # is composed. Type is not validated here because final type can be
+        # different from types of sources.
+        self.storage.validator.size(sum(d.size for d in datas))
 
         with open(dest, "wb") as to_fd:
             for src in sources:
                 with open(src, "rb") as from_fd:
                     shutil.copyfileobj(from_fd, to_fd)
 
-        return self.analyze(dest, extras)
+        result = self.analyze(location, extras)
+
+        try:
+            self.storage.validator.data(result)
+        except fk.exc.UploadError:
+            self.remove(result, extras)
+            raise
+
+        return result
 
     def append(
         self,
@@ -286,17 +325,35 @@ class Manager(fk.Manager):
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
-        """Append content to existing file."""
+        """Append content to existing file.
+
+        If final content type is not supported by the storage, original file is
+        removed.
+
+        Raises:
+            LargeUploadError: result too big
+            WrongUploadTypeError: final type is not supported
+        """
+        self.storage.validator.size(data.size + upload.size)
+
         dest = os.path.join(self.storage.settings.path, data.location)
         with open(dest, "ab") as fd:
             fd.write(upload.stream.read())
 
-        return self.analyze(dest, extras)
+        result = self.analyze(dest, extras)
+
+        try:
+            self.storage.validator.data(result)
+        except fk.exc.UploadError:
+            self.remove(result, extras)
+            raise
+
+        return result
 
     def copy(
         self,
-        data: fk.FileData,
         location: str,
+        data: fk.FileData,
         extras: dict[str, Any],
     ) -> fk.FileData:
         """Copy file inside the storage.
@@ -321,8 +378,8 @@ class Manager(fk.Manager):
 
     def move(
         self,
-        data: fk.FileData,
         location: str,
+        data: fk.FileData,
         extras: dict[str, Any],
     ) -> fk.FileData:
         """Move file to a different location inside the storage.
@@ -349,12 +406,14 @@ class Manager(fk.Manager):
         return new_data
 
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        """Check if file exists."""
         filepath = os.path.join(self.storage.settings.path, data.location)
         return os.path.exists(filepath)
 
     def remove(
         self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]
     ) -> bool:
+        """Remove the file."""
         filepath = os.path.join(self.storage.settings.path, data.location)
         if not os.path.exists(filepath):
             return False
@@ -363,6 +422,7 @@ class Manager(fk.Manager):
         return True
 
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
+        """Discover filenames under storage path."""
         path = self.storage.settings.path
         search_path = os.path.join(path, "**")
 
@@ -397,23 +457,6 @@ class Manager(fk.Manager):
         )
 
 
-class Reader(fk.Reader):
-    storage: FsStorage
-    capabilities = fk.Capability.STREAM | fk.Capability.TEMPORAL_LINK
-
-    def stream(self, data: fk.FileData, extras: dict[str, Any]) -> IO[bytes]:
-        """...
-
-        Raises:
-            MissingFileError: file does not exist
-        """
-        filepath = os.path.join(self.storage.settings.path, data.location)
-        if not os.path.exists(filepath):
-            raise fk.exc.MissingFileError(self.storage, filepath)
-
-        return open(filepath, "rb")  # noqa: SIM115
-
-
 class FsStorage(fk.Storage):
     """Store files in local filesystem."""
 
@@ -426,7 +469,7 @@ class FsStorage(fk.Storage):
 
     @classmethod
     def configure(cls, settings: dict[str, Any]):
-        """...
+        """Verify and prepare FS settings.
 
         Raises:
             InvalidStorageConfigurationError: incorrect configuration value

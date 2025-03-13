@@ -15,6 +15,12 @@ plugin.add_hookspecs(spec)
 
 def setup():
     plugin.load_setuptools_entrypoints(spec.name)
+
+    for name in os.getenv("FILE_KEEPER_DISABLED_EXTENSIONS", "").split():
+        undesired = plugin.get_plugin(name)
+        if plugin.is_registered(undesired):
+            plugin.unregister(undesired)
+
     plugin.hook.register_location_strategies(registry=storage.location_strategies)
     plugin.hook.register_upload_factories(registry=upload.upload_factories)
     plugin.hook.register_adapters(registry=storage.adapters)

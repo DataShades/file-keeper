@@ -21,8 +21,6 @@ class Registry(Generic[V, K]):
     >>> assert col.get("one") is None
     """
 
-    __slots__ = ("members", "collector")
-
     def __init__(
         self,
         members: dict[K, V] | None = None,
