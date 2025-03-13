@@ -163,10 +163,19 @@ class Uploader(fk.Uploader):
         Raises:
             UploadOutOfBoundError: part exceeds allocated file size
             MissingExtrasError: extra parameters are missing
+            MissingFileError: file is missing
 
         Returns:
             Updated file data
         """
+        filepath = os.path.join(self.storage.settings.path, data.location)
+
+        if not os.path.exists(filepath):
+            raise fk.exc.MissingFileError(self.storage, filepath)
+
+        if "uploaded" not in data.storage_data:
+            data.storage_data["uploaded"] = os.path.getsize(filepath)
+
         # this is the point from which upload continues. It is not used often,
         # but in specific scenario one can override previously uploaded part
         # rewinding the `position`.
@@ -304,6 +313,7 @@ class Manager(fk.Manager):
         # different from types of sources.
         self.storage.validator.size(sum(d.size for d in datas))
 
+        # TODO: compute final type in advance to reduce amount of work
         with open(dest, "wb") as to_fd:
             for src in sources:
                 with open(src, "rb") as from_fd:
@@ -342,6 +352,7 @@ class Manager(fk.Manager):
 
         result = self.analyze(dest, extras)
 
+        # TODO: compute final type in advance to prevent loosing original file
         try:
             self.storage.validator.data(result)
         except fk.exc.UploadError:

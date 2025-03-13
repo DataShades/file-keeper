@@ -154,6 +154,31 @@ class TestMultipartUploader:
             assert data.size == size
             assert data.storage_data["uploaded"] == min(size, pos + step)
 
+    def test_update_wihtout_uploaded(self, storage: fk.Storage, faker: Faker):
+        """`multipart_update` appends parts by default."""
+        size = 100
+        step = size // 10
+
+        content = faker.binary(size)
+        data = storage.multipart_start(
+            faker.file_name(),
+            fk.MultipartData(size=size),
+        )
+
+        for pos in range(0, size, step):
+            data = storage.multipart_update(
+                data,
+                upload=fk.make_upload(content[pos : pos + step]),
+            )
+            assert data.size == size
+            assert data.storage_data.pop("uploaded") == min(size, pos + step)
+
+    def test_update_missing(self, storage: fk.Storage, faker: Faker):
+        with pytest.raises(fk.exc.MissingFileError):
+            storage.multipart_update(
+                fk.MultipartData(faker.file_path()), upload=fk.make_upload(b"")
+            )
+
     def test_update_without_upload_field(self, storage: fk.Storage, faker: Faker):
         data = storage.multipart_start(faker.file_name(), fk.MultipartData(size=10))
 
