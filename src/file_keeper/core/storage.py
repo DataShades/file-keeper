@@ -238,17 +238,8 @@ class Reader(StorageService):
         end: int | None,
         extras: dict[str, Any],
     ) -> Iterable[bytes]:
-        """Return byte-stream of the file content."""
-        ints = itertools.chain.from_iterable(self.stream(data, extras))
-
-        if end and end < 0:
-            end += data.size
-
-        if start < 0:
-            start += data.size
-
-        fragment = bytes(itertools.islice(ints, start, end))
-        return BytesIO(fragment)
+        """Return slice of the file content."""
+        raise NotImplementedError
 
     def permanent_link(self, data: data.FileData, extras: dict[str, Any]) -> str:
         """Return permanent download link."""

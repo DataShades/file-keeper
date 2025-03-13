@@ -8,7 +8,7 @@ version = {attr = "file_keeper.__version__"}
 [project]
 name = "file-keeper"
 dynamic = ["version"]
-description = ""
+description = "Abstraction level for object storages."
 classifiers = [
             "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
 ]
