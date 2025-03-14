@@ -45,12 +45,13 @@ class Uploader(fk.Uploader):
     ) -> fk.FileData:
         """Upload file to computed location.
 
-        File is always stored under the configured `path`. If `recursive`
-        uploads allowed, nested directories may be created.
-
-        When an attempt to upload file using an absolute path or path that
-        resolves to parent directory is detected, problematic part is stripped
-        and only valid relative subpath is used.
+        File location is relative the configured `path`. When recursive is
+        disabled, location can include only filename. If `recursive` uploads
+        allowed, location can be prepended with an intermediate path. This path
+        is not sanitized and can lead outside the configured `path` of the
+        storage. Consider using combination of `storage.prepare_location` with
+        `settings.location_strategy` that sanitizes the path, like
+        `safe_relative_path`.
 
         Raises:
             ExistingFileError: file exists and overrides are not allowed
@@ -58,17 +59,12 @@ class Uploader(fk.Uploader):
 
         Returns:
             New file data
-        """
-        subpath, basename = os.path.split(location)
 
-        # TODO: consider adding `strict` option and report attempts to create
-        # file outside of the storage location
-        subpath = os.path.normpath(subpath).lstrip("./")
+        """
+        subpath = os.path.split(location)[0]
 
         if subpath and not self.storage.settings.recursive:
             raise fk.exc.LocationError(self.storage, subpath)
-
-        location = os.path.join(subpath, basename)
 
         dest = os.path.join(self.storage.settings.path, location)
 
@@ -470,7 +466,7 @@ class Manager(fk.Manager):
 
         return fk.FileData(
             location,
-            size=os.path.getsize(filepath),
+            size=reader.position,
             content_type=content_type,
             hash=reader.get_hash(),
         )

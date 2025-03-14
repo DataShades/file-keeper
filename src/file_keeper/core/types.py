@@ -3,9 +3,10 @@ from __future__ import annotations
 from typing import Any, Iterator, Protocol
 
 
-class PStream(Protocol):
+class PReadable(Protocol):
     def read(self, size: Any = ..., /) -> bytes: ...
 
+class PStream(PReadable, Protocol):
     def __iter__(self) -> Iterator[bytes]: ...
 
 

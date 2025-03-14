@@ -18,15 +18,13 @@ REDIS_URL = "redis://localhost:6379"
 
 
 @pytest.fixture()
-def storage(tmp_path: Path, request: pytest.FixtureRequest):
+def storage(tmp_path: Path, storage_settings: dict[str, Any]):
     settings = {
         "name": "test",
         "path": str(tmp_path),
         "redis_url": f"{REDIS_URL}/1",
     }
-    marks: Any = request.node.iter_markers("fk_storage_option")
-    for mark in marks:
-        settings[mark.args[0]] = mark.args[1]
+    settings.update(storage_settings)
 
     storage = Storage(settings)
     yield storage

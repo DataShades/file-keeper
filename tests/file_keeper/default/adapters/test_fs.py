@@ -17,11 +17,9 @@ Storage = fs.FsStorage
 
 
 @pytest.fixture()
-def storage(tmp_path: Path, request: pytest.FixtureRequest):
+def storage(tmp_path: Path, storage_settings: dict[str, Any]):
     settings = {"name": "test", "path": str(tmp_path)}
-    marks: Any = request.node.iter_markers("fk_storage_option")
-    for mark in marks:
-        settings[mark.args[0]] = mark.args[1]
+    settings.update(storage_settings)
 
     return Storage(settings)
 
@@ -35,32 +33,8 @@ class TestSettings:
         Settings(path="test")
 
 
-class TestUploaderUpload(standard.Uploader):
-    @pytest.mark.fk_storage_option("recursive", True)
-    def test_sub_directory_allowed(self, storage: fk.Storage, faker: Faker):
-        """Can upload into nested dirs when `recursive` enabled."""
-        path = faker.file_path(absolute=False)
-        result = storage.upload(path, fk.make_upload(b""))
-        assert result.location == path
-
-    def test_sub_directory_not_allowed(self, storage: fk.Storage, faker: Faker):
-        """Cannot upload into nested dirs by default."""
-        with pytest.raises(fk.exc.LocationError):
-            storage.upload(faker.file_path(absolute=False), fk.make_upload(b""))
-
-    @pytest.mark.fk_storage_option("recursive", True)
-    def test_absolute_sub_path_sanitized(self, storage: fk.Storage, faker: Faker):
-        """Cannot upload to absolute path."""
-        path = faker.file_path(absolute=True)
-        result = storage.upload(path, fk.make_upload(b""))
-        assert result.location == path.lstrip("/")
-
-    @pytest.mark.fk_storage_option("recursive", True)
-    def test_parent_sub_path_sanitized(self, storage: fk.Storage, faker: Faker):
-        """Cannot upload to parent dir."""
-        path = faker.file_path(absolute=False)
-        result = storage.upload(f"../../{path}", fk.make_upload(b""))
-        assert result.location == path
+class TestUploaderUpload(standard.Uploader, standard.UploaderRecursive):
+    pass
 
 
 class TestUploaderMultipart(standard.Multiparter, standard.MultiparterWithUploaded):

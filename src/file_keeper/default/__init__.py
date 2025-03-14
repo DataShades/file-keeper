@@ -26,6 +26,7 @@ SAMPLE_SIZE = 1024 * 2
 @ext.hookimpl
 def register_location_strategies(registry: Registry[LocationStrategy]):
     registry.register("transparent", transparent_strategy)
+    registry.register("safe_relative_path", safe_relative_path_strategy)
     registry.register("uuid", uuid_strategy)
     registry.register("uuid_prefix", uuid_prefix_strategy)
     registry.register("uuid_with_extension", uuid_with_extension_strategy)
@@ -35,6 +36,10 @@ def register_location_strategies(registry: Registry[LocationStrategy]):
 
 def transparent_strategy(location: str, extras: dict[str, Any]) -> str:
     return location
+
+
+def safe_relative_path_strategy(location: str, extras: dict[str, Any]) -> str:
+    return os.path.normpath(location).lstrip("./")
 
 
 def uuid_strategy(location: str, extras: dict[str, Any]) -> str:
@@ -134,3 +139,15 @@ def register_adapters(registry: Registry[type[Storage]]):
 
     if adapters.RedisStorage:
         registry.register("file_keeper:redis", adapters.RedisStorage)
+
+    if adapters.OpenDalStorage:
+        registry.register("file_keeper:opendal", adapters.OpenDalStorage)
+
+    if adapters.LibCloudStorage:
+        registry.register("file_keeper:libcloud", adapters.LibCloudStorage)
+
+    if adapters.GcsStorage:
+        registry.register("file_keeper:gcs", adapters.GcsStorage)
+
+    if adapters.S3Storage:
+        registry.register("file_keeper:s3", adapters.S3Storage)

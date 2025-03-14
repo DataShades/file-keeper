@@ -8,15 +8,20 @@ are stored here, to avoid import cycles.
 
 from __future__ import annotations
 
+import abc
 import enum
 import hashlib
 import io
 import itertools
 import logging
 import re
-from typing import Iterable, Iterator
+from typing import Generic, Iterable, Iterator
+
+from typing_extensions import TypeVar
 
 from . import types
+
+T = TypeVar("T")
 
 log = logging.getLogger(__name__)
 
@@ -249,14 +254,22 @@ def humanize_filesize(value: int | float, base: int = SI_BASE) -> str:
     return f"{value:{num_format}}{suffixes[iteration]}"
 
 
-class IterableBytesReader:
-    def __init__(self, source: Iterable[bytes], chunk_size: int = CHUNK_SIZE):
-        self.source = itertools.chain.from_iterable(source)
+class IterableReader(Generic[T], abc.ABC):
+    def __init__(self, source: T, chunk_size: int = CHUNK_SIZE):
+        self.source = source
         self.chunk_size = chunk_size
 
     def __iter__(self):
-        while chunk := itertools.islice(self.source, 0, self.chunk_size):
-            yield bytes(chunk)
+        while chunk := self.read(self.chunk_size):
+            yield chunk
+
+    @abc.abstractmethod
+    def read(self, size: int | None = None) -> bytes: ...
+
+
+class IterableBytesReader(IterableReader[Iterable[int]]):
+    def __init__(self, source: Iterable[bytes], chunk_size: int = CHUNK_SIZE):
+        super().__init__(itertools.chain.from_iterable(source), chunk_size)
 
     def read(self, size: int | None = None):
         return bytes(itertools.islice(self.source, 0, size))
