@@ -3,41 +3,74 @@ from __future__ import annotations
 import copy
 import dataclasses
 from io import BytesIO
-from typing import IO, Any, Iterable, cast
+from typing import IO, Any, ClassVar, Iterable, cast
 
 import file_keeper as fk
 import magic
 import redis
-from redis import ResponseError
 
-import ckan.plugins.toolkit as tk
-from ckan.config.declaration import Declaration, Key
-from ckan.lib.redis import connect_to_redis
+pools = fk.Registry[redis.ConnectionPool]()
 
 
-class RedisUploader(Uploader):
+@dataclasses.dataclass
+class Settings(fk.Settings):
+    """Settings for Redis storage.
+
+    Args:
+        redis: existing redis connection
+        redis_url: URL of the redis DB. Used only if `redis` is empty
+    """
+
+    path: str = ""
+    redis: redis.Redis[bytes] = None  # type: ignore
+
+    redis_url: dataclasses.InitVar[str] = ""
+
+    _required_options: ClassVar[list[str]] = ["path"]
+
+    def __post_init__(self, redis_url: str, **kwargs: Any):
+        if not self.redis:
+            if redis_url not in pools:
+                pools.register(
+                    redis_url,
+                    redis.ConnectionPool.from_url(redis_url)
+                    if redis_url
+                    else redis.ConnectionPool(),
+                )
+
+            self.redis = redis.Redis(connection_pool=pools[redis_url])
+
+
+class Uploader(fk.Uploader):
     storage: RedisStorage
-
-    capabilities = Capability.CREATE | Capability.MULTIPART
+    capabilities = fk.Capability.CREATE | fk.Capability.MULTIPART
 
     def upload(
         self,
         location: str,
-        upload: Upload,
+        upload: fk.Upload,
         extras: dict[str, Any],
-    ) -> FileData:
-        safe_location = self.storage.compute_location(location, upload, **extras)
-        key = self.storage.settings.prefix + safe_location
+    ) -> fk.FileData:
+        """Upload file to into location within storage path.
 
-        self.storage.redis.delete(key)
+        Raises:
+            ExistingFileError: file exists and overrides are not allowed
 
-        reader = HashingReader(upload.stream)
-        self.storage.redis.set(key, b"")
-        for chunk in reader:
-            self.storage.redis.append(key, chunk)
+        Returns:
+            New file data
+        """
+        cfg = self.storage.settings
 
-        return FileData(
-            safe_location,
+        if not cfg.override_existing and cfg.redis.hexists(cfg.path, location):
+            raise fk.exc.ExistingFileError(self.storage, location)
+
+        reader = fk.HashingReader(upload.stream)
+
+        content: Any = reader.read()
+        cfg.redis.hset(cfg.path, location, content)
+
+        return fk.FileData(
+            location,
             reader.position,
             upload.content_type,
             reader.get_hash(),
@@ -46,233 +79,282 @@ class RedisUploader(Uploader):
     def multipart_start(
         self,
         location: str,
-        data: MultipartData,
+        data: fk.MultipartData,
         extras: dict[str, Any],
-    ) -> MultipartData:
-        """Prepare everything for multipart(resumable) upload."""
-        safe_location = self.storage.compute_location(location)
-        key = self.storage.settings.prefix + safe_location
-        self.storage.redis.set(key, b"")
-        data.location = safe_location
-        data.storage_data["uploaded"] = 0
+    ) -> fk.MultipartData:
+        """Create an empty file using `upload` method.
+
+        Put `uploaded=0` into `data.storage_data` and copy the `location` from
+        the newly created empty file.
+
+        Returns:
+            New file data
+        """
+        upload = fk.Upload(
+            BytesIO(),
+            location,
+            data.size,
+            data.content_type,
+        )
+        tmp_result = self.upload(location, upload, extras)
+
+        data.location = tmp_result.location
+        data.storage_data = dict(tmp_result.storage_data, uploaded=0)
         return data
 
     def multipart_refresh(
         self,
-        data: MultipartData,
+        data: fk.MultipartData,
         extras: dict[str, Any],
-    ) -> MultipartData:
-        """Show details of the incomplete upload."""
+    ) -> fk.MultipartData:
+        """Synchronize `storage_data["uploaded"]` with actual value.
+
+        Raises:
+            MissingFileError: location does not exist
+
+        Returns:
+            Updated file data
+        """
+        cfg = self.storage.settings
+
+        if not cfg.redis.hexists(cfg.path, data.location):
+            raise fk.exc.MissingFileError(self.storage, data.location)
+
+        data.storage_data["uploaded"] = cfg.redis.hstrlen(cfg.path, data.location)
+
         return data
 
     def multipart_update(
         self,
-        data: MultipartData,
+        data: fk.MultipartData,
         extras: dict[str, Any],
-    ) -> MultipartData:
-        """Add data to the incomplete upload."""
-        data = copy.deepcopy(data)
-        schema = {
-            "upload": [
-                tk.get_validator("not_missing"),
-                tk.get_validator("files_into_upload"),
-            ],
-            "__extras": [tk.get_validator("ignore")],
-        }
-        valid_extras, errors = tk.navl_validate(extras, schema)
+    ) -> fk.MultipartData:
+        """Add part to existing multipart upload.
 
-        if errors:
-            raise tk.ValidationError(errors)
+        The content of upload is taken from `extras["upload"]`.
 
-        key = self.storage.settings.prefix + data.location
-        size = cast(int, self.storage.redis.strlen(key))
+        In the end, `storage_data["uploaded"]` is set to the actial space taken
+        by the storage in the system after the update.
 
-        upload: Upload = valid_extras["upload"]
+        Raises:
+            MissingFileError: file is missing
+            MissingExtrasError: extra parameters are missing
+            UploadOutOfBoundError: part exceeds allocated file size
+
+        Returns:
+            Updated file data
+        """
+
+        cfg = self.storage.settings
+
+        if not cfg.redis.hexists(cfg.path, data.location):
+            raise fk.exc.MissingFileError(self.storage, data.location)
+
+        if "upload" not in extras:
+            raise fk.exc.MissingExtrasError("upload")
+        upload: fk.Upload = extras["upload"]
+
+        current = cast(bytes, cfg.redis.hget(cfg.path, data.location))
+        size = len(current)
+
+        if "uploaded" not in data.storage_data:
+            data.storage_data["uploaded"] = size
+
         expected_size = size + upload.size
         if expected_size > data.size:
-            raise exceptions.UploadOutOfBoundError(expected_size, data.size)
+            raise fk.exc.UploadOutOfBoundError(expected_size, data.size)
 
-        self.storage.redis.append(key, upload.stream.read())
+        new_content: Any = current + upload.stream.read()
+        cfg.redis.hset(cfg.path, data.location, new_content)
+
         data.storage_data["uploaded"] = expected_size
         return data
 
     def multipart_complete(
         self,
-        data: MultipartData,
+        data: fk.MultipartData,
         extras: dict[str, Any],
-    ) -> FileData:
-        """Verify file integrity and finalize incomplete upload."""
-        key = self.storage.settings.prefix + data.location
-        size = cast(int, self.storage.redis.strlen(key))
+    ) -> fk.FileData:
+        """Finalize the upload.
 
+        Raises:
+            MissingFileError: file does not exist
+            UploadSizeMismatchError: actual and expected sizes are different
+            UploadTypeMismatchError: actual and expected content types are different
+            UploadHashMismatchError: actual and expected content hashes are different
+
+        Returns:
+            File data
+        """
+        cfg = self.storage.settings
+        content = cast("bytes | None", cfg.redis.hget(cfg.path, data.location))
+        if content is None:
+            raise fk.exc.MissingFileError(self.storage, data.location)
+
+        size = len(content)
         if size != data.size:
-            raise exceptions.UploadSizeMismatchError(size, data.size)
+            raise fk.exc.UploadSizeMismatchError(size, data.size)
 
-        reader = HashingReader(
-            fk.IterableBytesReader(self.storage.stream(FileData(data.location))),
-        )
+        reader = fk.HashingReader(BytesIO(content))
 
         content_type = magic.from_buffer(next(reader, b""), True)
         if data.content_type and content_type != data.content_type:
-            raise exceptions.UploadTypeMismatchError(
+            raise fk.exc.UploadTypeMismatchError(
                 content_type,
                 data.content_type,
             )
         reader.exhaust()
 
         if data.hash and data.hash != reader.get_hash():
-            raise exceptions.UploadHashMismatchError(reader.get_hash(), data.hash)
+            raise fk.exc.UploadHashMismatchError(reader.get_hash(), data.hash)
 
-        return FileData(data.location, size, content_type, reader.get_hash())
+        return fk.FileData(data.location, size, content_type, reader.get_hash())
 
 
-class RedisReader(Reader):
+class Reader(fk.Reader):
     storage: RedisStorage
+    capabilities = fk.Capability.STREAM
 
-    capabilities = Capability.STREAM
+    def stream(self, data: fk.FileData, extras: dict[str, Any]) -> IO[bytes]:
+        """Return file open in binary-read mode.
 
-    def stream(self, data: FileData, extras: dict[str, Any]) -> IO[bytes]:
+        Returns:
+            File content iterator
+        """
         return BytesIO(self.content(data, extras))
 
-    def content(self, data: FileData, extras: dict[str, Any]) -> bytes:
-        key = self.storage.settings.prefix + data.location
-        value = cast("bytes | None", self.storage.redis.get(key))
-        if value is None:
-            raise exceptions.MissingFileError(self.storage, key)
+    def content(self, data: fk.FileData, extras: dict[str, Any]) -> bytes:
+        """Return content of the file.
 
-        return value
+        Raises:
+            MissingFileError: file does not exist
+        """
+        cfg = self.storage.settings
+        content = cast("bytes | None", cfg.redis.hget(cfg.path, data.location))
+        if content is None:
+            raise fk.exc.MissingFileError(self.storage, data.location)
+
+        return content
 
 
-class RedisManager(Manager):
+class Manager(fk.Manager):
     storage: RedisStorage
 
     capabilities = (
-        Capability.COPY
-        | Capability.MOVE
-        | Capability.REMOVE
-        | Capability.EXISTS
-        | Capability.SCAN
-        | Capability.ANALYZE
+        fk.Capability.COPY
+        | fk.Capability.MOVE
+        | fk.Capability.REMOVE
+        | fk.Capability.EXISTS
+        | fk.Capability.SCAN
+        | fk.Capability.ANALYZE
     )
-
-    def scan(self, extras: dict[str, Any]) -> Iterable[str]:
-        prefix = self.storage.settings.prefix
-        keys: Iterable[bytes] = self.storage.redis.scan_iter(f"{prefix}*")
-        for key in keys:
-            yield key.decode()[len(prefix) :]
-
-    def analyze(self, location: str, extras: dict[str, Any]) -> FileData:
-        """Return all details about location."""
-        key = self.storage.settings.prefix + location
-        value: Any = self.storage.redis.get(key)
-        if value is None:
-            raise exceptions.MissingFileError(self.storage, key)
-
-        reader = HashingReader(BytesIO(value))
-        content_type = magic.from_buffer(next(reader, b""), True)
-        reader.exhaust()
-
-        return FileData(
-            location,
-            size=cast(int, self.storage.redis.strlen(key)),
-            content_type=content_type,
-            hash=reader.get_hash(),
-        )
-
-    def remove(self, data: FileData | MultipartData, extras: dict[str, Any]) -> bool:
-        key = self.storage.settings.prefix + data.location
-        self.storage.redis.delete(key)
-        return True
-
-    def exists(self, data: FileData, extras: dict[str, Any]) -> bool:
-        key = self.storage.settings.prefix + data.location
-        return bool(self.storage.redis.exists(key))
 
     def copy(
         self,
-        data: FileData,
         location: str,
+        data: fk.FileData,
         extras: dict[str, Any],
-    ) -> FileData:
-        safe_location = self.storage.compute_location(location, **extras)
-        src: str = self.storage.settings.prefix + data.location
-        dest: str = self.storage.settings.prefix + safe_location
+    ) -> fk.FileData:
+        """Copy file inside the storage.
 
-        if not self.storage.redis.exists(src):
-            raise exceptions.MissingFileError(self.storage, src)
+        Raises:
+            ExistingFileError: file exists and overrides are not allowed
+            MissingFileError: source file does not exist
+        """
+        cfg = self.storage.settings
 
-        if (
-            self.storage.redis.exists(dest)
-            and not self.storage.settings.override_existing
+        if not cfg.redis.hexists(cfg.path, data.location):
+            raise fk.exc.MissingFileError(self.storage, data.location)
+
+        if not self.storage.settings.override_existing and cfg.redis.hexists(
+            cfg.path, location
         ):
-            raise exceptions.ExistingFileError(self.storage, dest)
+            raise fk.exc.ExistingFileError(self.storage, location)
 
-        try:
-            self.storage.redis.copy(src, dest)
-        except (AttributeError, ResponseError):
-            self.storage.redis.restore(
-                dest,
-                0,
-                cast(Any, self.storage.redis.dump(src)),
-            )
+        content: Any = cfg.redis.hget(cfg.path, data.location)
+        cfg.redis.hset(cfg.path, location, content)
 
         new_data = copy.deepcopy(data)
-        new_data.location = safe_location
+        new_data.location = location
         return new_data
 
     def move(
         self,
-        data: FileData,
         location: str,
+        data: fk.FileData,
         extras: dict[str, Any],
-    ) -> FileData:
-        safe_location = self.storage.compute_location(location, **extras)
+    ) -> fk.FileData:
+        """Move file to a different location inside the storage.
 
-        src = self.storage.settings.prefix + data.location
-        dest = self.storage.settings.prefix + safe_location
+        Raises:
+            ExistingFileError: file exists and overrides are not allowed
+            MissingFileError: source file does not exist
+        """
 
-        if not self.storage.redis.exists(src):
-            raise exceptions.MissingFileError(self.storage, src)
+        cfg = self.storage.settings
 
-        if (
-            self.storage.redis.exists(dest)
-            and not self.storage.settings.override_existing
-        ):
-            raise exceptions.ExistingFileError(self.storage, dest)
+        if not cfg.redis.hexists(cfg.path, data.location):
+            raise fk.exc.MissingFileError(self.storage, data.location)
 
-        self.storage.redis.rename(src, dest)
+        if not cfg.override_existing and cfg.redis.hexists(cfg.path, location):
+            raise fk.exc.ExistingFileError(self.storage, location)
+
+        content: Any = cfg.redis.hget(
+            cfg.path,
+            data.location,
+        )
+        cfg.redis.hset(cfg.path, location, content)
+        cfg.redis.hdel(cfg.path, data.location)
         new_data = copy.deepcopy(data)
-        new_data.location = safe_location
+        new_data.location = location
         return new_data
 
+    def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        """Check if file exists."""
+        cfg = self.storage.settings
+        return bool(cfg.redis.hexists(cfg.path, data.location))
 
-def _default_prefix():
-    return "ckanext:files:{}:file_content:".format(tk.config["ckan.site_id"])
+    def remove(
+        self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]
+    ) -> bool:
+        """Remove the file."""
+        cfg = self.storage.settings
+        result = cfg.redis.hdel(cfg.path, data.location)
+        return bool(result)
 
+    def scan(self, extras: dict[str, Any]) -> Iterable[str]:
+        """Discover filenames under storage path."""
+        cfg = self.storage.settings
+        for key in cast("Iterable[bytes]", cfg.redis.hkeys(cfg.path)):
+            yield key.decode()
 
-class RedisStorage(Storage):
-    settings: SettingsFactory
+    def analyze(self, location: str, extras: dict[str, Any]) -> fk.FileData:
+        """Return all details about location.
 
-    @dataclasses.dataclass()
-    class SettingsFactory(Settings):
-        prefix: str = dataclasses.field(default_factory=_default_prefix)
+        Raises:
+            MissingFileError: file does not exist
+        """
+        cfg = self.storage.settings
+        value: Any = cfg.redis.hget(cfg.path, location)
+        if value is None:
+            raise fk.exc.MissingFileError(self.storage, location)
 
-    def make_uploader(self):
-        return RedisUploader(self)
+        reader = fk.HashingReader(BytesIO(value))
+        content_type = magic.from_buffer(next(reader, b""), True)
+        reader.exhaust()
 
-    def make_manager(self):
-        return RedisManager(self)
-
-    def make_reader(self):
-        return RedisReader(self)
-
-    def __init__(self, settings: Any):
-        self.redis: redis.Redis = connect_to_redis()
-        super().__init__(settings)
-
-    @classmethod
-    def declare_config_options(cls, declaration: Declaration, key: Key):
-        super().declare_config_options(declaration, key)
-        declaration.declare(key.prefix, _default_prefix()).set_description(
-            "Static prefix of the Redis key generated for every upload.",
+        return fk.FileData(
+            location,
+            size=reader.position,
+            content_type=content_type,
+            hash=reader.get_hash(),
         )
+
+
+class RedisStorage(fk.Storage):
+    settings: Settings  # type: ignore
+    SettingsFactory = Settings
+
+    ReaderFactory = Reader
+    ManagerFactory = Manager
+    UploaderFactory = Uploader

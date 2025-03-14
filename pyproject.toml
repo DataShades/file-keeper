@@ -38,6 +38,7 @@ test = [ "pytest-cov", "pytest-faker", "responses" ]
 docs = [ "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]",]
 dev = [ "pytest-cov", "pytest-faker", "responses", "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]",]
 
+redis = [ "redis",]
 s3 = [ "boto3", "boto3-stubs[essential]"]
 gcs = [ "google-cloud-storage",]
 opendal = [ "opendal",]
@@ -205,4 +206,4 @@ deps = [
     "pytest-sugar",
 ]
 commands = [["pytest", { replace = "posargs", default = ["tests"], extend = true }]]
-extras = ["test"]
+extras = ["test", "redis"]

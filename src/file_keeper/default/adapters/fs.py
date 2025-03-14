@@ -138,7 +138,7 @@ class Uploader(fk.Uploader):
         )
 
         if not os.path.exists(filepath):
-            raise fk.exc.MissingFileError(self.storage, filepath)
+            raise fk.exc.MissingFileError(self.storage, data.location)
 
         data.storage_data["uploaded"] = os.path.getsize(filepath)
 
@@ -171,7 +171,7 @@ class Uploader(fk.Uploader):
         filepath = os.path.join(self.storage.settings.path, data.location)
 
         if not os.path.exists(filepath):
-            raise fk.exc.MissingFileError(self.storage, filepath)
+            raise fk.exc.MissingFileError(self.storage, data.location)
 
         if "uploaded" not in data.storage_data:
             data.storage_data["uploaded"] = os.path.getsize(filepath)
@@ -217,6 +217,7 @@ class Uploader(fk.Uploader):
         """Finalize the upload.
 
         Raises:
+            MissingFileError: file does not exist
             UploadSizeMismatchError: actual and expected sizes are different
             UploadTypeMismatchError: actual and expected content types are different
             UploadHashMismatchError: actual and expected content hashes are different
@@ -225,6 +226,9 @@ class Uploader(fk.Uploader):
             File data
         """
         filepath = os.path.join(self.storage.settings.path, data.location)
+        if not os.path.exists(filepath):
+            raise fk.exc.MissingFileError(self.storage, data.location)
+
         size = os.path.getsize(filepath)
         if size != data.size:
             raise fk.exc.UploadSizeMismatchError(size, data.size)

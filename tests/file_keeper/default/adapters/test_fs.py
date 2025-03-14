@@ -62,15 +62,6 @@ class TestUploaderUpload(standard.Uploader):
         result = storage.upload(f"../../{path}", fk.make_upload(b""))
         assert result.location == path
 
-    def test_hash(self, storage: fk.Storage, faker: Faker):
-        """Hash computed using full content."""
-        result = storage.upload(faker.file_name(), fk.make_upload(b""))
-        assert result.hash == hashlib.md5().hexdigest()
-
-        content = faker.binary(100)
-        result = storage.upload(faker.file_name(), fk.make_upload(content))
-        assert result.hash == hashlib.md5(content).hexdigest()
-
 
 class TestUploaderMultipart(standard.Multiparter):
     def test_initialization(self, storage: fk.Storage, faker: Faker):
@@ -96,10 +87,6 @@ class TestUploaderMultipart(standard.Multiparter):
 
         data = storage.multipart_refresh(data)
         assert data.storage_data["uploaded"] == len(content)
-
-    def test_refresh_missing(self, faker: Faker, storage: fk.Storage):
-        with pytest.raises(fk.exc.MissingFileError):
-            storage.multipart_refresh(fk.MultipartData(faker.file_name()))
 
     def test_update(self, storage: fk.Storage, faker: Faker):
         """`multipart_update` appends parts by default."""
@@ -138,12 +125,6 @@ class TestUploaderMultipart(standard.Multiparter):
             )
             assert data.size == size
             assert data.storage_data.pop("uploaded") == min(size, pos + step)
-
-    def test_update_missing(self, storage: fk.Storage, faker: Faker):
-        with pytest.raises(fk.exc.MissingFileError):
-            storage.multipart_update(
-                fk.MultipartData(faker.file_path()), upload=fk.make_upload(b"")
-            )
 
     def test_update_without_upload_field(self, storage: fk.Storage, faker: Faker):
         data = storage.multipart_start(faker.file_name(), fk.MultipartData(size=10))
@@ -184,6 +165,12 @@ class TestUploaderMultipart(standard.Multiparter):
 
         with pytest.raises(fk.exc.UploadOutOfBoundError):
             storage.multipart_update(data, upload=fk.make_upload(content))
+
+    def test_update_missing(self, storage: fk.Storage, faker: Faker):
+        with pytest.raises(fk.exc.MissingFileError):
+            storage.multipart_update(
+                fk.MultipartData(faker.file_path()), upload=fk.make_upload(b"")
+            )
 
     def test_complete(self, storage: fk.Storage, faker: Faker):
         """File parameters validated upon completion."""
@@ -234,6 +221,12 @@ class TestUploaderMultipart(standard.Multiparter):
         data = storage.multipart_update(data, upload=fk.make_upload(content))
         with pytest.raises(fk.exc.UploadTypeMismatchError):
             storage.multipart_complete(data)
+
+    def test_complete_missing(self, storage: fk.Storage, faker: Faker):
+        with pytest.raises(fk.exc.MissingFileError):
+            storage.multipart_complete(
+                fk.MultipartData(faker.file_path()), upload=fk.make_upload(b"")
+            )
 
 
 class TestReader(standard.Reader):

@@ -1,4 +1,5 @@
 from __future__ import annotations
+import hashlib
 
 import pytest
 from faker import Faker
@@ -80,7 +81,11 @@ class Mover:
 
         content = faker.binary(10)
         original = storage.upload(faker.file_name(), fk.make_upload(content))
-        result = storage.move(faker.file_name(), original, storage)
+        result = storage.move(
+            faker.file_name(),
+            original,
+            storage,
+        )
 
         assert not storage.exists(
             original
@@ -285,7 +290,16 @@ class Reader:
         content = faker.binary(100)
         result = storage.upload(faker.file_name(), fk.make_upload(content))
 
-        assert storage.content(result) == content, "Content of the file was modified"
+        actual = b"".join(storage.stream(result))
+        assert actual == content, "Content of the file was modified"
+
+    def test_content_matches_stream(self, storage: fk.Storage, faker: Faker):
+        """Content and stream produces the same result received."""
+        content = faker.binary(100)
+        result = storage.upload(faker.file_name(), fk.make_upload(content))
+
+        actual = b"".join(storage.stream(result))
+        assert storage.content(result) == actual, "Content does not match stream"
 
     def test_missing(self, storage: fk.Storage, faker: Faker):
         """Missing files cannot be read."""
@@ -300,6 +314,11 @@ class Multiparter:
     def test_capabilities(self, storage: fk.Storage):
         """Multiparter supports MULTIPART capability."""
         assert storage.supports(fk.Capability.MULTIPART), "Does not support MULTIPART"
+
+    def test_refresh_missing(self, faker: Faker, storage: fk.Storage):
+        with pytest.raises(fk.exc.MissingFileError):
+            storage.multipart_refresh(fk.MultipartData(faker.file_name()))
+
 
 
 class Uploader:
@@ -341,3 +360,16 @@ class Uploader:
             origin.location == overriden.location
         ), "Location of uploaded file was changed"
         assert storage.content(overriden) == b"bye", "Unexpected content of the file"
+
+    def test_hash(self, storage: fk.Storage, faker: Faker):
+        """Hash computed using full content."""
+        result = storage.upload(faker.file_name(), fk.make_upload(b""))
+        assert (
+            result.hash == hashlib.md5().hexdigest()
+        ), "Content hash of empty file differs from expected value"
+
+        content = faker.binary(100)
+        result = storage.upload(faker.file_name(), fk.make_upload(content))
+        assert (
+            result.hash == hashlib.md5(content).hexdigest()
+        ), "Content hash differs from expected value"

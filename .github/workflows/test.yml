@@ -23,6 +23,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - uses: shogo82148/actions-setup-redis@v1
+        with:
+          redis-version: "7.x"
+      - run: redis-cli ping
+
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v3
         with:

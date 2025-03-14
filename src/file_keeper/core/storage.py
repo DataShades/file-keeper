@@ -364,25 +364,28 @@ class Storage:
 
     @classmethod
     def configure(cls, settings: dict[str, Any]) -> Any:
-        fields = dataclasses.fields(cls.SettingsFactory)
-        names = {field.name for field in fields}
+        return cls.SettingsFactory(**settings)
 
-        valid = {}
-        invalid = []
-        for k, v in settings.items():
-            if k in names:
-                valid[k] = v
-            else:
-                invalid.append(k)
+        # fields = dataclasses.fields(cls.SettingsFactory)
+        # cls.SettingsFactory
+        # names = {field.name for field in fields}  # initfields lost here
 
-        cfg = cls.SettingsFactory(**valid)
-        if invalid:
-            log.debug(
-                "Storage %s received unknow settings: %s",
-                cfg.name,
-                invalid,
-            )
-        return cfg
+        # valid = {}
+        # invalid = []
+        # for k, v in settings.items():
+        #     if k in names:
+        #         valid[k] = v
+        #     else:
+        #         invalid.append(k)
+
+        # cfg = cls.SettingsFactory(**valid)
+        # if invalid:
+        #     log.debug(
+        #         "Storage %s received unknow settings: %s",
+        #         cfg.name,
+        #         invalid,
+        #     )
+        # return cfg
 
     def compute_capabilities(self) -> utils.Capability:
         return (

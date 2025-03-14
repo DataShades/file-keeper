@@ -131,3 +131,6 @@ def textiowrapper_into_upload(value: io.TextIOWrapper):
 @ext.hookimpl
 def register_adapters(registry: Registry[type[Storage]]):
     registry.register("file_keeper:fs", adapters.FsStorage)
+
+    if adapters.RedisStorage:
+        registry.register("file_keeper:redis", adapters.RedisStorage)

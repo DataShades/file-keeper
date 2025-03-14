@@ -43,6 +43,9 @@ class Registry(Generic[V, K]):
     def __getitem__(self, key: K):
         return self.members[key]
 
+    def __contains__(self, item: K):
+        return item in self.members
+
     def collect(self):
         if self.collector:
             self.members.update(self.collector())

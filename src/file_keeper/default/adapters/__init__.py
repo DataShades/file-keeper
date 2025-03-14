@@ -1,5 +1,8 @@
 from .fs import FsStorage
 
-__all__ = [
-    "FsStorage",
-]
+try:
+    from .redis import RedisStorage
+except ImportError:
+    RedisStorage = None
+
+__all__ = ["FsStorage", "RedisStorage"]
