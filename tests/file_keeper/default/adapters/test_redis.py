@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any
-from redis import Redis
+
 import pytest
 from faker import Faker
+from redis import Redis
 
 import file_keeper as fk
 import file_keeper.default.adapters.redis as redis
+
 from . import standard
 
 Settings = redis.Settings

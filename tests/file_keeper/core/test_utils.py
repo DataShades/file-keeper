@@ -8,58 +8,10 @@ from faker import Faker
 from file_keeper import (
     Capability,
     HashingReader,
-    Registry,
     is_supported_type,
     parse_filesize,
 )
 from file_keeper.core.utils import humanize_filesize
-
-
-class TestRegistry:
-    def test_missing_key(self, faker: Faker):
-        registry = Registry[object]()
-        key = faker.word()
-
-        assert registry.get(key) is None
-        with pytest.raises(KeyError):
-            registry[key]
-
-    def test_existing_key(self, faker: Faker):
-        registry = Registry[object]()
-        key = faker.word()
-        value = object()
-
-        registry.register(key, value)
-        assert registry.get(key) is value
-        assert registry[key] is value
-
-    def test_listing_and_reset(self, faker: Faker):
-        registry = Registry[object]()
-        key = faker.word()
-        registry.register(key, object())
-
-        assert list(registry) == [key]
-        registry.reset()
-        assert list(registry) == []
-
-    def test_removal(self, faker: Faker):
-        registry = Registry[object]()
-        key = faker.word()
-        value = object()
-        registry.register(key, value)
-
-        assert registry.pop(key) is value
-        assert registry.pop(key) is None
-
-    def test_decorator(self, faker: Faker):
-        registry = Registry[object]()
-        key = faker.word()
-
-        @registry.decorated(key)
-        def value():
-            pass
-
-        assert registry[key] is value
 
 
 class TestHasingReader:

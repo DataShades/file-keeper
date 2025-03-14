@@ -36,8 +36,8 @@ class BaseData(Generic[TData]):
     @classmethod
     def from_dict(cls, record: dict[str, Any]):
         return cls(
-            *[record[key] for key in cls._plain_keys],
-            *[copy.deepcopy(record[key]) for key in cls._complex_keys],
+            *[record[key] for key in cls._plain_keys if key in record],
+            *[copy.deepcopy(record[key]) for key in cls._complex_keys if key in record],
         )
 
     @classmethod

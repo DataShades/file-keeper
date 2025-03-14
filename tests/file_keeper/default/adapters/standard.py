@@ -1,8 +1,10 @@
 from __future__ import annotations
+
 import hashlib
 
 import pytest
 from faker import Faker
+
 import file_keeper as fk
 
 

@@ -5,9 +5,10 @@ import dataclasses
 from io import BytesIO
 from typing import IO, Any, ClassVar, Iterable, cast
 
-import file_keeper as fk
 import magic
 import redis
+
+import file_keeper as fk
 
 pools = fk.Registry[redis.ConnectionPool]()
 
@@ -144,7 +145,6 @@ class Uploader(fk.Uploader):
         Returns:
             Updated file data
         """
-
         cfg = self.storage.settings
 
         if not cfg.redis.hexists(cfg.path, data.location):
@@ -290,7 +290,6 @@ class Manager(fk.Manager):
             ExistingFileError: file exists and overrides are not allowed
             MissingFileError: source file does not exist
         """
-
         cfg = self.storage.settings
 
         if not cfg.redis.hexists(cfg.path, data.location):

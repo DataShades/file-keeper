@@ -80,7 +80,7 @@ class Uploader(fk.Uploader):
         # enabled(creation of intermediate path is allowed)
         os.makedirs(os.path.dirname(dest), exist_ok=True)
 
-        reader = fk.HashingReader(upload.stream)
+        reader = upload.hashing_reader()
         with open(dest, "wb") as fd:
             for chunk in reader:
                 fd.write(chunk)
