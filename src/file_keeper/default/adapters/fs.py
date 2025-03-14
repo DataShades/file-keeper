@@ -343,10 +343,14 @@ class Manager(fk.Manager):
         Raises:
             LargeUploadError: result too big
             WrongUploadTypeError: final type is not supported
+            MissingFileError: file does not exist
         """
+        dest = os.path.join(self.storage.settings.path, data.location)
+        if not os.path.exists(dest):
+            raise fk.exc.MissingFileError(self.storage, dest)
+
         self.storage.validator.size(data.size + upload.size)
 
-        dest = os.path.join(self.storage.settings.path, data.location)
         with open(dest, "ab") as fd:
             fd.write(upload.stream.read())
 
