@@ -12,9 +12,7 @@ cycles.
 from __future__ import annotations
 
 import dataclasses
-import itertools
 import logging
-from io import BytesIO
 from typing import Any, Callable, ClassVar, Iterable, cast
 
 from typing_extensions import Concatenate, ParamSpec, TypeAlias, TypeVar
@@ -404,6 +402,21 @@ class Storage:
 
         raise exceptions.LocationStrategyError(name)
 
+    def stream_as_upload(self, data: data.FileData, **kwargs: Any) -> upload.Upload:
+        """Make an Upload with file content."""
+        stream = self.stream(data, **kwargs)
+        if hasattr(stream, "read"):
+            stream = cast(types.PStream, stream)
+        else:
+            stream = utils.IterableBytesReader(stream)
+
+        return upload.Upload(
+            stream,
+            data.location,
+            data.size,
+            data.content_type,
+        )
+
     @requires_capability(utils.Capability.CREATE)
     def upload(
         self, location: str, upload: upload.Upload, /, **kwargs: Any
@@ -478,6 +491,16 @@ class Storage:
     def content(self, data: data.FileData, /, **kwargs: Any) -> bytes:
         return self.reader.content(data, kwargs)
 
+    @requires_capability(utils.Capability.APPEND)
+    def append(
+        self,
+        data: data.FileData,
+        upload: upload.Upload,
+        /,
+        **kwargs: Any,
+    ) -> data.FileData:
+        return self.manager.append(data, upload, kwargs)
+
     def copy(
         self,
         location: str,
@@ -499,56 +522,6 @@ class Storage:
             )
 
         raise exceptions.UnsupportedOperationError("copy", self)
-
-    def compose(
-        self,
-        location: str,
-        dest_storage: Storage,
-        /,
-        *files: data.FileData,
-        **kwargs: Any,
-    ) -> data.FileData:
-        if dest_storage is self and self.supports(utils.Capability.COMPOSE):
-            return self.manager.compose(location, files, kwargs)
-
-        if self.supports(utils.Capability.STREAM) and dest_storage.supports(
-            utils.Capability.CREATE | utils.Capability.APPEND,
-        ):
-            result = dest_storage.upload(location, upload.make_upload(b""), **kwargs)
-            for item in files:
-                result = dest_storage.append(
-                    result,
-                    self.stream_as_upload(item, **kwargs),
-                    **kwargs,
-                )
-            return result
-
-        raise exceptions.UnsupportedOperationError("compose", self)
-
-    def stream_as_upload(self, data: data.FileData, **kwargs: Any) -> upload.Upload:
-        """Make an Upload with file content."""
-        stream = self.stream(data, **kwargs)
-        if hasattr(stream, "read"):
-            stream = cast(types.PStream, stream)
-        else:
-            stream = utils.IterableBytesReader(stream)
-
-        return upload.Upload(
-            stream,
-            data.location,
-            data.size,
-            data.content_type,
-        )
-
-    @requires_capability(utils.Capability.APPEND)
-    def append(
-        self,
-        data: data.FileData,
-        upload: upload.Upload,
-        /,
-        **kwargs: Any,
-    ) -> data.FileData:
-        return self.manager.append(data, upload, kwargs)
 
     def move(
         self,
@@ -573,6 +546,49 @@ class Storage:
             return result
 
         raise exceptions.UnsupportedOperationError("move", self)
+
+    def compose(
+        self,
+        location: str,
+        dest_storage: Storage,
+        /,
+        *files: data.FileData,
+        **kwargs: Any,
+    ) -> data.FileData:
+        if dest_storage is self and self.supports(utils.Capability.COMPOSE):
+            return self.manager.compose(location, files, kwargs)
+
+        # REMOVE capability is required for cleaning. Alternatively, we can
+        # compute expected size and check existence in advance. But this is
+        # just a fallback method - use explicit implementation for efficiency.
+        if self.supports(utils.Capability.STREAM) and dest_storage.supports(
+            utils.Capability.CREATE | utils.Capability.APPEND | utils.Capability.REMOVE
+        ):
+            result = dest_storage.upload(location, upload.make_upload(b""), **kwargs)
+
+            # append creates file only when there are no problems. But when
+            # first append succeeded with the fragment of the file added in the
+            # storage, and the following append failed, this incomplete
+            # fragment must be removed.
+            #
+            # Expected reasons of failure are:
+            #
+            # * one of the source fiels is missing
+            # * file will go over the size limit after the following append
+            try:
+                for item in files:
+                    result = dest_storage.append(
+                        result,
+                        self.stream_as_upload(item, **kwargs),
+                        **kwargs,
+                    )
+            except (exceptions.MissingFileError, exceptions.UploadError):
+                self.remove(result, **kwargs)
+                raise
+
+            return result
+
+        raise exceptions.UnsupportedOperationError("compose", self)
 
     def public_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
         if self.supports(utils.Capability.PUBLIC_LINK):

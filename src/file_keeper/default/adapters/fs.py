@@ -358,7 +358,7 @@ class Manager(fk.Manager):
         with open(dest, "ab") as fd:
             fd.write(upload.stream.read())
 
-        result = self.analyze(dest, extras)
+        result = self.analyze(data.location, extras)
 
         # TODO: compute final type in advance to prevent loosing original file
         try:
