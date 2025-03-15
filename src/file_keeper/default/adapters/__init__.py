@@ -11,25 +11,43 @@ except ImportError:
     OpenDalStorage = None
 
 try:
-    from .libcloud import LibCloudStorage  # type: ignore
+    from .libcloud import LibCloudStorage
 except ImportError:
     LibCloudStorage = None
 
 try:
-    from .gcs import GcsStorage  # type: ignore
+    from .gcs import GoogleCloudStorage
 except ImportError:
-    GcsStorage = None
+    GoogleCloudStorage = None
 
 try:
-    from .s3 import S3Storage  # type: ignore
+    from .s3 import S3Storage
 except ImportError:
     S3Storage = None
 
+try:
+    from .link import LinkStorage
+except ImportError:
+    LinkStorage = None
+
+try:
+    from .filebin import FilebinStorage
+except ImportError:
+    FilebinStorage = None
+
+try:
+    from .sqlalchemy import SqlAlchemyStorage
+except ImportError:
+    SqlAlchemyStorage = None
+
 __all__ = [
     "FsStorage",
+    "LinkStorage",
     "RedisStorage",
     "OpenDalStorage",
     "LibCloudStorage",
-    "GcsStorage",
+    "FilebinStorage",
+    "GoogleCloudStorage",
     "S3Storage",
+    "SqlAlchemyStorage"
 ]

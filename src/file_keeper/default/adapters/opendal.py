@@ -32,6 +32,8 @@ class Settings(fk.Settings):
     operator: opendal.Operator = None  # type: ignore
 
     def __post_init__(self, **kwargs: Any):
+        super().__post_init__(**kwargs)
+
         if not self.operator:
             if not self.scheme:
                 raise fk.exc.MissingStorageConfigurationError(self.name, "scheme")

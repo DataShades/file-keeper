@@ -30,6 +30,8 @@ class Settings(fk.Settings):
     _required_options: ClassVar[list[str]] = ["path"]
 
     def __post_init__(self, redis_url: str, **kwargs: Any):
+        super().__post_init__(**kwargs)
+
         if not self.redis:
             if redis_url not in pools:
                 pools.register(

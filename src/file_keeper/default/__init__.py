@@ -146,8 +146,17 @@ def register_adapters(registry: Registry[type[Storage]]):
     if adapters.LibCloudStorage:
         registry.register("file_keeper:libcloud", adapters.LibCloudStorage)
 
-    if adapters.GcsStorage:
-        registry.register("file_keeper:gcs", adapters.GcsStorage)
+    if adapters.GoogleCloudStorage:
+        registry.register("file_keeper:gcs", adapters.GoogleCloudStorage)
 
     if adapters.S3Storage:
         registry.register("file_keeper:s3", adapters.S3Storage)
+
+    if adapters.LinkStorage:
+        registry.register("file_keeper:link", adapters.LinkStorage)
+
+    if adapters.FilebinStorage:
+        registry.register("file_keeper:filebin", adapters.FilebinStorage)
+
+    if adapters.SqlAlchemyStorage:
+        registry.register("file_keeper:sqlalchemy", adapters.SqlAlchemyStorage)

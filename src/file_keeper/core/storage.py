@@ -331,9 +331,9 @@ class Storage:
     settings: Settings
     SettingsFactory: type[Settings] = Settings
 
-    UploaderFactory: Callable[[Storage], Uploader] = Uploader
-    ManagerFactory: Callable[[Storage], Manager] = Manager
-    ReaderFactory: Callable[[Storage], Reader] = Reader
+    UploaderFactory: type[Uploader] = Uploader
+    ManagerFactory: type[Manager] = Manager
+    ReaderFactory: type[Reader] = Reader
     ValidatorFactory: Callable[[Storage], Validator] = Validator
 
     def __str__(self):
