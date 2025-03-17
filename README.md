@@ -14,8 +14,7 @@ user guide.
 
 ## Usage
 
-Initialize storage pointing to `/tmp/example` folder and create this folder if
-it does not exists:
+Initialize storage pointing to `/tmp/example` folder:
 
 ```python
 import os
@@ -24,6 +23,8 @@ from file_keeper import make_storage
 storage = make_storage("sandbox", {
     "type": "file_keeper:fs",
     "path": "/tmp/example",
+    # this option creates the folder if it does not exist.
+    # Without it storage raises an error if folder is missing
     "create_path": True,
 })
 assert os.path.isdir("/tmp/example")

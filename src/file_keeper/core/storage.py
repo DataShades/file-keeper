@@ -362,7 +362,12 @@ class Storage:
 
     @classmethod
     def configure(cls, settings: dict[str, Any]) -> Any:
-        return cls.SettingsFactory(**settings)
+        try:
+            return cls.SettingsFactory(**settings)
+        except TypeError as err:
+            raise exceptions.InvalidStorageConfigurationError(
+                settings.get("name") or cls, str(err)
+            ) from err
 
         # fields = dataclasses.fields(cls.SettingsFactory)
         # cls.SettingsFactory
