@@ -1,4 +1,4 @@
-__version__ = "0.0.2a0"
+__version__ = "0.0.3a0"
 
 from .core import exceptions as exc
 from .core.data import BaseData, FileData, MultipartData

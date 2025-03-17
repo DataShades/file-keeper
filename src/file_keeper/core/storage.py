@@ -26,10 +26,10 @@ T = TypeVar("T")
 
 log = logging.getLogger(__name__)
 
-LocationStrategy: TypeAlias = Callable[[str, "dict[str, Any]"], str]
+LocationTransformer: TypeAlias = Callable[[str, "dict[str, Any]"], str]
 
 adapters = Registry["type[Storage]"]()
-location_strategies = Registry[LocationStrategy]()
+location_transformers = Registry[LocationTransformer]()
 
 
 def requires_capability(capability: utils.Capability):
@@ -291,7 +291,7 @@ class Settings:
     override_existing: bool = False
     supported_types: list[str] = dataclasses.field(default_factory=list)
     max_size: int = 0
-    location_strategy: str = "transparent"
+    location_transformers: list[str] = dataclasses.field(default_factory=list)
 
     _required_options: ClassVar[list[str]] = []
 
@@ -396,11 +396,13 @@ class Storage:
         return self.capabilities.can(operation)
 
     def prepare_location(self, location: str, /, **kwargs: Any) -> str:
-        name = self.settings.location_strategy
-        if strategy := location_strategies.get(name):
-            return strategy(location, kwargs)
+        for name in self.settings.location_transformers:
+            if transformer := location_transformers.get(name):
+                location = transformer(location, kwargs)
+            else:
+                raise exceptions.LocationTransformerError(name)
 
-        raise exceptions.LocationStrategyError(name)
+        return location
 
     def stream_as_upload(self, data: data.FileData, **kwargs: Any) -> upload.Upload:
         """Make an Upload with file content."""

@@ -14,7 +14,7 @@ import pytz
 from pluggy import HookimplMarker
 
 from file_keeper import Registry, Storage, Upload, ext
-from file_keeper.core.storage import LocationStrategy
+from file_keeper.core.storage import LocationTransformer
 from file_keeper.core.upload import UploadFactory
 
 from . import adapters
@@ -24,43 +24,38 @@ SAMPLE_SIZE = 1024 * 2
 
 
 @ext.hookimpl
-def register_location_strategies(registry: Registry[LocationStrategy]):
-    registry.register("transparent", transparent_strategy)
-    registry.register("safe_relative_path", safe_relative_path_strategy)
-    registry.register("uuid", uuid_strategy)
-    registry.register("uuid_prefix", uuid_prefix_strategy)
-    registry.register("uuid_with_extension", uuid_with_extension_strategy)
-    registry.register("datetime_prefix", datetime_prefix_strategy)
-    registry.register("datetime_with_extension", datetime_with_extension_strategy)
+def register_location_transformers(registry: Registry[LocationTransformer]):
+    registry.register("safe_relative_path", safe_relative_path_transformer)
+    registry.register("uuid", uuid_transformer)
+    registry.register("uuid_prefix", uuid_prefix_transformer)
+    registry.register("uuid_with_extension", uuid_with_extension_transformer)
+    registry.register("datetime_prefix", datetime_prefix_transformer)
+    registry.register("datetime_with_extension", datetime_with_extension_transformer)
 
 
-def transparent_strategy(location: str, extras: dict[str, Any]) -> str:
-    return location
-
-
-def safe_relative_path_strategy(location: str, extras: dict[str, Any]) -> str:
+def safe_relative_path_transformer(location: str, extras: dict[str, Any]) -> str:
     return os.path.normpath(location).lstrip("./")
 
 
-def uuid_strategy(location: str, extras: dict[str, Any]) -> str:
+def uuid_transformer(location: str, extras: dict[str, Any]) -> str:
     return str(uuid.uuid4())
 
 
-def uuid_prefix_strategy(location: str, extras: dict[str, Any]) -> str:
+def uuid_prefix_transformer(location: str, extras: dict[str, Any]) -> str:
     return str(uuid.uuid4()) + location
 
 
-def uuid_with_extension_strategy(location: str, extras: dict[str, Any]) -> str:
-    _path, ext = os.path.splitext(location)
+def uuid_with_extension_transformer(location: str, extras: dict[str, Any]) -> str:
+    ext = os.path.splitext(location)[1]
     return str(uuid.uuid4()) + ext
 
 
-def datetime_prefix_strategy(location: str, extras: dict[str, Any]) -> str:
+def datetime_prefix_transformer(location: str, extras: dict[str, Any]) -> str:
     return datetime.now(pytz.utc).isoformat() + location
 
 
-def datetime_with_extension_strategy(location: str, extras: dict[str, Any]) -> str:
-    _path, ext = os.path.splitext(location)
+def datetime_with_extension_transformer(location: str, extras: dict[str, Any]) -> str:
+    ext = os.path.splitext(location)[1]
     return datetime.now(pytz.utc).isoformat() + ext
 
 

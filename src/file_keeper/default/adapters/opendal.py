@@ -65,7 +65,7 @@ class Uploader(fk.Uploader):
         be prepended with an intermediate path. This path is not sanitized and
         can lead outside the configured `path` of the storage. Consider using
         combination of `storage.prepare_location` with
-        `settings.location_strategy` that sanitizes the path, like
+        `settings.location_transformers` that sanitizes the path, like
         `safe_relative_path`.
 
         Raises:

@@ -20,7 +20,7 @@ Hierarchy:
                 * MissingStorageConfigurationError
             * UploadError
                 * WrongUploadTypeError
-                * LocationStrategyError
+                * LocationTransformerError
                 * ContentError
                 * LargeUploadError
                     * UploadOutOfBoundError
@@ -234,14 +234,14 @@ class WrongUploadTypeError(UploadError):
         return f"Type {self.content_type} is not supported by storage"
 
 
-class LocationStrategyError(UploadError):
-    """Undefined name strategy."""
+class LocationTransformerError(UploadError):
+    """Undefined location transformer."""
 
-    def __init__(self, strategy: str):
-        self.strategy = strategy
+    def __init__(self, transformer: str):
+        self.transformer = transformer
 
     def __str__(self):
-        return f"Unknown name strategy {self.strategy}"
+        return f"Unknown location transformer {self.transformer}"
 
 
 class ExtrasError(StorageError):

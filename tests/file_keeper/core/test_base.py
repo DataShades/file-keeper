@@ -156,10 +156,10 @@ class TestStorage:
             storage.move("", FileData(""), storage)
 
     def test_prepare_location_uuid(self, faker: Faker):
-        """`uuid`(default) name strategy produces valid UUID."""
+        """`uuid`(default) name transformer produces valid UUID."""
         storage = FakeStorage({})
 
-        storage.settings.location_strategy = "uuid"
+        storage.settings.location_transformers = ["uuid"]
         extension = faker.file_extension()
         name = faker.file_name(extension=extension)
         result = storage.prepare_location(name)
@@ -167,10 +167,10 @@ class TestStorage:
         assert uuid.UUID(result)
 
     def test_prepare_location_uuid_prefix(self, faker: Faker):
-        """`uuid_prefix` name strategy produces valid UUID."""
+        """`uuid_prefix` name transformer produces valid UUID."""
         storage = FakeStorage({})
 
-        storage.settings.location_strategy = "uuid_prefix"
+        storage.settings.location_transformers = ["uuid_prefix"]
         extension = faker.file_extension()
         name = faker.file_name(extension=extension)
         result = storage.prepare_location(name)
@@ -178,9 +178,9 @@ class TestStorage:
         assert uuid.UUID(result[: -len(name)])
 
     def test_prepare_location_uuid_with_extension(self, faker: Faker):
-        """`uuid_with_extension` name strategy produces valid UUID."""
+        """`uuid_with_extension` name transformer produces valid UUID."""
         storage = FakeStorage({})
-        storage.settings.location_strategy = "uuid_with_extension"
+        storage.settings.location_transformers = ["uuid_with_extension"]
         extension = faker.file_extension()
         name = faker.file_name(extension=extension)
         result = storage.prepare_location(name)
@@ -192,9 +192,9 @@ class TestStorage:
         self,
         faker: Faker,
     ):
-        """`datetime_prefix` name strategy produces valid UUID."""
+        """`datetime_prefix` name transformer produces valid UUID."""
         storage = FakeStorage({})
-        storage.settings.location_strategy = "datetime_prefix"
+        storage.settings.location_transformers = ["datetime_prefix"]
         extension = faker.file_extension()
         name = faker.file_name(extension=extension)
         result = storage.prepare_location(name)
@@ -207,9 +207,9 @@ class TestStorage:
         self,
         faker: Faker,
     ):
-        """`datetime_with_extension` name strategy produces valid UUID."""
+        """`datetime_with_extension` name transformer produces valid UUID."""
         storage = FakeStorage({})
-        storage.settings.location_strategy = "datetime_with_extension"
+        storage.settings.location_transformers = ["datetime_with_extension"]
         extension = faker.file_extension()
         name = faker.file_name(extension=extension)
         result = storage.prepare_location(name)
@@ -219,9 +219,9 @@ class TestStorage:
 
         assert datetime.fromisoformat(result[: -len(ext)])
 
-    def test_prepare_location_with_wrong_strategy(self):
-        """`datetime_with_extension` name strategy produces valid UUID."""
+    def test_prepare_location_with_wrong_transformer(self):
+        """`datetime_with_extension` name transformer produces valid UUID."""
         storage = FakeStorage({})
-        storage.settings.location_strategy = "wrong_strategy"
-        with pytest.raises(exc.LocationStrategyError):
+        storage.settings.location_transformers = ["wrong"]
+        with pytest.raises(exc.LocationTransformerError):
             storage.prepare_location("test")

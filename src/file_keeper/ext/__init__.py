@@ -21,7 +21,7 @@ def setup():
         if plugin.is_registered(undesired):
             plugin.unregister(undesired)
 
-    plugin.hook.register_location_strategies(registry=storage.location_strategies)
+    plugin.hook.register_location_transformers(registry=storage.location_transformers)
     plugin.hook.register_upload_factories(registry=upload.upload_factories)
     plugin.hook.register_adapters(registry=storage.adapters)
 
