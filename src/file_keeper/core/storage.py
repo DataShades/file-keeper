@@ -482,7 +482,6 @@ class Storage:
     def stream(self, data: data.FileData, /, **kwargs: Any) -> Iterable[bytes]:
         return self.reader.stream(data, kwargs)
 
-    @requires_capability(utils.Capability.RANGE)
     def range(
         self,
         data: data.FileData,
@@ -492,7 +491,31 @@ class Storage:
         **kwargs: Any,
     ) -> Iterable[bytes]:
         """Return byte-stream of the file content."""
-        return self.reader.range(data, start, end, kwargs)
+        if self.supports(utils.Capability.RANGE):
+            return self.reader.range(data, start, end, kwargs)
+
+        if self.supports(utils.Capability.STREAM):
+            if end is None:
+                end = cast(int, float("inf"))
+
+            end -= start
+            if end <= 0:
+                return
+
+            for chunk in self.stream(data, **kwargs):
+                if start > 0:
+                    start -= len(chunk)
+                    if start < 0:
+                        chunk = chunk[start:]
+                    else:
+                        continue
+                yield chunk[:end]
+                end -= len(chunk)
+                if end <= 0:
+                    break
+            return
+
+        raise exceptions.UnsupportedOperationError("range", self)
 
     @requires_capability(utils.Capability.STREAM)
     def content(self, data: data.FileData, /, **kwargs: Any) -> bytes:
