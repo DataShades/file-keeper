@@ -7,6 +7,7 @@ import re
 from typing import Any, ClassVar, Iterable
 
 import boto3
+
 import file_keeper as fk
 
 RE_RANGE = re.compile(r"bytes=(?P<first_byte>\d+)-(?P<last_byte>\d+)")
@@ -74,7 +75,7 @@ class Uploader(fk.Uploader):
 
     def upload(
         self,
-        location: str,
+        location: fk.types.Location,
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
@@ -96,7 +97,7 @@ class Uploader(fk.Uploader):
 
     def multipart_start(
         self,
-        location: str,
+        location: fk.types.Location,
         data: fk.MultipartData,
         extras: dict[str, Any],
     ) -> fk.MultipartData:
@@ -210,9 +211,11 @@ class Uploader(fk.Uploader):
         )
 
         return fk.FileData(
-            os.path.relpath(
-                result["Key"],
-                self.storage.settings.path,
+            fk.types.Location(
+                os.path.relpath(
+                    result["Key"],
+                    self.storage.settings.path,
+                )
             ),
             obj["ContentLength"],
             obj["ContentType"],
@@ -239,7 +242,9 @@ class Manager(fk.Manager):
 
         return True
 
-    def analyze(self, location: str, extras: dict[str, Any]) -> fk.FileData:
+    def analyze(
+        self, location: fk.types.Location, extras: dict[str, Any]
+    ) -> fk.FileData:
         """Return all details about location."""
         filepath = os.path.join(str(self.storage.settings.path), location)
         client = self.storage.settings.client

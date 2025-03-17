@@ -8,6 +8,7 @@ from io import BytesIO
 import pytest
 from faker import Faker
 
+import file_keeper as fk
 from file_keeper import (
     Capability,
     FileData,
@@ -29,10 +30,12 @@ class TestUploader:
     def test_abstract_methods(self, uploader: Uploader, faker: Faker):
         """Abstract methods raise exception."""
         with pytest.raises(NotImplementedError):
-            uploader.upload(faker.file_name(), make_upload(b""), {})
+            uploader.upload(fk.types.Location(faker.file_name()), make_upload(b""), {})
 
         with pytest.raises(NotImplementedError):
-            uploader.multipart_start(faker.file_name(), MultipartData(), {})
+            uploader.multipart_start(
+                fk.types.Location(faker.file_name()), MultipartData(), {}
+            )
 
         with pytest.raises(NotImplementedError):
             uploader.multipart_refresh(MultipartData(), {})
@@ -52,7 +55,7 @@ class TestManager:
     def test_abstract_methods(self, manager: Manager):
         """Abstract methods raise exception."""
         with pytest.raises(NotImplementedError):
-            manager.remove(FileData(""), {})
+            manager.remove(FileData(fk.types.Location("")), {})
 
 
 class TestReader:
@@ -63,7 +66,7 @@ class TestReader:
     def test_abstract_methods(self, reader: Reader):
         """Abstract methods raise exception."""
         with pytest.raises(NotImplementedError):
-            reader.stream(FileData(""), {})
+            reader.stream(FileData(fk.types.Location("")), {})
 
 
 class RemovingManager(Manager):
@@ -110,27 +113,27 @@ class TestStorage:
     def test_not_supported_methods(self, faker: Faker):
         with pytest.raises(exc.UnsupportedOperationError):
             Storage({}).upload(
-                faker.file_name(),
+                fk.types.Location(faker.file_name()),
                 make_upload(b""),
             )
 
         with pytest.raises(exc.UnsupportedOperationError):
-            Storage({}).stream(FileData(""))
+            Storage({}).stream(FileData(fk.types.Location("")))
 
         with pytest.raises(exc.UnsupportedOperationError):
-            Storage({}).remove(FileData(""))
+            Storage({}).remove(FileData(fk.types.Location("")))
 
         with pytest.raises(exc.UnsupportedOperationError):
             Storage({}).copy(
-                "",
-                FileData(""),
+                fk.types.Location(""),
+                FileData(fk.types.Location("")),
                 Storage({}),
             )
 
         with pytest.raises(exc.UnsupportedOperationError):
             Storage({}).move(
-                "",
-                FileData(""),
+                fk.types.Location(""),
+                FileData(fk.types.Location("")),
                 Storage({}),
             )
 
@@ -138,22 +141,29 @@ class TestStorage:
         """Storage raises an error if upload exceeds max size."""
         storage = FakeStorage({"max_size": 10})
         with pytest.raises(exc.LargeUploadError):
-            storage.upload(faker.file_name(), make_upload(BytesIO(faker.binary(20))))
+            storage.upload(
+                fk.types.Location(faker.file_name()),
+                make_upload(BytesIO(faker.binary(20))),
+            )
 
     def test_not_implemented_methods(self, faker: Faker):
         """Storage raises an error if upload is not implemented."""
         storage = FakeStorage({})
         with pytest.raises(NotImplementedError):
-            storage.upload(faker.file_name(), make_upload(b""))
+            storage.upload(fk.types.Location(faker.file_name()), make_upload(b""))
 
         with pytest.raises(NotImplementedError):
-            storage.remove(FileData(""))
+            storage.remove(FileData(fk.types.Location("")))
 
         with pytest.raises(NotImplementedError):
-            storage.copy("", FileData(""), storage)
+            storage.copy(
+                fk.types.Location(""), FileData(fk.types.Location("")), storage
+            )
 
         with pytest.raises(NotImplementedError):
-            storage.move("", FileData(""), storage)
+            storage.move(
+                fk.types.Location(""), FileData(fk.types.Location("")), storage
+            )
 
     def test_prepare_location_uuid(self, faker: Faker):
         """`uuid`(default) name transformer produces valid UUID."""

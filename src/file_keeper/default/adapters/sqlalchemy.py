@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-
 import dataclasses
 from typing import Any, ClassVar, Iterable
 
 import sqlalchemy as sa
 
 import file_keeper as fk
-import sqlalchemy as sa
 
 
 @dataclasses.dataclass()
@@ -68,7 +66,7 @@ class Uploader(fk.Uploader):
 
     def upload(
         self,
-        location: str,
+        location: fk.types.Location,
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:

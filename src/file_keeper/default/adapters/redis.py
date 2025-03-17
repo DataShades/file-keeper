@@ -50,7 +50,7 @@ class Uploader(fk.Uploader):
 
     def upload(
         self,
-        location: str,
+        location: fk.types.Location,
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
@@ -81,7 +81,7 @@ class Uploader(fk.Uploader):
 
     def multipart_start(
         self,
-        location: str,
+        location: fk.types.Location,
         data: fk.MultipartData,
         extras: dict[str, Any],
     ) -> fk.MultipartData:
@@ -253,7 +253,7 @@ class Manager(fk.Manager):
 
     def copy(
         self,
-        location: str,
+        location: fk.types.Location,
         data: fk.FileData,
         extras: dict[str, Any],
     ) -> fk.FileData:
@@ -282,7 +282,7 @@ class Manager(fk.Manager):
 
     def move(
         self,
-        location: str,
+        location: fk.types.Location,
         data: fk.FileData,
         extras: dict[str, Any],
     ) -> fk.FileData:
@@ -329,7 +329,9 @@ class Manager(fk.Manager):
         for key in cast("Iterable[bytes]", cfg.redis.hkeys(cfg.path)):
             yield key.decode()
 
-    def analyze(self, location: str, extras: dict[str, Any]) -> fk.FileData:
+    def analyze(
+        self, location: fk.types.Location, extras: dict[str, Any]
+    ) -> fk.FileData:
         """Return all details about location.
 
         Raises:

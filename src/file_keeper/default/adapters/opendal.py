@@ -53,7 +53,7 @@ class Uploader(fk.Uploader):
 
     def upload(
         self,
-        location: str,
+        location: fk.types.Location,
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
@@ -143,7 +143,7 @@ class Manager(fk.Manager):
     )
 
     def copy(
-        self, location: str, data: fk.FileData, extras: dict[str, Any]
+        self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]
     ) -> fk.FileData:
         """Copy file inside the storage.
 
@@ -168,7 +168,7 @@ class Manager(fk.Manager):
         return new_data
 
     def move(
-        self, location: str, data: fk.FileData, extras: dict[str, Any]
+        self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]
     ) -> fk.FileData:
         """Move file to a different location inside the storage.
 
@@ -201,7 +201,9 @@ class Manager(fk.Manager):
 
         return True
 
-    def analyze(self, location: str, extras: dict[str, Any]) -> fk.FileData:
+    def analyze(
+        self, location: fk.types.Location, extras: dict[str, Any]
+    ) -> fk.FileData:
         """Check if file exists."""
         stream = self.storage.stream(fk.FileData(location))
 

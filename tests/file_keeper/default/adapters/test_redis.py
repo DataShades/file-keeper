@@ -60,7 +60,7 @@ class TestUploaderMultipart(standard.Multiparter, standard.MultiparterWithUpload
         """`multipart_refresh` synchronized filesize."""
         content: Any = faker.binary(10)
         data = storage.multipart_start(
-            faker.file_name(),
+            fk.types.Location(faker.file_name()),
             fk.MultipartData(size=len(content)),
         )
         storage.settings.redis.hset(storage.settings.path, data.location, content)
@@ -95,8 +95,8 @@ class TestManagerScan(standard.Scanner):
         second = faker.file_name()
         third = faker.file_name()
 
-        storage.upload(first, fk.make_upload(b""))
-        storage.upload(second, fk.make_upload(b""))
+        storage.upload(fk.types.Location(first), fk.make_upload(b""))
+        storage.upload(fk.types.Location(second), fk.make_upload(b""))
 
         storage.settings.redis.hset(storage.settings.path, third, "")
 

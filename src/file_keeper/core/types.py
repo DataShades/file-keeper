@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, Iterator, Protocol
+from typing import Any, Iterator, NewType, Protocol
+
+Location = NewType("Location", str)
 
 
 class PReadable(Protocol):
@@ -17,7 +19,7 @@ class PSeekableStream(PStream):
 
 
 class PData(Protocol):
-    location: str
+    location: Location
     size: int
     content_type: str
     hash: str

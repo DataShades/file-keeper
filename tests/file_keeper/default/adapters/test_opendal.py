@@ -79,7 +79,9 @@ class TestManagerAppend(standard.Appender):
     @pytest.mark.fk_storage_option("supported_types", ["text"])
     def test_append_with_wrong_final_type(self, storage: Storage, faker: Faker):
         """If source files produce unsupported composed type, it is removed."""
-        data = storage.upload(faker.file_name(), fk.make_upload(b'{"hello":'))
+        data = storage.upload(
+            fk.types.Location(faker.file_name()), fk.make_upload(b'{"hello":')
+        )
         with pytest.raises(fk.exc.WrongUploadTypeError):
             storage.append(data, fk.make_upload(b'"world"}'))
 

@@ -7,6 +7,7 @@ from libcloud.base import DriverType, get_driver
 from libcloud.common.types import LibcloudError
 from libcloud.storage.base import Container, StorageDriver
 from libcloud.storage.types import ContainerDoesNotExistError, ObjectDoesNotExistError
+
 import file_keeper as fk
 
 get_driver: Any
@@ -59,7 +60,7 @@ class Uploader(fk.Uploader):
 
     def upload(
         self,
-        location: str,
+        location: fk.types.Location,
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
@@ -70,7 +71,7 @@ class Uploader(fk.Uploader):
         )
 
         return fk.FileData(
-            result.name,
+            fk.types.Location(result.name),
             result.size,
             upload.content_type,
             result.hash.strip('"'),

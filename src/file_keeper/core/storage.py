@@ -71,7 +71,7 @@ class Uploader(StorageService):
         ```python
         class MyUploader(Uploader):
             def upload(
-                self, location: str, upload: Upload, extras: dict[str, Any]
+                self, location: Location, upload: Upload, extras: dict[str, Any]
             ) -> FileData:
                 reader = upload.hashing_reader()
 
@@ -88,7 +88,7 @@ class Uploader(StorageService):
 
     def upload(
         self,
-        location: str,
+        location: types.Location,
         upload: upload.Upload,
         extras: dict[str, Any],
     ) -> data.FileData:
@@ -97,7 +97,7 @@ class Uploader(StorageService):
 
     def multipart_start(
         self,
-        location: str,
+        location: types.Location,
         data: data.MultipartData,
         extras: dict[str, Any],
     ) -> data.MultipartData:
@@ -158,7 +158,7 @@ class Manager(StorageService):
 
     def compose(
         self,
-        location: str,
+        location: types.Location,
         datas: Iterable[data.FileData],
         extras: dict[str, Any],
     ) -> data.FileData:
@@ -176,7 +176,7 @@ class Manager(StorageService):
 
     def copy(
         self,
-        location: str,
+        location: types.Location,
         data: data.FileData,
         extras: dict[str, Any],
     ) -> data.FileData:
@@ -185,7 +185,7 @@ class Manager(StorageService):
 
     def move(
         self,
-        location: str,
+        location: types.Location,
         data: data.FileData,
         extras: dict[str, Any],
     ) -> data.FileData:
@@ -198,7 +198,7 @@ class Manager(StorageService):
 
     def analyze(
         self,
-        location: str,
+        location: types.Location,
         extras: dict[str, Any],
     ) -> data.FileData:
         """Return all details about filename."""
@@ -395,14 +395,14 @@ class Storage:
     def supports(self, operation: utils.Capability) -> bool:
         return self.capabilities.can(operation)
 
-    def prepare_location(self, location: str, /, **kwargs: Any) -> str:
+    def prepare_location(self, location: str, /, **kwargs: Any) -> types.Location:
         for name in self.settings.location_transformers:
             if transformer := location_transformers.get(name):
                 location = transformer(location, kwargs)
             else:
                 raise exceptions.LocationTransformerError(name)
 
-        return location
+        return types.Location(location)
 
     def stream_as_upload(self, data: data.FileData, **kwargs: Any) -> upload.Upload:
         """Make an Upload with file content."""
@@ -421,7 +421,7 @@ class Storage:
 
     @requires_capability(utils.Capability.CREATE)
     def upload(
-        self, location: str, upload: upload.Upload, /, **kwargs: Any
+        self, location: types.Location, upload: upload.Upload, /, **kwargs: Any
     ) -> data.FileData:
         self.validator.upload(upload, **kwargs)
         return self.uploader.upload(location, upload, kwargs)
@@ -429,7 +429,7 @@ class Storage:
     @requires_capability(utils.Capability.MULTIPART)
     def multipart_start(
         self,
-        location: str,
+        location: types.Location,
         data: data.MultipartData,
         /,
         **kwargs: Any,
@@ -470,7 +470,7 @@ class Storage:
         return self.manager.scan(kwargs)
 
     @requires_capability(utils.Capability.ANALYZE)
-    def analyze(self, location: str, /, **kwargs: Any) -> data.FileData:
+    def analyze(self, location: types.Location, /, **kwargs: Any) -> data.FileData:
         return self.manager.analyze(location, kwargs)
 
     @requires_capability(utils.Capability.STREAM)
@@ -505,7 +505,7 @@ class Storage:
 
     def copy(
         self,
-        location: str,
+        location: types.Location,
         data: data.FileData,
         dest_storage: Storage,
         /,
@@ -527,7 +527,7 @@ class Storage:
 
     def move(
         self,
-        location: str,
+        location: types.Location,
         data: data.FileData,
         dest_storage: Storage,
         /,
@@ -551,7 +551,7 @@ class Storage:
 
     def compose(
         self,
-        location: str,
+        location: types.Location,
         dest_storage: Storage,
         /,
         *files: data.FileData,

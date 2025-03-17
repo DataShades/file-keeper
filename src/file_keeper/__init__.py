@@ -1,6 +1,7 @@
 __version__ = "0.0.3a0"
 
 from .core import exceptions as exc
+from .core import types
 from .core.data import BaseData, FileData, MultipartData
 from .core.registry import Registry
 from .core.storage import (
@@ -24,25 +25,26 @@ from .core.utils import (
 from .ext import hookimpl  # must be the last line to avoid circular imports
 
 __all__ = [
-    "adapters",
-    "FileData",
     "BaseData",
-    "MultipartData",
-    "is_supported_type",
-    "Registry",
     "Capability",
-    "parse_filesize",
-    "humanize_filesize",
-    "IterableBytesReader",
+    "FileData",
     "HashingReader",
-    "make_upload",
-    "Upload",
-    "exc",
-    "make_storage",
-    "Storage",
-    "Reader",
-    "Uploader",
+    "IterableBytesReader",
     "Manager",
+    "MultipartData",
+    "Reader",
+    "Registry",
     "Settings",
+    "Storage",
+    "Upload",
+    "Uploader",
+    "adapters",
+    "exc",
     "hookimpl",
+    "humanize_filesize",
+    "is_supported_type",
+    "make_storage",
+    "make_upload",
+    "parse_filesize",
+    "types",
 ]

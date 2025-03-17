@@ -254,7 +254,7 @@ def humanize_filesize(value: int | float, base: int = SI_BASE) -> str:
     return f"{value:{num_format}}{suffixes[iteration]}"
 
 
-class IterableReader(Generic[T], abc.ABC):
+class AbstractReader(Generic[T], abc.ABC):
     def __init__(self, source: T, chunk_size: int = CHUNK_SIZE):
         self.source = source
         self.chunk_size = chunk_size
@@ -267,7 +267,7 @@ class IterableReader(Generic[T], abc.ABC):
     def read(self, size: int | None = None) -> bytes: ...
 
 
-class IterableBytesReader(IterableReader[Iterable[int]]):
+class IterableBytesReader(AbstractReader[Iterable[int]]):
     def __init__(self, source: Iterable[bytes], chunk_size: int = CHUNK_SIZE):
         super().__init__(itertools.chain.from_iterable(source), chunk_size)
 

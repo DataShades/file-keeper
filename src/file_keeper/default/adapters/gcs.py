@@ -59,7 +59,7 @@ class Uploader(fk.Uploader):
 
     def upload(
         self,
-        location: str,
+        location: fk.types.Location,
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
@@ -79,7 +79,7 @@ class Uploader(fk.Uploader):
 
     def multipart_start(
         self,
-        location: str,
+        location: fk.types.Location,
         data: fk.MultipartData,
         extras: dict[str, Any],
     ) -> fk.MultipartData:
@@ -234,9 +234,11 @@ class Uploader(fk.Uploader):
             raise fk.exc.UploadTypeMismatchError(content_type, data.content_type)
 
         return fk.FileData(
-            os.path.relpath(
-                data.storage_data["result"]["name"],
-                self.storage.settings.path,
+            fk.types.Location(
+                os.path.relpath(
+                    data.storage_data["result"]["name"],
+                    self.storage.settings.path,
+                )
             ),
             data.size,
             content_type,

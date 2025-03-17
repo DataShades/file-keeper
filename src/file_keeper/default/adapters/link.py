@@ -7,7 +7,6 @@ from urllib.parse import urlparse, urlunparse
 
 import requests
 
-
 import file_keeper as fk
 
 log = logging.getLogger(__name__)
@@ -32,7 +31,7 @@ class Uploader(fk.Uploader):
 
     def upload(
         self,
-        location: str,
+        location: fk.types.Location,
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
@@ -41,7 +40,7 @@ class Uploader(fk.Uploader):
         except ValueError as err:
             raise fk.exc.ContentError(self, str(err)) from err
 
-        return self.storage.analyze(url)
+        return self.storage.analyze(fk.types.Location(url))
 
 
 class Manager(fk.Manager):
@@ -55,7 +54,9 @@ class Manager(fk.Manager):
     ) -> bool:
         return True
 
-    def analyze(self, location: str, extras: dict[str, Any]) -> fk.FileData:
+    def analyze(
+        self, location: fk.types.Location, extras: dict[str, Any]
+    ) -> fk.FileData:
         resp = requests.head(location, timeout=self.storage.settings.timeout)
         if not resp.ok:
             log.debug("Cannot analyze URL %s: %s", location, resp)

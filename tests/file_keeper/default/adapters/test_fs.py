@@ -42,7 +42,7 @@ class TestUploaderMultipart(standard.Multiparter, standard.MultiparterWithUpload
         """`multipart_refresh` synchronized filesize."""
         content = faker.binary(10)
         data = storage.multipart_start(
-            faker.file_name(),
+            fk.types.Location(faker.file_name()),
             fk.MultipartData(size=len(content)),
         )
         with open(os.path.join(storage.settings.path, data.location), "wb") as dest:
@@ -55,7 +55,7 @@ class TestUploaderMultipart(standard.Multiparter, standard.MultiparterWithUpload
         """`multipart_update` can override existing parts."""
         content = b"hello world"
         data = storage.multipart_start(
-            faker.file_name(),
+            fk.types.Location(faker.file_name()),
             fk.MultipartData(size=len(content)),
         )
 
@@ -83,10 +83,14 @@ class TestManagerCompose(standard.Composer):
     @pytest.mark.fk_storage_option("supported_types", ["text"])
     def test_compose_with_wrong_final_type(self, storage: fs.FsStorage, faker: Faker):
         """If source files produce unsupported composed type, it is removed."""
-        first = storage.upload(faker.file_name(), fk.make_upload(b'{"hello":'))
-        second = storage.upload(faker.file_name(), fk.make_upload(b'"world"}'))
+        first = storage.upload(
+            fk.types.Location(faker.file_name()), fk.make_upload(b'{"hello":')
+        )
+        second = storage.upload(
+            fk.types.Location(faker.file_name()), fk.make_upload(b'"world"}')
+        )
 
-        location = faker.file_name()
+        location = fk.types.Location(faker.file_name())
         with pytest.raises(fk.exc.WrongUploadTypeError):
             storage.compose(location, storage, first, second)
 
@@ -96,10 +100,14 @@ class TestManagerCompose(standard.Composer):
     def test_compose_with_immense_size(self, storage: fs.FsStorage, faker: Faker):
         """If source files produce too big result it is removed."""
         content = faker.binary(storage.settings.max_size - 1)
-        first = storage.upload(faker.file_name(), fk.make_upload(content))
-        second = storage.upload(faker.file_name(), fk.make_upload(content))
+        first = storage.upload(
+            fk.types.Location(faker.file_name()), fk.make_upload(content)
+        )
+        second = storage.upload(
+            fk.types.Location(faker.file_name()), fk.make_upload(content)
+        )
 
-        location = faker.file_name()
+        location = fk.types.Location(faker.file_name())
         with pytest.raises(fk.exc.LargeUploadError):
             storage.compose(location, storage, first, second)
 
@@ -110,7 +118,9 @@ class TestManagerAppend(standard.Appender):
     @pytest.mark.fk_storage_option("supported_types", ["text"])
     def test_append_with_wrong_final_type(self, storage: fs.FsStorage, faker: Faker):
         """If source files produce unsupported composed type, it is removed."""
-        data = storage.upload(faker.file_name(), fk.make_upload(b'{"hello":'))
+        data = storage.upload(
+            fk.types.Location(faker.file_name()), fk.make_upload(b'{"hello":')
+        )
         with pytest.raises(fk.exc.WrongUploadTypeError):
             storage.append(data, fk.make_upload(b'"world"}'))
 
@@ -135,8 +145,12 @@ class TestManagerRemove(standard.Remover):
 
 class TestManagerScan(standard.Scanner):
     def test_scan(self, storage: fs.FsStorage, faker: Faker):
-        first = storage.upload(faker.file_name(), fk.make_upload(b""))
-        second = storage.upload(faker.file_name(), fk.make_upload(b""))
+        first = storage.upload(
+            fk.types.Location(faker.file_name()), fk.make_upload(b"")
+        )
+        second = storage.upload(
+            fk.types.Location(faker.file_name()), fk.make_upload(b"")
+        )
 
         relpath = faker.file_path(absolute=False)
         nested_path = os.path.join(storage.settings.path, relpath)
@@ -150,8 +164,12 @@ class TestManagerScan(standard.Scanner):
 
     @pytest.mark.fk_storage_option("recursive", True)
     def test_scan_recursive(self, storage: fs.FsStorage, faker: Faker):
-        first = storage.upload(faker.file_name(), fk.make_upload(b""))
-        second = storage.upload(faker.file_name(), fk.make_upload(b""))
+        first = storage.upload(
+            fk.types.Location(faker.file_name()), fk.make_upload(b"")
+        )
+        second = storage.upload(
+            fk.types.Location(faker.file_name()), fk.make_upload(b"")
+        )
 
         relpath = faker.file_path(absolute=False)
         nested_path = os.path.join(storage.settings.path, relpath)

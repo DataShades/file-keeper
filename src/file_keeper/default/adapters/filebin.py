@@ -5,6 +5,7 @@ import dataclasses
 from typing import IO, Any, ClassVar, Iterable
 
 import requests
+
 import file_keeper as fk
 
 API_URL = "https://filebin.net"
@@ -25,7 +26,7 @@ class Uploader(fk.Uploader):
 
     def upload(
         self,
-        location: str,
+        location: fk.types.Location,
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
@@ -101,7 +102,9 @@ class Manager(fk.Manager):
         for record in resp.json()["files"]:
             yield record["filename"]
 
-    def analyze(self, location: str, extras: dict[str, Any]) -> fk.FileData:
+    def analyze(
+        self, location: fk.types.Location, extras: dict[str, Any]
+    ) -> fk.FileData:
         resp = requests.get(
             f"{API_URL}/{self.storage.settings.bin}",
             headers={"accept": "application/json"},

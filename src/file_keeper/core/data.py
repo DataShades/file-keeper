@@ -24,7 +24,7 @@ TData = TypeVar("TData", bound=types.PData, default=Any)
 
 @dataclasses.dataclass
 class BaseData(Generic[TData]):
-    location: str
+    location: types.Location
     size: int = 0
     content_type: str = ""
     hash: str = ""
@@ -104,4 +104,4 @@ class MultipartData(BaseData[TData]):
         ```
     """
 
-    location: str = ""
+    location: types.Location = types.Location("")

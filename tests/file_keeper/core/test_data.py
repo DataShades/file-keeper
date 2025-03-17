@@ -17,13 +17,13 @@ class Source:
 
 
 def test_from_dict(faker: Faker):
-    location = faker.file_path()
+    location = fk.types.Location(faker.file_path())
     data = fk.BaseData.from_dict({"location": location, "number": 42})
     assert data == fk.BaseData(location=location)
 
 
 def test_from_object(faker: Faker):
-    location = faker.file_path()
+    location = fk.types.Location(faker.file_path())
     source = Source()
     source.location = location
 
@@ -32,7 +32,7 @@ def test_from_object(faker: Faker):
 
 
 def test_into_object(faker: Faker):
-    location = faker.file_path()
+    location = fk.types.Location(faker.file_path())
     data = fk.BaseData(location=location)
     source = Source()
 
