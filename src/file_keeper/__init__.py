@@ -3,6 +3,7 @@ __version__ = "0.0.3a0"
 from .core import exceptions as exc
 from .core import types
 from .core.data import BaseData, FileData, MultipartData
+from .core.types import Location
 from .core.registry import Registry
 from .core.storage import (
     Manager,
@@ -27,6 +28,7 @@ from .ext import hookimpl  # must be the last line to avoid circular imports
 __all__ = [
     "BaseData",
     "Capability",
+    "Location",
     "FileData",
     "HashingReader",
     "IterableBytesReader",

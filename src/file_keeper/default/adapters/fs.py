@@ -69,7 +69,7 @@ class Uploader(fk.Uploader):
         dest = os.path.join(self.storage.settings.path, location)
 
         if os.path.exists(dest) and not self.storage.settings.override_existing:
-            raise fk.exc.ExistingFileError(self.storage, dest)
+            raise fk.exc.ExistingFileError(self.storage, location)
 
         # `recursive` is checked earlier and either subpath is empty(no
         # directories created on the next line) or `reqursive` is
@@ -297,7 +297,7 @@ class Manager(fk.Manager):
         """
         dest = os.path.join(self.storage.settings.path, location)
         if os.path.exists(dest) and not self.storage.settings.override_existing:
-            raise fk.exc.ExistingFileError(self.storage, dest)
+            raise fk.exc.ExistingFileError(self.storage, location)
 
         sources: list[str] = []
         for data in datas:
@@ -384,7 +384,7 @@ class Manager(fk.Manager):
             raise fk.exc.MissingFileError(self.storage, src)
 
         if os.path.exists(dest) and not self.storage.settings.override_existing:
-            raise fk.exc.ExistingFileError(self.storage, dest)
+            raise fk.exc.ExistingFileError(self.storage, location)
 
         shutil.copy(src, dest)
         new_data = copy.deepcopy(data)
@@ -413,7 +413,7 @@ class Manager(fk.Manager):
             if self.storage.settings.override_existing:
                 os.remove(dest)
             else:
-                raise fk.exc.ExistingFileError(self.storage, dest)
+                raise fk.exc.ExistingFileError(self.storage, location)
 
         shutil.move(src, dest)
         new_data = copy.deepcopy(data)

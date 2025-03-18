@@ -509,7 +509,8 @@ class Storage:
                         chunk = chunk[start:]
                     else:
                         continue
-                yield chunk[:end]
+
+                yield chunk[:end and None]
                 end -= len(chunk)
                 if end <= 0:
                     break
