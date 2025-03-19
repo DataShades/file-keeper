@@ -4,8 +4,6 @@ Hierarchy:
 
 * Exception
     * FilesError
-        * QueueError
-            * OutOfQueueError
         * StorageError
             * UnknownAdapterError
             * UnknownStorageError
@@ -40,17 +38,6 @@ Storage = Any
 
 class FilesError(Exception):
     """Base error for catch-all scenario."""
-
-
-class QueueError(FilesError):
-    """Error related to task queue."""
-
-
-class OutOfQueueError(QueueError):
-    """Attempt to add task without initializing task queue context."""
-
-    def __str__(self):
-        return "Task queue accessed outside of queue context"
 
 
 class StorageError(FilesError):
