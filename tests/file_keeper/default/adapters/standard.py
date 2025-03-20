@@ -400,7 +400,7 @@ class Multiparter:
 class MultiparterWithUploaded:
     def test_std_initialization(self, storage: fk.Storage, faker: Faker):
         """`multipart_start` creates an empty file."""
-        size = faker.pyint(0, storage.settings.max_size)
+        size = faker.pyint()
         data = storage.multipart_start(
             fk.types.Location(faker.file_name()),
             fk.MultipartData(size=size),

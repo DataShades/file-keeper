@@ -249,12 +249,8 @@ class Manager(fk.Manager):
         removed.
 
         Raises:
-            LargeUploadError: result too big
-            WrongUploadTypeError: final type is not supported
             MissingFileError: file does not exist
         """
-        self.storage.validator.size(data.size + upload.size)
-
         op = self.storage.settings.operator
 
         if not self.exists(data, extras):
@@ -262,16 +258,8 @@ class Manager(fk.Manager):
 
         op.write(data.location, upload.stream.read(), append=True)
 
-        result = self.analyze(data.location, extras)
+        return self.analyze(data.location, extras)
 
-        # TODO: compute final type in advance to prevent loosing original file
-        try:
-            self.storage.validator.data(result)
-        except fk.exc.UploadError:
-            self.remove(result, extras)
-            raise
-
-        return result
 
 
 class OpenDalStorage(fk.Storage):

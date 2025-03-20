@@ -1,6 +1,5 @@
 import hashlib
 from io import BytesIO
-from typing import Iterable
 
 import pytest
 from faker import Faker
@@ -8,7 +7,6 @@ from faker import Faker
 from file_keeper import (
     Capability,
     HashingReader,
-    is_supported_type,
     parse_filesize,
 )
 from file_keeper.core.utils import humanize_filesize
@@ -36,21 +34,6 @@ class TestHasingReader:
         assert output == content
         assert reader.get_hash() == expected
 
-
-@pytest.mark.parametrize(
-    ("type", "supported", "outcome"),
-    [
-        ("text/csv", ["csv"], True),
-        ("text/csv", ["json", "text"], True),
-        ("text/csv", ["application/json", "text/plain", "text/csv", "image/png"], True),
-        ("text/csv", ["json", "image"], False),
-        ("text/csv", ["application/csv"], False),
-        ("text/csv", ["text/plain"], False),
-        ("text/csv", ["non-csv"], False),
-    ],
-)
-def test_is_supported_type(type: str, supported: Iterable[str], outcome: bool):
-    assert is_supported_type(type, supported) is outcome
 
 
 class TestCapabilities:

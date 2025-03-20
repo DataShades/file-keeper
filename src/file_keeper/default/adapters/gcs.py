@@ -88,10 +88,6 @@ class Uploader(fk.Uploader):
         client = self.storage.settings.client
         blob = client.bucket(self.storage.settings.bucket).blob(filepath)
 
-        max_size = self.storage.settings.max_size
-        if max_size and data.size > max_size:
-            raise fk.exc.LargeUploadError(data.size, max_size)
-
         url = cast(
             str,
             blob.create_resumable_upload_session(

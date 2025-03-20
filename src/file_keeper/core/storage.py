@@ -255,31 +255,9 @@ class Reader(StorageService):
         """Return one-time download link."""
         raise NotImplementedError
 
-
-
-class Validator(StorageService):
-    """Service responsible for validation of data and uploads."""
-
-    def size(self, size: int):
-        max_size = self.storage.settings.max_size
-        if max_size and size > max_size:
-            raise exceptions.LargeUploadError(size, max_size)
-
-    def content_type(self, content_type: str):
-        supported_types = self.storage.settings.supported_types
-        if supported_types and not utils.is_supported_type(
-            content_type,
-            supported_types,
-        ):
-            raise exceptions.WrongUploadTypeError(content_type)
-
-    def upload(self, upload: upload.Upload, /, **kwargs: Any):
-        self.size(upload.size)
-        self.content_type(upload.content_type)
-
-    def data(self, data: data.BaseData, /, **kwargs: Any):
-        self.size(data.size)
-        self.content_type(data.content_type)
+    def public_link(self, data: data.FileData, extras: dict[str, Any]) -> str:
+        """Return public link."""
+        raise NotImplementedError
 
 
 @dataclasses.dataclass()
@@ -331,7 +309,6 @@ class Storage:
     UploaderFactory: type[Uploader] = Uploader
     ManagerFactory: type[Manager] = Manager
     ReaderFactory: type[Reader] = Reader
-    ValidatorFactory: Callable[[Storage], Validator] = Validator
 
     def __str__(self):
         return self.settings.name
@@ -341,12 +318,8 @@ class Storage:
         self.uploader = self.make_uploader()
         self.manager = self.make_manager()
         self.reader = self.make_reader()
-        self.validator = self.make_validator()
 
         self.capabilities = self.compute_capabilities()
-
-    def make_validator(self):
-        return self.ValidatorFactory(self)
 
     def make_uploader(self):
         return self.UploaderFactory(self)
@@ -425,7 +398,6 @@ class Storage:
     def upload(
         self, location: types.Location, upload: upload.Upload, /, **kwargs: Any
     ) -> data.FileData:
-        self.validator.upload(upload, **kwargs)
         return self.uploader.upload(location, upload, kwargs)
 
     @requires_capability(utils.Capability.MULTIPART)
@@ -436,7 +408,6 @@ class Storage:
         /,
         **kwargs: Any,
     ) -> data.MultipartData:
-        self.validator.data(data, **kwargs)
         return self.uploader.multipart_start(location, data, kwargs)
 
     @requires_capability(utils.Capability.MULTIPART)
@@ -617,6 +588,10 @@ class Storage:
             return result
 
         raise exceptions.UnsupportedOperationError("compose", self)
+
+    def public_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
+        if self.supports(utils.Capability.PUBLIC_LINK):
+            return self.reader.public_link(data, kwargs)
 
     def one_time_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
         if self.supports(utils.Capability.ONE_TIME_LINK):

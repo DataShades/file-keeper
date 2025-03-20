@@ -3,7 +3,6 @@ from __future__ import annotations
 import os
 import uuid
 from datetime import datetime
-from io import BytesIO
 
 import pytest
 from faker import Faker
@@ -135,15 +134,6 @@ class TestStorage:
                 fk.types.Location(""),
                 FileData(fk.types.Location("")),
                 Storage({}),
-            )
-
-    def test_upload_checks_max_size(self, faker: Faker):
-        """Storage raises an error if upload exceeds max size."""
-        storage = FakeStorage({"max_size": 10})
-        with pytest.raises(exc.LargeUploadError):
-            storage.upload(
-                fk.types.Location(faker.file_name()),
-                make_upload(BytesIO(faker.binary(20))),
             )
 
     def test_not_implemented_methods(self, faker: Faker):

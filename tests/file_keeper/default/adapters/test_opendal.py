@@ -5,7 +5,6 @@ from typing import Any
 
 import opendal
 import pytest
-from faker import Faker
 
 import file_keeper as fk
 import file_keeper.default.adapters.opendal as od
@@ -76,17 +75,7 @@ class TestManagerAnalyze(standard.Analyzer):
 
 
 class TestManagerAppend(standard.Appender):
-    @pytest.mark.fk_storage_option("supported_types", ["text"])
-    def test_append_with_wrong_final_type(self, storage: Storage, faker: Faker):
-        """If source files produce unsupported composed type, it is removed."""
-        data = storage.upload(
-            fk.types.Location(faker.file_name()), fk.make_upload(b'{"hello":')
-        )
-        with pytest.raises(fk.exc.WrongUploadTypeError):
-            storage.append(data, fk.make_upload(b'"world"}'))
-
-        assert not storage.exists(data)
-
+    ...
 
 class TestStorage:
     def test_capabilities_fs(self, storage: Storage):

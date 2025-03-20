@@ -292,8 +292,6 @@ class Manager(fk.Manager):
         Raises:
             ExistingFileError: file exists and overrides are not allowed
             MissingFileError: source file does not exist
-            LargeUploadError: composed result too big
-            WrongUploadTypeError: composed type is not supported
         """
         dest = os.path.join(self.storage.settings.path, location)
         if os.path.exists(dest) and not self.storage.settings.override_existing:
@@ -327,8 +325,6 @@ class Manager(fk.Manager):
         removed.
 
         Raises:
-            LargeUploadError: result too big
-            WrongUploadTypeError: final type is not supported
             MissingFileError: file does not exist
         """
         dest = os.path.join(self.storage.settings.path, data.location)

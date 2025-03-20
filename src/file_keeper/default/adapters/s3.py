@@ -101,9 +101,6 @@ class Uploader(fk.Uploader):
         data: fk.MultipartData,
         extras: dict[str, Any],
     ) -> fk.MultipartData:
-        max_size = self.storage.settings.max_size
-        if max_size and data.size > max_size:
-            raise fk.exc.LargeUploadError(data.size, max_size)
 
         filepath = os.path.join(self.storage.settings.path, location)
         client = self.storage.settings.client
