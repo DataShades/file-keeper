@@ -284,7 +284,7 @@ class Manager(fk.Manager):
         datas: Iterable[fk.FileData],
         extras: dict[str, Any],
     ) -> fk.FileData:
-        """Combine multipe file inside the storage into a new one.
+        """Combine multipe files inside the storage into a new one.
 
         If final content type is not supported by the storage, the file is
         removed.
@@ -308,26 +308,12 @@ class Manager(fk.Manager):
 
             sources.append(src)
 
-        # validate expected size here to cause an early exit when immense file
-        # is composed. Type is not validated here because final type can be
-        # different from types of sources.
-        self.storage.validator.size(sum(d.size for d in datas))
-
-        # TODO: compute final type in advance to reduce amount of work
         with open(dest, "wb") as to_fd:
             for src in sources:
                 with open(src, "rb") as from_fd:
                     shutil.copyfileobj(from_fd, to_fd)
 
-        result = self.analyze(location, extras)
-
-        try:
-            self.storage.validator.data(result)
-        except fk.exc.UploadError:
-            self.remove(result, extras)
-            raise
-
-        return result
+        return self.analyze(location, extras)
 
     def append(
         self,
@@ -349,21 +335,10 @@ class Manager(fk.Manager):
         if not os.path.exists(dest):
             raise fk.exc.MissingFileError(self.storage, dest)
 
-        self.storage.validator.size(data.size + upload.size)
-
         with open(dest, "ab") as fd:
             fd.write(upload.stream.read())
 
-        result = self.analyze(data.location, extras)
-
-        # TODO: compute final type in advance to prevent loosing original file
-        try:
-            self.storage.validator.data(result)
-        except fk.exc.UploadError:
-            self.remove(result, extras)
-            raise
-
-        return result
+        return self.analyze(data.location, extras)
 
     def copy(
         self,

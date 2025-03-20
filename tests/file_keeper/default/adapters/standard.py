@@ -252,17 +252,6 @@ class Appender:
                 fk.FileData(fk.types.Location(faker.file_name())), fk.make_upload(b"")
             )
 
-    @pytest.mark.fk_storage_option("max_size", 10)
-    def test_std_append_with_big_file(self, storage: fk.Storage, faker: Faker):
-        """Size limits are tracked during the append."""
-        content = faker.binary(storage.settings.max_size // 2 + 1)
-        data = storage.upload(
-            fk.types.Location(faker.file_name()), fk.make_upload(content)
-        )
-
-        with pytest.raises(fk.exc.LargeUploadError):
-            storage.append(data, fk.make_upload(content))
-
 
 class Composer:
     def test_std_capabilities(self, storage: fk.Storage):

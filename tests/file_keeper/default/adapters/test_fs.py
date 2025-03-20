@@ -80,51 +80,11 @@ class TestReader(standard.Reader):
 
 
 class TestManagerCompose(standard.Composer):
-    @pytest.mark.fk_storage_option("supported_types", ["text"])
-    def test_compose_with_wrong_final_type(self, storage: fs.FsStorage, faker: Faker):
-        """If source files produce unsupported composed type, it is removed."""
-        first = storage.upload(
-            fk.types.Location(faker.file_name()), fk.make_upload(b'{"hello":')
-        )
-        second = storage.upload(
-            fk.types.Location(faker.file_name()), fk.make_upload(b'"world"}')
-        )
-
-        location = fk.types.Location(faker.file_name())
-        with pytest.raises(fk.exc.WrongUploadTypeError):
-            storage.compose(location, storage, first, second)
-
-        assert not os.path.exists(os.path.join(storage.settings.path, location))
-
-    @pytest.mark.fk_storage_option("max_size", 10)
-    def test_compose_with_immense_size(self, storage: fs.FsStorage, faker: Faker):
-        """If source files produce too big result it is removed."""
-        content = faker.binary(storage.settings.max_size - 1)
-        first = storage.upload(
-            fk.types.Location(faker.file_name()), fk.make_upload(content)
-        )
-        second = storage.upload(
-            fk.types.Location(faker.file_name()), fk.make_upload(content)
-        )
-
-        location = fk.types.Location(faker.file_name())
-        with pytest.raises(fk.exc.LargeUploadError):
-            storage.compose(location, storage, first, second)
-
-        assert not os.path.exists(os.path.join(storage.settings.path, location))
+    pass
 
 
 class TestManagerAppend(standard.Appender):
-    @pytest.mark.fk_storage_option("supported_types", ["text"])
-    def test_append_with_wrong_final_type(self, storage: fs.FsStorage, faker: Faker):
-        """If source files produce unsupported composed type, it is removed."""
-        data = storage.upload(
-            fk.types.Location(faker.file_name()), fk.make_upload(b'{"hello":')
-        )
-        with pytest.raises(fk.exc.WrongUploadTypeError):
-            storage.append(data, fk.make_upload(b'"world"}'))
-
-        assert not os.path.exists(os.path.join(storage.settings.path, data.location))
+    pass
 
 
 class TestManagerCopy(standard.Copier):
