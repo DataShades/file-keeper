@@ -264,8 +264,6 @@ class Reader(StorageService):
 class Settings:
     name: str = "unknown"
     override_existing: bool = False
-    supported_types: list[str] = dataclasses.field(default_factory=list)
-    max_size: int = 0
     location_transformers: list[str] = dataclasses.field(default_factory=list)
 
     _required_options: ClassVar[list[str]] = []
