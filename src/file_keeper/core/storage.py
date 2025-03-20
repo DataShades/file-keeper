@@ -589,10 +589,6 @@ class Storage:
 
         raise exceptions.UnsupportedOperationError("compose", self)
 
-    def public_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
-        if self.supports(utils.Capability.PUBLIC_LINK):
-            return self.reader.public_link(data, kwargs)
-
     def one_time_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
         if self.supports(utils.Capability.ONE_TIME_LINK):
             return self.reader.one_time_link(data, kwargs)

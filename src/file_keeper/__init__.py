@@ -43,7 +43,6 @@ __all__ = [
     "exc",
     "hookimpl",
     "humanize_filesize",
-    "is_supported_type",
     "make_storage",
     "make_upload",
     "parse_filesize",
