@@ -255,9 +255,6 @@ class Reader(StorageService):
         """Return one-time download link."""
         raise NotImplementedError
 
-    def public_link(self, data: data.FileData, extras: dict[str, Any]) -> str:
-        """Return public link."""
-        raise NotImplementedError
 
 
 class Validator(StorageService):
@@ -620,10 +617,6 @@ class Storage:
             return result
 
         raise exceptions.UnsupportedOperationError("compose", self)
-
-    def public_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
-        if self.supports(utils.Capability.PUBLIC_LINK):
-            return self.reader.public_link(data, kwargs)
 
     def one_time_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
         if self.supports(utils.Capability.ONE_TIME_LINK):

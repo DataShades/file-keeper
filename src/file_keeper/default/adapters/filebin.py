@@ -51,7 +51,7 @@ class Reader(fk.Reader):
     storage: FilebinStorage
     required_options = ["bin"]
     capabilities = (
-        fk.Capability.STREAM | fk.Capability.PUBLIC_LINK | fk.Capability.TEMPORAL_LINK
+        fk.Capability.STREAM | fk.Capability.PERMANENT_LINK
     )
 
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> IO[bytes]:
@@ -72,7 +72,7 @@ class Reader(fk.Reader):
 
         return resp.raw  # type: ignore
 
-    def public_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
+    def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
         return f"{API_URL}/{self.storage.settings.bin}/{data.location}"
 
 

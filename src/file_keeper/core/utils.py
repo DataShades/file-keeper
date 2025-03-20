@@ -156,14 +156,12 @@ class Capability(enum.Flag):
     RANGE = enum.auto()
     # return file details from the storage, as if file was uploaded just now
     ANALYZE = enum.auto()
-    # make permanent download link for private file (dangerous)
+    # make permanent download link for file
     PERMANENT_LINK = enum.auto()
     # make expiring download link for private file
     TEMPORAL_LINK = enum.auto()
     # make one-time download link for private file
     ONE_TIME_LINK = enum.auto()
-    # make permanent public(anonymously accessible) link
-    PUBLIC_LINK = enum.auto()
 
     def exclude(self, *capabilities: Capability):
         """Remove capabilities from the cluster.

@@ -18,10 +18,10 @@ class Settings(fk.Settings):
 
 
 class Reader(fk.Reader):
-    capabilities = fk.Capability.PUBLIC_LINK
+    capabilities = fk.Capability.PERMANENT_LINK
     storage: LinkStorage
 
-    def public_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
+    def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
         return data.location
 
 
