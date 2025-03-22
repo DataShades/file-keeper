@@ -142,6 +142,7 @@ class Uploader(fk.Uploader):
             upload: fk.Upload = extras["upload"]
 
             first_byte = data.storage_data["uploaded"]
+
             last_byte = first_byte + upload.size
             size = data.size
 

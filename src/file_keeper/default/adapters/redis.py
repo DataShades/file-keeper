@@ -154,7 +154,7 @@ class Uploader(fk.Uploader):
 
         if "upload" not in extras:
             raise fk.exc.MissingExtrasError("upload")
-        upload: fk.Upload = extras["upload"]
+        upload = fk.make_upload(extras["upload"])
 
         current = cast(bytes, cfg.redis.hget(cfg.path, data.location))
         size = len(current)

@@ -17,7 +17,8 @@ from typing import Any, Callable, ClassVar, Iterable, cast
 
 from typing_extensions import Concatenate, ParamSpec, TypeAlias, TypeVar
 
-from . import data, exceptions, types, upload, utils
+from . import data, exceptions, types, utils
+from .upload import make_upload, Upload
 from .registry import Registry
 
 P = ParamSpec("P")
@@ -89,7 +90,7 @@ class Uploader(StorageService):
     def upload(
         self,
         location: types.Location,
-        upload: upload.Upload,
+        upload: Upload,
         extras: dict[str, Any],
     ) -> data.FileData:
         """Upload file using single stream."""
@@ -168,7 +169,7 @@ class Manager(StorageService):
     def append(
         self,
         data: data.FileData,
-        upload: upload.Upload,
+        upload: Upload,
         extras: dict[str, Any],
     ) -> data.FileData:
         """Append content to existing file."""
@@ -377,7 +378,7 @@ class Storage:
 
         return types.Location(location)
 
-    def stream_as_upload(self, data: data.FileData, **kwargs: Any) -> upload.Upload:
+    def stream_as_upload(self, data: data.FileData, **kwargs: Any) -> Upload:
         """Make an Upload with file content."""
         stream = self.stream(data, **kwargs)
         if hasattr(stream, "read"):
@@ -385,7 +386,7 @@ class Storage:
         else:
             stream = utils.IterableBytesReader(stream)
 
-        return upload.Upload(
+        return Upload(
             stream,
             data.location,
             data.size,
@@ -394,9 +395,9 @@ class Storage:
 
     @requires_capability(utils.Capability.CREATE)
     def upload(
-        self, location: types.Location, upload: upload.Upload, /, **kwargs: Any
+        self, location: types.Location, upload: Any, /, **kwargs: Any
     ) -> data.FileData:
-        return self.uploader.upload(location, upload, kwargs)
+        return self.uploader.upload(location, make_upload(upload), kwargs)
 
     @requires_capability(utils.Capability.MULTIPART)
     def multipart_start(
@@ -476,7 +477,7 @@ class Storage:
                     else:
                         continue
 
-                yield chunk[:end and None]
+                yield chunk[: end and None]
                 end -= len(chunk)
                 if end <= 0:
                     break
@@ -492,11 +493,11 @@ class Storage:
     def append(
         self,
         data: data.FileData,
-        upload: upload.Upload,
+        upload: Any,
         /,
         **kwargs: Any,
     ) -> data.FileData:
-        return self.manager.append(data, upload, kwargs)
+        return self.manager.append(data, make_upload(upload), kwargs)
 
     def copy(
         self,
@@ -561,7 +562,7 @@ class Storage:
         if self.supports(utils.Capability.STREAM) and dest_storage.supports(
             utils.Capability.CREATE | utils.Capability.APPEND | utils.Capability.REMOVE
         ):
-            result = dest_storage.upload(location, upload.make_upload(b""), **kwargs)
+            result = dest_storage.upload(location, make_upload(b""), **kwargs)
 
             # append creates file only when there are no problems. But when
             # first append succeeded with the fragment of the file added in the

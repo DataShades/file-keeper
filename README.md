@@ -34,10 +34,7 @@ Upload file into the storage initialized in the previous step and play with it
 a bit:
 
 ```python
-from file_keeper import make_upload
-
-# transform data into an object, that can be saved inside the storage
-upload = make_upload(b"hello world")
+upload = b"hello world"
 
 # save the data and verify its presence in the system
 result = storage.upload("hello.txt", upload)

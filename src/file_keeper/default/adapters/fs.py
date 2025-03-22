@@ -180,7 +180,7 @@ class Uploader(fk.Uploader):
         if "upload" not in extras:
             raise fk.exc.MissingExtrasError("upload")
 
-        upload: fk.Upload = extras["upload"]
+        upload = fk.make_upload(extras["upload"])
 
         # when re-uploading existing parts via explicit `position`, `uploaded`
         # can be greater than `position` + part size. For example, existing

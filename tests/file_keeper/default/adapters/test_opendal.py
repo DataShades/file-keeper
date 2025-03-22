@@ -74,8 +74,8 @@ class TestManagerAnalyze(standard.Analyzer):
     pass
 
 
-class TestManagerAppend(standard.Appender):
-    ...
+class TestManagerAppend(standard.Appender): ...
+
 
 class TestStorage:
     def test_capabilities_fs(self, storage: Storage):
