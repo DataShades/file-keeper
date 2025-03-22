@@ -114,7 +114,7 @@ class Uploader(fk.Uploader):
         extras: dict[str, Any],
     ) -> fk.MultipartData:
         if "upload" in extras:
-            upload: fk.Upload = extras["upload"]
+            upload = fk.make_upload(extras["upload"])
 
             first_byte = extras.get("position", data.storage_data["uploaded"])
             last_byte = first_byte + upload.size - 1

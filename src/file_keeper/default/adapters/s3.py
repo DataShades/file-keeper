@@ -139,7 +139,7 @@ class Uploader(fk.Uploader):
     ) -> fk.MultipartData:
         filepath = os.path.join(self.storage.settings.path, data.location)
         if "upload" in extras:
-            upload: fk.Upload = extras["upload"]
+            upload = fk.make_upload(extras["upload"])
 
             first_byte = data.storage_data["uploaded"]
 
