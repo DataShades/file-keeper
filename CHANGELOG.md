@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v0.0.4](https://github.com/DataShades/file-keeper/releases/tag/v0.0.4) - 2025-03-23
+
+<small>[Compare with v0.0.3](https://github.com/DataShades/file-keeper/compare/v0.0.3...v0.0.4)</small>
+
+### Features
+
+- storages accept any type of upload ([a64ee3d](https://github.com/DataShades/file-keeper/commit/a64ee3da989930201964f22b4f32c62641da9294) by Sergey Motornyuk).
+
+### Code Refactoring
+
+- remove validation from storage ([93392f9](https://github.com/DataShades/file-keeper/commit/93392f9d8473a913623b8dd35cd202d35b4368ec) by Sergey Motornyuk).
+- remove type and size validation from append and compose ([890c89a](https://github.com/DataShades/file-keeper/commit/890c89a8109c64f2a783c6b8dcd0c59d4c94cd89) by Sergey Motornyuk).
+- remove public link method and capability ([cb39151](https://github.com/DataShades/file-keeper/commit/cb39151fb7e09cfdf3b9cdf0d3e2d98ba519edbe) by Sergey Motornyuk).
+
 ## [v0.0.3](https://github.com/DataShades/file-keeper/releases/tag/v0.0.3) - 2025-03-19
 
 <small>[Compare with v0.0.2](https://github.com/DataShades/file-keeper/compare/v0.0.2...v0.0.3)</small>
