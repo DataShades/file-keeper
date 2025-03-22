@@ -26,11 +26,6 @@ except ImportError:
     S3Storage = None
 
 try:
-    from .link import LinkStorage
-except ImportError:
-    LinkStorage = None
-
-try:
     from .filebin import FilebinStorage
 except ImportError:
     FilebinStorage = None
@@ -42,7 +37,6 @@ except ImportError:
 
 __all__ = [
     "FsStorage",
-    "LinkStorage",
     "RedisStorage",
     "OpenDalStorage",
     "LibCloudStorage",
