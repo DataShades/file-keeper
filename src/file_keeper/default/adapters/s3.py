@@ -49,7 +49,7 @@ class Settings(fk.Settings):
 
 class Reader(fk.Reader):
     storage: S3Storage
-    capabilities = fk.Capability.STREAM | fk.Capability.TEMPORAL_LINK
+    capabilities = fk.Capability.STREAM
 
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
         client = self.storage.settings.client
