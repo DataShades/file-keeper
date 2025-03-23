@@ -125,30 +125,31 @@ class Capability(enum.Flag):
 
     NONE = 0
 
-    # create a file as an atomic object
-    CREATE = enum.auto()
-    # return file content as stream of bytes
-    STREAM = enum.auto()
-    # make a copy of the file inside the same storage
-    COPY = enum.auto()
-    # remove file from the storage
-    REMOVE = enum.auto()
-    # create file in 3 stages: initialize, upload(repeatable), complete
-    MULTIPART = enum.auto()
-    # move file to a different location inside the same storage
-    MOVE = enum.auto()
-    # check if file exists
-    EXISTS = enum.auto()
-    # iterate over all files in the storage
-    SCAN = enum.auto()
+    # return file details from the storage, as if file was uploaded just now
+    ANALYZE = enum.auto()
     # add content to the existing file
     APPEND = enum.auto()
     # combine multiple files into a new one in the same storage
     COMPOSE = enum.auto()
+    # make a copy of the file inside the same storage
+    COPY = enum.auto()
+    # create a file as an atomic object
+    CREATE = enum.auto()
+    # check if file exists
+    EXISTS = enum.auto()
+    # move file to a different location inside the same storage
+    MOVE = enum.auto()
+    # create file in 3 stages: initialize, upload(repeatable), complete
+    MULTIPART = enum.auto()
     # return specific range of bytes from the file
     RANGE = enum.auto()
-    # return file details from the storage, as if file was uploaded just now
-    ANALYZE = enum.auto()
+    # remove file from the storage
+    REMOVE = enum.auto()
+    # iterate over all files in the storage
+    SCAN = enum.auto()
+    # return file content as stream of bytes
+    STREAM = enum.auto()
+
     # make permanent download link for file
     PERMANENT_LINK = enum.auto()
     # make expiring download link for private file
