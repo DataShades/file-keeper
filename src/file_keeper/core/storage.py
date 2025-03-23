@@ -369,6 +369,29 @@ class Storage:
     def supports(self, operation: utils.Capability) -> bool:
         return self.capabilities.can(operation)
 
+    def supports_synthetic(self, operation: utils.Capability, dest: Storage) -> bool:
+        if operation is utils.Capability.RANGE:
+            return self.supports(utils.Capability.STREAM)
+
+        if operation is utils.Capability.COPY:
+            return self.supports(utils.Capability.STREAM) and dest.supports(
+                utils.Capability.CREATE,
+            )
+
+        if operation is utils.Capability.MOVE:
+            return self.supports(
+                utils.Capability.STREAM | utils.Capability.REMOVE,
+            ) and dest.supports(utils.Capability.CREATE)
+
+        if operation is utils.Capability.COMPOSE:
+            return self.supports(utils.Capability.STREAM) and dest.supports(
+                utils.Capability.CREATE
+                | utils.Capability.APPEND
+                | utils.Capability.REMOVE
+            )
+
+        return False
+
     def prepare_location(self, location: str, /, **kwargs: Any) -> types.Location:
         for name in self.settings.location_transformers:
             if transformer := location_transformers.get(name):
@@ -449,6 +472,7 @@ class Storage:
     def stream(self, data: data.FileData, /, **kwargs: Any) -> Iterable[bytes]:
         return self.reader.stream(data, kwargs)
 
+    @requires_capability(utils.Capability.RANGE)
     def range(
         self,
         data: data.FileData,
@@ -458,32 +482,35 @@ class Storage:
         **kwargs: Any,
     ) -> Iterable[bytes]:
         """Return byte-stream of the file content."""
-        if self.supports(utils.Capability.RANGE):
-            return self.reader.range(data, start, end, kwargs)
+        return self.reader.range(data, start, end, kwargs)
 
-        if self.supports(utils.Capability.STREAM):
-            if end is None:
-                end = cast(int, float("inf"))
+    def range_synthetic(
+        self,
+        data: data.FileData,
+        start: int = 0,
+        end: int | None = None,
+        /,
+        **kwargs: Any,
+    ) -> Iterable[bytes]:
+        if end is None:
+            end = cast(int, float("inf"))
 
-            end -= start
-            if end <= 0:
-                return
-
-            for chunk in self.stream(data, **kwargs):
-                if start > 0:
-                    start -= len(chunk)
-                    if start < 0:
-                        chunk = chunk[start:]
-                    else:
-                        continue
-
-                yield chunk[: end and None]
-                end -= len(chunk)
-                if end <= 0:
-                    break
+        end -= start
+        if end <= 0:
             return
 
-        raise exceptions.UnsupportedOperationError("range", self)
+        for chunk in self.stream(data, **kwargs):
+            if start > 0:
+                start -= len(chunk)
+                if start < 0:
+                    chunk = chunk[start:]
+                else:
+                    continue
+
+            yield chunk[: end and None]
+            end -= len(chunk)
+            if end <= 0:
+                break
 
     @requires_capability(utils.Capability.STREAM)
     def content(self, data: data.FileData, /, **kwargs: Any) -> bytes:
@@ -499,29 +526,17 @@ class Storage:
     ) -> data.FileData:
         return self.manager.append(data, make_upload(upload), kwargs)
 
+    @requires_capability(utils.Capability.COPY)
     def copy(
         self,
         location: types.Location,
         data: data.FileData,
-        dest_storage: Storage,
         /,
         **kwargs: Any,
     ) -> data.FileData:
-        if dest_storage is self and self.supports(utils.Capability.COPY):
-            return self.manager.copy(location, data, kwargs)
+        return self.manager.copy(location, data, kwargs)
 
-        if self.supports(utils.Capability.STREAM) and dest_storage.supports(
-            utils.Capability.CREATE,
-        ):
-            return dest_storage.upload(
-                location,
-                self.stream_as_upload(data, **kwargs),
-                **kwargs,
-            )
-
-        raise exceptions.UnsupportedOperationError("copy", self)
-
-    def move(
+    def copy_synthetic(
         self,
         location: types.Location,
         data: data.FileData,
@@ -529,23 +544,49 @@ class Storage:
         /,
         **kwargs: Any,
     ) -> data.FileData:
-        if dest_storage is self and self.supports(utils.Capability.MOVE):
-            return self.manager.move(location, data, kwargs)
+        return dest_storage.upload(
+            location,
+            self.stream_as_upload(data, **kwargs),
+            **kwargs,
+        )
 
-        if self.supports(
-            utils.Capability.STREAM | utils.Capability.REMOVE,
-        ) and dest_storage.supports(utils.Capability.CREATE):
-            result = dest_storage.upload(
-                location,
-                self.stream_as_upload(data, **kwargs),
-                **kwargs,
-            )
-            dest_storage.remove(data)
-            return result
+    @requires_capability(utils.Capability.MOVE)
+    def move(
+        self,
+        location: types.Location,
+        data: data.FileData,
+        /,
+        **kwargs: Any,
+    ) -> data.FileData:
+        return self.manager.move(location, data, kwargs)
 
-        raise exceptions.UnsupportedOperationError("move", self)
+    def move_synthetic(
+        self,
+        location: types.Location,
+        data: data.FileData,
+        dest_storage: Storage,
+        /,
+        **kwargs: Any,
+    ) -> data.FileData:
+        result = dest_storage.upload(
+            location,
+            self.stream_as_upload(data, **kwargs),
+            **kwargs,
+        )
+        dest_storage.remove(data)
+        return result
 
+    @requires_capability(utils.Capability.COMPOSE)
     def compose(
+        self,
+        location: types.Location,
+        /,
+        *files: data.FileData,
+        **kwargs: Any,
+    ) -> data.FileData:
+        return self.manager.compose(location, files, kwargs)
+
+    def compose_synthetic(
         self,
         location: types.Location,
         dest_storage: Storage,
@@ -553,40 +594,28 @@ class Storage:
         *files: data.FileData,
         **kwargs: Any,
     ) -> data.FileData:
-        if dest_storage is self and self.supports(utils.Capability.COMPOSE):
-            return self.manager.compose(location, files, kwargs)
+        result = dest_storage.upload(location, make_upload(b""), **kwargs)
 
-        # REMOVE capability is required for cleaning. Alternatively, we can
-        # compute expected size and check existence in advance. But this is
-        # just a fallback method - use explicit implementation for efficiency.
-        if self.supports(utils.Capability.STREAM) and dest_storage.supports(
-            utils.Capability.CREATE | utils.Capability.APPEND | utils.Capability.REMOVE
-        ):
-            result = dest_storage.upload(location, make_upload(b""), **kwargs)
+        # when first append succeeded with the fragment of the file added
+        # in the storage, and the following append failed, this incomplete
+        # fragment must be removed.
+        #
+        # Expected reasons of failure are:
+        #
+        # * one of the source fiels is missing
+        # * file will go over the size limit after the following append
+        try:
+            for item in files:
+                result = dest_storage.append(
+                    result,
+                    self.stream_as_upload(item, **kwargs),
+                    **kwargs,
+                )
+        except (exceptions.MissingFileError, exceptions.UploadError):
+            self.remove(result, **kwargs)
+            raise
 
-            # append creates file only when there are no problems. But when
-            # first append succeeded with the fragment of the file added in the
-            # storage, and the following append failed, this incomplete
-            # fragment must be removed.
-            #
-            # Expected reasons of failure are:
-            #
-            # * one of the source fiels is missing
-            # * file will go over the size limit after the following append
-            try:
-                for item in files:
-                    result = dest_storage.append(
-                        result,
-                        self.stream_as_upload(item, **kwargs),
-                        **kwargs,
-                    )
-            except (exceptions.MissingFileError, exceptions.UploadError):
-                self.remove(result, **kwargs)
-                raise
-
-            return result
-
-        raise exceptions.UnsupportedOperationError("compose", self)
+        return result
 
     def one_time_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
         if self.supports(utils.Capability.ONE_TIME_LINK):

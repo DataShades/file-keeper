@@ -19,9 +19,9 @@ class Analyzer:
             fk.types.Location(faker.file_name()), fk.make_upload(b"hello")
         )
 
-        assert (
-            storage.analyze(data.location) == data
-        ), "Analyzed data does not match creation data"
+        assert storage.analyze(data.location) == data, (
+            "Analyzed data does not match creation data"
+        )
 
     def test_std_missing(self, storage: fk.Storage, faker: Faker):
         """Missing path cannot be analyzed and must be reported."""
@@ -53,9 +53,9 @@ class Remover:
 
     def test_std_removal_missing(self, storage: fk.Storage, faker: Faker):
         """Removal of the missing file must return `False`."""
-        assert not storage.remove(
-            fk.FileData(fk.types.Location(faker.file_name()))
-        ), "Storage pretends that non-existing file was removed."
+        assert not storage.remove(fk.FileData(fk.types.Location(faker.file_name()))), (
+            "Storage pretends that non-existing file was removed."
+        )
 
     def test_std_removal(self, storage: fk.Storage, faker: Faker):
         """Removed file is identified as non-existing."""
@@ -81,9 +81,9 @@ class Exister:
 
     def test_std_exists_missing(self, storage: fk.Storage, faker: Faker):
         """Fake file does not exists."""
-        assert not storage.exists(
-            fk.FileData(fk.types.Location(faker.file_name()))
-        ), "Storage sees non-existing file"
+        assert not storage.exists(fk.FileData(fk.types.Location(faker.file_name()))), (
+            "Storage sees non-existing file"
+        )
 
 
 class Mover:
@@ -103,15 +103,14 @@ class Mover:
         result = storage.move(
             fk.types.Location(faker.file_name()),
             original,
-            storage,
         )
 
-        assert not storage.exists(
-            original
-        ), "Moved file is still available under original location"
-        assert (
-            storage.content(result) == content
-        ), "Content of the moved file was changed"
+        assert not storage.exists(original), (
+            "Moved file is still available under original location"
+        )
+        assert storage.content(result) == content, (
+            "Content of the moved file was changed"
+        )
 
     def test_std_move_missing(self, storage: fk.Storage, faker: Faker):
         """Attempt to move non-existing file is reported."""
@@ -119,7 +118,6 @@ class Mover:
             storage.move(
                 fk.types.Location(faker.file_name()),
                 fk.FileData(fk.types.Location(faker.file_name())),
-                storage,
             )
 
     def test_std_move_into_existing_is_not_allowed_by_default(
@@ -135,7 +133,10 @@ class Mover:
         )
 
         with pytest.raises(fk.exc.ExistingFileError):
-            storage.move(existing.location, data, storage)
+            storage.move(
+                existing.location,
+                data,
+            )
 
     @pytest.mark.fk_storage_option("override_existing", True)
     def test_std_move_into_existing_can_be_enabled(
@@ -155,16 +156,19 @@ class Mover:
             fk.types.Location(faker.file_name()), fk.make_upload(b"")
         )
 
-        result = storage.move(existing.location, data, storage)
-        assert not storage.exists(
-            data
-        ), "Moved file is still available under original location"
-        assert (
-            existing.location == result.location
-        ), "Actual move location is different from the expected location"
-        assert (
-            storage.content(result) == content
-        ), "Content of the moved file was changed"
+        result = storage.move(
+            existing.location,
+            data,
+        )
+        assert not storage.exists(data), (
+            "Moved file is still available under original location"
+        )
+        assert existing.location == result.location, (
+            "Actual move location is different from the expected location"
+        )
+        assert storage.content(result) == content, (
+            "Content of the moved file was changed"
+        )
 
 
 class Copier:
@@ -178,10 +182,13 @@ class Copier:
         original = storage.upload(
             fk.types.Location(faker.file_name()), fk.make_upload(content)
         )
-        copy = storage.copy(fk.types.Location(faker.file_name()), original, storage)
-        assert (
-            original.location != copy.location
-        ), "File retains old location after the copy"
+        copy = storage.copy(
+            fk.types.Location(faker.file_name()),
+            original,
+        )
+        assert original.location != copy.location, (
+            "File retains old location after the copy"
+        )
         assert original.hash == copy.hash, "Content hash was changed during the copy"
 
     def test_std_copy_missing(self, storage: fk.Storage, faker: Faker):
@@ -190,7 +197,6 @@ class Copier:
             storage.copy(
                 fk.types.Location(faker.file_name()),
                 fk.FileData(fk.types.Location(faker.file_name())),
-                storage,
             )
 
     def test_std_copy_into_existing_is_not_allowed_by_default(
@@ -206,7 +212,10 @@ class Copier:
         )
 
         with pytest.raises(fk.exc.ExistingFileError):
-            storage.copy(existing.location, data, storage)
+            storage.copy(
+                existing.location,
+                data,
+            )
 
     @pytest.mark.fk_storage_option("override_existing", True)
     def test_std_copy_into_existing_can_be_enabled(
@@ -221,10 +230,13 @@ class Copier:
             fk.types.Location(faker.file_name()), fk.make_upload(b"")
         )
 
-        result = storage.copy(existing.location, data, storage)
-        assert (
-            existing.location == result.location
-        ), "Location of the copy does not match expected value"
+        result = storage.copy(
+            existing.location,
+            data,
+        )
+        assert existing.location == result.location, (
+            "Location of the copy does not match expected value"
+        )
         assert storage.content(result) == content, "Content of the copy was changed"
 
 
@@ -241,9 +253,9 @@ class Appender:
         )
 
         result = storage.append(result, fk.make_upload(content))
-        assert (
-            storage.content(result) == content + content
-        ), "Content was modified in unexpected way during the appendy"
+        assert storage.content(result) == content + content, (
+            "Content was modified in unexpected way during the appendy"
+        )
 
     def test_std_missing(self, storage: fk.Storage, faker: Faker):
         """Append to non-existing file is reported."""
@@ -270,13 +282,11 @@ class Composer:
             fk.types.Location(faker.file_name()), fk.make_upload(content_2)
         )
 
-        result = storage.compose(
-            fk.types.Location(faker.file_name()), storage, first, second
-        )
+        result = storage.compose(fk.types.Location(faker.file_name()), first, second)
         assert result.size == first.size + second.size, "Composed file has wrong size"
-        assert (
-            storage.content(result) == content_1 + content_2
-        ), "Composed file has wrong content"
+        assert storage.content(result) == content_1 + content_2, (
+            "Composed file has wrong content"
+        )
         assert result.location not in [
             first.location,
             second.location,
@@ -293,14 +303,13 @@ class Composer:
         with pytest.raises(fk.exc.MissingFileError):
             storage.compose(
                 location,
-                storage,
                 first,
                 fk.FileData(fk.types.Location(faker.file_name())),
             )
 
-        assert not storage.exists(
-            fk.FileData(location)
-        ), "Composed file created even though the source is missing"
+        assert not storage.exists(fk.FileData(location)), (
+            "Composed file created even though the source is missing"
+        )
 
     def test_std_compose_override_default_prevented(
         self, storage: fk.Storage, faker: Faker
@@ -317,7 +326,7 @@ class Composer:
         )
 
         with pytest.raises(fk.exc.ExistingFileError):
-            storage.compose(existing.location, storage, first, second)
+            storage.compose(existing.location, first, second)
 
     @pytest.mark.fk_storage_option("override_existing", True)
     def test_std_compose_with_allowed_override(self, storage: fk.Storage, faker: Faker):
@@ -332,21 +341,23 @@ class Composer:
             fk.types.Location(faker.file_name()), fk.make_upload(b"")
         )
 
-        result = storage.compose(existing.location, storage, first, second)
-        assert (
-            result.location == existing.location
-        ), "Composed file has unexpected location"
-        assert (
-            storage.content(result) == b"hello world"
-        ), "Composed file has unexpected content"
+        result = storage.compose(existing.location, first, second)
+        assert result.location == existing.location, (
+            "Composed file has unexpected location"
+        )
+        assert storage.content(result) == b"hello world", (
+            "Composed file has unexpected content"
+        )
 
     def test_std_compose_with_no_data(self, storage: fk.Storage, faker: Faker):
         """Composition with zero sources is possible."""
-        result = storage.compose(fk.types.Location(faker.file_name()), storage)
+        result = storage.compose(
+            fk.types.Location(faker.file_name()),
+        )
         assert result.size == 0, "Composed file must be empty"
-        assert (
-            result.content_type == "application/x-empty"
-        ), "Empty file has unexpected content type"
+        assert result.content_type == "application/x-empty", (
+            "Empty file has unexpected content type"
+        )
 
 
 class Reader:
@@ -572,9 +583,9 @@ class Uploader:
         )
         overriden = storage.upload(origin.location, fk.make_upload(b"bye"))
 
-        assert (
-            origin.location == overriden.location
-        ), "Location of uploaded file was changed"
+        assert origin.location == overriden.location, (
+            "Location of uploaded file was changed"
+        )
         assert storage.content(overriden) == b"bye", "Unexpected content of the file"
 
     def test_std_hash(self, storage: fk.Storage, faker: Faker):
@@ -582,17 +593,17 @@ class Uploader:
         result = storage.upload(
             fk.types.Location(faker.file_name()), fk.make_upload(b"")
         )
-        assert (
-            result.hash == hashlib.md5().hexdigest()
-        ), "Content hash of empty file differs from expected value"
+        assert result.hash == hashlib.md5().hexdigest(), (
+            "Content hash of empty file differs from expected value"
+        )
 
         content = faker.binary(100)
         result = storage.upload(
             fk.types.Location(faker.file_name()), fk.make_upload(content)
         )
-        assert (
-            result.hash == hashlib.md5(content).hexdigest()
-        ), "Content hash differs from expected value"
+        assert result.hash == hashlib.md5(content).hexdigest(), (
+            "Content hash differs from expected value"
+        )
 
 
 class UploaderRecursive:

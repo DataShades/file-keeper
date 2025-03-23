@@ -126,14 +126,12 @@ class TestStorage:
             Storage({}).copy(
                 fk.types.Location(""),
                 FileData(fk.types.Location("")),
-                Storage({}),
             )
 
         with pytest.raises(exc.UnsupportedOperationError):
             Storage({}).move(
                 fk.types.Location(""),
                 FileData(fk.types.Location("")),
-                Storage({}),
             )
 
     def test_not_implemented_methods(self, faker: Faker):
@@ -145,14 +143,16 @@ class TestStorage:
         with pytest.raises(NotImplementedError):
             storage.remove(FileData(fk.types.Location("")))
 
-        with pytest.raises(NotImplementedError):
+        with pytest.raises(exc.UnsupportedOperationError):
             storage.copy(
-                fk.types.Location(""), FileData(fk.types.Location("")), storage
+                fk.types.Location(""),
+                FileData(fk.types.Location("")),
             )
 
-        with pytest.raises(NotImplementedError):
+        with pytest.raises(exc.UnsupportedOperationError):
             storage.move(
-                fk.types.Location(""), FileData(fk.types.Location("")), storage
+                fk.types.Location(""),
+                FileData(fk.types.Location("")),
             )
 
     def test_prepare_location_uuid(self, faker: Faker):
