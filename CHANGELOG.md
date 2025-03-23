@@ -6,7 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
-## [v0.0.4](https://github.com/DataShades/file-keeper/releases/tag/v0.0.4) - 2025-03-23
+## [v0.0.6](https://github.com/DataShades/file-keeper/releases/tag/v0.0.6) - 2025-03-23
+
+<small>[Compare with v0.0.4](https://github.com/DataShades/file-keeper/compare/v0.0.4...v0.0.6)</small>
+
+### Features
+
+- add *_synthetic methods ([27c4164](https://github.com/DataShades/file-keeper/commit/27c4164ea128feb9ca5a7e6e8ef83c80f99f70a6) by Sergey Motornyuk).
+
+### Bug Fixes
+
+- multipart update of s3 and gcs work with arbitrary upload ([902c9cb](https://github.com/DataShades/file-keeper/commit/902c9cbd48fcd25ade62f12bd926bfc7ece32998) by Sergey Motornyuk).
+
+## [v0.0.4](https://github.com/DataShades/file-keeper/releases/tag/v0.0.4) - 2025-03-22
 
 <small>[Compare with v0.0.3](https://github.com/DataShades/file-keeper/compare/v0.0.3...v0.0.4)</small>
 
