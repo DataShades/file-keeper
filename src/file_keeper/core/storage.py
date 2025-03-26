@@ -573,7 +573,7 @@ class Storage:
             self.stream_as_upload(data, **kwargs),
             **kwargs,
         )
-        dest_storage.remove(data)
+        self.remove(data)
         return result
 
     @requires_capability(utils.Capability.COMPOSE)

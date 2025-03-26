@@ -468,7 +468,14 @@ class FsStorage(fk.Storage):
 
         if not os.path.exists(path):
             if cfg.create_path:
-                os.makedirs(path)
+                try:
+                    os.makedirs(path)
+                except PermissionError as err:
+                    raise fk.exc.InvalidStorageConfigurationError(
+                        cls,
+                        f"path `{path}` is not writable",
+                    ) from err
+
             else:
                 raise fk.exc.InvalidStorageConfigurationError(
                     cls,
