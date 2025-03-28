@@ -23,7 +23,8 @@ maintainers = [
     {name = "DataShades", email = "datashades@linkdigital.com.au"},
 ]
 
-license = "AGPL-3.0"
+[project.license]
+text = "AGPL-3.0"
 
 [project.readme]
 file = "README.md"
@@ -196,7 +197,7 @@ omit = ["tests/*"]
 
 [tool.tox]
 requires = ["tox>=4"]
-env_list = ["3.13", "3.12", "3.11", "3.10", "3.9"]
+env_list = ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8"]
 
 [tool.tox.env_run_base]
 
