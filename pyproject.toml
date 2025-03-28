@@ -1,5 +1,5 @@
 [build-system]
-requires = [ "setuptools",]
+requires = [ "setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
@@ -10,7 +10,7 @@ name = "file-keeper"
 dynamic = ["version"]
 description = "Abstraction level for object storages."
 classifiers = [
-            "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+
 ]
 keywords = [ "file-management", "cloud", "filesystem", "DAL" ]
 requires-python = ">= 3.8"
@@ -23,12 +23,12 @@ maintainers = [
     {name = "DataShades", email = "datashades@linkdigital.com.au"},
 ]
 
+license = "AGPL-3.0"
+
 [project.readme]
 file = "README.md"
 content-type = "text/markdown"
 
-[project.license]
-text = "AGPL"
 
 [project.urls]
 Homepage = "https://github.com/DataShades/file-keeper"
