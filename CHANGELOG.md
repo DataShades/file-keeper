@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v0.0.7](https://github.com/DataShades/file-keeper/releases/tag/v0.0.7) - 2025-03-28
+
+<small>[Compare with v0.0.6](https://github.com/DataShades/file-keeper/compare/v0.0.6...v0.0.7)</small>
+
+### Bug Fixes
+
+- fs storage checks permission when creating folders ([1791d68](https://github.com/DataShades/file-keeper/commit/1791d68a3d1dd4eaaec4d7a5edc4b7af2fc3ac46) by Sergey Motornyuk).
+
 ## [v0.0.6](https://github.com/DataShades/file-keeper/releases/tag/v0.0.6) - 2025-03-23
 
 <small>[Compare with v0.0.4](https://github.com/DataShades/file-keeper/compare/v0.0.4...v0.0.6)</small>

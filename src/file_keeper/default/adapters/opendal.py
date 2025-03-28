@@ -40,7 +40,7 @@ class Settings(fk.Settings):
 
             try:
                 self.operator = opendal.Operator(self.scheme, **self.params)
-            except opendal.exceptions.ConfigInvalid as err:  # type: ignore
+            except opendal.exceptions.ConfigInvalid as err:
                 raise fk.exc.InvalidStorageConfigurationError(
                     type(self),
                     str(err),
@@ -86,7 +86,7 @@ class Uploader(fk.Uploader):
 
         try:
             op.stat(location)
-        except opendal.exceptions.NotFound:  # type: ignore
+        except opendal.exceptions.NotFound:
             pass
         else:
             if not self.storage.settings.override_existing:
@@ -124,7 +124,7 @@ class Reader(fk.Reader):
         """
         try:
             content = self.storage.settings.operator.open(data.location, "rb")
-        except opendal.exceptions.NotFound as err:  # type: ignore
+        except opendal.exceptions.NotFound as err:
             raise fk.exc.MissingFileError(self.storage, data.location) from err
 
         return FileStream(content)
@@ -196,7 +196,7 @@ class Manager(fk.Manager):
         """Check if file exists."""
         try:
             self.storage.settings.operator.stat(data.location)
-        except opendal.exceptions.NotFound:  # type: ignore
+        except opendal.exceptions.NotFound:
             return False
 
         return True
@@ -227,7 +227,7 @@ class Manager(fk.Manager):
         op = self.storage.settings.operator
         try:
             op.stat(data.location)
-        except opendal.exceptions.NotFound:  # type: ignore
+        except opendal.exceptions.NotFound:
             return False
 
         op.delete(data.location)

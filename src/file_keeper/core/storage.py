@@ -418,9 +418,9 @@ class Storage:
 
     @requires_capability(utils.Capability.CREATE)
     def upload(
-        self, location: types.Location, upload: Any, /, **kwargs: Any
+        self, location: types.Location, upload: Upload, /, **kwargs: Any
     ) -> data.FileData:
-        return self.uploader.upload(location, make_upload(upload), kwargs)
+        return self.uploader.upload(location, upload, kwargs)
 
     @requires_capability(utils.Capability.MULTIPART)
     def multipart_start(
@@ -520,11 +520,11 @@ class Storage:
     def append(
         self,
         data: data.FileData,
-        upload: Any,
+        upload: Upload,
         /,
         **kwargs: Any,
     ) -> data.FileData:
-        return self.manager.append(data, make_upload(upload), kwargs)
+        return self.manager.append(data, upload, kwargs)
 
     @requires_capability(utils.Capability.COPY)
     def copy(

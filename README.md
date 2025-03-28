@@ -34,7 +34,8 @@ Upload file into the storage initialized in the previous step and play with it
 a bit:
 
 ```python
-upload = b"hello world"
+from file_keeper import make_upload
+upload = make_upload(b"hello world")
 
 # save the data and verify its presence in the system
 result = storage.upload("hello.txt", upload)
