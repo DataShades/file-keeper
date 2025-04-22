@@ -23,6 +23,7 @@ from .registry import Registry
 
 P = ParamSpec("P")
 T = TypeVar("T")
+S = TypeVar("S", bound="Storage")
 
 
 log = logging.getLogger(__name__)
@@ -34,8 +35,8 @@ location_transformers = Registry[LocationTransformer]()
 
 
 def requires_capability(capability: utils.Capability):
-    def decorator(func: Callable[Concatenate[Storage, P], T]):
-        def method(self: Storage, *args: P.args, **kwargs: P.kwargs) -> T:
+    def decorator(func: Callable[Concatenate[S, P], T]):
+        def method(self: S, *args: P.args, **kwargs: P.kwargs) -> T:
             if not self.supports(capability):
                 raise exceptions.UnsupportedOperationError(str(capability.name), self)
             return func(self, *args, **kwargs)
