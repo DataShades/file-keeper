@@ -260,7 +260,7 @@ class Reader(fk.Reader):
         """
         filepath = os.path.join(self.storage.settings.path, data.location)
         if not os.path.exists(filepath):
-            raise fk.exc.MissingFileError(self.storage, filepath)
+            raise fk.exc.MissingFileError(self.storage, data.location)
 
         return open(filepath, "rb")  # noqa: SIM115
 
@@ -302,7 +302,7 @@ class Manager(fk.Manager):
             src = os.path.join(self.storage.settings.path, data.location)
 
             if not os.path.exists(src):
-                raise fk.exc.MissingFileError(self.storage, src)
+                raise fk.exc.MissingFileError(self.storage, data.location)
 
             sources.append(src)
 
@@ -329,7 +329,7 @@ class Manager(fk.Manager):
         """
         dest = os.path.join(self.storage.settings.path, data.location)
         if not os.path.exists(dest):
-            raise fk.exc.MissingFileError(self.storage, dest)
+            raise fk.exc.MissingFileError(self.storage, data.location)
 
         with open(dest, "ab") as fd:
             fd.write(upload.stream.read())
@@ -352,7 +352,7 @@ class Manager(fk.Manager):
         dest = os.path.join(self.storage.settings.path, location)
 
         if not os.path.exists(src):
-            raise fk.exc.MissingFileError(self.storage, src)
+            raise fk.exc.MissingFileError(self.storage, data.location)
 
         if os.path.exists(dest) and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
@@ -378,7 +378,7 @@ class Manager(fk.Manager):
         dest = os.path.join(self.storage.settings.path, location)
 
         if not os.path.exists(src):
-            raise fk.exc.MissingFileError(self.storage, src)
+            raise fk.exc.MissingFileError(self.storage, data.location)
 
         if os.path.exists(dest):
             if self.storage.settings.override_existing:
@@ -430,7 +430,7 @@ class Manager(fk.Manager):
         """
         filepath = os.path.join(self.storage.settings.path, location)
         if not os.path.exists(filepath):
-            raise fk.exc.MissingFileError(self.storage, filepath)
+            raise fk.exc.MissingFileError(self.storage, location)
 
         with open(filepath, "rb") as src:
             reader = fk.HashingReader(src)
