@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import dataclasses
 from typing import Any, ClassVar, Iterable
 
@@ -18,6 +19,8 @@ class Settings(fk.Settings):
     provider: str = ""
     key: str = ""
     container_name: str = ""
+
+    path: str = ""
 
     secret: str | None = None
     params: dict[str, Any] = dataclasses.field(default_factory=dict)
@@ -64,9 +67,11 @@ class Uploader(fk.Uploader):
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
+        dest = os.path.join(self.storage.settings.path, location)
+
         result = self.storage.settings.container.upload_object_via_stream(
             iter(upload.stream),
-            location,
+            dest,
             extra={"content_type": upload.content_type},
         )
 
@@ -80,11 +85,13 @@ class Uploader(fk.Uploader):
 
 class Reader(fk.Reader):
     storage: LibCloudStorage
-    capabilities = fk.Capability.STREAM | fk.Capability.TEMPORAL_LINK
+    capabilities = fk.Capability.STREAM
 
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
+        location = os.path.join(self.storage.settings.path, data.location)
+
         try:
-            obj = self.storage.settings.container.get_object(data.location)
+            obj = self.storage.settings.container.get_object(location)
         except ObjectDoesNotExistError as err:
             raise fk.exc.MissingFileError(
                 self.storage,
@@ -99,7 +106,9 @@ class Manager(fk.Manager):
     capabilities = fk.Capability.SCAN | fk.Capability.REMOVE
 
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
-        for item in self.storage.settings.container.iterate_objects():
+        for item in self.storage.settings.container.iterate_objects(
+            prefix=self.storage.settings.path
+        ):
             yield item.name
 
     def remove(
@@ -107,8 +116,10 @@ class Manager(fk.Manager):
         data: fk.FileData | fk.MultipartData,
         extras: dict[str, Any],
     ) -> bool:
+        location = os.path.join(self.storage.settings.path, data.location)
+
         try:
-            obj = self.storage.settings.container.get_object(data.location)
+            obj = self.storage.settings.container.get_object(location)
         except ObjectDoesNotExistError:
             return False
         return self.storage.settings.container.delete_object(obj)
