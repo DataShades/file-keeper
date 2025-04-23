@@ -6,9 +6,25 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v0.0.8](https://github.com/DataShades/file-keeper/releases/tag/v0.0.8) - 2025-04-23
+
+<small>[Compare with v0.0.7](https://github.com/DataShades/file-keeper/compare/v0.0.7...v0.0.8)</small>
+
+### Features
+
+- libcloud storage got path option ([555036c](https://github.com/DataShades/file-keeper/commit/555036c428a30defe95392407a182f0729919970) by Sergey Motornyuk).
+
+### Bug Fixes
+
+- fs storage reports relative location of the missing file ([cef9589](https://github.com/DataShades/file-keeper/commit/cef9589b667679cd222c56a07931e5f1622ac79c) by Sergey Motornyuk).
+
 ## [v0.0.7](https://github.com/DataShades/file-keeper/releases/tag/v0.0.7) - 2025-03-28
 
 <small>[Compare with v0.0.6](https://github.com/DataShades/file-keeper/compare/v0.0.6...v0.0.7)</small>
+
+### Features
+
+- storage upload and append requires Upload ([ebf5fef](https://github.com/DataShades/file-keeper/commit/ebf5fef0294cecc6da880994255696229d96a2ac) by Sergey Motornyuk).
 
 ### Bug Fixes
 
