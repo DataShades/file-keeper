@@ -30,6 +30,7 @@ class Settings(fk.Settings):
     scheme: str = ""
     recursive: bool = False
     operator: opendal.Operator = None  # type: ignore
+    path: str = ""
 
     def __post_init__(self, **kwargs: Any):
         super().__post_init__(**kwargs)
@@ -77,7 +78,8 @@ class Uploader(fk.Uploader):
 
         """
         op = self.storage.settings.operator
-        subpath = os.path.dirname(location)
+        dest = os.path.join(self.storage.settings.path, location)
+        subpath = os.path.dirname(dest)
 
         if subpath and not (
             self.storage.settings.recursive and op.capability().create_dir
@@ -85,7 +87,7 @@ class Uploader(fk.Uploader):
             raise fk.exc.LocationError(self.storage, subpath)
 
         try:
-            op.stat(location)
+            op.stat(dest)
         except opendal.exceptions.NotFound:
             pass
         else:
@@ -97,9 +99,9 @@ class Uploader(fk.Uploader):
             op.create_dir(subpath.rstrip("/") + "/")
 
         reader = upload.hashing_reader()
-        with op.open(location, "wb") as dest:
+        with op.open(dest, "wb") as fobj:
             for chunk in reader:
-                dest.write(chunk)
+                fobj.write(chunk)
 
         return fk.FileData(
             location,
@@ -122,12 +124,18 @@ class Reader(fk.Reader):
         Returns:
             File content iterator
         """
+        location = os.path.join(self.storage.settings.path, data.location)
+
         try:
-            content = self.storage.settings.operator.open(data.location, "rb")
+            content = self.storage.settings.operator.open(location, "rb")
         except opendal.exceptions.NotFound as err:
             raise fk.exc.MissingFileError(self.storage, data.location) from err
 
         return FileStream(content)
+
+    def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
+        return self.storage.settings.operator
+        return super().permanent_link(data, extras)
 
 
 class Manager(fk.Manager):
@@ -161,7 +169,10 @@ class Manager(fk.Manager):
         ):
             raise fk.exc.ExistingFileError(self.storage, location)
 
-        op.copy(data.location, location)
+        src_location = os.path.join(self.storage.settings.path, data.location)
+        dest_location = os.path.join(self.storage.settings.path, location)
+
+        op.copy(src_location, dest_location)
 
         new_data = copy.deepcopy(data)
         new_data.location = location
@@ -186,7 +197,10 @@ class Manager(fk.Manager):
         ):
             raise fk.exc.ExistingFileError(self.storage, location)
 
-        op.rename(data.location, location)
+        src_location = os.path.join(self.storage.settings.path, data.location)
+        dest_location = os.path.join(self.storage.settings.path, location)
+
+        op.rename(src_location, dest_location)
 
         new_data = copy.deepcopy(data)
         new_data.location = location
@@ -194,8 +208,10 @@ class Manager(fk.Manager):
 
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         """Check if file exists."""
+        location = os.path.join(self.storage.settings.path, data.location)
+
         try:
-            self.storage.settings.operator.stat(data.location)
+            self.storage.settings.operator.stat(location)
         except opendal.exceptions.NotFound:
             return False
 
@@ -225,17 +241,19 @@ class Manager(fk.Manager):
     ) -> bool:
         """Remove the file."""
         op = self.storage.settings.operator
+        location = os.path.join(self.storage.settings.path, data.location)
+
         try:
-            op.stat(data.location)
+            op.stat(location)
         except opendal.exceptions.NotFound:
             return False
 
-        op.delete(data.location)
+        op.delete(location)
         return True
 
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         """Discover filenames in the storage."""
-        for entry in self.storage.settings.operator.scan(""):
+        for entry in self.storage.settings.operator.scan(self.storage.settings.path):
             stat = self.storage.settings.operator.stat(entry.path)
             if opendal.EntryMode.is_file(stat.mode):
                 yield entry.path
@@ -256,10 +274,11 @@ class Manager(fk.Manager):
         if not self.exists(data, extras):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        op.write(data.location, upload.stream.read(), append=True)
+        location = os.path.join(self.storage.settings.path, data.location)
+
+        op.write(location, upload.stream.read(), append=True)
 
         return self.analyze(data.location, extras)
-
 
 
 class OpenDalStorage(fk.Storage):
