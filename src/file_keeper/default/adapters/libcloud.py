@@ -10,6 +10,7 @@ from libcloud.storage.base import Container, StorageDriver
 from libcloud.storage.types import ContainerDoesNotExistError, ObjectDoesNotExistError
 
 import file_keeper as fk
+from file_keeper.core.utils import Capability
 
 get_driver: Any
 
@@ -76,7 +77,7 @@ class Uploader(fk.Uploader):
         )
 
         return fk.FileData(
-            fk.types.Location(result.name),
+            location,
             result.size,
             upload.content_type,
             result.hash.strip('"'),
@@ -99,6 +100,18 @@ class Reader(fk.Reader):
             ) from err
 
         return obj.as_stream()
+
+    def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
+        location = os.path.join(self.storage.settings.path, data.location)
+        try:
+            obj = self.storage.settings.container.get_object(location)
+        except ObjectDoesNotExistError as err:
+            raise fk.exc.MissingFileError(
+                self.storage,
+                data.location,
+            ) from err
+
+        return self.storage.settings.driver.get_object_cdn_url(obj)
 
 
 class Manager(fk.Manager):
