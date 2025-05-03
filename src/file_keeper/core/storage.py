@@ -269,8 +269,11 @@ class Reader(StorageService):
 @dataclasses.dataclass()
 class Settings:
     name: str = "unknown"
+    """Name of the storage"""
     override_existing: bool = False
+    """Allow overriding existing files"""
     location_transformers: list[str] = dataclasses.field(default_factory=list)
+    """Names of functions used to sanitize location"""
 
     _required_options: ClassVar[list[str]] = []
 

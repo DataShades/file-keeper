@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import contextlib
 import io
 import mimetypes
@@ -22,10 +23,13 @@ from . import adapters
 hookimpl = HookimplMarker("file-keeper-ext")
 SAMPLE_SIZE = 1024 * 2
 
+log = logging.getLogger(__name__)
+
 
 @ext.hookimpl
 def register_location_transformers(registry: Registry[LocationTransformer]):
     registry.register("safe_relative_path", safe_relative_path_transformer)
+    registry.register("fix_extension", fix_extension_transformer)
     registry.register("uuid", uuid_transformer)
     registry.register("uuid_prefix", uuid_prefix_transformer)
     registry.register("uuid_with_extension", uuid_with_extension_transformer)
@@ -33,28 +37,58 @@ def register_location_transformers(registry: Registry[LocationTransformer]):
     registry.register("datetime_with_extension", datetime_with_extension_transformer)
 
 
+def fix_extension_transformer(location: str, extras: dict[str, Any]) -> str:
+    """Choose extension depending on MIME type of upload.
+
+    Upload object must be passed as `upload` inside `extras`, or else
+    transformer does nothing.
+    """
+    if "upload" not in extras:
+        return location
+
+    upload = extras["upload"]
+    if not isinstance(upload, Upload):
+        log.debug(
+            "Location %s remains unchanged because of unexpected upload: %s",
+            location,
+            upload,
+        )
+
+    name = os.path.splitext(location)[0]
+    if ext := mimetypes.guess_extension(upload.content_type):
+        return name + ext
+
+    return location
+
+
 def safe_relative_path_transformer(location: str, extras: dict[str, Any]) -> str:
+    """Remove unsafe segments from path and strip leading slash."""
     return os.path.normpath(location).lstrip("./")
 
 
 def uuid_transformer(location: str, extras: dict[str, Any]) -> str:
+    """Transform location into random UUID."""
     return str(uuid.uuid4())
 
 
 def uuid_prefix_transformer(location: str, extras: dict[str, Any]) -> str:
+    """Prefix the location with random UUID."""
     return str(uuid.uuid4()) + location
 
 
 def uuid_with_extension_transformer(location: str, extras: dict[str, Any]) -> str:
+    """Replace location with random UUID, but keep the original extension."""
     ext = os.path.splitext(location)[1]
     return str(uuid.uuid4()) + ext
 
 
 def datetime_prefix_transformer(location: str, extras: dict[str, Any]) -> str:
+    """Prefix location with current date-timestamp."""
     return datetime.now(pytz.utc).isoformat() + location
 
 
 def datetime_with_extension_transformer(location: str, extras: dict[str, Any]) -> str:
+    """Replace location with current date-timestamp, but keep the extension."""
     ext = os.path.splitext(location)[1]
     return datetime.now(pytz.utc).isoformat() + ext
 

@@ -27,21 +27,23 @@ class Upload:
         size: size of the file in bytes
         content_type: MIMEtype of the file
 
-    Example:
-        ```
-        Upload(
-            BytesIO(b"hello world"),
-            "file.txt",
-            11,
-            "text/plain",
-        )
-        ```
+    Examples:
+        >>> Upload(
+        >>>     BytesIO(b"hello world"),
+        >>>     "file.txt",
+        >>>     11,
+        >>>     "text/plain",
+        >>> )
     """
 
     stream: types.PStream
+    """Content as iterable of bytes"""
     filename: str
+    """Name of the file"""
     size: int
+    """Size of the file"""
     content_type: str
+    """MIME Type of the file"""
 
     @property
     def seekable_stream(self) -> types.PSeekableStream | None:
