@@ -12,6 +12,7 @@ cycles.
 from __future__ import annotations
 
 import dataclasses
+import functools
 import logging
 from typing import Any, Callable, ClassVar, Iterable, cast
 
@@ -29,13 +30,15 @@ S = TypeVar("S", bound="Storage")
 log = logging.getLogger(__name__)
 
 LocationTransformer: TypeAlias = Callable[[str, "dict[str, Any]"], str]
+Capability: TypeAlias = utils.Capability
 
 adapters = Registry["type[Storage]"]()
 location_transformers = Registry[LocationTransformer]()
 
 
-def requires_capability(capability: utils.Capability):
+def requires_capability(capability: Capability):
     def decorator(func: Callable[Concatenate[S, P], T]):
+        @functools.wraps(func)
         def method(self: S, *args: P.args, **kwargs: P.kwargs) -> T:
             if not self.supports(capability):
                 raise exceptions.UnsupportedOperationError(str(capability.name), self)
@@ -52,11 +55,12 @@ class StorageService:
     StorageService.capabilities reflect all operations provided by the
     service.
 
-    >>> class Uploader(StorageService):
-    >>>     capabilities = Capability.CREATE
+    Examples:
+        >>> class Uploader(StorageService):
+        >>>     capabilities = Capability.CREATE
     """
 
-    capabilities = utils.Capability.NONE
+    capabilities = Capability.NONE
 
     def __init__(self, storage: Storage):
         self.storage = storage
@@ -282,33 +286,36 @@ class Storage:
     Args:
         settings: storage configuration
 
-    Example:
-        ```python
-        class MyStorage(Storage):
-            def make_uploader(self):
-                return MyUploader(self)
+    Examples:
+        >>> class MyStorage(Storage):
+        >>>     def make_uploader(self):
+        >>>         return MyUploader(self)
 
-            def make_reader(self):
-                return MyReader(self)
+        >>>     def make_reader(self):
+        >>>         return MyReader(self)
 
-            def make_manager(self):
-                return MyManager(self)
-        ```
+        >>>     def make_manager(self):
+        >>>         return MyManager(self)
     """
 
     # do not show storage adapter
     hidden = False
 
-    # operations that storage performs. Will be overriden by capabilities of
-    # services inside constructor.
-    capabilities = utils.Capability.NONE
+    capabilities: Capability = Capability.NONE
+    """Operations supported by storage. Computed from capabilities of
+    services during storage initialization."""
 
     settings: Settings
-    SettingsFactory: type[Settings] = Settings
+    """Settings of the storage"""
 
+    SettingsFactory: type[Settings] = Settings
+    """Factory class for storage settings."""
     UploaderFactory: type[Uploader] = Uploader
+    """Factory class for uploader service."""
     ManagerFactory: type[Manager] = Manager
+    """Factory class for manager service."""
     ReaderFactory: type[Reader] = Reader
+    """Factory class for reader service."""
 
     def __str__(self):
         return self.settings.name
@@ -360,40 +367,41 @@ class Storage:
         #     )
         # return cfg
 
-    def compute_capabilities(self) -> utils.Capability:
+    def compute_capabilities(self) -> Capability:
         return (
             self.uploader.capabilities
             | self.manager.capabilities
             | self.reader.capabilities
         )
 
-    def supports(self, operation: utils.Capability) -> bool:
+    def supports(self, operation: Capability) -> bool:
+        """Check whether the storage supports operation."""
         return self.capabilities.can(operation)
 
-    def supports_synthetic(self, operation: utils.Capability, dest: Storage) -> bool:
-        if operation is utils.Capability.RANGE:
-            return self.supports(utils.Capability.STREAM)
+    def supports_synthetic(self, operation: Capability, dest: Storage) -> bool:
+        """Check if the storage can emulate operation using other operations."""
+        if operation is Capability.RANGE:
+            return self.supports(Capability.STREAM)
 
-        if operation is utils.Capability.COPY:
-            return self.supports(utils.Capability.STREAM) and dest.supports(
-                utils.Capability.CREATE,
+        if operation is Capability.COPY:
+            return self.supports(Capability.STREAM) and dest.supports(
+                Capability.CREATE,
             )
 
-        if operation is utils.Capability.MOVE:
+        if operation is Capability.MOVE:
             return self.supports(
-                utils.Capability.STREAM | utils.Capability.REMOVE,
-            ) and dest.supports(utils.Capability.CREATE)
+                Capability.STREAM | Capability.REMOVE,
+            ) and dest.supports(Capability.CREATE)
 
-        if operation is utils.Capability.COMPOSE:
-            return self.supports(utils.Capability.STREAM) and dest.supports(
-                utils.Capability.CREATE
-                | utils.Capability.APPEND
-                | utils.Capability.REMOVE
+        if operation is Capability.COMPOSE:
+            return self.supports(Capability.STREAM) and dest.supports(
+                Capability.CREATE | Capability.APPEND | Capability.REMOVE
             )
 
         return False
 
     def prepare_location(self, location: str, /, **kwargs: Any) -> types.Location:
+        """Transform and sanitize location using configured functions."""
         for name in self.settings.location_transformers:
             if transformer := location_transformers.get(name):
                 location = transformer(location, kwargs)
@@ -417,13 +425,14 @@ class Storage:
             data.content_type,
         )
 
-    @requires_capability(utils.Capability.CREATE)
+    @requires_capability(Capability.CREATE)
     def upload(
         self, location: types.Location, upload: Upload, /, **kwargs: Any
     ) -> data.FileData:
+        """Upload data into specified location."""
         return self.uploader.upload(location, upload, kwargs)
 
-    @requires_capability(utils.Capability.MULTIPART)
+    @requires_capability(Capability.MULTIPART)
     def multipart_start(
         self,
         location: types.Location,
@@ -431,49 +440,58 @@ class Storage:
         /,
         **kwargs: Any,
     ) -> data.MultipartData:
+        """Initialize multipart upload."""
         return self.uploader.multipart_start(location, data, kwargs)
 
-    @requires_capability(utils.Capability.MULTIPART)
+    @requires_capability(Capability.MULTIPART)
     def multipart_refresh(
         self, data: data.MultipartData, /, **kwargs: Any
     ) -> data.MultipartData:
+        """Return the current state of the multipart upload."""
         return self.uploader.multipart_refresh(data, kwargs)
 
-    @requires_capability(utils.Capability.MULTIPART)
+    @requires_capability(Capability.MULTIPART)
     def multipart_update(
         self, data: data.MultipartData, /, **kwargs: Any
     ) -> data.MultipartData:
+        """Update multipart upload."""
         return self.uploader.multipart_update(data, kwargs)
 
-    @requires_capability(utils.Capability.MULTIPART)
+    @requires_capability(Capability.MULTIPART)
     def multipart_complete(
         self, data: data.MultipartData, /, **kwargs: Any
     ) -> data.FileData:
+        """Finalize multipart upload."""
         return self.uploader.multipart_complete(data, kwargs)
 
-    @requires_capability(utils.Capability.EXISTS)
+    @requires_capability(Capability.EXISTS)
     def exists(self, data: data.FileData, /, **kwargs: Any) -> bool:
+        """Test whether the file exists in the storage."""
         return self.manager.exists(data, kwargs)
 
-    @requires_capability(utils.Capability.REMOVE)
+    @requires_capability(Capability.REMOVE)
     def remove(
         self, data: data.FileData | data.MultipartData, /, **kwargs: Any
     ) -> bool:
+        """Remove file from the storage."""
         return self.manager.remove(data, kwargs)
 
-    @requires_capability(utils.Capability.SCAN)
+    @requires_capability(Capability.SCAN)
     def scan(self, **kwargs: Any) -> Iterable[str]:
+        """Discover existing locations in the storage."""
         return self.manager.scan(kwargs)
 
-    @requires_capability(utils.Capability.ANALYZE)
+    @requires_capability(Capability.ANALYZE)
     def analyze(self, location: types.Location, /, **kwargs: Any) -> data.FileData:
+        """Return file details for the given location."""
         return self.manager.analyze(location, kwargs)
 
-    @requires_capability(utils.Capability.STREAM)
+    @requires_capability(Capability.STREAM)
     def stream(self, data: data.FileData, /, **kwargs: Any) -> Iterable[bytes]:
+        """Return the stream of file's content."""
         return self.reader.stream(data, kwargs)
 
-    @requires_capability(utils.Capability.RANGE)
+    @requires_capability(Capability.RANGE)
     def range(
         self,
         data: data.FileData,
@@ -482,7 +500,7 @@ class Storage:
         /,
         **kwargs: Any,
     ) -> Iterable[bytes]:
-        """Return byte-stream of the file content."""
+        """Return byte-stream of the file's fragment."""
         return self.reader.range(data, start, end, kwargs)
 
     def range_synthetic(
@@ -493,6 +511,7 @@ class Storage:
         /,
         **kwargs: Any,
     ) -> Iterable[bytes]:
+        """Generic implementation of range operation that relies on STREAM."""
         if end is None:
             end = cast(int, float("inf"))
 
@@ -513,11 +532,12 @@ class Storage:
             if end <= 0:
                 break
 
-    @requires_capability(utils.Capability.STREAM)
+    @requires_capability(Capability.STREAM)
     def content(self, data: data.FileData, /, **kwargs: Any) -> bytes:
+        """Return content of the file."""
         return self.reader.content(data, kwargs)
 
-    @requires_capability(utils.Capability.APPEND)
+    @requires_capability(Capability.APPEND)
     def append(
         self,
         data: data.FileData,
@@ -525,9 +545,10 @@ class Storage:
         /,
         **kwargs: Any,
     ) -> data.FileData:
+        """Append data to the file."""
         return self.manager.append(data, upload, kwargs)
 
-    @requires_capability(utils.Capability.COPY)
+    @requires_capability(Capability.COPY)
     def copy(
         self,
         location: types.Location,
@@ -535,6 +556,7 @@ class Storage:
         /,
         **kwargs: Any,
     ) -> data.FileData:
+        """Copy file into specified location."""
         return self.manager.copy(location, data, kwargs)
 
     def copy_synthetic(
@@ -545,13 +567,14 @@ class Storage:
         /,
         **kwargs: Any,
     ) -> data.FileData:
+        """Generic implementation of the copy operation that relies on CREATE."""
         return dest_storage.upload(
             location,
             self.stream_as_upload(data, **kwargs),
             **kwargs,
         )
 
-    @requires_capability(utils.Capability.MOVE)
+    @requires_capability(Capability.MOVE)
     def move(
         self,
         location: types.Location,
@@ -559,6 +582,7 @@ class Storage:
         /,
         **kwargs: Any,
     ) -> data.FileData:
+        """Move file to specific location."""
         return self.manager.move(location, data, kwargs)
 
     def move_synthetic(
@@ -569,6 +593,7 @@ class Storage:
         /,
         **kwargs: Any,
     ) -> data.FileData:
+        """Generic implementation of move operation that relies on CREATE and REMOVE."""
         result = dest_storage.upload(
             location,
             self.stream_as_upload(data, **kwargs),
@@ -577,7 +602,7 @@ class Storage:
         self.remove(data)
         return result
 
-    @requires_capability(utils.Capability.COMPOSE)
+    @requires_capability(Capability.COMPOSE)
     def compose(
         self,
         location: types.Location,
@@ -585,6 +610,7 @@ class Storage:
         *files: data.FileData,
         **kwargs: Any,
     ) -> data.FileData:
+        """Combine multiple files into a new file."""
         return self.manager.compose(location, files, kwargs)
 
     def compose_synthetic(
@@ -595,6 +621,7 @@ class Storage:
         *files: data.FileData,
         **kwargs: Any,
     ) -> data.FileData:
+        """Generic composition that relies on APPEND"""
         result = dest_storage.upload(location, make_upload(b""), **kwargs)
 
         # when first append succeeded with the fragment of the file added
@@ -619,15 +646,18 @@ class Storage:
         return result
 
     def one_time_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
-        if self.supports(utils.Capability.ONE_TIME_LINK):
+        """Link that can be used limited number of times."""
+        if self.supports(Capability.ONE_TIME_LINK):
             return self.reader.one_time_link(data, kwargs)
 
     def temporal_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
-        if self.supports(utils.Capability.TEMPORAL_LINK):
+        """Link that remains valid for a limited duration of time."""
+        if self.supports(Capability.TEMPORAL_LINK):
             return self.reader.temporal_link(data, kwargs)
 
     def permanent_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
-        if self.supports(utils.Capability.PERMANENT_LINK):
+        """Link that remains valid as long as file exists."""
+        if self.supports(Capability.PERMANENT_LINK):
             return self.reader.permanent_link(data, kwargs)
 
 
