@@ -176,6 +176,7 @@ class Uploader(fk.Uploader):
         # but in specific scenario one can override previously uploaded part
         # rewinding the `position`.
         extras.setdefault("position", data.storage_data["uploaded"])
+        extras["position"] = int(extras["position"])
 
         if "upload" not in extras:
             raise fk.exc.MissingExtrasError("upload")
