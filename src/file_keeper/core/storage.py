@@ -16,6 +16,7 @@ import functools
 import logging
 from typing import Any, Callable, ClassVar, Iterable, cast
 
+from collections.abc import Callable
 from typing_extensions import Concatenate, ParamSpec, TypeAlias, TypeVar
 
 from . import data, exceptions, types, utils
@@ -25,7 +26,7 @@ from .registry import Registry
 P = ParamSpec("P")
 T = TypeVar("T")
 S = TypeVar("S", bound="Storage")
-
+TCallable = TypeVar("TCallable", bound=Callable[..., Any])
 
 log = logging.getLogger(__name__)
 
@@ -37,14 +38,14 @@ location_transformers = Registry[LocationTransformer]()
 
 
 def requires_capability(capability: Capability):
-    def decorator(func: Callable[Concatenate[S, P], T]):
+    def decorator(func: TCallable) -> TCallable:
         @functools.wraps(func)
-        def method(self: S, *args: P.args, **kwargs: P.kwargs) -> T:
+        def method(self: Any, *args: Any, **kwargs: Any):
             if not self.supports(capability):
                 raise exceptions.UnsupportedOperationError(str(capability.name), self)
             return func(self, *args, **kwargs)
 
-        return method
+        return cast(Any, method)
 
     return decorator
 
@@ -259,10 +260,6 @@ class Reader(StorageService):
 
     def one_time_link(self, data: data.FileData, extras: dict[str, Any]) -> str:
         """Return one-time download link."""
-        raise NotImplementedError
-
-    def public_link(self, data: data.FileData, extras: dict[str, Any]) -> str:
-        """Return public link."""
         raise NotImplementedError
 
 
