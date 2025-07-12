@@ -14,8 +14,7 @@ import magic
 import pytz
 from pluggy import HookimplMarker
 
-from file_keeper import Registry, Storage, Upload, ext
-from file_keeper.core.storage import LocationTransformer
+from file_keeper import Registry, Storage, Upload, ext, BaseData, types
 from file_keeper.core.upload import UploadFactory
 
 from . import adapters
@@ -27,7 +26,7 @@ log = logging.getLogger(__name__)
 
 
 @ext.hookimpl
-def register_location_transformers(registry: Registry[LocationTransformer]):
+def register_location_transformers(registry: Registry[types.LocationTransformer]):
     registry.register("safe_relative_path", safe_relative_path_transformer)
     registry.register("fix_extension", fix_extension_transformer)
     registry.register("uuid", uuid_transformer)
@@ -47,17 +46,16 @@ def fix_extension_transformer(location: str, extras: dict[str, Any]) -> str:
         return location
 
     upload = extras["upload"]
-    if not isinstance(upload, Upload):
-        log.debug(
-            "Location %s remains unchanged because of unexpected upload: %s",
-            location,
-            upload,
-        )
-
     name = os.path.splitext(location)[0]
-    if ext := mimetypes.guess_extension(upload.content_type):
-        return name + ext
+    if isinstance(upload, (Upload, BaseData)):
+        if ext := mimetypes.guess_extension(upload.content_type):
+            return name + ext
 
+    log.debug(
+        "Location %s remains unchanged because of unexpected upload: %s",
+        location,
+        upload,
+    )
     return location
 
 

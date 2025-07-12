@@ -17,7 +17,7 @@ import logging
 from typing import Any, Callable, ClassVar, Iterable, cast
 
 from collections.abc import Callable
-from typing_extensions import Concatenate, ParamSpec, TypeAlias, TypeVar
+from typing_extensions import ParamSpec, TypeAlias, TypeVar
 
 from . import data, exceptions, types, utils
 from .upload import make_upload, Upload
@@ -30,11 +30,10 @@ TCallable = TypeVar("TCallable", bound=Callable[..., Any])
 
 log = logging.getLogger(__name__)
 
-LocationTransformer: TypeAlias = Callable[[str, "dict[str, Any]"], str]
 Capability: TypeAlias = utils.Capability
 
 adapters = Registry["type[Storage]"]()
-location_transformers = Registry[LocationTransformer]()
+location_transformers = Registry[types.LocationTransformer]()
 
 
 def requires_capability(capability: Capability):

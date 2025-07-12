@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from pluggy import HookspecMarker
 
 if TYPE_CHECKING:
-    from file_keeper.core import storage, upload
+    from file_keeper.core import storage, upload, types
     from file_keeper.core.registry import Registry
 
 
@@ -24,4 +24,4 @@ def register_upload_factories(registry: Registry[upload.UploadFactory, type]): .
 
 
 @hookspec
-def register_location_transformers(registry: Registry[storage.LocationTransformer]): ...
+def register_location_transformers(registry: Registry[types.LocationTransformer]): ...
