@@ -23,17 +23,19 @@ hookimpl = HookimplMarker("file-keeper-ext")
 SAMPLE_SIZE = 1024 * 2
 
 log = logging.getLogger(__name__)
+FILE_KEEPER_DNS = uuid.UUID("5b762d43-ec0d-3270-a565-8bb44bdaf6cf")
 
 
 @ext.hookimpl
 def register_location_transformers(registry: Registry[types.LocationTransformer]):
-    registry.register("safe_relative_path", safe_relative_path_transformer)
+    registry.register("datetime_prefix", datetime_prefix_transformer)
+    registry.register("datetime_with_extension", datetime_with_extension_transformer)
     registry.register("fix_extension", fix_extension_transformer)
+    registry.register("safe_relative_path", safe_relative_path_transformer)
     registry.register("uuid", uuid_transformer)
     registry.register("uuid_prefix", uuid_prefix_transformer)
     registry.register("uuid_with_extension", uuid_with_extension_transformer)
-    registry.register("datetime_prefix", datetime_prefix_transformer)
-    registry.register("datetime_with_extension", datetime_with_extension_transformer)
+    registry.register("static_uuid", static_uuid_transformer)
 
 
 def fix_extension_transformer(
@@ -41,8 +43,7 @@ def fix_extension_transformer(
 ) -> str:
     """Choose extension depending on MIME type of upload.
 
-    Upload object must be passed as `upload` inside `extras`, or else
-    transformer does nothing.
+    When upload is not specified, transformer does nothing.
     """
     if not upload:
         return location
@@ -72,6 +73,18 @@ def uuid_transformer(
 ) -> str:
     """Transform location into random UUID."""
     return str(uuid.uuid4())
+
+
+def static_uuid_transformer(
+    location: str, upload: Upload | BaseData | None, extras: dict[str, Any]
+) -> str:
+    """Transform location into static UUID.
+
+    The same location always transformed into the same UUID. This transformer
+    combined with `fix_extension` can be used as an alternative to the
+    `safe_relative_path` if you want to avoid nested folders.
+    """
+    return str(uuid.uuid5(FILE_KEEPER_DNS, location))
 
 
 def uuid_prefix_transformer(
