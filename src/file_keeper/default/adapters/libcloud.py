@@ -26,6 +26,8 @@ class Settings(fk.Settings):
     secret: str | None = None
     params: dict[str, Any] = dataclasses.field(default_factory=dict)  # pyright: ignore[reportUnknownVariableType]
 
+    public_prefix: str = ""
+
     driver: StorageDriver = None  # type: ignore
     container: Container = None  # type: ignore
 
@@ -86,7 +88,7 @@ class Uploader(fk.Uploader):
 
 class Reader(fk.Reader):
     storage: LibCloudStorage
-    capabilities = fk.Capability.STREAM
+    capabilities = fk.Capability.STREAM | fk.Capability.PERMANENT_LINK
 
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
         location = os.path.join(self.storage.settings.path, data.location)
@@ -103,15 +105,17 @@ class Reader(fk.Reader):
 
     def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
         location = os.path.join(self.storage.settings.path, data.location)
-        try:
-            obj = self.storage.settings.container.get_object(location)
-        except ObjectDoesNotExistError as err:
-            raise fk.exc.MissingFileError(
-                self.storage,
-                data.location,
-            ) from err
+        return os.path.join(self.storage.settings.public_prefix, location)
 
-        return self.storage.settings.driver.get_object_cdn_url(obj)
+        # try:
+        #     obj = self.storage.settings.container.get_object(location)
+        # except ObjectDoesNotExistError as err:
+        #     raise fk.exc.MissingFileError(
+        #         self.storage,
+        #         data.location,
+        #     ) from err
+
+        # return self.storage.settings.driver.get_object_cdn_url(obj)
 
 
 class Manager(fk.Manager):
@@ -119,10 +123,11 @@ class Manager(fk.Manager):
     capabilities = fk.Capability.SCAN | fk.Capability.REMOVE
 
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
+        path = self.storage.settings.path
         for item in self.storage.settings.container.iterate_objects(
-            prefix=self.storage.settings.path
+            prefix=path
         ):
-            yield item.name
+            yield os.path.relpath(item.name, path)
 
     def remove(
         self,
@@ -144,3 +149,10 @@ class LibCloudStorage(fk.Storage):
     UploaderFactory = Uploader
     ManagerFactory = Manager
     ReaderFactory = Reader
+
+    def compute_capabilities(self) -> fk.Capability:
+        cluster = super().compute_capabilities()
+        if not self.settings.public_prefix:
+            cluster = cluster.exclude(fk.Capability.PERMANENT_LINK)
+
+        return cluster
