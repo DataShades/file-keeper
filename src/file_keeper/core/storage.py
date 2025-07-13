@@ -268,7 +268,7 @@ class Settings:
     """Name of the storage"""
     override_existing: bool = False
     """Allow overriding existing files"""
-    location_transformers: list[str] = dataclasses.field(default_factory=list)
+    location_transformers: list[str] = dataclasses.field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
     """Names of functions used to sanitize location"""
 
     _required_options: ClassVar[list[str]] = []
@@ -399,11 +399,17 @@ class Storage:
 
         return False
 
-    def prepare_location(self, location: str, /, **kwargs: Any) -> types.Location:
+    def prepare_location(
+        self,
+        location: str,
+        upload_or_data: data.BaseData | Upload | None = None,
+        /,
+        **kwargs: Any,
+    ) -> types.Location:
         """Transform and sanitize location using configured functions."""
         for name in self.settings.location_transformers:
             if transformer := location_transformers.get(name):
-                location = transformer(location, kwargs)
+                location = transformer(location, upload_or_data, kwargs)
             else:
                 raise exceptions.LocationTransformerError(name)
 

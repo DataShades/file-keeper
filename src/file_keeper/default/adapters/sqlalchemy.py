@@ -15,7 +15,7 @@ class Settings(fk.Settings):
     location_column: str = ""
     content_column: str = ""
 
-    engine: sa.Engine = None  # type: ignore
+    engine: sa.engine.Engine = None  # type: ignore
     table: Any = None
     location: Any = None
     content: Any = None

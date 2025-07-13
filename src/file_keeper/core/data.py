@@ -28,7 +28,9 @@ class BaseData(Generic[TData]):
     size: int = 0
     content_type: str = ""
     hash: str = ""
-    storage_data: dict[str, Any] = dataclasses.field(default_factory=dict)
+    storage_data: dict[str, Any] = dataclasses.field(  # pyright: ignore[reportUnknownVariableType]
+        default_factory=dict
+    )
 
     _plain_keys = ["location", "size", "content_type", "hash"]
     _complex_keys = ["storage_data"]

@@ -4,13 +4,12 @@ import os
 import dataclasses
 from typing import Any, ClassVar, Iterable
 
-from libcloud.base import DriverType, get_driver
+from libcloud.base import DriverType, get_driver  # type: ignore
 from libcloud.common.types import LibcloudError
 from libcloud.storage.base import Container, StorageDriver
 from libcloud.storage.types import ContainerDoesNotExistError, ObjectDoesNotExistError
 
 import file_keeper as fk
-from file_keeper.core.utils import Capability
 
 get_driver: Any
 
@@ -24,7 +23,7 @@ class Settings(fk.Settings):
     path: str = ""
 
     secret: str | None = None
-    params: dict[str, Any] = dataclasses.field(default_factory=dict)
+    params: dict[str, Any] = dataclasses.field(default_factory=dict)  # pyright: ignore[reportUnknownVariableType]
 
     driver: StorageDriver = None  # type: ignore
     container: Container = None  # type: ignore

@@ -1,13 +1,18 @@
 from __future__ import annotations
 
-from typing import Any, Iterator, NewType, Protocol
+from typing import Any, Iterator, NewType, Protocol, TYPE_CHECKING
 from collections.abc import Callable
 from typing_extensions import TypeAlias
 
+if TYPE_CHECKING:
+    from .data import BaseData
+    from .upload import Upload
 
 Location = NewType("Location", str)
 
-LocationTransformer: TypeAlias = Callable[[str, "dict[str, Any]"], str]
+LocationTransformer: TypeAlias = Callable[
+    [str, "Upload | BaseData | None", "dict[str, Any]"], str
+]
 
 
 class PReadable(Protocol):

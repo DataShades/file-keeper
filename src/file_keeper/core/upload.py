@@ -17,6 +17,7 @@ UploadFactory: TypeAlias = Callable[
 
 upload_factories = registry.Registry[UploadFactory, type]()
 
+
 @dataclasses.dataclass
 class Upload:
     """Standard upload details.
@@ -110,7 +111,7 @@ def make_upload(value: Any) -> Upload:
     if isinstance(value, Upload):
         return value
 
-    initial_type: type = type(value)
+    initial_type: type = type(value)  # pyright: ignore[reportUnknownVariableType]
 
     fallback_factory = None
     for t in upload_factories:

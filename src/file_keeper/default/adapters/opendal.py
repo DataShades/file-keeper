@@ -26,7 +26,7 @@ class FileStream:
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
-    params: dict[str, Any] = dataclasses.field(default_factory=dict)
+    params: dict[str, Any] = dataclasses.field(default_factory=dict)  # pyright: ignore[reportUnknownVariableType]
     scheme: str = ""
     recursive: bool = False
     operator: opendal.Operator = None  # type: ignore
@@ -132,10 +132,6 @@ class Reader(fk.Reader):
             raise fk.exc.MissingFileError(self.storage, data.location) from err
 
         return FileStream(content)
-
-    def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
-        return self.storage.settings.operator
-        return super().permanent_link(data, extras)
 
 
 class Manager(fk.Manager):
