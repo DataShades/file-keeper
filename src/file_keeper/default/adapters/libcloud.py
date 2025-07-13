@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import os
 import dataclasses
 import requests
@@ -72,6 +73,11 @@ class Uploader(fk.Uploader):
     ) -> fk.FileData:
         dest = os.path.join(self.storage.settings.path, location)
 
+        if not self.storage.settings.override_existing:
+            with contextlib.suppress(ObjectDoesNotExistError):
+                self.storage.settings.container.get_object(dest)
+                raise fk.exc.ExistingFileError(self.storage, location)
+
         result = self.storage.settings.container.upload_object_via_stream(
             iter(upload.stream),
             dest,
@@ -124,9 +130,7 @@ class Manager(fk.Manager):
 
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         path = self.storage.settings.path
-        for item in self.storage.settings.container.iterate_objects(
-            prefix=path
-        ):
+        for item in self.storage.settings.container.iterate_objects(prefix=path):
             yield os.path.relpath(item.name, path)
 
     def remove(
