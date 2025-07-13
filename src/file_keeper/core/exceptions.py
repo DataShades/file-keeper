@@ -84,11 +84,11 @@ class InvalidStorageConfigurationError(StorageError):
 
     def __str__(self):
         if isinstance(self.adapter_or_storage, str):
-            what = f"storage adapter {self.adapter_or_storage}"
+            what = f"storage {self.adapter_or_storage}"
         else:
             what = f"storage adapter {self.adapter_or_storage.__name__}"
 
-        return f"Cannot initialize {what}" + f" due to following error: {self.problem}"
+        return f"Cannot initialize {what}: {self.problem}"
 
 
 class PermissionError(StorageError):

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import dataclasses
+import requests
 from typing import Any, ClassVar, Iterable
 
 from libcloud.base import DriverType, get_driver  # type: ignore
@@ -37,7 +38,7 @@ class Settings(fk.Settings):
             make_driver = get_driver(DriverType.STORAGE, self.provider)
         except AttributeError as err:
             raise fk.exc.InvalidStorageConfigurationError(
-                type(self),
+                self.name,
                 str(err),
             ) from err
 
@@ -48,11 +49,11 @@ class Settings(fk.Settings):
 
         except ContainerDoesNotExistError as err:
             msg = f"Container {self.container_name} does not exist"
-            raise fk.exc.InvalidStorageConfigurationError(type(self), msg) from err
+            raise fk.exc.InvalidStorageConfigurationError(self.name, msg) from err
 
-        except LibcloudError as err:
+        except (LibcloudError, requests.RequestException) as err:
             raise fk.exc.InvalidStorageConfigurationError(
-                type(self),
+                self.name,
                 str(err),
             ) from err
 

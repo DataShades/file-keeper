@@ -45,7 +45,7 @@ class Settings(fk.Settings):
                 )
             except OSError as err:
                 raise fk.exc.InvalidStorageConfigurationError(
-                    type(self),
+                    self.name,
                     f"file `{self.credentials_file}` does not exist",
                 ) from err
 

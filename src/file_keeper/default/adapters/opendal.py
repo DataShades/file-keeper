@@ -43,7 +43,7 @@ class Settings(fk.Settings):
                 self.operator = opendal.Operator(self.scheme, **self.params)
             except opendal.exceptions.ConfigInvalid as err:
                 raise fk.exc.InvalidStorageConfigurationError(
-                    type(self),
+                    self.name,
                     str(err),
                 ) from err
 
