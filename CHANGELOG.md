@@ -6,6 +6,33 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v0.0.10](https://github.com/DataShades/file-keeper/releases/tag/v0.0.10) - 2025-07-13
+
+<small>[Compare with v0.0.9](https://github.com/DataShades/file-keeper/compare/v0.0.9...v0.0.10)</small>
+
+### Features
+
+- add public_prefix(and permanent_link) to libcloud ([3bc7591](https://github.com/DataShades/file-keeper/commit/3bc759105f2d332b329af8b45e04fe2360d5928e) by Sergey Motornyuk).
+- static_uuid transformer ([88383e0](https://github.com/DataShades/file-keeper/commit/88383e05c993b156d6a6253e43ef8902e13b3d9f) by Sergey Motornyuk).
+- location transformers receive optional upload-or-data second argument ([8e6a6dc](https://github.com/DataShades/file-keeper/commit/8e6a6dc41d50fbcd6e2be8d984673f667333f1c2) by Sergey Motornyuk).
+
+### Bug Fixes
+
+- fix_extension transformer raises an error when upload is missing ([a827df5](https://github.com/DataShades/file-keeper/commit/a827df57168dab6e6d05e82bf9e6d680e25faed3) by Sergey Motornyuk).
+
+## [v0.0.9](https://github.com/DataShades/file-keeper/releases/tag/v0.0.9) - 2025-07-02
+
+<small>[Compare with v0.0.8](https://github.com/DataShades/file-keeper/compare/v0.0.8...v0.0.9)</small>
+
+### Features
+
+- add fix_extension transformer ([1345915](https://github.com/DataShades/file-keeper/commit/13459159fa22a50688d4d224942b383f54c5345e) by Sergey Motornyuk).
+- opendal got path option ([d044ade](https://github.com/DataShades/file-keeper/commit/d044ade99fa8139f2ff661bfbd03bf599363ad19) by Sergey Motornyuk).
+
+### Bug Fixes
+
+- cast fs:multipart:position to int ([dc4d768](https://github.com/DataShades/file-keeper/commit/dc4d7686d00f1bae401e5c018e98c49a2ea5f40a) by Sergey Motornyuk).
+
 ## [v0.0.8](https://github.com/DataShades/file-keeper/releases/tag/v0.0.8) - 2025-04-23
 
 <small>[Compare with v0.0.7](https://github.com/DataShades/file-keeper/compare/v0.0.7...v0.0.8)</small>
