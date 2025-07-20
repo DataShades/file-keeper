@@ -1,4 +1,5 @@
 from .fs import FsStorage
+from .null import NullStorage
 
 try:
     from .redis import RedisStorage
@@ -43,5 +44,6 @@ __all__ = [
     "FilebinStorage",
     "GoogleCloudStorage",
     "S3Storage",
-    "SqlAlchemyStorage"
+    "SqlAlchemyStorage",
+    "NullStorage",
 ]

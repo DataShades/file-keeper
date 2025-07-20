@@ -101,7 +101,6 @@ class Uploader(fk.Uploader):
         data: fk.MultipartData,
         extras: dict[str, Any],
     ) -> fk.MultipartData:
-
         filepath = os.path.join(self.storage.settings.path, location)
         client = self.storage.settings.client
         obj = client.create_multipart_upload(

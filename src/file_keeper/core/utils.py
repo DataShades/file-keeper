@@ -157,6 +157,14 @@ class Capability(enum.Flag):
     # make one-time download link for private file
     ONE_TIME_LINK = enum.auto()
 
+    MANAGER_CAPABILITIES = (
+        ANALYZE | SCAN | COPY | MOVE | APPEND | COMPOSE | EXISTS | REMOVE
+    )
+    READER_CAPABILITIES = (
+        RANGE | STREAM | PERMANENT_LINK | TEMPORAL_LINK | ONE_TIME_LINK
+    )
+    UPLOADER_CAPABILITIES = CREATE | MULTIPART
+
     def exclude(self, *capabilities: Capability):
         """Remove capabilities from the cluster.
 
