@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import logging
 import contextlib
 import io
+import logging
 import mimetypes
 import os
 import tempfile
@@ -14,7 +14,7 @@ import magic
 import pytz
 from pluggy import HookimplMarker
 
-from file_keeper import Registry, Storage, Upload, ext, BaseData, types
+from file_keeper import BaseData, Registry, Storage, Upload, ext, types
 from file_keeper.core.upload import UploadFactory
 
 from . import adapters

@@ -16,7 +16,7 @@ Settings = fs.Settings
 Storage = fs.FsStorage
 
 
-@pytest.fixture()
+@pytest.fixture
 def storage(tmp_path: Path, storage_settings: dict[str, Any]):
     settings = {"name": "test", "path": str(tmp_path)}
     settings.update(storage_settings)

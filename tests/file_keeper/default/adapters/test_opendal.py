@@ -15,7 +15,7 @@ Settings = od.Settings
 Storage = od.OpenDalStorage
 
 
-@pytest.fixture()
+@pytest.fixture
 def storage(tmp_path: Path, storage_settings: dict[str, Any]):
     settings: dict[str, Any] = {
         "name": "test",

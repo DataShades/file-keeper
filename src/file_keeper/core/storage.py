@@ -13,16 +13,16 @@ from __future__ import annotations
 
 import dataclasses
 import functools
-import logging
 import inspect
+import logging
+from collections.abc import Callable
 from typing import Any, Callable, ClassVar, Iterable, cast
 
-from collections.abc import Callable
 from typing_extensions import ParamSpec, TypeAlias, TypeVar
 
 from . import data, exceptions, types, utils
-from .upload import make_upload, Upload
 from .registry import Registry
+from .upload import Upload, make_upload
 
 P = ParamSpec("P")
 T = TypeVar("T")
@@ -632,7 +632,7 @@ class Storage:
         *files: data.FileData,
         **kwargs: Any,
     ) -> data.FileData:
-        """Generic composition that relies on APPEND"""
+        """Generic composition that relies on APPEND."""
         result = dest_storage.upload(location, make_upload(b""), **kwargs)
 
         # when first append succeeded with the fragment of the file added

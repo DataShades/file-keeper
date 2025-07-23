@@ -17,7 +17,7 @@ Storage = redis.RedisStorage
 REDIS_URL = "redis://localhost:6379"
 
 
-@pytest.fixture()
+@pytest.fixture
 def storage(tmp_path: Path, storage_settings: dict[str, Any]):
     settings = {
         "name": "test",

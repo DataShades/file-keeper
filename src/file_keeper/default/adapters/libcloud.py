@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import contextlib
-import os
 import dataclasses
-import requests
+import os
 from typing import Any, ClassVar, Iterable
 
+import requests
 from libcloud.base import DriverType, get_driver  # type: ignore
 from libcloud.common.types import LibcloudError
 from libcloud.storage.base import Container, StorageDriver

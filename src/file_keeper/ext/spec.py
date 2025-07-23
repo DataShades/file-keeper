@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from pluggy import HookspecMarker
 
 if TYPE_CHECKING:
-    from file_keeper.core import storage, upload, types
+    from file_keeper.core import storage, types, upload
     from file_keeper.core.registry import Registry
 
 

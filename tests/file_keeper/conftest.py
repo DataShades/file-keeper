@@ -5,7 +5,7 @@ from typing import Any, cast
 import pytest
 
 
-@pytest.fixture()
+@pytest.fixture
 def storage_settings(request: pytest.FixtureRequest) -> dict[str, Any]:
     """Collect storage settings from test markers."""
     settings: dict[str, Any] = {}

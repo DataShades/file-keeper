@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import logging
 import os
 import uuid
-import logging
 from datetime import datetime
 
 import pytest
@@ -23,7 +23,7 @@ from file_keeper import (
 
 
 class TestUploader:
-    @pytest.fixture()
+    @pytest.fixture
     def uploader(self):
         return Uploader(Storage({}))
 
@@ -48,7 +48,7 @@ class TestUploader:
 
 
 class TestManager:
-    @pytest.fixture()
+    @pytest.fixture
     def manager(self):
         return Manager(Storage({}))
 
@@ -59,7 +59,7 @@ class TestManager:
 
 
 class TestReader:
-    @pytest.fixture()
+    @pytest.fixture
     def reader(self):
         return Reader(Storage({}))
 
