@@ -14,6 +14,7 @@ from __future__ import annotations
 import dataclasses
 import functools
 import logging
+import inspect
 from typing import Any, Callable, ClassVar, Iterable, cast
 
 from collections.abc import Callable
@@ -268,10 +269,15 @@ class Settings:
     """Name of the storage"""
     override_existing: bool = False
     """Allow overriding existing files"""
-    location_transformers: list[str] = dataclasses.field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
+    location_transformers: list[str] = cast(
+        "list[str]", dataclasses.field(default_factory=list)
+    )
     """Names of functions used to sanitize location"""
 
     _required_options: ClassVar[list[str]] = []
+    _extra_settings: dict[str, Any] = cast(
+        "dict[str, Any]", dataclasses.field(default_factory=dict)
+    )
 
     def __post_init__(self, **kwargs: Any):
         for attr in self._required_options:
@@ -338,33 +344,33 @@ class Storage:
 
     @classmethod
     def configure(cls, settings: dict[str, Any]) -> Any:
-        try:
-            return cls.SettingsFactory(**settings)
-        except TypeError as err:
-            raise exceptions.InvalidStorageConfigurationError(
-                settings.get("name") or cls, str(err)
-            ) from err
+        # try:
+        #     return cls.SettingsFactory(**settings)
+        # except TypeError as err:
+        #     raise exceptions.InvalidStorageConfigurationError(
+        #         settings.get("name") or cls, str(err)
+        #     ) from err
 
-        # fields = dataclasses.fields(cls.SettingsFactory)
-        # cls.SettingsFactory
-        # names = {field.name for field in fields}  # initfields lost here
+        sig = inspect.signature(cls.SettingsFactory)
+        names = set(sig.parameters)
 
-        # valid = {}
-        # invalid = []
-        # for k, v in settings.items():
-        #     if k in names:
-        #         valid[k] = v
-        #     else:
-        #         invalid.append(k)
+        valid = {}
+        invalid = {}
+        for k, v in settings.items():
+            if k in names:
+                valid[k] = v
+            else:
+                invalid[k] = v
 
-        # cfg = cls.SettingsFactory(**valid)
-        # if invalid:
-        #     log.debug(
-        #         "Storage %s received unknow settings: %s",
-        #         cfg.name,
-        #         invalid,
-        #     )
-        # return cfg
+        valid.setdefault("_extra_settings", {}).update(invalid)
+        cfg = cls.SettingsFactory(**valid)
+        if invalid:
+            log.debug(
+                "Storage %s received unknow settings: %s",
+                cfg.name,
+                invalid,
+            )
+        return cfg
 
     def compute_capabilities(self) -> Capability:
         return (

@@ -50,9 +50,7 @@ class Uploader(fk.Uploader):
 class Reader(fk.Reader):
     storage: FilebinStorage
     required_options = ["bin"]
-    capabilities = (
-        fk.Capability.STREAM | fk.Capability.PERMANENT_LINK
-    )
+    capabilities = fk.Capability.STREAM | fk.Capability.PERMANENT_LINK
 
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> IO[bytes]:
         resp = requests.get(

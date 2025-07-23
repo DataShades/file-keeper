@@ -35,7 +35,6 @@ class TestHasingReader:
         assert reader.get_hash() == expected
 
 
-
 class TestCapabilities:
     def test_not_intersecting_exclusion(self):
         """Nothing changes when non-existing unit excluded."""

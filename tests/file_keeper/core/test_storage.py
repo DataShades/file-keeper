@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import uuid
+import logging
 from datetime import datetime
 
 import pytest
@@ -225,3 +226,21 @@ class TestStorage:
         storage.settings.location_transformers = ["wrong"]
         with pytest.raises(exc.LocationTransformerError):
             storage.prepare_location("test")
+
+    def test_configure(self, caplog: pytest.LogCaptureFixture):
+        with caplog.at_level(logging.DEBUG):
+            FakeStorage({})
+            assert not caplog.records
+
+            storage = FakeStorage({"name": "test", "hello": "world"})
+            assert len(caplog.records) == 1
+
+            record = caplog.records[0]
+
+            assert (
+                record.message
+                == "Storage test received unknow settings: {'hello': 'world'}"
+            )
+            assert record.levelname == "DEBUG"
+
+            assert storage.settings._extra_settings == {"hello": "world"}  # pyright: ignore[reportPrivateUsage]
