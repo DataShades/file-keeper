@@ -15,8 +15,8 @@ import dataclasses
 import functools
 import inspect
 import logging
-from collections.abc import Callable
-from typing import Any, Callable, ClassVar, Iterable, cast
+from collections.abc import Callable, Iterable
+from typing import Any, ClassVar, cast
 
 from typing_extensions import ParamSpec, TypeAlias, TypeVar
 
@@ -534,7 +534,7 @@ class Storage:
             if start > 0:
                 start -= len(chunk)
                 if start < 0:
-                    chunk = chunk[start:]
+                    chunk = chunk[start:]  # noqa: PLW2901
                 else:
                     continue
 

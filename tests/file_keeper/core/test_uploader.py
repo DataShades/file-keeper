@@ -22,12 +22,12 @@ class TestMakeUpload:
 
     def test_tempfile(self):
         """Temp files converted into Upload."""
-        fd = tempfile.SpooledTemporaryFile()
-        _ = fd.write(b"hello")
-        _ = fd.seek(0)
-        result = make_upload(fd)
-        assert isinstance(result, Upload)
-        assert result.stream.read() == b"hello"
+        with tempfile.SpooledTemporaryFile() as fd:
+            _ = fd.write(b"hello")
+            _ = fd.seek(0)
+            result = make_upload(fd)
+            assert isinstance(result, Upload)
+            assert result.stream.read() == b"hello"
 
     def test_str(self, faker: Faker):
         """Strings converted into Upload."""
