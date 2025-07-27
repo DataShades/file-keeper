@@ -1,5 +1,6 @@
 from .fs import FsStorage
 from .null import NullStorage
+from .memory import MemoryStorage
 
 try:
     from .redis import RedisStorage

@@ -18,7 +18,7 @@ import logging
 from collections.abc import Callable, Iterable
 from typing import Any, ClassVar, cast
 
-from typing_extensions import ParamSpec, TypeAlias, TypeVar
+from typing_extensions import ParamSpec, TypeAlias, TypeVar, override
 
 from . import data, exceptions, types, utils
 from .registry import Registry
@@ -304,7 +304,7 @@ class Storage:
     """
 
     # do not show storage adapter
-    hidden = False
+    hidden: bool = False
 
     capabilities: Capability = Capability.NONE
     """Operations supported by storage. Computed from capabilities of
@@ -322,7 +322,8 @@ class Storage:
     ReaderFactory: type[Reader] = Reader
     """Factory class for reader service."""
 
-    def __str__(self):
+    @override
+    def __str__(self) -> str:
         return self.settings.name
 
     def __init__(self, settings: dict[str, Any], /):

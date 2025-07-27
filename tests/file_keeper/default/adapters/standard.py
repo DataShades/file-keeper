@@ -361,6 +361,7 @@ class Composer:
 
 
 class Reader:
+    """Standard expectations for readable storage"""
     def test_std_capabilities(self, storage: fk.Storage):
         """Reader supports STREAM capability."""
         assert storage.supports(fk.Capability.STREAM), "Does not support STREAM"
@@ -373,7 +374,7 @@ class Reader:
         )
 
         actual = b"".join(storage.stream(result))
-        assert actual == content, "Content of the file was modified"
+        assert actual == content, "Content of the file was modified during stream"
 
     def test_std_content_matches_stream(self, storage: fk.Storage, faker: Faker):
         """Content and stream produces the same result received."""
@@ -397,6 +398,7 @@ class Reader:
 
 
 class Multiparter:
+    """Multipart uploader without assumption about internal implementation"""
     def test_std_capabilities(self, storage: fk.Storage):
         """Multiparter supports MULTIPART capability."""
         assert storage.supports(fk.Capability.MULTIPART), "Does not support MULTIPART"
@@ -409,6 +411,7 @@ class Multiparter:
 
 
 class MultiparterWithUploaded:
+    """Multipart upload with number of uploaded bytes tracked using storage_data.uploaded"""
     def test_std_initialization(self, storage: fk.Storage, faker: Faker):
         """`multipart_start` creates an empty file."""
         size = faker.pyint()
@@ -543,6 +546,7 @@ class MultiparterWithUploaded:
 
 
 class Uploader:
+    """Standard logic for any uploader."""
     def test_std_capabilities(self, storage: fk.Storage):
         """Uploader supports CREATE capability."""
         assert storage.supports(fk.Capability.CREATE), "Does not support CREATE"
@@ -607,6 +611,8 @@ class Uploader:
 
 
 class UploaderRecursive:
+    """Standard logic for `recursive` flag in settings."""
+
     @pytest.mark.fk_storage_option("recursive", True)
     def test_sub_directory_allowed(self, storage: fk.Storage, faker: Faker):
         """Can upload into nested dirs when `recursive` enabled."""
