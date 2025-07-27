@@ -8,6 +8,7 @@ import os
 import shutil
 from io import BytesIO
 from typing import IO, Any, ClassVar, Iterable
+from typing_extensions import override
 
 import magic
 
@@ -35,8 +36,9 @@ class Settings(fk.Settings):
 
 class Uploader(fk.Uploader):
     storage: FsStorage
-    capabilities = fk.Capability.CREATE | fk.Capability.MULTIPART
+    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
 
+    @override
     def upload(
         self,
         location: fk.types.Location,
@@ -88,6 +90,7 @@ class Uploader(fk.Uploader):
             reader.get_hash(),
         )
 
+    @override
     def multipart_start(
         self,
         location: fk.types.Location,
@@ -115,6 +118,7 @@ class Uploader(fk.Uploader):
         data.storage_data = dict(tmp_result.storage_data, uploaded=0)
         return data
 
+    @override
     def multipart_refresh(
         self,
         data: fk.MultipartData,
@@ -140,6 +144,7 @@ class Uploader(fk.Uploader):
 
         return data
 
+    @override
     def multipart_update(
         self,
         data: fk.MultipartData,
@@ -206,6 +211,7 @@ class Uploader(fk.Uploader):
         data.storage_data["uploaded"] = os.path.getsize(filepath)
         return data
 
+    @override
     def multipart_complete(
         self,
         data: fk.MultipartData,
@@ -250,6 +256,7 @@ class Reader(fk.Reader):
     storage: FsStorage
     capabilities = fk.Capability.STREAM
 
+    @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> IO[bytes]:
         """Return file open in binary-read mode.
 
@@ -279,6 +286,7 @@ class Manager(fk.Manager):
         | fk.Capability.APPEND
     )
 
+    @override
     def compose(
         self,
         location: fk.types.Location,
@@ -314,6 +322,7 @@ class Manager(fk.Manager):
 
         return self.analyze(location, extras)
 
+    @override
     def append(
         self,
         data: fk.FileData,
@@ -337,6 +346,7 @@ class Manager(fk.Manager):
 
         return self.analyze(data.location, extras)
 
+    @override
     def copy(
         self,
         location: fk.types.Location,
@@ -363,6 +373,7 @@ class Manager(fk.Manager):
         new_data.location = location
         return new_data
 
+    @override
     def move(
         self,
         location: fk.types.Location,
@@ -392,11 +403,13 @@ class Manager(fk.Manager):
         new_data.location = location
         return new_data
 
+    @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         """Check if file exists."""
         filepath = os.path.join(self.storage.settings.path, data.location)
         return os.path.exists(filepath)
 
+    @override
     def remove(
         self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]
     ) -> bool:
@@ -408,6 +421,7 @@ class Manager(fk.Manager):
         os.remove(filepath)
         return True
 
+    @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         """Discover filenames under storage path."""
         path = self.storage.settings.path
@@ -421,6 +435,7 @@ class Manager(fk.Manager):
                 continue
             yield os.path.relpath(entry, path)
 
+    @override
     def analyze(
         self, location: fk.types.Location, extras: dict[str, Any]
     ) -> fk.FileData:
@@ -449,13 +464,14 @@ class Manager(fk.Manager):
 class FsStorage(fk.Storage):
     """Store files in local filesystem."""
 
-    settings: Settings  # type: ignore
+    settings: Settings  # pyright: ignore[reportIncompatibleVariableOverride]
 
-    SettingsFactory = Settings
-    UploaderFactory = Uploader
-    ReaderFactory = Reader
-    ManagerFactory = Manager
+    SettingsFactory: type[fk.Settings] = Settings
+    UploaderFactory: type[fk.Uploader] = Uploader
+    ReaderFactory: type[fk.Reader] = Reader
+    ManagerFactory: type[fk.Manager] = Manager
 
+    @override
     @classmethod
     def configure(cls, settings: dict[str, Any]):
         """Verify and prepare FS settings.

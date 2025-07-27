@@ -22,7 +22,7 @@ from . import types
 TData = TypeVar("TData", bound=types.PData, default=Any)
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass()
 class BaseData(Generic[TData]):
     location: types.Location
     size: int = 0
@@ -59,7 +59,7 @@ class BaseData(Generic[TData]):
         return obj
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass()
 class FileData(BaseData[TData]):
     """Information required by storage to operate the file.
 
@@ -84,7 +84,7 @@ class FileData(BaseData[TData]):
     content_type: str = "application/octet-stream"
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass()
 class MultipartData(BaseData[TData]):
     """Information required by storage to operate the incomplete upload.
 

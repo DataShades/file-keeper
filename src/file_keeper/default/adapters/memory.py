@@ -1,12 +1,13 @@
 from __future__ import annotations
-from io import BytesIO
-from typing_extensions import override
 
-import magic
 import dataclasses
 import logging
 from collections.abc import Iterable
+from io import BytesIO
 from typing import Any, cast
+
+import magic
+from typing_extensions import override
 
 import file_keeper as fk
 

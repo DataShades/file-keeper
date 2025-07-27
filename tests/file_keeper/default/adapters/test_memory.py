@@ -40,6 +40,7 @@ class TestUploaderMultipart(standard.Multiparter, standard.MultiparterWithUpload
         data = storage.multipart_refresh(data)
         assert data.storage_data["uploaded"] == len(content)
 
+
 class TestReader(standard.Reader):
     pass
 
@@ -71,9 +72,9 @@ class TestManagerRemove(standard.Remover):
 class TestManagerScan(standard.Scanner):
     pass
 
+
 class TestManagerAnalyze(standard.Analyzer):
     pass
 
 
-class TestStorage:
-    ...
+class TestStorage: ...
