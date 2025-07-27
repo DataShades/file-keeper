@@ -13,6 +13,8 @@ from __future__ import annotations
 
 import copy
 import dataclasses
+import operator
+from collections.abc import Callable
 from typing import Any, Generic, cast
 
 from typing_extensions import TypeVar
@@ -22,7 +24,7 @@ from . import types
 TData = TypeVar("TData", bound=types.PData, default=Any)
 
 
-@dataclasses.dataclass()
+@dataclasses.dataclass(frozen=True)
 class BaseData(Generic[TData]):
     location: types.Location
     size: int = 0
@@ -36,17 +38,34 @@ class BaseData(Generic[TData]):
     _complex_keys = ["storage_data"]
 
     @classmethod
-    def from_dict(cls, record: dict[str, Any]):
-        return cls(
-            *[record[key] for key in cls._plain_keys if key in record],
-            *[copy.deepcopy(record[key]) for key in cls._complex_keys if key in record],
-        )
+    def from_dict(cls, record: dict[str, Any], **overrides: Any):
+        return cls._from(record, operator.getitem, operator.contains, overrides)
 
     @classmethod
-    def from_object(cls, obj: TData):
+    def from_object(cls, obj: TData, **overrides: Any):
+        return cls._from(obj, getattr, hasattr, overrides)
+
+    @classmethod
+    def _from(
+        cls,
+        source: Any,
+        getter: Callable[[Any, str], Any],
+        checker: Callable[[Any, str], bool],
+        overrides: dict[str, Any],
+    ):
         return cls(
-            *[getattr(obj, key) for key in cls._plain_keys],
-            *[copy.deepcopy(getattr(obj, key)) for key in cls._complex_keys],
+            *[
+                overrides[key] if key in overrides else getter(source, key)
+                for key in cls._plain_keys
+                if checker(source, key)
+            ],
+            *[
+                overrides[key]
+                if key in overrides
+                else copy.deepcopy(getter(source, key))
+                for key in cls._complex_keys
+                if checker(source, key)
+            ],
         )
 
     def into_object(self, obj: TData):
@@ -59,7 +78,7 @@ class BaseData(Generic[TData]):
         return obj
 
 
-@dataclasses.dataclass()
+@dataclasses.dataclass(frozen=True)
 class FileData(BaseData[TData]):
     """Information required by storage to operate the file.
 
@@ -84,7 +103,7 @@ class FileData(BaseData[TData]):
     content_type: str = "application/octet-stream"
 
 
-@dataclasses.dataclass()
+@dataclasses.dataclass(frozen=True)
 class MultipartData(BaseData[TData]):
     """Information required by storage to operate the incomplete upload.
 

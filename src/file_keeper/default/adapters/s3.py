@@ -4,9 +4,10 @@ import base64
 import dataclasses
 import os
 import re
-from typing import TYPE_CHECKING, Any, ClassVar, Iterable, cast
+from typing import TYPE_CHECKING, Any, ClassVar, Iterable
 
 import boto3
+from typing_extensions import override
 
 import file_keeper as fk
 
@@ -61,8 +62,9 @@ class Settings(fk.Settings):
 
 class Reader(fk.Reader):
     storage: S3Storage
-    capabilities = fk.Capability.STREAM
+    capabilities: fk.Capability = fk.Capability.STREAM
 
+    @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
         client = self.storage.settings.client
         filepath = os.path.join(self.storage.settings.path, data.location)
@@ -83,8 +85,9 @@ class Reader(fk.Reader):
 class Uploader(fk.Uploader):
     storage: S3Storage
 
-    capabilities = fk.Capability.CREATE | fk.Capability.MULTIPART
+    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
 
+    @override
     def upload(
         self,
         location: fk.types.Location,
@@ -97,7 +100,7 @@ class Uploader(fk.Uploader):
         obj = client.put_object(
             Bucket=self.storage.settings.bucket,
             Key=filepath,
-            Body=cast(bytes, upload.stream),
+            Body=upload.stream,  # pyright: ignore[reportArgumentType]
         )
 
         filehash = obj["ETag"].strip('"')
@@ -109,6 +112,7 @@ class Uploader(fk.Uploader):
             filehash,
         )
 
+    @override
     def multipart_start(
         self,
         location: fk.types.Location,
@@ -123,16 +127,18 @@ class Uploader(fk.Uploader):
             ContentType=data.content_type,
         )
 
-        data.location = location
-        data.storage_data = dict(
-            data.storage_data,
-            upload_id=obj["UploadId"],
-            uploaded=0,
-            part_number=1,
-            upload_url=self._presigned_part(filepath, obj["UploadId"], 1),
-            etags={},
+        result = fk.MultipartData.from_object(data, location=location)
+
+        result.storage_data.update(
+            {
+                "upload_id": obj["UploadId"],
+                "uploaded": 0,
+                "part_number": 1,
+                "upload_url": self._presigned_part(filepath, obj["UploadId"], 1),
+                "etags": {},
+            }
         )
-        return data
+        return result
 
     def _presigned_part(self, key: str, upload_id: str, part_number: int):
         return self.storage.settings.client.generate_presigned_url(
@@ -145,6 +151,7 @@ class Uploader(fk.Uploader):
             },
         )
 
+    @override
     def multipart_update(
         self,
         data: fk.MultipartData,
@@ -172,7 +179,7 @@ class Uploader(fk.Uploader):
                 Key=filepath,
                 UploadId=data.storage_data["upload_id"],
                 PartNumber=data.storage_data["part_number"],
-                Body=cast(bytes, upload.stream),
+                Body=upload.stream,  # pyright: ignore[reportArgumentType]
             )
 
             etag = resp["ETag"].strip('"')
@@ -198,6 +205,7 @@ class Uploader(fk.Uploader):
 
         return data
 
+    @override
     def multipart_complete(
         self,
         data: fk.MultipartData,
@@ -237,8 +245,9 @@ class Uploader(fk.Uploader):
 class Manager(fk.Manager):
     storage: S3Storage
 
-    capabilities = fk.Capability.REMOVE | fk.Capability.ANALYZE
+    capabilities: fk.Capability = fk.Capability.REMOVE | fk.Capability.ANALYZE
 
+    @override
     def remove(
         self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]
     ) -> bool:
@@ -253,6 +262,7 @@ class Manager(fk.Manager):
 
         return True
 
+    @override
     def analyze(
         self, location: fk.types.Location, extras: dict[str, Any]
     ) -> fk.FileData:
@@ -274,8 +284,8 @@ class Manager(fk.Manager):
 
 
 class S3Storage(fk.Storage):
-    settings: Settings  # type: ignore
-    SettingsFactory = Settings
-    UploaderFactory = Uploader
-    ManagerFactory = Manager
-    ReaderFactory = Reader
+    settings: Settings  # pyright: ignore[reportIncompatibleVariableOverride]
+    SettingsFactory: type[fk.Settings] = Settings
+    UploaderFactory: type[fk.Uploader] = Uploader
+    ManagerFactory: type[fk.Manager] = Manager
+    ReaderFactory: type[fk.Reader] = Reader

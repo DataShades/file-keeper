@@ -10,6 +10,7 @@ import requests
 from google.api_core.exceptions import Forbidden
 from google.cloud.storage import Client
 from google.oauth2.service_account import Credentials
+from typing_extensions import override
 
 import file_keeper as fk
 
@@ -55,8 +56,9 @@ class Settings(fk.Settings):
 class Uploader(fk.Uploader):
     storage: GoogleCloudStorage
 
-    capabilities = fk.Capability.CREATE | fk.Capability.MULTIPART
+    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
 
+    @override
     def upload(
         self,
         location: fk.types.Location,
@@ -77,6 +79,7 @@ class Uploader(fk.Uploader):
             filehash,
         )
 
+    @override
     def multipart_start(
         self,
         location: fk.types.Location,
@@ -100,14 +103,16 @@ class Uploader(fk.Uploader):
             msg = "Cannot initialize session URL"
             raise fk.exc.UploadError(msg)
 
-        data.location = location
-        data.storage_data = dict(
-            data.storage_data,
-            session_url=url,
-            uploaded=0,
+        result = fk.MultipartData.from_object(data, location=location)
+        result.storage_data.update(
+            {
+                "session_url": url,
+                "uploaded": 0,
+            }
         )
-        return data
+        return result
 
+    @override
     def multipart_update(
         self,
         data: fk.MultipartData,
@@ -162,6 +167,7 @@ class Uploader(fk.Uploader):
 
         return data
 
+    @override
     def multipart_refresh(
         self,
         data: fk.MultipartData,
@@ -209,6 +215,7 @@ class Uploader(fk.Uploader):
 
         return data
 
+    @override
     def multipart_complete(
         self,
         data: fk.MultipartData,
@@ -244,8 +251,9 @@ class Uploader(fk.Uploader):
 
 class Manager(fk.Manager):
     storage: GoogleCloudStorage
-    capabilities = fk.Capability.REMOVE
+    capabilities: fk.Capability = fk.Capability.REMOVE
 
+    @override
     def remove(
         self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]
     ) -> bool:
@@ -279,8 +287,8 @@ class Manager(fk.Manager):
 
 
 class GoogleCloudStorage(fk.Storage):
-    settings: Settings  # type: ignore
-    SettingsFactory = Settings
-    UploaderFactory = Uploader
-    ManagerFactory = Manager
+    settings: Settings  # pyright: ignore[reportIncompatibleVariableOverride]
+    SettingsFactory: type[fk.Settings] = Settings
+    UploaderFactory: type[fk.Uploader] = Uploader
+    ManagerFactory: type[fk.Manager] = Manager
     # ReaderFactory = Reader

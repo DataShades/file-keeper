@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import copy
 import dataclasses
 import io
 import os
@@ -8,17 +7,20 @@ from typing import Any, Iterable, cast
 
 import magic
 import opendal
+from typing_extensions import override
 
 import file_keeper as fk
 
 
 class FileStream:
+    file: opendal.File
+
     def __init__(self, file: opendal.File):
         self.file = file
 
     def __iter__(self):
         while chunk := self.file.read(io.DEFAULT_BUFFER_SIZE):
-            if isinstance(chunk, memoryview):  # type: ignore
+            if isinstance(chunk, memoryview):  # pyright: ignore[reportUnnecessaryIsInstance]
                 yield chunk.tobytes()
             else:
                 yield chunk
@@ -55,8 +57,9 @@ class Settings(fk.Settings):
 
 class Uploader(fk.Uploader):
     storage: OpenDalStorage
-    capabilities = fk.Capability.CREATE
+    capabilities: fk.Capability = fk.Capability.CREATE
 
+    @override
     def upload(
         self,
         location: fk.types.Location,
@@ -118,8 +121,9 @@ class Uploader(fk.Uploader):
 
 class Reader(fk.Reader):
     storage: OpenDalStorage
-    capabilities = fk.Capability.STREAM
+    capabilities: fk.Capability = fk.Capability.STREAM
 
+    @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
         """Return file open in binary-read mode.
 
@@ -141,7 +145,7 @@ class Reader(fk.Reader):
 
 class Manager(fk.Manager):
     storage: OpenDalStorage
-    capabilities = (
+    capabilities: fk.Capability = (
         fk.Capability.REMOVE
         | fk.Capability.SCAN
         | fk.Capability.EXISTS
@@ -151,6 +155,7 @@ class Manager(fk.Manager):
         | fk.Capability.APPEND
     )
 
+    @override
     def copy(
         self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]
     ) -> fk.FileData:
@@ -175,10 +180,9 @@ class Manager(fk.Manager):
 
         op.copy(src_location, dest_location)
 
-        new_data = copy.deepcopy(data)
-        new_data.location = location
-        return new_data
+        return fk.FileData.from_object(data, location=location)
 
+    @override
     def move(
         self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]
     ) -> fk.FileData:
@@ -203,10 +207,9 @@ class Manager(fk.Manager):
 
         op.rename(src_location, dest_location)
 
-        new_data = copy.deepcopy(data)
-        new_data.location = location
-        return new_data
+        return fk.FileData.from_object(data, location=location)
 
+    @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         """Check if file exists."""
         location = os.path.join(self.storage.settings.path, data.location)
@@ -218,6 +221,7 @@ class Manager(fk.Manager):
 
         return True
 
+    @override
     def analyze(
         self, location: fk.types.Location, extras: dict[str, Any]
     ) -> fk.FileData:
@@ -235,6 +239,7 @@ class Manager(fk.Manager):
             hash=reader.get_hash(),
         )
 
+    @override
     def remove(
         self,
         data: fk.FileData | fk.MultipartData,
@@ -252,6 +257,7 @@ class Manager(fk.Manager):
         op.delete(location)
         return True
 
+    @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         """Discover filenames in the storage."""
         for entry in self.storage.settings.operator.scan(self.storage.settings.path):
@@ -259,6 +265,7 @@ class Manager(fk.Manager):
             if opendal.EntryMode.is_file(stat.mode):
                 yield entry.path
 
+    @override
     def append(
         self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]
     ) -> fk.FileData:
@@ -283,12 +290,13 @@ class Manager(fk.Manager):
 
 
 class OpenDalStorage(fk.Storage):
-    settings: Settings  # type: ignore
-    SettingsFactory = Settings
-    UploaderFactory = Uploader
-    ManagerFactory = Manager
-    ReaderFactory = Reader
+    settings: Settings  # pyright: ignore[reportIncompatibleVariableOverride]
+    SettingsFactory: type[fk.Settings] = Settings
+    UploaderFactory: type[fk.Uploader] = Uploader
+    ManagerFactory: type[fk.Manager] = Manager
+    ReaderFactory: type[fk.Reader] = Reader
 
+    @override
     def compute_capabilities(self) -> fk.Capability:
         cluster = super().compute_capabilities()
         capabilities = self.settings.operator.capability()

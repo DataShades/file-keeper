@@ -392,10 +392,10 @@ class Reader:
         result = storage.upload(
             fk.types.Location(faker.file_name()), fk.make_upload(b"")
         )
-        result.location = fk.types.Location(result.location + faker.file_name())
+        wrong_location = fk.types.Location(result.location + faker.file_name())
 
         with pytest.raises(fk.exc.MissingFileError):
-            storage.stream(result)
+            storage.stream(fk.FileData(wrong_location))
 
 
 class Multiparter:
@@ -413,7 +413,7 @@ class Multiparter:
 
 
 class MultiparterWithUploaded:
-    """Multipart upload with number of uploaded bytes tracked using storage_data.uploaded"""
+    """Multipart upload with number of uploaded bytes."""
 
     def test_std_initialization(self, storage: fk.Storage, faker: Faker):
         """`multipart_start` creates an empty file."""

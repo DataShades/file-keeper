@@ -56,8 +56,7 @@ class Uploader(fk.Uploader):
     ) -> fk.MultipartData:
         self.storage.settings.bucket[location] = b""
 
-        result = fk.MultipartData.from_object(data)
-        result.location = location
+        result = fk.MultipartData.from_object(data, location=location)
         result.storage_data["uploaded"] = 0
         return result
 
@@ -72,8 +71,9 @@ class Uploader(fk.Uploader):
         if data.location not in bucket:
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        data.storage_data["uploaded"] = len(bucket[data.location])
-        return data
+        result = fk.MultipartData.from_object(data)
+        result.storage_data["uploaded"] = len(bucket[data.location])
+        return result
 
     @override
     def multipart_update(
@@ -215,10 +215,7 @@ class Manager(fk.Manager):
             raise fk.exc.MissingFileError(self.storage, location)
 
         bucket[location] = bucket.pop(data.location)
-        result = fk.FileData.from_object(data)
-        result.location = location
-
-        return result
+        return fk.FileData.from_object(data, location=location)
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:

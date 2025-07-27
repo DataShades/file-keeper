@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import copy
 import dataclasses
 import glob
 import logging
@@ -8,9 +7,9 @@ import os
 import shutil
 from io import BytesIO
 from typing import IO, Any, ClassVar, Iterable
-from typing_extensions import override
 
 import magic
+from typing_extensions import override
 
 import file_keeper as fk
 
@@ -114,9 +113,11 @@ class Uploader(fk.Uploader):
 
         tmp_result = self.upload(location, upload, extras)
 
-        data.location = tmp_result.location
-        data.storage_data = dict(tmp_result.storage_data, uploaded=0)
-        return data
+        return fk.MultipartData.from_object(
+            data,
+            location=tmp_result.location,
+            storage_data=dict(tmp_result.storage_data, uploaded=0),
+        )
 
     @override
     def multipart_refresh(
@@ -254,7 +255,7 @@ class Uploader(fk.Uploader):
 
 class Reader(fk.Reader):
     storage: FsStorage
-    capabilities = fk.Capability.STREAM
+    capabilities: fk.Capability = fk.Capability.STREAM
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> IO[bytes]:
@@ -275,7 +276,7 @@ class Reader(fk.Reader):
 
 class Manager(fk.Manager):
     storage: FsStorage
-    capabilities = (
+    capabilities: fk.Capability = (
         fk.Capability.REMOVE
         | fk.Capability.SCAN
         | fk.Capability.EXISTS
@@ -369,9 +370,7 @@ class Manager(fk.Manager):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         shutil.copy(src, dest)
-        new_data = copy.deepcopy(data)
-        new_data.location = location
-        return new_data
+        return fk.FileData.from_object(data, location=location)
 
     @override
     def move(
@@ -399,9 +398,7 @@ class Manager(fk.Manager):
                 raise fk.exc.ExistingFileError(self.storage, location)
 
         shutil.move(src, dest)
-        new_data = copy.deepcopy(data)
-        new_data.location = location
-        return new_data
+        return fk.FileData.from_object(data, location=location)
 
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import copy
+
 import dataclasses
 from io import BytesIO
 from typing import IO, Any, ClassVar, Iterable, cast
+from typing_extensions import override
 
 import magic
 import redis
@@ -46,8 +47,9 @@ class Settings(fk.Settings):
 
 class Uploader(fk.Uploader):
     storage: RedisStorage
-    capabilities = fk.Capability.CREATE | fk.Capability.MULTIPART
+    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
 
+    @override
     def upload(
         self,
         location: fk.types.Location,
@@ -79,6 +81,7 @@ class Uploader(fk.Uploader):
             reader.get_hash(),
         )
 
+    @override
     def multipart_start(
         self,
         location: fk.types.Location,
@@ -101,10 +104,11 @@ class Uploader(fk.Uploader):
         )
         tmp_result = self.upload(location, upload, extras)
 
-        data.location = tmp_result.location
-        data.storage_data = dict(tmp_result.storage_data, uploaded=0)
-        return data
+        result = fk.MultipartData.from_object(data, location=tmp_result.location)
+        result.storage_data.update({"uploaded": 0})
+        return result
 
+    @override
     def multipart_refresh(
         self,
         data: fk.MultipartData,
@@ -127,6 +131,7 @@ class Uploader(fk.Uploader):
 
         return data
 
+    @override
     def multipart_update(
         self,
         data: fk.MultipartData,
@@ -156,7 +161,7 @@ class Uploader(fk.Uploader):
             raise fk.exc.MissingExtrasError("upload")
         upload = fk.make_upload(extras["upload"])
 
-        current = cast(bytes, cfg.redis.hget(cfg.path, data.location))
+        current: bytes = cfg.redis.hget(cfg.path, data.location)  # pyright: ignore[reportAssignmentType]
         size = len(current)
 
         if "uploaded" not in data.storage_data:
@@ -172,6 +177,7 @@ class Uploader(fk.Uploader):
         data.storage_data["uploaded"] = expected_size
         return data
 
+    @override
     def multipart_complete(
         self,
         data: fk.MultipartData,
@@ -215,8 +221,9 @@ class Uploader(fk.Uploader):
 
 class Reader(fk.Reader):
     storage: RedisStorage
-    capabilities = fk.Capability.STREAM
+    capabilities: fk.Capability = fk.Capability.STREAM
 
+    @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> IO[bytes]:
         """Return file open in binary-read mode.
 
@@ -225,6 +232,7 @@ class Reader(fk.Reader):
         """
         return BytesIO(self.content(data, extras))
 
+    @override
     def content(self, data: fk.FileData, extras: dict[str, Any]) -> bytes:
         """Return content of the file.
 
@@ -242,7 +250,7 @@ class Reader(fk.Reader):
 class Manager(fk.Manager):
     storage: RedisStorage
 
-    capabilities = (
+    capabilities: fk.Capability = (
         fk.Capability.COPY
         | fk.Capability.MOVE
         | fk.Capability.REMOVE
@@ -251,6 +259,7 @@ class Manager(fk.Manager):
         | fk.Capability.ANALYZE
     )
 
+    @override
     def copy(
         self,
         location: fk.types.Location,
@@ -276,10 +285,9 @@ class Manager(fk.Manager):
         content: Any = cfg.redis.hget(cfg.path, data.location)
         cfg.redis.hset(cfg.path, location, content)
 
-        new_data = copy.deepcopy(data)
-        new_data.location = location
-        return new_data
+        return fk.FileData.from_object(data, location=location)
 
+    @override
     def move(
         self,
         location: fk.types.Location,
@@ -306,15 +314,16 @@ class Manager(fk.Manager):
         )
         cfg.redis.hset(cfg.path, location, content)
         cfg.redis.hdel(cfg.path, data.location)
-        new_data = copy.deepcopy(data)
-        new_data.location = location
-        return new_data
 
+        return fk.FileData.from_object(data, location=location)
+
+    @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         """Check if file exists."""
         cfg = self.storage.settings
         return bool(cfg.redis.hexists(cfg.path, data.location))
 
+    @override
     def remove(
         self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]
     ) -> bool:
@@ -323,12 +332,14 @@ class Manager(fk.Manager):
         result = cfg.redis.hdel(cfg.path, data.location)
         return bool(result)
 
+    @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         """Discover filenames under storage path."""
         cfg = self.storage.settings
         for key in cast("Iterable[bytes]", cfg.redis.hkeys(cfg.path)):
             yield key.decode()
 
+    @override
     def analyze(
         self, location: fk.types.Location, extras: dict[str, Any]
     ) -> fk.FileData:
@@ -355,9 +366,9 @@ class Manager(fk.Manager):
 
 
 class RedisStorage(fk.Storage):
-    settings: Settings  # type: ignore
-    SettingsFactory = Settings
+    settings: Settings  # pyright: ignore[reportIncompatibleVariableOverride]
+    SettingsFactory: type[fk.Settings] = Settings
 
-    ReaderFactory = Reader
-    ManagerFactory = Manager
-    UploaderFactory = Uploader
+    ReaderFactory: type[fk.Reader] = Reader
+    ManagerFactory: type[fk.Manager] = Manager
+    UploaderFactory: type[fk.Uploader] = Uploader

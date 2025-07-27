@@ -61,10 +61,10 @@ class StorageService:
         >>>     capabilities = Capability.CREATE
     """
 
-    capabilities = Capability.NONE
+    capabilities: Capability = Capability.NONE
 
     def __init__(self, storage: Storage):
-        self.storage = storage
+        self.storage = storage  # pyright: ignore[reportUnannotatedClassAttribute]
 
 
 class Uploader(StorageService):
