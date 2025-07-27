@@ -17,7 +17,7 @@ import operator
 from collections.abc import Callable
 from typing import Any, Generic, cast
 
-from typing_extensions import TypeVar
+from typing_extensions import ClassVar, TypeVar
 
 from . import types
 
@@ -34,8 +34,8 @@ class BaseData(Generic[TData]):
         "dict[str, Any]", dataclasses.field(default_factory=dict)
     )
 
-    _plain_keys = ["location", "size", "content_type", "hash"]
-    _complex_keys = ["storage_data"]
+    _plain_keys: ClassVar[list[str]] = ["location", "size", "content_type", "hash"]
+    _complex_keys: ClassVar[list[str]] = ["storage_data"]
 
     @classmethod
     def from_dict(cls, record: dict[str, Any], **overrides: Any):

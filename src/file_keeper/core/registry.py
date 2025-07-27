@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Mapping, MutableMapping
 from typing import Callable, Generic, Hashable
 
 from typing_extensions import TypeVar
@@ -21,10 +22,13 @@ class Registry(Generic[V, K]):
     >>> assert col.get("one") is None
     """
 
+    members: MutableMapping[K, V]
+    collector: Callable[[], Mapping[K, V]] | None
+
     def __init__(
         self,
         members: dict[K, V] | None = None,
-        collector: Callable[[], dict[K, V]] | None = None,
+        collector: Callable[[], Mapping[K, V]] | None = None,
     ):
         if members is None:
             members = {}

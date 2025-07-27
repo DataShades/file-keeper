@@ -4,9 +4,10 @@ import contextlib
 import dataclasses
 import os
 from typing import Any, Iterable, cast
+from typing_extensions import override
 
 import requests
-from libcloud.base import DriverType, get_driver  # type: ignore
+from libcloud.base import DriverType, get_driver  # pyright: ignore[reportUnknownVariableType]
 from libcloud.common.types import LibcloudError
 from libcloud.storage.base import Container, StorageDriver
 from libcloud.storage.types import ContainerDoesNotExistError, ObjectDoesNotExistError
@@ -75,8 +76,9 @@ class Settings(fk.Settings):
 
 class Uploader(fk.Uploader):
     storage: LibCloudStorage
-    capabilities = fk.Capability.CREATE
+    capabilities: fk.Capability = fk.Capability.CREATE
 
+    @override
     def upload(
         self,
         location: fk.types.Location,
@@ -106,8 +108,9 @@ class Uploader(fk.Uploader):
 
 class Reader(fk.Reader):
     storage: LibCloudStorage
-    capabilities = fk.Capability.STREAM | fk.Capability.PERMANENT_LINK
+    capabilities: fk.Capability = fk.Capability.STREAM | fk.Capability.PERMANENT_LINK
 
+    @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
         location = os.path.join(self.storage.settings.path, data.location)
 
@@ -121,6 +124,7 @@ class Reader(fk.Reader):
 
         return obj.as_stream()
 
+    @override
     def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
         location = os.path.join(self.storage.settings.path, data.location)
         return os.path.join(self.storage.settings.public_prefix, location)
@@ -138,13 +142,15 @@ class Reader(fk.Reader):
 
 class Manager(fk.Manager):
     storage: LibCloudStorage
-    capabilities = fk.Capability.SCAN | fk.Capability.REMOVE
+    capabilities: fk.Capability = fk.Capability.SCAN | fk.Capability.REMOVE
 
+    @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         path = self.storage.settings.path
         for item in self.storage.settings.container.iterate_objects(prefix=path):
             yield os.path.relpath(item.name, path)
 
+    @override
     def remove(
         self,
         data: fk.FileData | fk.MultipartData,
@@ -160,12 +166,13 @@ class Manager(fk.Manager):
 
 
 class LibCloudStorage(fk.Storage):
-    settings: Settings  # type: ignore
-    SettingsFactory = Settings
-    UploaderFactory = Uploader
-    ManagerFactory = Manager
-    ReaderFactory = Reader
+    settings: Settings  # pyright: ignore[reportIncompatibleVariableOverride]
+    SettingsFactory: type[fk.Settings] = Settings
+    UploaderFactory: type[fk.Uploader] = Uploader
+    ManagerFactory: type[fk.Manager] = Manager
+    ReaderFactory: type[fk.Reader] = Reader
 
+    @override
     def compute_capabilities(self) -> fk.Capability:
         cluster = super().compute_capabilities()
         if not self.settings.public_prefix:
