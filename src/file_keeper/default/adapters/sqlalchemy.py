@@ -10,15 +10,15 @@ import file_keeper as fk
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
-    db_url: str = ""
-    table_name: str = ""
-    location_column: str = ""
-    content_column: str = ""
+    db_url: dataclasses.InitVar[str] = ""
+    table_name: dataclasses.InitVar[str] = ""
+    location_column: dataclasses.InitVar[str] = ""
+    content_column: dataclasses.InitVar[str] = ""
 
-    engine: sa.engine.Engine = None  # type: ignore
-    table: Any = None
-    location: Any = None
-    content: Any = None
+    engine: sa.engine.Engine = None  # pyright: ignore[reportAssignmentType]
+    table: sa.TableClause = None  # pyright: ignore[reportAssignmentType]
+    location: sa.ColumnClause[str] = None  # pyright: ignore[reportAssignmentType]
+    content: sa.ColumnClause[bytes] = None  # pyright: ignore[reportAssignmentType]
 
     _required_options: ClassVar[list[str]] = [
         "db_url",
@@ -27,17 +27,28 @@ class Settings(fk.Settings):
         "content_column",
     ]
 
-    def __post_init__(self, **kwargs: Any):
+    def __post_init__(
+        self,
+        db_url: str,
+        table_name: str,
+        location_column: str,
+        content_column: str,
+        **kwargs: Any,
+    ):
         super().__post_init__(**kwargs)
 
-        self.engine = sa.create_engine(self.db_url)
-        self.location = sa.column(self.location_column)
-        self.content = sa.column(self.content_column)
-        self.table = sa.table(
-            self.table_name,
-            self.location,
-            self.content,
-        )
+        if not self.engine:
+            self.engine = sa.create_engine(db_url)
+        if self.location is None:  # pyright: ignore[reportUnnecessaryComparison]
+            self.location = sa.column(location_column)
+        if self.content is None:  # pyright: ignore[reportUnnecessaryComparison]
+            self.content = sa.column(content_column)
+        if self.table is None:  # pyright: ignore[reportUnnecessaryComparison]
+            self.table = sa.table(
+                table_name,
+                self.location,
+                self.content,
+            )
 
 
 class Reader(fk.Reader):
@@ -73,8 +84,8 @@ class Uploader(fk.Uploader):
         reader = upload.hashing_reader()
 
         values: dict[Any, Any] = {
-            self.storage.settings.location_column: location,
-            self.storage.settings.content_column: reader.read(),
+            self.storage.settings.location: location,
+            self.storage.settings.content: reader.read(),
         }
         stmt = sa.insert(self.storage.settings.table).values(values)
 

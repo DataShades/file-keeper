@@ -4,7 +4,7 @@ import base64
 import dataclasses
 import os
 import re
-from typing import Any, ClassVar, cast
+from typing import Any, cast
 
 import requests
 from google.api_core.exceptions import Forbidden
@@ -25,31 +25,31 @@ def decode(value: str) -> str:
 class Settings(fk.Settings):
     path: str = ""
     bucket: str = ""
-    credentials_file: str = ""
+
+    credentials_file: dataclasses.InitVar[str] = ""
+
     resumable_origin: str = ""
 
-    container: str = ""
+    client: Client = None  # pyright: ignore[reportAssignmentType]
 
-    client: Client = None  # type: ignore
-    _required_options: ClassVar[list[str]] = ["bucket", "path", "credentials_file"]
-
-    def __post_init__(self, **kwargs: Any):
+    def __post_init__(self, credentials_file: str, **kwargs: Any):
         super().__post_init__(**kwargs)
         self.path = self.path.lstrip("/")
 
-        credentials = None
-        if self.credentials_file:
-            try:
-                credentials = Credentials.from_service_account_file(
-                    self.credentials_file
-                )
-            except OSError as err:
-                raise fk.exc.InvalidStorageConfigurationError(
-                    self.name,
-                    f"file `{self.credentials_file}` does not exist",
-                ) from err
+        if self.client is None:  # pyright: ignore[reportUnnecessaryComparison]
+            credentials = None
+            if credentials_file:
+                try:
+                    credentials = Credentials.from_service_account_file(
+                        credentials_file
+                    )
+                except OSError as err:
+                    raise fk.exc.InvalidStorageConfigurationError(
+                        self.name,
+                        f"file `{credentials_file}` does not exist",
+                    ) from err
 
-        self.client = Client(credentials=credentials)
+            self.client = Client(credentials=credentials)
 
 
 class Uploader(fk.Uploader):

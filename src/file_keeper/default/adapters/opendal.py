@@ -4,7 +4,7 @@ import copy
 import dataclasses
 import io
 import os
-from typing import Any, Iterable
+from typing import Any, Iterable, cast
 
 import magic
 import opendal
@@ -26,21 +26,26 @@ class FileStream:
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
-    params: dict[str, Any] = dataclasses.field(default_factory=dict)  # pyright: ignore[reportUnknownVariableType]
-    scheme: str = ""
+    params: dataclasses.InitVar[dict[str, Any] | None] = cast(
+        "dict[str, Any]|None", dataclasses.field(default=None)
+    )
+    scheme: dataclasses.InitVar[str] = ""
+
     recursive: bool = False
-    operator: opendal.Operator = None  # type: ignore
+    operator: opendal.Operator = None  # pyright: ignore[reportAssignmentType]
     path: str = ""
 
-    def __post_init__(self, **kwargs: Any):
+    def __post_init__(self, params: dict[str, Any] | None, scheme: str, **kwargs: Any):
         super().__post_init__(**kwargs)
 
-        if not self.operator:
-            if not self.scheme:
+        if self.operator is None:  # pyright: ignore[reportUnnecessaryComparison]
+            if not scheme:
                 raise fk.exc.MissingStorageConfigurationError(self.name, "scheme")
 
             try:
-                self.operator = opendal.Operator(self.scheme, **self.params)
+                if params is None:
+                    params = {}
+                self.operator = opendal.Operator(scheme, **params)
             except opendal.exceptions.ConfigInvalid as err:
                 raise fk.exc.InvalidStorageConfigurationError(
                     self.name,

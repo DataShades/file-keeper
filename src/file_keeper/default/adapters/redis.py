@@ -23,7 +23,7 @@ class Settings(fk.Settings):
     """
 
     path: str = ""
-    redis: redis.Redis[bytes] = None  # type: ignore
+    redis: redis.Redis = None  # pyright: ignore[reportAssignmentType]
 
     redis_url: dataclasses.InitVar[str] = ""
 
@@ -32,7 +32,7 @@ class Settings(fk.Settings):
     def __post_init__(self, redis_url: str, **kwargs: Any):
         super().__post_init__(**kwargs)
 
-        if not self.redis:
+        if self.redis is None:  # pyright: ignore[reportUnnecessaryComparison]
             if redis_url not in pools:
                 pools.register(
                     redis_url,

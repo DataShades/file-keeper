@@ -3,7 +3,7 @@ from __future__ import annotations
 import contextlib
 import dataclasses
 import os
-from typing import Any, ClassVar, Iterable
+from typing import Any, Iterable, cast
 
 import requests
 from libcloud.base import DriverType, get_driver  # type: ignore
@@ -18,47 +18,59 @@ get_driver: Any
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
-    provider: str = ""
-    key: str = ""
-    container_name: str = ""
+    provider: dataclasses.InitVar[str] = ""
+    key: dataclasses.InitVar[str] = ""
+    container_name: dataclasses.InitVar[str] = ""
 
     path: str = ""
 
-    secret: str | None = None
-    params: dict[str, Any] = dataclasses.field(default_factory=dict)  # pyright: ignore[reportUnknownVariableType]
+    secret: dataclasses.InitVar[str | None] = None
+    params: dataclasses.InitVar[dict[str, Any] | None] = cast(
+        "dict[str, Any] | None", dataclasses.field(default=None)
+    )
 
     public_prefix: str = ""
 
-    driver: StorageDriver = None  # type: ignore
-    container: Container = None  # type: ignore
+    driver: StorageDriver = None  # pyright: ignore[reportAssignmentType]
+    container: Container = None  # pyright: ignore[reportAssignmentType]
 
-    _required_options: ClassVar[list[str]] = ["provider", "key", "container_name"]
-
-    def __post_init__(self, **kwargs: Any):
+    def __post_init__(
+        self,
+        provider: str,
+        key: str,
+        container_name: str,
+        secret: str | None,
+        params: dict[str, Any] | None,
+        **kwargs: Any,
+    ):
         super().__post_init__(**kwargs)
 
-        try:
-            make_driver = get_driver(DriverType.STORAGE, self.provider)
-        except AttributeError as err:
-            raise fk.exc.InvalidStorageConfigurationError(
-                self.name,
-                str(err),
-            ) from err
+        if self.driver is None:  # pyright: ignore[reportUnnecessaryComparison]
+            try:
+                make_driver = get_driver(DriverType.STORAGE, provider)
+            except AttributeError as err:
+                raise fk.exc.InvalidStorageConfigurationError(
+                    self.name,
+                    str(err),
+                ) from err
 
-        self.driver = make_driver(self.key, self.secret, **self.params)
+            if params is None:
+                params = {}
+            self.driver = make_driver(key, secret, **params)
 
-        try:
-            self.container = self.driver.get_container(self.container_name)
+        if self.container is None:  # pyright: ignore[reportUnnecessaryComparison]
+            try:
+                self.container = self.driver.get_container(container_name)
 
-        except ContainerDoesNotExistError as err:
-            msg = f"Container {self.container_name} does not exist"
-            raise fk.exc.InvalidStorageConfigurationError(self.name, msg) from err
+            except ContainerDoesNotExistError as err:
+                msg = f"Container {container_name} does not exist"
+                raise fk.exc.InvalidStorageConfigurationError(self.name, msg) from err
 
-        except (LibcloudError, requests.RequestException) as err:
-            raise fk.exc.InvalidStorageConfigurationError(
-                self.name,
-                str(err),
-            ) from err
+            except (LibcloudError, requests.RequestException) as err:
+                raise fk.exc.InvalidStorageConfigurationError(
+                    self.name,
+                    str(err),
+                ) from err
 
 
 class Uploader(fk.Uploader):

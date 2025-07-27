@@ -4,11 +4,15 @@ import base64
 import dataclasses
 import os
 import re
-from typing import Any, ClassVar, Iterable
+from typing import TYPE_CHECKING, Any, ClassVar, Iterable, cast
 
 import boto3
 
 import file_keeper as fk
+
+if TYPE_CHECKING:
+    from mypy_boto3_s3 import S3Client
+
 
 RE_RANGE = re.compile(r"bytes=(?P<first_byte>\d+)-(?P<last_byte>\d+)")
 HTTP_RESUME = 308
@@ -24,27 +28,35 @@ class Settings(fk.Settings):
 
     bucket: str = ""
 
-    key: str | None = None
-    secret: str | None = None
-    region: str | None = None
-    endpoint: str | None = None
+    key: dataclasses.InitVar[str | None] = None
+    secret: dataclasses.InitVar[str | None] = None
+    region: dataclasses.InitVar[str | None] = None
+    endpoint: dataclasses.InitVar[str | None] = None
 
-    client: Any = None
+    client: S3Client = None  # pyright: ignore[reportAssignmentType]
 
     _required_options: ClassVar[list[str]] = ["bucket"]
 
-    def __post_init__(self, **kwargs: Any):
+    def __post_init__(
+        self,
+        key: str | None,
+        secret: str | None,
+        region: str | None,
+        endpoint: str | None,
+        **kwargs: Any,
+    ):
         super().__post_init__(**kwargs)
 
         self.path = self.path.lstrip("/")
 
-        self.client = boto3.client(
-            "s3",
-            aws_access_key_id=self.key,
-            aws_secret_access_key=self.secret,
-            region_name=self.region,
-            endpoint_url=self.endpoint,
-        )
+        if self.client is None:  # pyright: ignore[reportUnnecessaryComparison]
+            self.client = boto3.client(
+                "s3",
+                aws_access_key_id=key,
+                aws_secret_access_key=secret,
+                region_name=region,
+                endpoint_url=endpoint,
+            )
 
 
 class Reader(fk.Reader):
@@ -83,7 +95,9 @@ class Uploader(fk.Uploader):
 
         client = self.storage.settings.client
         obj = client.put_object(
-            Bucket=self.storage.settings.bucket, Key=filepath, Body=upload.stream
+            Bucket=self.storage.settings.bucket,
+            Key=filepath,
+            Body=cast(bytes, upload.stream),
         )
 
         filehash = obj["ETag"].strip('"')
@@ -158,7 +172,7 @@ class Uploader(fk.Uploader):
                 Key=filepath,
                 UploadId=data.storage_data["upload_id"],
                 PartNumber=data.storage_data["part_number"],
-                Body=upload.stream,
+                Body=cast(bytes, upload.stream),
             )
 
             etag = resp["ETag"].strip('"')
