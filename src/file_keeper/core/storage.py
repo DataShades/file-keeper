@@ -365,7 +365,7 @@ class Storage:
         valid.setdefault("_extra_settings", {}).update(invalid)
         cfg = cls.SettingsFactory(**valid)
         if invalid:
-            log.debug(
+            log.warning(
                 "Storage %s received unknow settings: %s",
                 cfg.name,
                 invalid,

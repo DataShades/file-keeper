@@ -21,10 +21,14 @@ def setup():
         if plugin.is_registered(undesired):
             plugin.unregister(undesired)
 
-    register()
+    register(True)
 
 
-def register():
+def register(reset: bool = False):
+    if reset:
+        storage.location_transformers.reset()
+        upload.upload_factories.reset()
+        storage.adapters.reset()
     plugin.hook.register_location_transformers(registry=storage.location_transformers)
     plugin.hook.register_upload_factories(registry=upload.upload_factories)
     plugin.hook.register_adapters(registry=storage.adapters)

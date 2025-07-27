@@ -241,6 +241,6 @@ class TestStorage:
                 record.message
                 == "Storage test received unknow settings: {'hello': 'world'}"
             )
-            assert record.levelname == "DEBUG"
+            assert record.levelname == "WARNING"
 
             assert storage.settings._extra_settings == {"hello": "world"}  # pyright: ignore[reportPrivateUsage]
