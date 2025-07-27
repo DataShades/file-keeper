@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## Unreleased
+
+<small>[Compare with latest](https://github.com/DataShades/file-keeper/compare/v0.0.10...HEAD)</small>
+
+### Features
+
+- less strict typing rules for storage settings ([247d1c6](https://github.com/DataShades/file-keeper/commit/247d1c6291ab1bc52324f13bdbf642b8c9c53c1b) by Sergey Motornyuk).
+- remove __str__ from exceptions ([2ecd8a2](https://github.com/DataShades/file-keeper/commit/2ecd8a2b8ca2cf90c8e7d1c9fc2e70f6dd39f216) by Sergey Motornyuk).
+- frozen FileData and MultipartData ([cb9dbf8](https://github.com/DataShades/file-keeper/commit/cb9dbf8ddf7516d461d0a295f69d41090b706195) by Sergey Motornyuk).
+- add memory storage ([3abc218](https://github.com/DataShades/file-keeper/commit/3abc2181493c50061ce05c185af29ebe65863d02) by Sergey Motornyuk).
+- storage.ext.register accepts optional `reset` parameter ([c5edce8](https://github.com/DataShades/file-keeper/commit/c5edce8c397bc326c6448f0cb382900995757c4f) by Sergey Motornyuk).
+- Settings log extra options with debug level instead of raising an exception ([7308578](https://github.com/DataShades/file-keeper/commit/7308578d8f4281e427b439ba8cb9540c3ce61d30) by Sergey Motornyuk).
+- add null storage ([c1f8476](https://github.com/DataShades/file-keeper/commit/c1f8476e701bfc9b7a3ced532d8c4edffefdeae0) by Sergey Motornyuk).
+
+### Bug Fixes
+
+- storage settings keep a lot of intermediate parameters ([cf69cf2](https://github.com/DataShades/file-keeper/commit/cf69cf26f4d7ad9e2b16204c6a9803ec6c0a2edb) by Sergey Motornyuk).
+- libcloud silently overrides existing objects ([599f099](https://github.com/DataShades/file-keeper/commit/599f09992ed14e926878b9997abd2bca2155326a) by Sergey Motornyuk).
+
+<!-- insertion marker -->
 ## [v0.0.10](https://github.com/DataShades/file-keeper/releases/tag/v0.0.10) - 2025-07-13
 
 <small>[Compare with v0.0.9](https://github.com/DataShades/file-keeper/compare/v0.0.9...v0.0.10)</small>

@@ -193,7 +193,7 @@ reportMatchNotExhaustive = true
 reportUnusedParameter = false
 reportExplicitAny = false
 reportAny = false
-reportUnannotatedClassAttribute = "hint"
+reportUnannotatedClassAttribute = false
 
 [tool.coverage.run]
 branch = true
