@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import os
+from typing_extensions import override
 import uuid
 from datetime import datetime
 
@@ -70,24 +71,27 @@ class TestReader:
 
 
 class RemovingManager(Manager):
-    capabilities = Capability.REMOVE
+    capabilities: Capability = Capability.REMOVE
 
 
 class StreamingReader(Reader):
-    capabilities = Capability.STREAM
+    capabilities: Capability = Capability.STREAM
 
 
 class SimpleUploader(Uploader):
-    capabilities = Capability.CREATE
+    capabilities: Capability = Capability.CREATE
 
 
 class FakeStorage(Storage):
+    @override
     def make_reader(self):
         return StreamingReader(self)
 
+    @override
     def make_uploader(self):
         return SimpleUploader(self)
 
+    @override
     def make_manager(self):
         return RemovingManager(self)
 

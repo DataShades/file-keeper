@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import dataclasses
 from typing import IO, Any, ClassVar, Iterable
+from typing_extensions import override
 
 import requests
 
@@ -21,9 +22,9 @@ class Settings(fk.Settings):
 
 class Uploader(fk.Uploader):
     storage: FilebinStorage
-    required_options = ["bin"]
-    capabilities = fk.Capability.CREATE
+    capabilities: fk.Capability = fk.Capability.CREATE
 
+    @override
     def upload(
         self,
         location: fk.types.Location,
@@ -49,9 +50,9 @@ class Uploader(fk.Uploader):
 
 class Reader(fk.Reader):
     storage: FilebinStorage
-    required_options = ["bin"]
-    capabilities = fk.Capability.STREAM | fk.Capability.PERMANENT_LINK
+    capabilities: fk.Capability = fk.Capability.STREAM | fk.Capability.PERMANENT_LINK
 
+    @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> IO[bytes]:
         resp = requests.get(
             f"{API_URL}/{self.storage.settings.bin}/{data.location}",
@@ -68,17 +69,20 @@ class Reader(fk.Reader):
                 headers={"accept": "*/*"},
             )
 
-        return resp.raw  # type: ignore
+        return resp.raw  # pyright: ignore[reportReturnType]
 
+    @override
     def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
         return f"{API_URL}/{self.storage.settings.bin}/{data.location}"
 
 
 class Manager(fk.Manager):
     storage: FilebinStorage
-    required_options = ["bin"]
-    capabilities = fk.Capability.REMOVE | fk.Capability.SCAN | fk.Capability.ANALYZE
+    capabilities: fk.Capability = (
+        fk.Capability.REMOVE | fk.Capability.SCAN | fk.Capability.ANALYZE
+    )
 
+    @override
     def remove(
         self,
         data: fk.FileData | fk.MultipartData,
@@ -90,6 +94,7 @@ class Manager(fk.Manager):
         )
         return True
 
+    @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         resp = requests.get(
             f"{API_URL}/{self.storage.settings.bin}",
@@ -100,6 +105,7 @@ class Manager(fk.Manager):
         for record in resp.json()["files"]:
             yield record["filename"]
 
+    @override
     def analyze(
         self, location: fk.types.Location, extras: dict[str, Any]
     ) -> fk.FileData:
@@ -121,10 +127,10 @@ class Manager(fk.Manager):
 
 
 class FilebinStorage(fk.Storage):
-    hidden = True
+    hidden: bool = True
 
-    settings: Settings  # type: ignore
-    SettingsFactory = Settings
-    UploaderFactory = Uploader
-    ManagerFactory = Manager
-    ReaderFactory = Reader
+    settings: Settings  # pyright: ignore[reportIncompatibleVariableOverride]
+    SettingsFactory: type[fk.Settings] = Settings
+    UploaderFactory: type[fk.Uploader] = Uploader
+    ManagerFactory: type[fk.Manager] = Manager
+    ReaderFactory: type[fk.Reader] = Reader

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 from typing import Any, ClassVar, Iterable
+from typing_extensions import override
 
 import sqlalchemy as sa
 
@@ -53,8 +54,9 @@ class Settings(fk.Settings):
 
 class Reader(fk.Reader):
     storage: SqlAlchemyStorage
-    capabilities = fk.Capability.STREAM
+    capabilities: fk.Capability = fk.Capability.STREAM
 
+    @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
         stmt = (
             sa.select(self.storage.settings.content)
@@ -73,8 +75,9 @@ class Reader(fk.Reader):
 
 class Uploader(fk.Uploader):
     storage: SqlAlchemyStorage
-    capabilities = fk.Capability.CREATE
+    capabilities: fk.Capability = fk.Capability.CREATE
 
+    @override
     def upload(
         self,
         location: fk.types.Location,
@@ -102,8 +105,9 @@ class Uploader(fk.Uploader):
 
 class Manager(fk.Manager):
     storage: SqlAlchemyStorage
-    capabilities = fk.Capability.SCAN | fk.Capability.REMOVE
+    capabilities: fk.Capability = fk.Capability.SCAN | fk.Capability.REMOVE
 
+    @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         stmt = sa.select(self.storage.settings.location).select_from(
             self.storage.settings.table
@@ -112,6 +116,7 @@ class Manager(fk.Manager):
             for row in conn.execute(stmt):
                 yield row[0]
 
+    @override
     def remove(
         self,
         data: fk.FileData | fk.MultipartData,
@@ -126,9 +131,9 @@ class Manager(fk.Manager):
 
 
 class SqlAlchemyStorage(fk.Storage):
-    hidden = True
-    settings: Settings  # type: ignore
-    SettingsFactory = Settings
-    UploaderFactory = Uploader
-    ManagerFactory = Manager
-    ReaderFactory = Reader
+    hidden: bool = True
+    settings: Settings  # pyright: ignore[reportIncompatibleVariableOverride]
+    SettingsFactory: type[fk.Settings] = Settings
+    UploaderFactory: type[fk.Uploader] = Uploader
+    ManagerFactory: type[fk.Manager] = Manager
+    ReaderFactory: type[fk.Reader] = Reader

@@ -64,7 +64,7 @@ class StorageService:
     capabilities: Capability = Capability.NONE
 
     def __init__(self, storage: Storage):
-        self.storage = storage  # pyright: ignore[reportUnannotatedClassAttribute]
+        self.storage = storage
 
 
 class Uploader(StorageService):

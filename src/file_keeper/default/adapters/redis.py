@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-
 import dataclasses
 from io import BytesIO
 from typing import IO, Any, ClassVar, Iterable, cast
-from typing_extensions import override
 
 import magic
 import redis
+from typing_extensions import override
 
 import file_keeper as fk
 

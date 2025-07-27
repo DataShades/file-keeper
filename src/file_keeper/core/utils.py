@@ -9,15 +9,16 @@ are stored here, to avoid import cycles.
 from __future__ import annotations
 
 import abc
+from collections.abc import Callable
 import enum
 import hashlib
 import io
 import itertools
 import logging
 import re
-from typing import Generic, Iterable, Iterator
+from typing import Generic, Iterable, Iterator, Any
 
-from typing_extensions import TypeVar
+from typing_extensions import TypeVar, override
 
 from . import types
 
@@ -68,6 +69,12 @@ class HashingReader:
         ```
     """
 
+    stream: types.PStream
+    chunk_size: int
+    algorithm: str
+    hashsum: Any
+    position: int
+
     def __init__(
         self,
         stream: types.PStream,
@@ -92,7 +99,7 @@ class HashingReader:
         self.hashsum.update(chunk)
         return chunk
 
-    next = __next__
+    next: Callable[..., bytes] = __next__
 
     def read(self) -> bytes:
         """Read and return all bytes from stream at once."""
@@ -255,6 +262,9 @@ def humanize_filesize(value: int | float, base: int = SI_BASE) -> str:
 
 
 class AbstractReader(Generic[T], abc.ABC):
+    source: T
+    chunk_size: int
+
     def __init__(self, source: T, chunk_size: int = CHUNK_SIZE):
         self.source = source
         self.chunk_size = chunk_size
@@ -271,5 +281,6 @@ class IterableBytesReader(AbstractReader[Iterable[int]]):
     def __init__(self, source: Iterable[bytes], chunk_size: int = CHUNK_SIZE):
         super().__init__(itertools.chain.from_iterable(source), chunk_size)
 
+    @override
     def read(self, size: int | None = None):
         return bytes(itertools.islice(self.source, 0, size))
