@@ -310,8 +310,8 @@ class Storage:
     """Operations supported by storage. Computed from capabilities of
     services during storage initialization."""
 
-    settings: Settings
-    """Settings of the storage"""
+    # settings: Settings
+    # """Settings of the storage"""
 
     SettingsFactory: type[Settings] = Settings
     """Factory class for storage settings."""
@@ -344,7 +344,7 @@ class Storage:
         return self.ReaderFactory(self)
 
     @classmethod
-    def configure(cls, settings: dict[str, Any]) -> Any:
+    def configure(cls, settings: dict[str, Any]) -> Settings:
         # try:
         #     return cls.SettingsFactory(**settings)
         # except TypeError as err:

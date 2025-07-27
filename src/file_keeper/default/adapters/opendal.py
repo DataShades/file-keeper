@@ -290,7 +290,7 @@ class Manager(fk.Manager):
 
 
 class OpenDalStorage(fk.Storage):
-    settings: Settings  # pyright: ignore[reportIncompatibleVariableOverride]
+    settings: Settings
     SettingsFactory: type[fk.Settings] = Settings
     UploaderFactory: type[fk.Uploader] = Uploader
     ManagerFactory: type[fk.Manager] = Manager

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import dataclasses
 from typing import Any, ClassVar, Iterable
-from typing_extensions import override
 
 import sqlalchemy as sa
+from typing_extensions import override
 
 import file_keeper as fk
 
@@ -132,7 +132,7 @@ class Manager(fk.Manager):
 
 class SqlAlchemyStorage(fk.Storage):
     hidden: bool = True
-    settings: Settings  # pyright: ignore[reportIncompatibleVariableOverride]
+    settings: Settings
     SettingsFactory: type[fk.Settings] = Settings
     UploaderFactory: type[fk.Uploader] = Uploader
     ManagerFactory: type[fk.Manager] = Manager

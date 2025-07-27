@@ -82,7 +82,10 @@ class PermissionError(StorageError):
     """Storage client does not have required permissions."""
 
     def __init__(self, storage: Storage, operation: str, problem: str):
-        msg = f"Storage {storage} is not allowed to perform {operation} operation: {problem}"
+        msg = (
+            f"Storage {storage} is not allowed to"
+            + f" perform {operation} operation: {problem}"
+        )
         super().__init__(msg)
 
 
@@ -146,7 +149,8 @@ class UploadMismatchError(UploadError):
         expected = self.value_formatter(expected)
 
         super().__init__(
-            f"Actual value of {attribute}({actual}) does not match expected value({expected})"
+            f"Actual value of {attribute}({actual})"
+            + f" does not match expected value({expected})"
         )
 
 

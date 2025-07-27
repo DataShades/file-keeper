@@ -266,7 +266,7 @@ class Reader(fk.Reader):
 class MemoryStorage(fk.Storage):
     """Storage files in-memory."""
 
-    settings: Settings  # pyright: ignore[reportIncompatibleVariableOverride]
+    settings: Settings
 
     SettingsFactory: type[fk.Settings] = Settings
     UploaderFactory: type[fk.Uploader] = Uploader

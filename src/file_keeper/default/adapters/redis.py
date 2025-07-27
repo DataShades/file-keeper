@@ -365,7 +365,7 @@ class Manager(fk.Manager):
 
 
 class RedisStorage(fk.Storage):
-    settings: Settings  # pyright: ignore[reportIncompatibleVariableOverride]
+    settings: Settings
     SettingsFactory: type[fk.Settings] = Settings
 
     ReaderFactory: type[fk.Reader] = Reader

@@ -6,7 +6,7 @@ import logging
 import os
 import shutil
 from io import BytesIO
-from typing import IO, Any, ClassVar, Iterable
+from typing import IO, Any, ClassVar, Iterable, cast
 
 import magic
 from typing_extensions import override
@@ -461,7 +461,7 @@ class Manager(fk.Manager):
 class FsStorage(fk.Storage):
     """Store files in local filesystem."""
 
-    settings: Settings  # pyright: ignore[reportIncompatibleVariableOverride]
+    settings: Settings
 
     SettingsFactory: type[fk.Settings] = Settings
     UploaderFactory: type[fk.Uploader] = Uploader
@@ -476,7 +476,7 @@ class FsStorage(fk.Storage):
         Raises:
             InvalidStorageConfigurationError: incorrect configuration value
         """
-        cfg: Settings = super().configure(settings)
+        cfg: Settings = cast(Settings, super().configure(settings))
 
         path = cfg.path
 

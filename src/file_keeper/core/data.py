@@ -15,9 +15,9 @@ import copy
 import dataclasses
 import operator
 from collections.abc import Callable
-from typing import Any, Generic, cast
+from typing import Any, ClassVar, Generic, cast
 
-from typing_extensions import ClassVar, TypeVar
+from typing_extensions import TypeVar
 
 from . import types
 

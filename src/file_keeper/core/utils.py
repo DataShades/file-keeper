@@ -9,14 +9,14 @@ are stored here, to avoid import cycles.
 from __future__ import annotations
 
 import abc
-from collections.abc import Callable
 import enum
 import hashlib
 import io
 import itertools
 import logging
 import re
-from typing import Generic, Iterable, Iterator, Any
+from collections.abc import Callable
+from typing import Any, Generic, Iterable, Iterator
 
 from typing_extensions import TypeVar, override
 

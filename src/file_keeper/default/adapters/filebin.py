@@ -3,9 +3,9 @@ from __future__ import annotations
 import base64
 import dataclasses
 from typing import IO, Any, ClassVar, Iterable
-from typing_extensions import override
 
 import requests
+from typing_extensions import override
 
 import file_keeper as fk
 
@@ -129,7 +129,7 @@ class Manager(fk.Manager):
 class FilebinStorage(fk.Storage):
     hidden: bool = True
 
-    settings: Settings  # pyright: ignore[reportIncompatibleVariableOverride]
+    settings: Settings
     SettingsFactory: type[fk.Settings] = Settings
     UploaderFactory: type[fk.Uploader] = Uploader
     ManagerFactory: type[fk.Manager] = Manager

@@ -4,13 +4,16 @@ import contextlib
 import dataclasses
 import os
 from typing import Any, Iterable, cast
-from typing_extensions import override
 
 import requests
-from libcloud.base import DriverType, get_driver  # pyright: ignore[reportUnknownVariableType]
+from libcloud.base import (  # pyright: ignore[reportUnknownVariableType]
+    DriverType,
+    get_driver,
+)
 from libcloud.common.types import LibcloudError
 from libcloud.storage.base import Container, StorageDriver
 from libcloud.storage.types import ContainerDoesNotExistError, ObjectDoesNotExistError
+from typing_extensions import override
 
 import file_keeper as fk
 
@@ -166,7 +169,7 @@ class Manager(fk.Manager):
 
 
 class LibCloudStorage(fk.Storage):
-    settings: Settings  # pyright: ignore[reportIncompatibleVariableOverride]
+    settings: Settings
     SettingsFactory: type[fk.Settings] = Settings
     UploaderFactory: type[fk.Uploader] = Uploader
     ManagerFactory: type[fk.Manager] = Manager
