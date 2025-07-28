@@ -114,12 +114,6 @@ markers = [
         "fk_storage_option: modify storage configuration",
 ]
 
-
-[tool.git-changelog]
-output = "CHANGELOG.md"
-convention = "conventional"
-parse-trailers = true
-
 [tool.pyright]
 pythonVersion = "3.8"
 include = ["."]

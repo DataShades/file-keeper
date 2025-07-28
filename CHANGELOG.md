@@ -2,105 +2,25 @@
 
 ### 🚀 Features
 
-- add null storage [c1f8476](https://DataShades/file-keeper/commit/c1f8476e701bfc9b7a3ced532d8c4edffefdeae0)
-- Settings log extra options with debug level instead of raising an exception [7308578](https://DataShades/file-keeper/commit/7308578d8f4281e427b439ba8cb9540c3ce61d30)
-- storage.ext.register accepts optional `reset` parameter [c5edce8](https://DataShades/file-keeper/commit/c5edce8c397bc326c6448f0cb382900995757c4f)
-- add memory storage [3abc218](https://DataShades/file-keeper/commit/3abc2181493c50061ce05c185af29ebe65863d02)
 - [**breaking**] frozen FileData and MultipartData [cb9dbf8](https://DataShades/file-keeper/commit/cb9dbf8ddf7516d461d0a295f69d41090b706195)
-- remove __str__ from exceptions [2ecd8a2](https://DataShades/file-keeper/commit/2ecd8a2b8ca2cf90c8e7d1c9fc2e70f6dd39f216)
 - less strict typing rules for storage settings [247d1c6](https://DataShades/file-keeper/commit/247d1c6291ab1bc52324f13bdbf642b8c9c53c1b)
+- remove __str__ from exceptions [2ecd8a2](https://DataShades/file-keeper/commit/2ecd8a2b8ca2cf90c8e7d1c9fc2e70f6dd39f216)
+- add memory storage [3abc218](https://DataShades/file-keeper/commit/3abc2181493c50061ce05c185af29ebe65863d02)
+- storage.ext.register accepts optional `reset` parameter [c5edce8](https://DataShades/file-keeper/commit/c5edce8c397bc326c6448f0cb382900995757c4f)
+- Settings log extra options with debug level instead of raising an exception [7308578](https://DataShades/file-keeper/commit/7308578d8f4281e427b439ba8cb9540c3ce61d30)
+- add null storage [c1f8476](https://DataShades/file-keeper/commit/c1f8476e701bfc9b7a3ced532d8c4edffefdeae0)
 
 ### 🐛 Bug Fixes
 
-- libcloud silently overrides existing objects [599f099](https://DataShades/file-keeper/commit/599f09992ed14e926878b9997abd2bca2155326a)
 - storage settings keep a lot of intermediate parameters [cf69cf2](https://DataShades/file-keeper/commit/cf69cf26f4d7ad9e2b16204c6a9803ec6c0a2edb)
-## [unreleased]
-
-### 🚀 Features
-
-- add null storage [c1f8476](https://DataShades/file-keeper/commit/c1f8476e701bfc9b7a3ced532d8c4edffefdeae0)
-- Settings log extra options with debug level instead of raising an exception [7308578](https://DataShades/file-keeper/commit/7308578d8f4281e427b439ba8cb9540c3ce61d30)
-- storage.ext.register accepts optional `reset` parameter [c5edce8](https://DataShades/file-keeper/commit/c5edce8c397bc326c6448f0cb382900995757c4f)
-- add memory storage [3abc218](https://DataShades/file-keeper/commit/3abc2181493c50061ce05c185af29ebe65863d02)
-- [**breaking**] frozen FileData and MultipartData [cb9dbf8](https://DataShades/file-keeper/commit/cb9dbf8ddf7516d461d0a295f69d41090b706195)
-- remove __str__ from exceptions [2ecd8a2](https://DataShades/file-keeper/commit/2ecd8a2b8ca2cf90c8e7d1c9fc2e70f6dd39f216)
-- less strict typing rules for storage settings [247d1c6](https://DataShades/file-keeper/commit/247d1c6291ab1bc52324f13bdbf642b8c9c53c1b)
-
-### 🐛 Bug Fixes
-
 - libcloud silently overrides existing objects [599f099](https://DataShades/file-keeper/commit/599f09992ed14e926878b9997abd2bca2155326a)
-- storage settings keep a lot of intermediate parameters [cf69cf2](https://DataShades/file-keeper/commit/cf69cf26f4d7ad9e2b16204c6a9803ec6c0a2edb)
-## [unreleased]
-
-### 🚀 Features
-
-- add null storage [c1f8476](https://DataShades/file-keeper/commit/c1f8476e701bfc9b7a3ced532d8c4edffefdeae0)
-- Settings log extra options with debug level instead of raising an exception [7308578](https://DataShades/file-keeper/commit/7308578d8f4281e427b439ba8cb9540c3ce61d30)
-- storage.ext.register accepts optional `reset` parameter [c5edce8](https://DataShades/file-keeper/commit/c5edce8c397bc326c6448f0cb382900995757c4f)
-- add memory storage [3abc218](https://DataShades/file-keeper/commit/3abc2181493c50061ce05c185af29ebe65863d02)
-- [**breaking**] frozen FileData and MultipartData [cb9dbf8](https://DataShades/file-keeper/commit/cb9dbf8ddf7516d461d0a295f69d41090b706195)
-- remove __str__ from exceptions [2ecd8a2](https://DataShades/file-keeper/commit/2ecd8a2b8ca2cf90c8e7d1c9fc2e70f6dd39f216)
-- less strict typing rules for storage settings [247d1c6](https://DataShades/file-keeper/commit/247d1c6291ab1bc52324f13bdbf642b8c9c53c1b)
-
-### 🐛 Bug Fixes
-
-- libcloud silently overrides existing objects [599f099](https://DataShades/file-keeper/commit/599f09992ed14e926878b9997abd2bca2155326a)
-- storage settings keep a lot of intermediate parameters [cf69cf2](https://DataShades/file-keeper/commit/cf69cf26f4d7ad9e2b16204c6a9803ec6c0a2edb)
-## [unreleased]
-
-### 🚀 Features
-
-- add null storage [c1f8476](https://DataShades/file-keeper/commit/c1f8476e701bfc9b7a3ced532d8c4edffefdeae0)
-- Settings log extra options with debug level instead of raising an exception [7308578](https://DataShades/file-keeper/commit/7308578d8f4281e427b439ba8cb9540c3ce61d30)
-- storage.ext.register accepts optional `reset` parameter [c5edce8](https://DataShades/file-keeper/commit/c5edce8c397bc326c6448f0cb382900995757c4f)
-- add memory storage [3abc218](https://DataShades/file-keeper/commit/3abc2181493c50061ce05c185af29ebe65863d02)
-- [**breaking**] frozen FileData and MultipartData [cb9dbf8](https://DataShades/file-keeper/commit/cb9dbf8ddf7516d461d0a295f69d41090b706195)
-- remove __str__ from exceptions [2ecd8a2](https://DataShades/file-keeper/commit/2ecd8a2b8ca2cf90c8e7d1c9fc2e70f6dd39f216)
-- less strict typing rules for storage settings [247d1c6](https://DataShades/file-keeper/commit/247d1c6291ab1bc52324f13bdbf642b8c9c53c1b)
-
-### 🐛 Bug Fixes
-
-- libcloud silently overrides existing objects [599f099](https://DataShades/file-keeper/commit/599f09992ed14e926878b9997abd2bca2155326a)
-- storage settings keep a lot of intermediate parameters [cf69cf2](https://DataShades/file-keeper/commit/cf69cf26f4d7ad9e2b16204c6a9803ec6c0a2edb)
-## [unreleased]
-
-### 🚀 Features
-
-- add null storage [c1f8476](https://DataShades/file-keeper/commit/c1f8476e701bfc9b7a3ced532d8c4edffefdeae0)
-- Settings log extra options with debug level instead of raising an exception [7308578](https://DataShades/file-keeper/commit/7308578d8f4281e427b439ba8cb9540c3ce61d30)
-- storage.ext.register accepts optional `reset` parameter [c5edce8](https://DataShades/file-keeper/commit/c5edce8c397bc326c6448f0cb382900995757c4f)
-- add memory storage [3abc218](https://DataShades/file-keeper/commit/3abc2181493c50061ce05c185af29ebe65863d02)
-- [**breaking**] frozen FileData and MultipartData [cb9dbf8](https://DataShades/file-keeper/commit/cb9dbf8ddf7516d461d0a295f69d41090b706195)
-- remove __str__ from exceptions [2ecd8a2](https://DataShades/file-keeper/commit/2ecd8a2b8ca2cf90c8e7d1c9fc2e70f6dd39f216)
-- less strict typing rules for storage settings [247d1c6](https://DataShades/file-keeper/commit/247d1c6291ab1bc52324f13bdbf642b8c9c53c1b)
-
-### 🐛 Bug Fixes
-
-- libcloud silently overrides existing objects [599f099](https://DataShades/file-keeper/commit/599f09992ed14e926878b9997abd2bca2155326a)
-- storage settings keep a lot of intermediate parameters [cf69cf2](https://DataShades/file-keeper/commit/cf69cf26f4d7ad9e2b16204c6a9803ec6c0a2edb)
-## [unreleased]
-
-### 🚀 Features
-
-- add null storage [c1f8476](https://DataShades/file-keeper/commit/c1f8476e701bfc9b7a3ced532d8c4edffefdeae0)
-- Settings log extra options with debug level instead of raising an exception [7308578](https://DataShades/file-keeper/commit/7308578d8f4281e427b439ba8cb9540c3ce61d30)
-- storage.ext.register accepts optional `reset` parameter [c5edce8](https://DataShades/file-keeper/commit/c5edce8c397bc326c6448f0cb382900995757c4f)
-- add memory storage [3abc218](https://DataShades/file-keeper/commit/3abc2181493c50061ce05c185af29ebe65863d02)
-- [**breaking**] frozen FileData and MultipartData [cb9dbf8](https://DataShades/file-keeper/commit/cb9dbf8ddf7516d461d0a295f69d41090b706195)
-- remove __str__ from exceptions [2ecd8a2](https://DataShades/file-keeper/commit/2ecd8a2b8ca2cf90c8e7d1c9fc2e70f6dd39f216)
-- less strict typing rules for storage settings [247d1c6](https://DataShades/file-keeper/commit/247d1c6291ab1bc52324f13bdbf642b8c9c53c1b)
-
-### 🐛 Bug Fixes
-
-- libcloud silently overrides existing objects [599f099](https://DataShades/file-keeper/commit/599f09992ed14e926878b9997abd2bca2155326a)
-- storage settings keep a lot of intermediate parameters [cf69cf2](https://DataShades/file-keeper/commit/cf69cf26f4d7ad9e2b16204c6a9803ec6c0a2edb)
 ## [0.0.10] - 2025-07-13
 
 ### 🚀 Features
 
-- location transformers receive optional upload-or-data second argument [8e6a6dc](https://DataShades/file-keeper/commit/8e6a6dc41d50fbcd6e2be8d984673f667333f1c2)
-- static_uuid transformer [88383e0](https://DataShades/file-keeper/commit/88383e05c993b156d6a6253e43ef8902e13b3d9f)
 - add public_prefix(and permanent_link) to libcloud [3bc7591](https://DataShades/file-keeper/commit/3bc759105f2d332b329af8b45e04fe2360d5928e)
+- static_uuid transformer [88383e0](https://DataShades/file-keeper/commit/88383e05c993b156d6a6253e43ef8902e13b3d9f)
+- location transformers receive optional upload-or-data second argument [8e6a6dc](https://DataShades/file-keeper/commit/8e6a6dc41d50fbcd6e2be8d984673f667333f1c2)
 
 ### 🐛 Bug Fixes
 
@@ -113,8 +33,8 @@
 
 ### 🚀 Features
 
-- opendal got path option [d044ade](https://DataShades/file-keeper/commit/d044ade99fa8139f2ff661bfbd03bf599363ad19)
 - add fix_extension transformer [1345915](https://DataShades/file-keeper/commit/13459159fa22a50688d4d224942b383f54c5345e)
+- opendal got path option [d044ade](https://DataShades/file-keeper/commit/d044ade99fa8139f2ff661bfbd03bf599363ad19)
 
 ### 🐛 Bug Fixes
 
@@ -158,27 +78,27 @@
 
 ### 🚜 Refactor
 
-- remove public link method and capability [cb39151](https://DataShades/file-keeper/commit/cb39151fb7e09cfdf3b9cdf0d3e2d98ba519edbe)
-- remove type and size validation from append and compose [890c89a](https://DataShades/file-keeper/commit/890c89a8109c64f2a783c6b8dcd0c59d4c94cd89)
 - remove validation from storage [93392f9](https://DataShades/file-keeper/commit/93392f9d8473a913623b8dd35cd202d35b4368ec)
+- remove type and size validation from append and compose [890c89a](https://DataShades/file-keeper/commit/890c89a8109c64f2a783c6b8dcd0c59d4c94cd89)
+- remove public link method and capability [cb39151](https://DataShades/file-keeper/commit/cb39151fb7e09cfdf3b9cdf0d3e2d98ba519edbe)
 ## [0.0.2] - 2025-03-17
 
 ### 🚀 Features
 
-- file_keeper:redis adapter [8c7da94](https://DataShades/file-keeper/commit/8c7da94042c2be5947781683cd9c02a7fca6f03f)
-- file_keeper:opendal adapter [214fb6c](https://DataShades/file-keeper/commit/214fb6c1b587648371b622b2537ef6ff63fd5181)
-- add Location wrapper around unsafe path parameters [b99f155](https://DataShades/file-keeper/commit/b99f155f4db79fc6a177d65d5c43b57d65cfe756)
 - stream-based composite implementation of range [7d47bd8](https://DataShades/file-keeper/commit/7d47bd836c106ce4f4cfa592f54edaca1020b301)
+- add Location wrapper around unsafe path parameters [b99f155](https://DataShades/file-keeper/commit/b99f155f4db79fc6a177d65d5c43b57d65cfe756)
+- file_keeper:opendal adapter [214fb6c](https://DataShades/file-keeper/commit/214fb6c1b587648371b622b2537ef6ff63fd5181)
+- file_keeper:redis adapter [8c7da94](https://DataShades/file-keeper/commit/8c7da94042c2be5947781683cd9c02a7fca6f03f)
 
 ### 🐛 Bug Fixes
 
-- fs adapter: infer `uploaded` size if it is not specified in `multipart_update` [620ec3a](https://DataShades/file-keeper/commit/620ec3a16a18fe2101b98d634cc9815ec93bf20c)
 - map error during settings initialization into custom exception [f596037](https://DataShades/file-keeper/commit/f59603787c634d060a854b4bbf0b86451ffeaea5)
+- fs adapter: infer `uploaded` size if it is not specified in `multipart_update` [620ec3a](https://DataShades/file-keeper/commit/620ec3a16a18fe2101b98d634cc9815ec93bf20c)
 
 ### 🚜 Refactor
 
-- remove default range implementation from reader [36f5f31](https://DataShades/file-keeper/commit/36f5f31da0d6791d82d20d8ea276140c59b578d0)
 - `location_strategy: str` become `location_transformers: list[str]` [daf2dc6](https://DataShades/file-keeper/commit/daf2dc6155b273815d198a7abf4cde6983f7855d)
+- remove default range implementation from reader [36f5f31](https://DataShades/file-keeper/commit/36f5f31da0d6791d82d20d8ea276140c59b578d0)
 
 ### 🧪 Testing
 

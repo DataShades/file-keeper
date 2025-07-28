@@ -6,7 +6,7 @@ import logging
 import os
 import shutil
 from io import BytesIO
-from typing import IO, Any, ClassVar, Iterable, cast
+from typing import IO, Any, ClassVar, Iterable
 
 import magic
 from typing_extensions import override

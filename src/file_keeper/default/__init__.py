@@ -191,7 +191,7 @@ def register_adapters(registry: Registry[type[Storage]]):
     registry.register("file_keeper:fs", adapters.FsStorage)
     registry.register("file_keeper:null", adapters.NullStorage)
     registry.register("file_keeper:memory", adapters.MemoryStorage)
-    registry.register("file_keeper:proxy", adapters.ProxyStorage)
+    registry.register("file_keeper:proxy", adapters.ProxyStorage)  # pyright: ignore[reportArgumentType]
 
     if adapters.RedisStorage:
         registry.register("file_keeper:redis", adapters.RedisStorage)

@@ -11,6 +11,7 @@ cycles.
 
 from __future__ import annotations
 
+from abc import ABC
 import dataclasses
 import functools
 import inspect
@@ -315,7 +316,7 @@ class Settings:
         return cfg
 
 
-class Storage:
+class Storage(ABC):
     """Base class for storage implementation.
 
     Args:

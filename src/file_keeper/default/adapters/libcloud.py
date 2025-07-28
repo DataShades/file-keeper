@@ -6,9 +6,9 @@ import os
 from typing import Any, Iterable, cast
 
 import requests
-from libcloud.base import (  # pyright: ignore[reportUnknownVariableType]
+from libcloud.base import (
     DriverType,
-    get_driver,
+    get_driver,  # pyright: ignore[reportUnknownVariableType]
 )
 from libcloud.common.types import LibcloudError
 from libcloud.storage.base import Container, StorageDriver
