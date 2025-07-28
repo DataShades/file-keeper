@@ -26,11 +26,29 @@ class Settings(fk.Settings):
         path: non-empty location for storage folder
     """
 
-    create_path: bool = False
+    create_path: dataclasses.InitVar[bool] = False
     recursive: bool = False
     path: str = ""
 
     _required_options: ClassVar[list[str]] = ["path"]
+
+    def __post_init__(self, create_path: bool, **kwargs: Any):
+        super().__post_init__(**kwargs)
+
+        if not os.path.exists(self.path):
+            if not create_path:
+                raise fk.exc.InvalidStorageConfigurationError(
+                    self.name,
+                    f"path `{self.path}` does not exist",
+                )
+
+            try:
+                os.makedirs(self.path)
+            except PermissionError as err:
+                raise fk.exc.InvalidStorageConfigurationError(
+                    self.name,
+                    f"path `{self.path}` is not writable",
+                ) from err
 
 
 class Uploader(fk.Uploader):
@@ -467,33 +485,3 @@ class FsStorage(fk.Storage):
     UploaderFactory: type[fk.Uploader] = Uploader
     ReaderFactory: type[fk.Reader] = Reader
     ManagerFactory: type[fk.Manager] = Manager
-
-    @override
-    @classmethod
-    def configure(cls, settings: dict[str, Any]):
-        """Verify and prepare FS settings.
-
-        Raises:
-            InvalidStorageConfigurationError: incorrect configuration value
-        """
-        cfg: Settings = cast(Settings, super().configure(settings))
-
-        path = cfg.path
-
-        if not os.path.exists(path):
-            if cfg.create_path:
-                try:
-                    os.makedirs(path)
-                except PermissionError as err:
-                    raise fk.exc.InvalidStorageConfigurationError(
-                        cfg.name,
-                        f"path `{path}` is not writable",
-                    ) from err
-
-            else:
-                raise fk.exc.InvalidStorageConfigurationError(
-                    cfg.name,
-                    f"path `{path}` does not exist",
-                )
-
-        return cfg

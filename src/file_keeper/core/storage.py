@@ -284,6 +284,36 @@ class Settings:
             if not getattr(self, attr):
                 raise exceptions.MissingStorageConfigurationError(self.name, attr)
 
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Settings:
+        # try:
+        #     return cls(**settings)
+        # except TypeError as err:
+        #     raise exceptions.InvalidStorageConfigurationError(
+        #         settings.get("name") or cls, str(err)
+        #     ) from err
+
+        sig = inspect.signature(cls)
+        names = set(sig.parameters)
+
+        valid = {}
+        invalid = {}
+        for k, v in data.items():
+            if k in names:
+                valid[k] = v
+            else:
+                invalid[k] = v
+
+        valid.setdefault("_extra_settings", {}).update(invalid)
+        cfg = cls(**valid)
+        if invalid:
+            log.warning(
+                "Storage %s received unknow settings: %s",
+                cfg.name,
+                invalid,
+            )
+        return cfg
+
 
 class Storage:
     """Base class for storage implementation.
@@ -345,33 +375,7 @@ class Storage:
 
     @classmethod
     def configure(cls, settings: dict[str, Any]) -> Settings:
-        # try:
-        #     return cls.SettingsFactory(**settings)
-        # except TypeError as err:
-        #     raise exceptions.InvalidStorageConfigurationError(
-        #         settings.get("name") or cls, str(err)
-        #     ) from err
-
-        sig = inspect.signature(cls.SettingsFactory)
-        names = set(sig.parameters)
-
-        valid = {}
-        invalid = {}
-        for k, v in settings.items():
-            if k in names:
-                valid[k] = v
-            else:
-                invalid[k] = v
-
-        valid.setdefault("_extra_settings", {}).update(invalid)
-        cfg = cls.SettingsFactory(**valid)
-        if invalid:
-            log.warning(
-                "Storage %s received unknow settings: %s",
-                cfg.name,
-                invalid,
-            )
-        return cfg
+        return cls.SettingsFactory.from_dict(settings)
 
     def compute_capabilities(self) -> Capability:
         return (

@@ -25,12 +25,12 @@ def storage(tmp_path: Path, storage_settings: dict[str, Any]):
 
 
 class TestSettings:
-    def test_creation(self):
+    def test_creation(self, tmp_path: Path):
         """Test how settings initialized with and without required option."""
         with pytest.raises(fk.exc.MissingStorageConfigurationError):
             Settings()
 
-        Settings(path="test")
+        Settings(path=str(tmp_path))
 
 
 class TestUploaderUpload(standard.Uploader, standard.UploaderRecursive):
