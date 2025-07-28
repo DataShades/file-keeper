@@ -30,7 +30,7 @@
 
 - fix_extension transformer raises an error when upload is missing ([a827df5](https://github.com/DataShades/file-keeper/commit/a827df57168dab6e6d05e82bf9e6d680e25faed3))
 
-### 💼 Other
+### ❌ Removal
 
 - delete Storage.public_link ([da08744](https://github.com/DataShades/file-keeper/commit/da08744021d56ea090cc522b82be70a4d5334771))
 
@@ -86,15 +86,15 @@
 
 - storages accept any type of upload ([a64ee3d](https://github.com/DataShades/file-keeper/commit/a64ee3da989930201964f22b4f32c62641da9294))
 
-### 💼 Other
-
-- drop link storage ([3328eb2](https://github.com/DataShades/file-keeper/commit/3328eb20a581efc58eef6eb232ada1f9c13753af))
-
 ### 🚜 Refactor
 
 - remove validation from storage ([93392f9](https://github.com/DataShades/file-keeper/commit/93392f9d8473a913623b8dd35cd202d35b4368ec))
 - remove type and size validation from append and compose ([890c89a](https://github.com/DataShades/file-keeper/commit/890c89a8109c64f2a783c6b8dcd0c59d4c94cd89))
 - remove public link method and capability ([cb39151](https://github.com/DataShades/file-keeper/commit/cb39151fb7e09cfdf3b9cdf0d3e2d98ba519edbe))
+
+### ❌ Removal
+
+- drop link storage ([3328eb2](https://github.com/DataShades/file-keeper/commit/3328eb20a581efc58eef6eb232ada1f9c13753af))
 
 ## [v0.0.2](https://github.com/DataShades/file-keeper/releases/tag/v0.0.2) - 2025-03-17
 [Compare with v0.0.1](https://github.com/DataShades/file-keeper/compare/v0.0.1..v0.0.2)
