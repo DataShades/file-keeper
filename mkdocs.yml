@@ -4,7 +4,6 @@ repo_url:  https://github.com/DataShades/file-keeper
 
 markdown_extensions:
     - pymdownx.snippets
-    - admonition
     - pymdownx.blocks.admonition
     - pymdownx.details
     - pymdownx.emoji:
