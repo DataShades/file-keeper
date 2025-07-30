@@ -314,6 +314,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#usage" class="md-nav__link">
     <span class="md-ellipsis">
       Usage
@@ -390,6 +399,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#usage" class="md-nav__link">
     <span class="md-ellipsis">
       Usage
@@ -455,6 +473,55 @@
 <p>The package implements adapters for several storage types(local filesystem,
 redis, AWS S3, etc.) and defines a set of tools to simplify building your own
 adapters for the storage you are using.</p>
+<h2 id="installation">Installation</h2>
+<p>The library is available at PyPI and can be installed via your favorite python
+package manager:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>file-keeper
+</code></pre></div>
+<p>To keep list of dependencies short, by default file-keeper supports only those
+storage types, that rely only on python's standard library(filesystem, ). If you need other
+options, specify package extras during installation:</p>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Extras</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AWS S3</td>
+<td>s3</td>
+<td><code>pip install 'file-keeper[s3]'</code></td>
+</tr>
+<tr>
+<td>Apache Libcloud</td>
+<td>libcloud</td>
+<td><code>pip install 'file-keeper[libcloud]'</code></td>
+</tr>
+<tr>
+<td>Apache OpenDAL</td>
+<td>opendal</td>
+<td><code>pip install 'file-keeper[opendal]'</code></td>
+</tr>
+<tr>
+<td>Google Cloud Storage</td>
+<td>gcs</td>
+<td><code>pip install 'file-keeper[gcs]'</code></td>
+</tr>
+<tr>
+<td>Redis</td>
+<td>redis</td>
+<td><code>pip install 'file-keeper[redis]'</code></td>
+</tr>
+<tr>
+<td>SQLAlchemy</td>
+<td>sqlalchemy</td>
+<td><code>pip install 'file-keeper[sqlalchemy]'</code></td>
+</tr>
+</tbody>
+</table>
 <h2 id="usage">Usage</h2>
 <p>The main object required for managing files is a <em>storage</em>. Storage initialized
 using a mapping with settings that contains the type of the underlying
