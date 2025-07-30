@@ -6,6 +6,28 @@ The package implements adapters for several storage types(local filesystem,
 redis, AWS S3, etc.) and defines a set of tools to simplify building your own
 adapters for the storage you are using.
 
+## Installation
+
+The library is available at PyPI and can be installed via your favorite python
+package manager:
+
+```sh
+pip install file-keeper
+```
+
+To keep list of dependencies short, by default file-keeper supports only those
+storage types, that rely only on python's standard library(filesystem, ). If you need other
+options, specify package extras during installation:
+
+| Provider             | Extras     | Example                                 |
+|----------------------|------------|-----------------------------------------|
+| AWS S3               | s3         | `pip install 'file-keeper[s3]'`         |
+| Apache Libcloud      | libcloud   | `pip install 'file-keeper[libcloud]'`   |
+| Apache OpenDAL       | opendal    | `pip install 'file-keeper[opendal]'`    |
+| Google Cloud Storage | gcs        | `pip install 'file-keeper[gcs]'`        |
+| Redis                | redis      | `pip install 'file-keeper[redis]'`      |
+| SQLAlchemy           | sqlalchemy | `pip install 'file-keeper[sqlalchemy]'` |
+
 ## Usage
 
 The main object required for managing files is a *storage*. Storage initialized

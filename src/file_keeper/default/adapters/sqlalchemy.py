@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import Any, ClassVar, Iterable
+from typing import Any, ClassVar
 
 import sqlalchemy as sa
 from typing_extensions import override

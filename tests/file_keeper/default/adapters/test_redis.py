@@ -39,7 +39,7 @@ class TestSettings:
 
     def test_custom_url(self):
         """Redis can be customized via `redis_url`"""
-        cfg = Settings(path="test", redis_url=f"{REDIS_URL}/1")
+        cfg = Settings(path="test", url=f"{REDIS_URL}/1")
         conn: Any = cfg.redis.connection_pool.get_connection("0")
         assert conn.db == 1
 

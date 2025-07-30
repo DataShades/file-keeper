@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import base64
 import dataclasses
-from typing import IO, Any, ClassVar, Iterable
+from typing import IO, Any, ClassVar
 
 import requests
 from typing_extensions import override

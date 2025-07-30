@@ -7,11 +7,10 @@ import mimetypes
 import os
 import tempfile
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, cast
 
 import magic
-import pytz
 from pluggy import HookimplMarker
 
 from file_keeper import BaseData, Registry, Storage, Upload, ext, types
@@ -106,7 +105,7 @@ def datetime_prefix_transformer(
     location: str, upload: Upload | BaseData | None, extras: dict[str, Any]
 ) -> str:
     """Prefix location with current date-timestamp."""
-    return datetime.now(pytz.utc).isoformat() + location
+    return datetime.now(timezone.utc).isoformat() + location
 
 
 def datetime_with_extension_transformer(
@@ -114,7 +113,7 @@ def datetime_with_extension_transformer(
 ) -> str:
     """Replace location with current date-timestamp, but keep the extension."""
     ext = os.path.splitext(location)[1]
-    return datetime.now(pytz.utc).isoformat() + ext
+    return datetime.now(timezone.utc).isoformat() + ext
 
 
 @ext.hookimpl
