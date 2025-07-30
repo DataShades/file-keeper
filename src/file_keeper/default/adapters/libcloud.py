@@ -145,7 +145,12 @@ class Reader(fk.Reader):
 
 class Manager(fk.Manager):
     storage: LibCloudStorage
-    capabilities: fk.Capability = fk.Capability.SCAN | fk.Capability.REMOVE
+    capabilities: fk.Capability = (
+        fk.Capability.SCAN
+        | fk.Capability.REMOVE
+        | fk.Capability.EXISTS
+        | fk.Capability.ANALYZE
+    )
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
@@ -166,6 +171,25 @@ class Manager(fk.Manager):
         except ObjectDoesNotExistError:
             return False
         return self.storage.settings.container.delete_object(obj)
+
+    @override
+    def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        try:
+            self.storage.settings.container.get_object(data.location)
+        except ObjectDoesNotExistError:
+            return False
+
+        return True
+
+    @override
+    def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+        try:
+            obj = self.storage.settings.container.get_object(location)
+        except ObjectDoesNotExistError:
+            raise fk.exc.MissingFileError(self.storage, location)
+
+        # TODO: identify content type
+        return fk.FileData(location, obj.size, hash=obj.hash)
 
 
 class LibCloudStorage(fk.Storage):
