@@ -251,7 +251,87 @@ class Uploader(fk.Uploader):
 class Manager(fk.Manager):
     storage: S3Storage
 
-    capabilities: fk.Capability = fk.Capability.REMOVE | fk.Capability.ANALYZE
+    capabilities: fk.Capability = (
+        fk.Capability.REMOVE
+        | fk.Capability.ANALYZE
+        | fk.Capability.EXISTS
+        | fk.Capability.SCAN
+        | fk.Capability.MOVE
+        | fk.Capability.COPY
+    )
+
+    @override
+    def copy(
+        self,
+        location: fk.Location,
+        data: fk.FileData,
+        extras: dict[str, Any],
+    ) -> fk.FileData:
+        client = self.storage.settings.client
+        bucket = self.storage.settings.bucket
+
+        if not self.exists(data, extras):
+            raise fk.exc.MissingFileError(self.storage, data.location)
+
+        if not self.storage.settings.override_existing and self.exists(
+            fk.FileData(location), extras
+        ):
+            raise fk.exc.ExistingFileError(self.storage, location)
+
+        old_key = os.path.join(str(self.storage.settings.path), data.location)
+        new_key = os.path.join(str(self.storage.settings.path), location)
+
+        client.copy_object(
+            Bucket=bucket, CopySource={"Bucket": bucket, "Key": old_key}, Key=new_key
+        )
+
+        return self.analyze(location, extras)
+
+    @override
+    def move(
+        self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]
+    ) -> fk.FileData:
+        result = self.copy(location, data, extras)
+        self.remove(data, extras)
+
+        return result
+
+    @override
+    def scan(self, extras: dict[str, Any]) -> Iterable[str]:
+        client = self.storage.settings.client
+        path = self.storage.settings.path
+
+        marker = ""
+        while True:
+            resp = client.list_objects(
+                Bucket=self.storage.settings.bucket,
+                Marker=marker,
+            )
+            if "Contents" not in resp:
+                break
+
+            for item in resp["Contents"]:
+                if "Key" not in item:
+                    continue
+                key = item["Key"]
+                yield os.path.relpath(key, path)
+
+            if "NextMarker" not in resp:
+                break
+
+            marker = resp["NextMarker"]
+
+    @override
+    def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        filepath = os.path.join(str(self.storage.settings.path), data.location)
+        client = self.storage.settings.client
+
+        try:
+            obj = client.get_object(Bucket=self.storage.settings.bucket, Key=filepath)
+        except client.exceptions.NoSuchKey:
+            return False
+
+        return True
 
     @override
     def remove(
