@@ -288,7 +288,7 @@ class Manager(fk.Manager):
 
 class GoogleCloudStorage(fk.Storage):
     settings: Settings
-    SettingsFactory: type[fk.Settings] = Settings
-    UploaderFactory: type[fk.Uploader] = Uploader
-    ManagerFactory: type[fk.Manager] = Manager
+    SettingsFactory = Settings
+    UploaderFactory = Uploader
+    ManagerFactory = Manager
     # ReaderFactory = Reader

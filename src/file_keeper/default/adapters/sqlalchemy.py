@@ -131,9 +131,9 @@ class Manager(fk.Manager):
 
 
 class SqlAlchemyStorage(fk.Storage):
-    hidden: bool = True
+    hidden = True
     settings: Settings
-    SettingsFactory: type[fk.Settings] = Settings
-    UploaderFactory: type[fk.Uploader] = Uploader
-    ManagerFactory: type[fk.Manager] = Manager
-    ReaderFactory: type[fk.Reader] = Reader
+    SettingsFactory = Settings
+    UploaderFactory = Uploader
+    ManagerFactory = Manager
+    ReaderFactory = Reader

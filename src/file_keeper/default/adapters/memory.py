@@ -268,7 +268,7 @@ class MemoryStorage(fk.Storage):
 
     settings: Settings
 
-    SettingsFactory: type[fk.Settings] = Settings
-    UploaderFactory: type[fk.Uploader] = Uploader
-    ReaderFactory: type[fk.Reader] = Reader
-    ManagerFactory: type[fk.Manager] = Manager
+    SettingsFactory = Settings
+    UploaderFactory = Uploader
+    ReaderFactory = Reader
+    ManagerFactory = Manager

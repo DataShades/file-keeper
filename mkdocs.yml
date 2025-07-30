@@ -19,6 +19,7 @@ markdown_extensions:
             alternate_style: true
 
 plugins:
+    - macros
     - search:
         separator: '[\s\-\.\_]+'
     - mkdocstrings:
@@ -75,46 +76,47 @@ theme:
         - content.code.annotate
 
 nav:
-    - index.md
-    # - installation.md
-    # - Usage:
-    #     - usage/configure.md
-    #     - usage/use-in-code.md
-    #     - usage/use-in-browser.md
-    #     - usage/multi-storage.md
-    #     - usage/tracked-files.md
-    #     - usage/permissions.md
-    #     - usage/ownership.md
-    #     - usage/transfer.md
-    #     - usage/task-queue.md
-    #     - usage/capabilities.md
-    #     - usage/multipart.md
-    #     - usage/js.md
+  - index.md
 
-    # - upload-strategies.md
-    # - implementation-example.md
-    # - Shared:
-    #         - shared/index.md
-    #         - shared/types.md
-    #         - shared/config.md
-    #         - shared/exceptions.md
-    # - cli.md
-    # - API: api.md
-    # - validators.md
-    # - interfaces.md
-    # - Configuration:
-    #     - configuration/index.md
-    #     - configuration/global.md
-    #     - Storage configuration:
-    #         - configuration/storage/index.md
-    #         - configuration/redis.md
-    #         - configuration/fs.md
-    #         - configuration/opendal.md
-    #         - configuration/libcloud.md
-    # - Migration(experimental):
-    #     - migration/index.md
-    #     - migration/group.md
-    #     - migration/user.md
-    #     - migration/resource.md
+  # - installation.md
+  # - Usage:
+  #     - usage/configure.md
+  #     - usage/use-in-code.md
+  #     - usage/use-in-browser.md
+  #     - usage/multi-storage.md
+  #     - usage/tracked-files.md
+  #     - usage/permissions.md
+  #     - usage/ownership.md
+  #     - usage/transfer.md
+  #     - usage/task-queue.md
+  #     - usage/capabilities.md
+  #     - usage/multipart.md
+  #     - usage/js.md
 
-    # - changelog.md
+  # - upload-strategies.md
+  # - implementation-example.md
+  # - Shared:
+  #         - shared/index.md
+  #         - shared/types.md
+  #         - shared/config.md
+  #         - shared/exceptions.md
+  # - cli.md
+  # - API: api.md
+  # - validators.md
+  # - interfaces.md
+  # - Configuration:
+  #     - configuration/index.md
+  #     - configuration/global.md
+  #     - Storage configuration:
+  #         - configuration/storage/index.md
+  #         - configuration/redis.md
+  #         - configuration/fs.md
+  #         - configuration/opendal.md
+  #         - configuration/libcloud.md
+  # - Migration(experimental):
+  #     - migration/index.md
+  #     - migration/group.md
+  #     - migration/user.md
+  #     - migration/resource.md
+
+  # - changelog.md

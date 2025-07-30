@@ -344,13 +344,13 @@ class Storage(ABC):
     # settings: Settings
     # """Settings of the storage"""
 
-    SettingsFactory: type[Settings] = Settings
+    SettingsFactory: ClassVar[type[Settings]] = Settings
     """Factory class for storage settings."""
-    UploaderFactory: type[Uploader] = Uploader
+    UploaderFactory: ClassVar[type[Uploader]] = Uploader
     """Factory class for uploader service."""
-    ManagerFactory: type[Manager] = Manager
+    ManagerFactory: ClassVar[type[Manager]] = Manager
     """Factory class for manager service."""
-    ReaderFactory: type[Reader] = Reader
+    ReaderFactory: ClassVar[type[Reader]] = Reader
     """Factory class for reader service."""
 
     @override

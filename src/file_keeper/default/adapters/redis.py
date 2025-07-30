@@ -366,8 +366,8 @@ class Manager(fk.Manager):
 
 class RedisStorage(fk.Storage):
     settings: Settings
-    SettingsFactory: type[fk.Settings] = Settings
+    SettingsFactory = Settings
 
-    ReaderFactory: type[fk.Reader] = Reader
-    ManagerFactory: type[fk.Manager] = Manager
-    UploaderFactory: type[fk.Uploader] = Uploader
+    ReaderFactory = Reader
+    ManagerFactory = Manager
+    UploaderFactory = Uploader
