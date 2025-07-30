@@ -94,9 +94,15 @@ class Uploader(fk.Uploader):
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
+        if not self.storage.settings.override_existing and self.storage.exists(
+            fk.FileData(location), **extras
+        ):
+            raise fk.exc.ExistingFileError(self.storage, location)
+
         filepath = os.path.join(self.storage.settings.path, location)
 
         client = self.storage.settings.client
+
         obj = client.put_object(
             Bucket=self.storage.settings.bucket,
             Key=filepath,
