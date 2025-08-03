@@ -77,7 +77,7 @@ class Uploader(fk.Uploader):
             New file data
 
         """
-        dest = os.path.join(self.storage.settings.path, location)
+        dest = self.storage.full_path(location)
 
         if os.path.exists(dest) and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
@@ -140,10 +140,7 @@ class Uploader(fk.Uploader):
         Returns:
             Updated file data
         """
-        filepath = os.path.join(
-            self.storage.settings.path,
-            data.location,
-        )
+        filepath = self.storage.full_path(data.location)
 
         if not os.path.exists(filepath):
             raise fk.exc.MissingFileError(self.storage, data.location)
@@ -177,7 +174,7 @@ class Uploader(fk.Uploader):
         Returns:
             Updated file data
         """
-        filepath = os.path.join(self.storage.settings.path, data.location)
+        filepath = self.storage.full_path(data.location)
 
         if not os.path.exists(filepath):
             raise fk.exc.MissingFileError(self.storage, data.location)
@@ -210,7 +207,7 @@ class Uploader(fk.Uploader):
         if expected_size > data.size:
             raise fk.exc.UploadOutOfBoundError(expected_size, data.size)
 
-        filepath = os.path.join(self.storage.settings.path, data.location)
+        filepath = self.storage.full_path(data.location)
         with open(filepath, "rb+") as dest:
             dest.seek(extras["position"])
             for chunk in upload.stream:
@@ -236,7 +233,8 @@ class Uploader(fk.Uploader):
         Returns:
             File data
         """
-        filepath = os.path.join(self.storage.settings.path, data.location)
+        filepath = self.storage.full_path(data.location)
+
         if not os.path.exists(filepath):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
@@ -274,7 +272,7 @@ class Reader(fk.Reader):
         Returns:
             File content iterator
         """
-        filepath = os.path.join(self.storage.settings.path, data.location)
+        filepath = self.storage.full_path(data.location)
         if not os.path.exists(filepath):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
@@ -310,13 +308,14 @@ class Manager(fk.Manager):
             ExistingFileError: file exists and overrides are not allowed
             MissingFileError: source file does not exist
         """
-        dest = os.path.join(self.storage.settings.path, location)
+        dest = self.storage.full_path(location)
+
         if os.path.exists(dest) and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
 
         sources: list[str] = []
         for data in datas:
-            src = os.path.join(self.storage.settings.path, data.location)
+            src = self.storage.full_path(data.location)
 
             if not os.path.exists(src):
                 raise fk.exc.MissingFileError(self.storage, data.location)
@@ -345,7 +344,7 @@ class Manager(fk.Manager):
         Raises:
             MissingFileError: file does not exist
         """
-        dest = os.path.join(self.storage.settings.path, data.location)
+        dest = self.storage.full_path(data.location)
         if not os.path.exists(dest):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
@@ -367,8 +366,8 @@ class Manager(fk.Manager):
             ExistingFileError: file exists and overrides are not allowed
             MissingFileError: source file does not exist
         """
-        src = os.path.join(self.storage.settings.path, data.location)
-        dest = os.path.join(self.storage.settings.path, location)
+        src = self.storage.full_path(data.location)
+        dest = self.storage.full_path(location)
 
         if not os.path.exists(src):
             raise fk.exc.MissingFileError(self.storage, data.location)
@@ -392,8 +391,8 @@ class Manager(fk.Manager):
             ExistingFileError: file exists and overrides are not allowed
             MissingFileError: source file does not exist
         """
-        src = os.path.join(self.storage.settings.path, data.location)
-        dest = os.path.join(self.storage.settings.path, location)
+        src = self.storage.full_path(data.location)
+        dest = self.storage.full_path(location)
 
         if not os.path.exists(src):
             raise fk.exc.MissingFileError(self.storage, data.location)
@@ -410,7 +409,7 @@ class Manager(fk.Manager):
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         """Check if file exists."""
-        filepath = os.path.join(self.storage.settings.path, data.location)
+        filepath = self.storage.full_path(data.location)
         return os.path.exists(filepath)
 
     @override
@@ -418,7 +417,7 @@ class Manager(fk.Manager):
         self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]
     ) -> bool:
         """Remove the file."""
-        filepath = os.path.join(self.storage.settings.path, data.location)
+        filepath = self.storage.full_path(data.location)
         if not os.path.exists(filepath):
             return False
 
@@ -445,7 +444,7 @@ class Manager(fk.Manager):
         Raises:
             MissingFileError: file does not exist
         """
-        filepath = os.path.join(self.storage.settings.path, location)
+        filepath = self.storage.full_path(location)
         if not os.path.exists(filepath):
             raise fk.exc.MissingFileError(self.storage, location)
 
