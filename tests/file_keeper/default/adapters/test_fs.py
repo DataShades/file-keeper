@@ -33,7 +33,7 @@ class TestSettings:
         Settings(path=str(tmp_path))
 
 
-class TestUploaderUpload(standard.Uploader, standard.UploaderRecursive):
+class TestUploaderUpload(standard.Uploader):
     pass
 
 
@@ -105,25 +105,6 @@ class TestManagerRemove(standard.Remover):
 
 class TestManagerScan(standard.Scanner):
     def test_scan(self, storage: fs.FsStorage, faker: Faker):
-        first = storage.upload(
-            fk.types.Location(faker.file_name()), fk.make_upload(b"")
-        )
-        second = storage.upload(
-            fk.types.Location(faker.file_name()), fk.make_upload(b"")
-        )
-
-        relpath = faker.file_path(absolute=False)
-        nested_path = os.path.join(storage.settings.path, relpath)
-        os.makedirs(os.path.dirname(nested_path))
-        with open(nested_path, "wb"):
-            pass
-
-        discovered = set(storage.scan())
-
-        assert discovered == {first.location, second.location}
-
-    @pytest.mark.fk_storage_option("recursive", True)
-    def test_scan_recursive(self, storage: fs.FsStorage, faker: Faker):
         first = storage.upload(
             fk.types.Location(faker.file_name()), fk.make_upload(b"")
         )

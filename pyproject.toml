@@ -12,7 +12,7 @@ description = "Abstraction level for object storages."
 classifiers = [
 
 ]
-keywords = [ "file-management", "cloud", "filesystem", "DAL" ]
+keywords = [ "file management", "cloud", "filesystem", "DAL", "storage", "file" ]
 requires-python = ">= 3.9"
 dependencies = [ "typing_extensions", "pluggy", "python-magic" ]
 authors = [

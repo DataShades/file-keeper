@@ -583,6 +583,12 @@ class Uploader:
         with pytest.raises(fk.exc.ExistingFileError):
             storage.upload(result.location, fk.make_upload(b""))
 
+    def test_sub_directory_allowed(self, storage: fk.Storage, faker: Faker):
+        """Can upload into nested dirs."""
+        path = faker.file_path(absolute=False)
+        result = storage.upload(fk.types.Location(path), fk.make_upload(b""))
+        assert result.location == path
+
     @pytest.mark.fk_storage_option("override_existing", True)
     def test_std_replace_existing(self, storage: fk.Storage, faker: Faker):
         """Overrides can be explicitly enabled."""
@@ -612,21 +618,3 @@ class Uploader:
         assert result.hash == hashlib.md5(content).hexdigest(), (
             "Content hash differs from expected value"
         )
-
-
-class UploaderRecursive:
-    """Standard logic for `recursive` flag in settings."""
-
-    @pytest.mark.fk_storage_option("recursive", True)
-    def test_sub_directory_allowed(self, storage: fk.Storage, faker: Faker):
-        """Can upload into nested dirs when `recursive` enabled."""
-        path = faker.file_path(absolute=False)
-        result = storage.upload(fk.types.Location(path), fk.make_upload(b""))
-        assert result.location == path
-
-    def test_sub_directory_not_allowed(self, storage: fk.Storage, faker: Faker):
-        """Cannot upload into nested dirs by default."""
-        with pytest.raises(fk.exc.LocationError):
-            storage.upload(
-                fk.types.Location(faker.file_path(absolute=False)), fk.make_upload(b"")
-            )

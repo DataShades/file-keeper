@@ -42,7 +42,7 @@ class TestSettings:
         assert cfg.operator is op
 
 
-class TestUploaderUpload(standard.Uploader, standard.UploaderRecursive):
+class TestUploaderUpload(standard.Uploader):
     pass
 
 

@@ -16,7 +16,7 @@ pip install file-keeper
 ```
 
 To keep list of dependencies short, by default file-keeper supports only those
-storage types, that rely only on python's standard library(filesystem, ). If you need other
+storage types, that rely only on python's standard library. If you need other
 options, specify package extras during installation:
 
 | Provider             | Extras     | Example                                 |

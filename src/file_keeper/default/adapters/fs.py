@@ -22,12 +22,10 @@ class Settings(fk.Settings):
 
     Args:
         create_path: create `path` if it does not exist
-        recursive: expect files inside subfolders the `path`
         path: non-empty location for storage folder
     """
 
     create_path: dataclasses.InitVar[bool] = False
-    recursive: bool = False
     path: str = ""
 
     _required_options: ClassVar[list[str]] = ["path"]
@@ -64,11 +62,9 @@ class Uploader(fk.Uploader):
     ) -> fk.FileData:
         """Upload file to computed location.
 
-        File location is relative the configured `path`. When recursive is
-        disabled, location can include only filename. If `recursive` uploads
-        allowed, location can be prepended with an intermediate path. This path
-        is not sanitized and can lead outside the configured `path` of the
-        storage. Consider using combination of `storage.prepare_location` with
+        File location is relative the configured `path`. The location is not
+        sanitized and can lead outside the configured `path`. Consider using
+        combination of `storage.prepare_location` with
         `settings.location_transformers` that sanitizes the path, like
         `safe_relative_path`.
 
@@ -82,17 +78,11 @@ class Uploader(fk.Uploader):
         """
         subpath = os.path.split(location)[0]
 
-        if subpath and not self.storage.settings.recursive:
-            raise fk.exc.LocationError(self.storage, subpath)
-
         dest = os.path.join(self.storage.settings.path, location)
 
         if os.path.exists(dest) and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
 
-        # `recursive` is checked earlier and either subpath is empty(no
-        # directories created on the next line) or `reqursive` is
-        # enabled(creation of intermediate path is allowed)
         os.makedirs(os.path.dirname(dest), exist_ok=True)
 
         reader = upload.hashing_reader()
@@ -442,10 +432,7 @@ class Manager(fk.Manager):
         path = self.storage.settings.path
         search_path = os.path.join(path, "**")
 
-        for entry in glob.glob(
-            search_path,
-            recursive=self.storage.settings.recursive,
-        ):
+        for entry in glob.glob(search_path, recursive=True):
             if not os.path.isfile(entry):
                 continue
             yield os.path.relpath(entry, path)

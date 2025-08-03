@@ -33,7 +33,6 @@ class Settings(fk.Settings):
     )
     scheme: dataclasses.InitVar[str] = ""
 
-    recursive: bool = False
     operator: opendal.Operator = None  # pyright: ignore[reportAssignmentType]
     path: str = ""
 
@@ -69,13 +68,10 @@ class Uploader(fk.Uploader):
         """Upload file to computed location.
 
         Schemas working with filesystem-like paths assume that location is
-        relative the configured `path`. When recursive is disabled, location
-        can include only filename. If `recursive` uploads allowed, location can
-        be prepended with an intermediate path. This path is not sanitized and
-        can lead outside the configured `path` of the storage. Consider using
-        combination of `storage.prepare_location` with
-        `settings.location_transformers` that sanitizes the path, like
-        `safe_relative_path`.
+        relative the configured `path`. The location is not sanitized and can
+        lead outside the configured `path`. Consider using combination of
+        `storage.prepare_location` with `settings.location_transformers` that
+        sanitizes the path, like `safe_relative_path`.
 
         Raises:
             ExistingFileError: file exists and overrides are not allowed
@@ -89,9 +85,7 @@ class Uploader(fk.Uploader):
         dest = os.path.join(self.storage.settings.path, location)
         subpath = os.path.dirname(dest)
 
-        if subpath and not (
-            self.storage.settings.recursive and op.capability().create_dir
-        ):
+        if subpath and not op.capability().create_dir:
             raise fk.exc.LocationError(self.storage, subpath)
 
         try:
