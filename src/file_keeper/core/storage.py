@@ -274,6 +274,11 @@ class Settings:
         "list[str]", dataclasses.field(default_factory=list)
     )
     """Names of functions used to sanitize location"""
+    disabled_capabilities: list[str] = cast(
+        "list[str]", dataclasses.field(default_factory=list)
+    )
+    """Capabilities that are not supported even if implemented"""
+
 
     _required_options: ClassVar[list[str]] = []
     _extra_settings: dict[str, Any] = cast(
@@ -379,11 +384,17 @@ class Storage(ABC):
         return cls.SettingsFactory.from_dict(settings)
 
     def compute_capabilities(self) -> Capability:
-        return (
+        result = (
             self.uploader.capabilities
             | self.manager.capabilities
             | self.reader.capabilities
         )
+
+        for name in self.settings.disabled_capabilities:
+            result = result.exclude(Capability[name])
+
+        return result
+
 
     def supports(self, operation: Capability) -> bool:
         """Check whether the storage supports operation."""
