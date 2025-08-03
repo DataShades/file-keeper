@@ -259,7 +259,31 @@ class Manager(fk.Manager):
         | fk.Capability.SCAN
         | fk.Capability.MOVE
         | fk.Capability.COPY
+        | fk.Capability.SIGNED
     )
+
+    @override
+    def signed(
+        self,
+        action: fk.types.SignedAction,
+        duration: int,
+        location: fk.Location,
+        extras: dict[str, Any],
+    ) -> str:
+        client = self.storage.settings.client
+        method = {
+            "download": "get_object",
+            "upload": "put_object",
+            "delete": "delete_object",
+        }[action]
+
+        key = self.storage.full_path(location)
+
+        return client.generate_presigned_url(
+            ClientMethod=method,
+            Params={"Bucket": self.storage.settings.bucket, "Key": key},
+            ExpiresIn=duration,
+        )
 
     @override
     def copy(

@@ -151,7 +151,12 @@ class Reader(fk.Reader):
         return data.location
 
     @override
-    def temporal_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
+    def temporal_link(
+        self,
+        data: fk.FileData,
+        duration: int,
+        extras: dict[str, Any],
+    ) -> str:
         return data.location
 
     @override

@@ -4,4 +4,5 @@ import file_keeper as fk
 
 
 @fk.Storage.register
-class ProxyStorage: ...
+class ProxyStorage:
+    hidden = True

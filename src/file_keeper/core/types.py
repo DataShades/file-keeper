@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterator
 from typing import TYPE_CHECKING, Any, NewType, Protocol
 
-from typing_extensions import TypeAlias
+from typing_extensions import Literal, TypeAlias
 
 if TYPE_CHECKING:
     from .data import BaseData
@@ -14,6 +14,8 @@ Location = NewType("Location", str)
 LocationTransformer: TypeAlias = Callable[
     [str, "Upload | BaseData | None", "dict[str, Any]"], str
 ]
+
+SignedAction = Literal["upload", "download", "delete"]
 
 
 class PReadable(Protocol):
