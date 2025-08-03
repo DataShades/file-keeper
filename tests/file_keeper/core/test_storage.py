@@ -125,6 +125,11 @@ class TestStorage:
             Capability.REMOVE | Capability.STREAM | Capability.CREATE
         )
 
+    def test_disabled_capabilities(self):
+        """Existing capabilities can be Ignored."""
+        storage = FakeStorage({"disabled_capabilities": ["CREATE", "REMOVE"]})
+        assert storage.capabilities == (Capability.STREAM)
+
     def test_supports(self):
         """Storage can tell whether it supports certain capabilities."""
         storage = FakeStorage({})

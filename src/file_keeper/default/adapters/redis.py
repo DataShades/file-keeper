@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 from io import BytesIO
-from typing import IO, Any, ClassVar, Iterable, cast
+from typing import IO, Any, ClassVar, cast
 
 import magic
 import redis
@@ -22,12 +22,12 @@ class Settings(fk.Settings):
         redis_url: URL of the redis DB. Used only if `redis` is empty
     """
 
-    path: str = ""
+    bucket: str = ""
     redis: redis.Redis = None  # pyright: ignore[reportAssignmentType]
 
     url: dataclasses.InitVar[str] = ""
 
-    _required_options: ClassVar[list[str]] = ["path"]
+    _required_options: ClassVar[list[str]] = ["bucket"]
 
     def __post_init__(self, url: str, **kwargs: Any):
         super().__post_init__(**kwargs)
@@ -55,7 +55,7 @@ class Uploader(fk.Uploader):
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
-        """Upload file to into location within storage path.
+        """Upload file to into location within storage bucket.
 
         Raises:
             ExistingFileError: file exists and overrides are not allowed
@@ -65,13 +65,13 @@ class Uploader(fk.Uploader):
         """
         cfg = self.storage.settings
 
-        if not cfg.override_existing and cfg.redis.hexists(cfg.path, location):
+        if not cfg.override_existing and cfg.redis.hexists(cfg.bucket, location):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         reader = fk.HashingReader(upload.stream)
 
         content: Any = reader.read()
-        cfg.redis.hset(cfg.path, location, content)
+        cfg.redis.hset(cfg.bucket, location, content)
 
         return fk.FileData(
             location,
@@ -123,10 +123,10 @@ class Uploader(fk.Uploader):
         """
         cfg = self.storage.settings
 
-        if not cfg.redis.hexists(cfg.path, data.location):
+        if not cfg.redis.hexists(cfg.bucket, data.location):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        data.storage_data["uploaded"] = cfg.redis.hstrlen(cfg.path, data.location)
+        data.storage_data["uploaded"] = cfg.redis.hstrlen(cfg.bucket, data.location)
 
         return data
 
@@ -153,14 +153,14 @@ class Uploader(fk.Uploader):
         """
         cfg = self.storage.settings
 
-        if not cfg.redis.hexists(cfg.path, data.location):
+        if not cfg.redis.hexists(cfg.bucket, data.location):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
         if "upload" not in extras:
             raise fk.exc.MissingExtrasError("upload")
         upload = fk.make_upload(extras["upload"])
 
-        current: bytes = cfg.redis.hget(cfg.path, data.location)  # pyright: ignore[reportAssignmentType]
+        current: bytes = cfg.redis.hget(cfg.bucket, data.location)  # pyright: ignore[reportAssignmentType]
         size = len(current)
 
         if "uploaded" not in data.storage_data:
@@ -171,7 +171,7 @@ class Uploader(fk.Uploader):
             raise fk.exc.UploadOutOfBoundError(expected_size, data.size)
 
         new_content: Any = current + upload.stream.read()
-        cfg.redis.hset(cfg.path, data.location, new_content)
+        cfg.redis.hset(cfg.bucket, data.location, new_content)
 
         data.storage_data["uploaded"] = expected_size
         return data
@@ -194,7 +194,7 @@ class Uploader(fk.Uploader):
             File data
         """
         cfg = self.storage.settings
-        content = cast("bytes | None", cfg.redis.hget(cfg.path, data.location))
+        content = cast("bytes | None", cfg.redis.hget(cfg.bucket, data.location))
         if content is None:
             raise fk.exc.MissingFileError(self.storage, data.location)
 
@@ -239,7 +239,7 @@ class Reader(fk.Reader):
             MissingFileError: file does not exist
         """
         cfg = self.storage.settings
-        content = cast("bytes | None", cfg.redis.hget(cfg.path, data.location))
+        content = cast("bytes | None", cfg.redis.hget(cfg.bucket, data.location))
         if content is None:
             raise fk.exc.MissingFileError(self.storage, data.location)
 
@@ -273,16 +273,16 @@ class Manager(fk.Manager):
         """
         cfg = self.storage.settings
 
-        if not cfg.redis.hexists(cfg.path, data.location):
+        if not cfg.redis.hexists(cfg.bucket, data.location):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
         if not self.storage.settings.override_existing and cfg.redis.hexists(
-            cfg.path, location
+            cfg.bucket, location
         ):
             raise fk.exc.ExistingFileError(self.storage, location)
 
-        content: Any = cfg.redis.hget(cfg.path, data.location)
-        cfg.redis.hset(cfg.path, location, content)
+        content: Any = cfg.redis.hget(cfg.bucket, data.location)
+        cfg.redis.hset(cfg.bucket, location, content)
 
         return fk.FileData.from_object(data, location=location)
 
@@ -301,18 +301,18 @@ class Manager(fk.Manager):
         """
         cfg = self.storage.settings
 
-        if not cfg.redis.hexists(cfg.path, data.location):
+        if not cfg.redis.hexists(cfg.bucket, data.location):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        if not cfg.override_existing and cfg.redis.hexists(cfg.path, location):
+        if not cfg.override_existing and cfg.redis.hexists(cfg.bucket, location):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         content: Any = cfg.redis.hget(
-            cfg.path,
+            cfg.bucket,
             data.location,
         )
-        cfg.redis.hset(cfg.path, location, content)
-        cfg.redis.hdel(cfg.path, data.location)
+        cfg.redis.hset(cfg.bucket, location, content)
+        cfg.redis.hdel(cfg.bucket, data.location)
 
         return fk.FileData.from_object(data, location=location)
 
@@ -320,7 +320,7 @@ class Manager(fk.Manager):
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         """Check if file exists."""
         cfg = self.storage.settings
-        return bool(cfg.redis.hexists(cfg.path, data.location))
+        return bool(cfg.redis.hexists(cfg.bucket, data.location))
 
     @override
     def remove(
@@ -328,14 +328,14 @@ class Manager(fk.Manager):
     ) -> bool:
         """Remove the file."""
         cfg = self.storage.settings
-        result = cfg.redis.hdel(cfg.path, data.location)
+        result = cfg.redis.hdel(cfg.bucket, data.location)
         return bool(result)
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         """Discover filenames under storage path."""
         cfg = self.storage.settings
-        for key in cast("Iterable[bytes]", cfg.redis.hkeys(cfg.path)):
+        for key in cast("Iterable[bytes]", cfg.redis.hkeys(cfg.bucket)):
             yield key.decode()
 
     @override
@@ -348,7 +348,7 @@ class Manager(fk.Manager):
             MissingFileError: file does not exist
         """
         cfg = self.storage.settings
-        value: Any = cfg.redis.hget(cfg.path, location)
+        value: Any = cfg.redis.hget(cfg.bucket, location)
         if value is None:
             raise fk.exc.MissingFileError(self.storage, location)
 

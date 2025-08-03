@@ -21,8 +21,8 @@ REDIS_URL = "redis://localhost:6379"
 def storage(tmp_path: Path, storage_settings: dict[str, Any]):
     settings = {
         "name": "test",
-        "path": str(tmp_path),
-        "redis_url": f"{REDIS_URL}/1",
+        "bucket": str(tmp_path),
+        "url": f"{REDIS_URL}/1",
     }
     settings.update(storage_settings)
 
@@ -33,13 +33,13 @@ def storage(tmp_path: Path, storage_settings: dict[str, Any]):
 
 class TestSettings:
     def test_creation(self):
-        cfg = Settings(path="test")
+        cfg = Settings(bucket="test")
         conn: Any = cfg.redis.connection_pool.get_connection("0")
         assert conn.db == 0
 
     def test_custom_url(self):
         """Redis can be customized via `redis_url`"""
-        cfg = Settings(path="test", url=f"{REDIS_URL}/1")
+        cfg = Settings(bucket="test", url=f"{REDIS_URL}/1")
         conn: Any = cfg.redis.connection_pool.get_connection("0")
         assert conn.db == 1
 
@@ -47,7 +47,7 @@ class TestSettings:
         """Existing connection can be used for settings."""
         url = f"{REDIS_URL}/2"
         conn = Redis.from_url(url)
-        cfg = Settings(path="test", redis=conn)
+        cfg = Settings(bucket="test", redis=conn)
         assert cfg.redis is conn
 
 
@@ -63,7 +63,7 @@ class TestUploaderMultipart(standard.Multiparter, standard.MultiparterWithUpload
             fk.types.Location(faker.file_name()),
             fk.MultipartData(size=len(content)),
         )
-        storage.settings.redis.hset(storage.settings.path, data.location, content)
+        storage.settings.redis.hset(storage.settings.bucket, data.location, content)
 
         data = storage.multipart_refresh(data)
         assert data.storage_data["uploaded"] == len(content)
@@ -98,7 +98,7 @@ class TestManagerScan(standard.Scanner):
         storage.upload(fk.types.Location(first), fk.make_upload(b""))
         storage.upload(fk.types.Location(second), fk.make_upload(b""))
 
-        storage.settings.redis.hset(storage.settings.path, third, "")
+        storage.settings.redis.hset(storage.settings.bucket, third, "")
 
         discovered = set(storage.scan())
 
