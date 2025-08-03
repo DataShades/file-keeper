@@ -251,10 +251,11 @@ class Reader(StorageService):
         """Return permanent download link."""
         raise NotImplementedError
 
-    def temporal_link(self, data: data.FileData, extras: dict[str, Any]) -> str:
+    def temporal_link(self, data: data.FileData, duration: int, extras: dict[str, Any]) -> str:
         """Return temporal download link.
 
-        extras["ttl"] controls lifetime of the link(30 seconds by default).
+        Args:
+            duration: controls lifetime of the link.
 
         """
         raise NotImplementedError
@@ -700,10 +701,14 @@ class Storage(ABC):
         if self.supports(Capability.ONE_TIME_LINK):
             return self.reader.one_time_link(data, kwargs)
 
-    def temporal_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
-        """Link that remains valid for a limited duration of time."""
+    def temporal_link(self, data: data.FileData, duration: int, /, **kwargs: Any) -> str | None:
+        """Link that remains valid for a limited duration of time.
+
+        Args:
+            duration: controls lifetime of the link.
+        """
         if self.supports(Capability.TEMPORAL_LINK):
-            return self.reader.temporal_link(data, kwargs)
+            return self.reader.temporal_link(data, duration, kwargs)
 
     def permanent_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
         """Link that remains valid as long as file exists."""
