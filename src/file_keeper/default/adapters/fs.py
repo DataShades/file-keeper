@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
 import dataclasses
 import glob
 import logging
 import os
 import shutil
+from collections.abc import Iterable
 from io import BytesIO
 from typing import IO, Any, ClassVar
 

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import base64
-from collections.abc import Iterable
 import dataclasses
+from collections.abc import Iterable
 from typing import IO, Any, ClassVar
 
 import requests

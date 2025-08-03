@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
 import contextlib
 import dataclasses
 import os
+from collections.abc import Iterable
 from typing import Any, cast
 
 import requests
@@ -89,7 +89,7 @@ class Uploader(fk.Uploader):
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
-        dest = os.path.join(self.storage.settings.path, location)
+        dest = self.storage.full_path(location)
 
         if not self.storage.settings.override_existing:
             with contextlib.suppress(ObjectDoesNotExistError):
@@ -116,7 +116,7 @@ class Reader(fk.Reader):
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
-        location = os.path.join(self.storage.settings.path, data.location)
+        location = self.storage.full_path(data.location)
 
         try:
             obj = self.storage.settings.container.get_object(location)
@@ -130,7 +130,7 @@ class Reader(fk.Reader):
 
     @override
     def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
-        location = os.path.join(self.storage.settings.path, data.location)
+        location = self.storage.full_path(data.location)
         return os.path.join(self.storage.settings.public_prefix, location)
 
         # try:
@@ -165,7 +165,7 @@ class Manager(fk.Manager):
         data: fk.FileData | fk.MultipartData,
         extras: dict[str, Any],
     ) -> bool:
-        location = os.path.join(self.storage.settings.path, data.location)
+        location = self.storage.full_path(data.location)
 
         try:
             obj = self.storage.settings.container.get_object(location)
@@ -186,8 +186,8 @@ class Manager(fk.Manager):
     def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
         try:
             obj = self.storage.settings.container.get_object(location)
-        except ObjectDoesNotExistError:
-            raise fk.exc.MissingFileError(self.storage, location)
+        except ObjectDoesNotExistError as err:
+            raise fk.exc.MissingFileError(self.storage, location) from err
 
         # TODO: identify content type
         return fk.FileData(location, obj.size, hash=obj.hash)

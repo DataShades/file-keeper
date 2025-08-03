@@ -11,13 +11,13 @@ cycles.
 
 from __future__ import annotations
 
-from abc import ABC
 import dataclasses
 import functools
 import inspect
 import logging
-from collections.abc import Callable, Iterable, Mapping
 import os
+from abc import ABC
+from collections.abc import Callable, Iterable, Mapping
 from typing import Any, ClassVar, cast
 
 from typing_extensions import ParamSpec, TypeAlias, TypeVar, override
@@ -258,8 +258,9 @@ class Reader(StorageService):
         """Return temporal download link.
 
         Args:
-            duration: controls lifetime of the link.
-
+            data: file details
+            duration: controls lifetime of the link
+            extras: additional parameters
         """
         raise NotImplementedError
 
@@ -341,7 +342,7 @@ class Settings:
         return cfg
 
 
-class Storage(ABC):
+class Storage(ABC):  # noqa: B024
     """Base class for storage implementation.
 
     Args:
@@ -458,6 +459,7 @@ class Storage(ABC):
 
         Args:
             location: location of the file object
+            **kwargs: exra parameters for custom storages
 
         Returns:
             relative filepath starting from the storage root
@@ -726,7 +728,9 @@ class Storage(ABC):
         """Link that remains valid for a limited duration of time.
 
         Args:
+            data: file details
             duration: controls lifetime of the link.
+            **kwargs: exra parameters for custom storages
         """
         if self.supports(Capability.TEMPORAL_LINK):
             return self.reader.temporal_link(data, duration, kwargs)

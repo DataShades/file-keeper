@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import base64
-from collections.abc import Iterable
 import dataclasses
 import os
 import re
+from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, ClassVar
 
 import boto3
@@ -68,7 +68,7 @@ class Reader(fk.Reader):
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
         client = self.storage.settings.client
-        filepath = os.path.join(self.storage.settings.path, data.location)
+        filepath = self.storage.full_path(data.location)
 
         try:
             obj: Any = client.get_object(
@@ -100,7 +100,7 @@ class Uploader(fk.Uploader):
         ):
             raise fk.exc.ExistingFileError(self.storage, location)
 
-        filepath = os.path.join(self.storage.settings.path, location)
+        filepath = self.storage.full_path(location)
 
         client = self.storage.settings.client
 
@@ -126,7 +126,7 @@ class Uploader(fk.Uploader):
         data: fk.MultipartData,
         extras: dict[str, Any],
     ) -> fk.MultipartData:
-        filepath = os.path.join(self.storage.settings.path, location)
+        filepath = self.storage.full_path(location)
         client = self.storage.settings.client
         obj = client.create_multipart_upload(
             Bucket=self.storage.settings.bucket,
@@ -164,7 +164,7 @@ class Uploader(fk.Uploader):
         data: fk.MultipartData,
         extras: dict[str, Any],
     ) -> fk.MultipartData:
-        filepath = os.path.join(self.storage.settings.path, data.location)
+        filepath = self.storage.full_path(data.location)
         if "upload" in extras:
             upload = fk.make_upload(extras["upload"])
 
@@ -218,7 +218,7 @@ class Uploader(fk.Uploader):
         data: fk.MultipartData,
         extras: dict[str, Any],
     ) -> fk.FileData:
-        filepath = os.path.join(self.storage.settings.path, data.location)
+        filepath = self.storage.full_path(data.location)
 
         result = self.storage.settings.client.complete_multipart_upload(
             Bucket=self.storage.settings.bucket,
@@ -279,8 +279,8 @@ class Manager(fk.Manager):
         ):
             raise fk.exc.ExistingFileError(self.storage, location)
 
-        old_key = os.path.join(str(self.storage.settings.path), data.location)
-        new_key = os.path.join(str(self.storage.settings.path), location)
+        old_key = self.storage.full_path(data.location)
+        new_key = self.storage.full_path(location)
 
         client.copy_object(
             Bucket=bucket, CopySource={"Bucket": bucket, "Key": old_key}, Key=new_key
@@ -324,7 +324,7 @@ class Manager(fk.Manager):
 
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        filepath = os.path.join(str(self.storage.settings.path), data.location)
+        filepath = self.storage.full_path(data.location)
         client = self.storage.settings.client
 
         try:
@@ -341,7 +341,7 @@ class Manager(fk.Manager):
         if isinstance(data, fk.MultipartData):
             return False
 
-        filepath = os.path.join(str(self.storage.settings.path), data.location)
+        filepath = self.storage.full_path(data.location)
         client = self.storage.settings.client
 
         # TODO: check if file exists before removing to return correct status
@@ -354,7 +354,7 @@ class Manager(fk.Manager):
         self, location: fk.types.Location, extras: dict[str, Any]
     ) -> fk.FileData:
         """Return all details about location."""
-        filepath = os.path.join(str(self.storage.settings.path), location)
+        filepath = self.storage.full_path(location)
         client = self.storage.settings.client
 
         try:

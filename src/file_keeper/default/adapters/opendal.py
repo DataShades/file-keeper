@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
 import dataclasses
 import io
 import os
+from collections.abc import Iterable
 from typing import Any, cast
 
 import magic
@@ -83,7 +83,7 @@ class Uploader(fk.Uploader):
 
         """
         op = self.storage.settings.operator
-        dest = os.path.join(self.storage.settings.path, location)
+        dest = self.storage.full_path(location)
         subpath = os.path.dirname(dest)
 
         if subpath and not op.capability().create_dir:
@@ -128,7 +128,7 @@ class Reader(fk.Reader):
         Returns:
             File content iterator
         """
-        location = os.path.join(self.storage.settings.path, data.location)
+        location = self.storage.full_path(data.location)
 
         try:
             content = self.storage.settings.operator.open(location, "rb")
@@ -170,8 +170,8 @@ class Manager(fk.Manager):
         ):
             raise fk.exc.ExistingFileError(self.storage, location)
 
-        src_location = os.path.join(self.storage.settings.path, data.location)
-        dest_location = os.path.join(self.storage.settings.path, location)
+        src_location = self.storage.full_path(data.location)
+        dest_location = self.storage.full_path(location)
 
         op.copy(src_location, dest_location)
 
@@ -197,8 +197,8 @@ class Manager(fk.Manager):
         ):
             raise fk.exc.ExistingFileError(self.storage, location)
 
-        src_location = os.path.join(self.storage.settings.path, data.location)
-        dest_location = os.path.join(self.storage.settings.path, location)
+        src_location = self.storage.full_path(data.location)
+        dest_location = self.storage.full_path(location)
 
         op.rename(src_location, dest_location)
 
@@ -207,7 +207,7 @@ class Manager(fk.Manager):
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         """Check if file exists."""
-        location = os.path.join(self.storage.settings.path, data.location)
+        location = self.storage.full_path(data.location)
 
         try:
             self.storage.settings.operator.stat(location)
@@ -242,7 +242,7 @@ class Manager(fk.Manager):
     ) -> bool:
         """Remove the file."""
         op = self.storage.settings.operator
-        location = os.path.join(self.storage.settings.path, data.location)
+        location = self.storage.full_path(data.location)
 
         try:
             op.stat(location)
@@ -277,7 +277,7 @@ class Manager(fk.Manager):
         if not self.exists(data, extras):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        location = os.path.join(self.storage.settings.path, data.location)
+        location = self.storage.full_path(data.location)
 
         op.write(location, upload.stream.read(), append=True)
 

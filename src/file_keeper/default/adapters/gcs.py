@@ -65,7 +65,7 @@ class Uploader(fk.Uploader):
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
-        filepath = os.path.join(self.storage.settings.path, location)
+        filepath = self.storage.full_path(location)
 
         client = self.storage.settings.client
         blob = client.bucket(self.storage.settings.bucket).blob(filepath)
@@ -86,7 +86,7 @@ class Uploader(fk.Uploader):
         data: fk.MultipartData,
         extras: dict[str, Any],
     ) -> fk.MultipartData:
-        filepath = os.path.join(self.storage.settings.path, location)
+        filepath = self.storage.full_path(location)
 
         client = self.storage.settings.client
         blob = client.bucket(self.storage.settings.bucket).blob(filepath)
@@ -260,7 +260,7 @@ class Manager(fk.Manager):
         if isinstance(data, fk.MultipartData):
             return False
 
-        filepath = os.path.join(str(self.storage.settings.path), data.location)
+        filepath = self.storage.full_path(data.location)
         client: Client = self.storage.settings.client
         blob = client.bucket(self.storage.settings.bucket).blob(filepath)
 

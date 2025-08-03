@@ -16,11 +16,11 @@ from file_keeper import (
     Manager,
     MultipartData,
     Reader,
+    Settings,
     Storage,
     Uploader,
     exc,
     make_upload,
-    Settings,
 )
 
 

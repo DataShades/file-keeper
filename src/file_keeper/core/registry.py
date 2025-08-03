@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from collections.abc import Mapping, MutableMapping
-from typing import Callable, Generic, Hashable
+from collections.abc import Hashable, Mapping, MutableMapping
+from typing import Callable, Generic
 
 from typing_extensions import TypeVar
 
