@@ -460,7 +460,7 @@ class Storage(ABC):
 
         return types.Location(location)
 
-    def stream_as_upload(self, data: data.FileData, **kwargs: Any) -> Upload:
+    def file_as_upload(self, data: data.FileData, **kwargs: Any) -> Upload:
         """Make an Upload with file content."""
         stream = self.stream(data, **kwargs)
         if hasattr(stream, "read"):
@@ -620,7 +620,7 @@ class Storage(ABC):
         """Generic implementation of the copy operation that relies on CREATE."""
         return dest_storage.upload(
             location,
-            self.stream_as_upload(data, **kwargs),
+            self.file_as_upload(data, **kwargs),
             **kwargs,
         )
 
@@ -646,7 +646,7 @@ class Storage(ABC):
         """Generic implementation of move operation that relies on CREATE and REMOVE."""
         result = dest_storage.upload(
             location,
-            self.stream_as_upload(data, **kwargs),
+            self.file_as_upload(data, **kwargs),
             **kwargs,
         )
         self.remove(data)
@@ -686,7 +686,7 @@ class Storage(ABC):
             for item in files:
                 result = dest_storage.append(
                     result,
-                    self.stream_as_upload(item, **kwargs),
+                    self.file_as_upload(item, **kwargs),
                     **kwargs,
                 )
         except (exceptions.MissingFileError, exceptions.UploadError):
