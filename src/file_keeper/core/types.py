@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from collections.abc import Callable
-from typing import TYPE_CHECKING, Any, Iterator, NewType, Protocol
+from collections.abc import Callable, Iterator
+from typing import TYPE_CHECKING, Any, NewType, Protocol
 
 from typing_extensions import TypeAlias
 

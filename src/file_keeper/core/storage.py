@@ -16,7 +16,7 @@ import dataclasses
 import functools
 import inspect
 import logging
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Iterable, Mapping
 from typing import Any, ClassVar, cast
 
 from typing_extensions import ParamSpec, TypeAlias, TypeVar, override
@@ -279,7 +279,6 @@ class Settings:
     )
     """Capabilities that are not supported even if implemented"""
 
-
     _required_options: ClassVar[list[str]] = []
     _extra_settings: dict[str, Any] = cast(
         "dict[str, Any]", dataclasses.field(default_factory=dict)
@@ -291,7 +290,19 @@ class Settings:
                 raise exceptions.MissingStorageConfigurationError(self.name, attr)
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> Settings:
+    def from_dict(cls, data: Mapping[str, Any]) -> Settings:
+        """Make settings object using dictionary as a source.
+
+        Any unexpected options are extracted from the `data` to avoid
+        initialization errors from dataclass constructor.
+
+        Args:
+            data: mapping with settings
+
+        Returns:
+            settings object built from data
+
+        """
         # try:
         #     return cls(**settings)
         # except TypeError as err:
@@ -341,13 +352,11 @@ class Storage(ABC):
 
     # do not show storage adapter
     hidden: bool = False
+    """Flag used to identify unsafe/experimental storages."""
 
     capabilities: Capability = Capability.NONE
     """Operations supported by storage. Computed from capabilities of
     services during storage initialization."""
-
-    # settings: Settings
-    # """Settings of the storage"""
 
     SettingsFactory: ClassVar[type[Settings]] = Settings
     """Factory class for storage settings."""
@@ -371,16 +380,30 @@ class Storage(ABC):
         self.capabilities = self.compute_capabilities()
 
     def make_uploader(self):
+        """Initialize uploader service."""
         return self.UploaderFactory(self)
 
     def make_manager(self):
+        """Initialize manager service."""
         return self.ManagerFactory(self)
 
     def make_reader(self):
+        """Initialize reader service."""
         return self.ReaderFactory(self)
 
     @classmethod
-    def configure(cls, settings: dict[str, Any]) -> Settings:
+    def configure(cls, settings: Mapping[str, Any]) -> Settings:
+        """Initialize storage configuration.
+
+        This method is responsible for transforming mapping with options into
+        storage's settings. It also can initialize additional services and
+        perform extra work, like verifying that storage is ready to accept
+        uploads.
+
+        Args:
+            settings: mapping with storage configuration
+
+        """
         return cls.SettingsFactory.from_dict(settings)
 
     def compute_capabilities(self) -> Capability:
@@ -394,7 +417,6 @@ class Storage(ABC):
             result = result.exclude(Capability[name])
 
         return result
-
 
     def supports(self, operation: Capability) -> bool:
         """Check whether the storage supports operation."""

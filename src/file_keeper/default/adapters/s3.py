@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import base64
+from collections.abc import Iterable
 import dataclasses
 import os
 import re
-from typing import TYPE_CHECKING, Any, ClassVar, Iterable
+from typing import TYPE_CHECKING, Any, ClassVar
 
 import boto3
 from typing_extensions import override
@@ -327,7 +328,7 @@ class Manager(fk.Manager):
         client = self.storage.settings.client
 
         try:
-            obj = client.get_object(Bucket=self.storage.settings.bucket, Key=filepath)
+            client.get_object(Bucket=self.storage.settings.bucket, Key=filepath)
         except client.exceptions.NoSuchKey:
             return False
 

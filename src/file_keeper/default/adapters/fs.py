@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 import dataclasses
 import glob
 import logging
 import os
 import shutil
 from io import BytesIO
-from typing import IO, Any, ClassVar, Iterable
+from typing import IO, Any, ClassVar
 
 import magic
 from typing_extensions import override
@@ -76,8 +77,6 @@ class Uploader(fk.Uploader):
             New file data
 
         """
-        subpath = os.path.split(location)[0]
-
         dest = os.path.join(self.storage.settings.path, location)
 
         if os.path.exists(dest) and not self.storage.settings.override_existing:

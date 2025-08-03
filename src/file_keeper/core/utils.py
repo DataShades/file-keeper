@@ -15,8 +15,8 @@ import io
 import itertools
 import logging
 import re
-from collections.abc import Callable
-from typing import Any, Generic, Iterable, Iterator
+from collections.abc import Callable, Iterable, Iterator
+from typing import Any, Generic
 
 from typing_extensions import TypeVar, override
 

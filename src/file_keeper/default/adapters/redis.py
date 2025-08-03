@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 import dataclasses
 from io import BytesIO
 from typing import IO, Any, ClassVar, cast

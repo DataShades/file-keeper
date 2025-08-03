@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 import dataclasses
 import io
 import os
-from typing import Any, Iterable, cast
+from typing import Any, cast
 
 import magic
 import opendal
