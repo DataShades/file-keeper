@@ -17,6 +17,7 @@ import functools
 import inspect
 import logging
 from collections.abc import Callable, Iterable, Mapping
+import os
 from typing import Any, ClassVar, cast
 
 from typing_extensions import ParamSpec, TypeAlias, TypeVar, override
@@ -251,7 +252,9 @@ class Reader(StorageService):
         """Return permanent download link."""
         raise NotImplementedError
 
-    def temporal_link(self, data: data.FileData, duration: int, extras: dict[str, Any]) -> str:
+    def temporal_link(
+        self, data: data.FileData, duration: int, extras: dict[str, Any]
+    ) -> str:
         """Return temporal download link.
 
         Args:
@@ -270,10 +273,15 @@ class Settings:
     name: str = "unknown"
     """Name of the storage"""
     override_existing: bool = False
-    """Allow overriding existing files"""
+    """Allow overriding existing files."""
+
+    path: str = ""
+    """Prefix for the file's location."""
+
     location_transformers: list[str] = cast(
         "list[str]", dataclasses.field(default_factory=list)
     )
+
     """Names of functions used to sanitize location"""
     disabled_capabilities: list[str] = cast(
         "list[str]", dataclasses.field(default_factory=list)
@@ -444,6 +452,17 @@ class Storage(ABC):
             )
 
         return False
+
+    def full_path(self, location: types.Location, /, **kwargs: Any) -> str:
+        """Compute path to the file from the storage's root.
+
+        Args:
+            location: location of the file object
+
+        Returns:
+            relative filepath starting from the storage root
+        """
+        return os.path.join(self.settings.path, location)
 
     def prepare_location(
         self,
@@ -701,7 +720,9 @@ class Storage(ABC):
         if self.supports(Capability.ONE_TIME_LINK):
             return self.reader.one_time_link(data, kwargs)
 
-    def temporal_link(self, data: data.FileData, duration: int, /, **kwargs: Any) -> str | None:
+    def temporal_link(
+        self, data: data.FileData, duration: int, /, **kwargs: Any
+    ) -> str | None:
         """Link that remains valid for a limited duration of time.
 
         Args:

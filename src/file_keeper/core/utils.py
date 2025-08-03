@@ -132,40 +132,56 @@ class Capability(enum.Flag):
 
     NONE = 0
 
-    # return file details from the storage, as if file was uploaded just now
     ANALYZE = enum.auto()
-    # add content to the existing file
-    APPEND = enum.auto()
-    # combine multiple files into a new one in the same storage
-    COMPOSE = enum.auto()
-    # make a copy of the file inside the same storage
-    COPY = enum.auto()
-    # create a file as an atomic object
-    CREATE = enum.auto()
-    # check if file exists
-    EXISTS = enum.auto()
-    # move file to a different location inside the same storage
-    MOVE = enum.auto()
-    # create file in 3 stages: initialize, upload(repeatable), complete
-    MULTIPART = enum.auto()
-    # return specific range of bytes from the file
-    RANGE = enum.auto()
-    # remove file from the storage
-    REMOVE = enum.auto()
-    # iterate over all files in the storage
-    SCAN = enum.auto()
-    # return file content as stream of bytes
-    STREAM = enum.auto()
+    """Return file details from the storage, as if file was uploaded just now"""
 
-    # make permanent download link for file
+    APPEND = enum.auto()
+    """Add content to the existing file"""
+
+    COMPOSE = enum.auto()
+    """Combine multiple files into a new one in the same storage"""
+
+    COPY = enum.auto()
+    """Make a copy of the file inside the same storage"""
+
+    CREATE = enum.auto()
+    """Create a file as an atomic object"""
+
+    EXISTS = enum.auto()
+    """Check if file exists"""
+
+    MOVE = enum.auto()
+    """Move file to a different location inside the same storage"""
+
+    MULTIPART = enum.auto()
+    """Create file in 3 stages: initialize, upload(repeatable), complete"""
+
+    RANGE = enum.auto()
+    """Return specific range of bytes from the file"""
+
+    REMOVE = enum.auto()
+    """Remove file from the storage"""
+
+    SCAN = enum.auto()
+    """Iterate over all files in the storage"""
+
+    SIGNED = enum.auto()
+    """Generate signed URL for specific operation"""
+
+    STREAM = enum.auto()
+    """Return file content as stream of bytes"""
+
     PERMANENT_LINK = enum.auto()
-    # make expiring download link for private file
+    """Make permanent download link"""
+
     TEMPORAL_LINK = enum.auto()
-    # make one-time download link for private file
+    """Make expiring download link"""
+
     ONE_TIME_LINK = enum.auto()
+    """Make one-time download link"""
 
     MANAGER_CAPABILITIES = (
-        ANALYZE | SCAN | COPY | MOVE | APPEND | COMPOSE | EXISTS | REMOVE
+        ANALYZE | SCAN | COPY | MOVE | APPEND | COMPOSE | EXISTS | REMOVE | SIGNED
     )
     READER_CAPABILITIES = (
         RANGE | STREAM | PERMANENT_LINK | TEMPORAL_LINK | ONE_TIME_LINK
