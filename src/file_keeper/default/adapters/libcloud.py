@@ -27,8 +27,6 @@ class Settings(fk.Settings):
     key: dataclasses.InitVar[str] = ""
     container_name: dataclasses.InitVar[str] = ""
 
-    path: str = ""
-
     secret: dataclasses.InitVar[str | None] = None
     params: dataclasses.InitVar[dict[str, Any] | None] = cast(
         "dict[str, Any] | None", dataclasses.field(default=None)

@@ -76,46 +76,13 @@ theme:
 
 nav:
   - index.md
-
-  # - installation.md
-  # - Usage:
-  #     - usage/configure.md
-  #     - usage/use-in-code.md
-  #     - usage/use-in-browser.md
-  #     - usage/multi-storage.md
-  #     - usage/tracked-files.md
-  #     - usage/permissions.md
-  #     - usage/ownership.md
-  #     - usage/transfer.md
-  #     - usage/task-queue.md
-  #     - usage/capabilities.md
-  #     - usage/multipart.md
-  #     - usage/js.md
-
-  # - upload-strategies.md
-  # - implementation-example.md
-  # - Shared:
-  #         - shared/index.md
-  #         - shared/types.md
-  #         - shared/config.md
-  #         - shared/exceptions.md
-  # - cli.md
-  # - API: api.md
-  # - validators.md
-  # - interfaces.md
-  # - Configuration:
-  #     - configuration/index.md
-  #     - configuration/global.md
-  #     - Storage configuration:
-  #         - configuration/storage/index.md
-  #         - configuration/redis.md
-  #         - configuration/fs.md
-  #         - configuration/opendal.md
-  #         - configuration/libcloud.md
-  # - Migration(experimental):
-  #     - migration/index.md
-  #     - migration/group.md
-  #     - migration/user.md
-  #     - migration/resource.md
-
-  # - changelog.md
+  - Configuration: configuration.md
+  - Storage Adapters: adapters.md
+  - Core Concepts:
+    - Data Model: core_concepts/data_model.md
+    - Uploads: core_concepts/uploads.md
+    - Capabilities: core_concepts/capabilities.md
+  - Extending file-keeper: extending.md
+  - Error Handling: error_handling.md
+  - API Reference: api.md
+  - Changelog: changelog.md

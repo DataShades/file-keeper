@@ -26,8 +26,6 @@ def decode(value: str) -> str:
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
-    path: str = ""
-
     bucket: str = ""
 
     key: dataclasses.InitVar[str | None] = None

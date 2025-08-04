@@ -35,7 +35,6 @@ class Settings(fk.Settings):
     scheme: dataclasses.InitVar[str] = ""
 
     operator: opendal.Operator = None  # pyright: ignore[reportAssignmentType]
-    path: str = ""
 
     def __post_init__(self, params: dict[str, Any] | None, scheme: str, **kwargs: Any):
         super().__post_init__(**kwargs)

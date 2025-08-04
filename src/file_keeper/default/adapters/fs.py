@@ -27,7 +27,6 @@ class Settings(fk.Settings):
     """
 
     create_path: dataclasses.InitVar[bool] = False
-    path: str = ""
 
     _required_options: ClassVar[list[str]] = ["path"]
 

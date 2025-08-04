@@ -391,7 +391,7 @@ class Storage(ABC):  # noqa: B024
     def __str__(self) -> str:
         return self.settings.name
 
-    def __init__(self, settings: dict[str, Any], /):
+    def __init__(self, settings: dict[str, Any] | Settings, /):
         self.settings = self.configure(settings)
         self.uploader = self.make_uploader()
         self.manager = self.make_manager()
@@ -412,7 +412,7 @@ class Storage(ABC):  # noqa: B024
         return self.ReaderFactory(self)
 
     @classmethod
-    def configure(cls, settings: Mapping[str, Any]) -> Settings:
+    def configure(cls, settings: Mapping[str, Any] | Settings) -> Settings:
         """Initialize storage configuration.
 
         This method is responsible for transforming mapping with options into
@@ -424,6 +424,9 @@ class Storage(ABC):  # noqa: B024
             settings: mapping with storage configuration
 
         """
+        if isinstance(settings, Settings):
+            return settings
+
         return cls.SettingsFactory.from_dict(settings)
 
     def compute_capabilities(self) -> Capability:
