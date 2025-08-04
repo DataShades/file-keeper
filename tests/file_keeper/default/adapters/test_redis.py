@@ -90,19 +90,7 @@ class TestManagerRemove(standard.Remover):
 
 
 class TestManagerScan(standard.Scanner):
-    def test_scan(self, storage: Storage, faker: Faker):
-        first = faker.file_name()
-        second = faker.file_name()
-        third = faker.file_name()
-
-        storage.upload(fk.types.Location(first), fk.make_upload(b""))
-        storage.upload(fk.types.Location(second), fk.make_upload(b""))
-
-        storage.settings.redis.hset(storage.settings.bucket, third, "")
-
-        discovered = set(storage.scan())
-
-        assert discovered == {first, second, third}
+    pass
 
 
 class TestManagerAnalyze(standard.Analyzer):

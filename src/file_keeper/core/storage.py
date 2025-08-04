@@ -472,7 +472,7 @@ class Storage(ABC):  # noqa: B024
             **kwargs: exra parameters for custom storages
 
         Returns:
-            relative filepath starting from the storage root
+            full path required to access location
         """
         return os.path.join(self.settings.path, location)
 

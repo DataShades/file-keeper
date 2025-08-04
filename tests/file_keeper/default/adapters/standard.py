@@ -37,13 +37,14 @@ class Scanner:
     def test_std_scan_normal(self, storage: fk.Storage, faker: Faker):
         first = faker.file_name()
         second = faker.file_name()
+        third = faker.file_path(absolute=False)
 
         storage.upload(fk.types.Location(first), fk.make_upload(b""))
         storage.upload(fk.types.Location(second), fk.make_upload(b""))
-
+        storage.upload(fk.types.Location(third), fk.make_upload(b""))
         discovered = set(storage.scan())
 
-        assert discovered == {first, second}
+        assert discovered == {first, second, third}
 
 
 class Remover:
@@ -63,7 +64,7 @@ class Remover:
             pytest.skip("Cannot test removal without EXIST capability")
 
         result = storage.upload(
-            fk.types.Location(faker.file_name()), fk.make_upload(b"")
+            fk.types.Location(faker.file_name()), fk.make_upload(b"hello world")
         )
         assert storage.remove(result), "Storage pretends that file does never existed"
         assert not storage.exists(result), "File still exists available after removal"

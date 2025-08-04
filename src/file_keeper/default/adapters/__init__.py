@@ -1,6 +1,7 @@
 from .fs import FsStorage
 from .memory import MemoryStorage
 from .null import NullStorage
+from .zip import ZipStorage
 from .proxy import ProxyStorage
 
 try:
@@ -49,5 +50,6 @@ __all__ = [
     "SqlAlchemyStorage",
     "NullStorage",
     "MemoryStorage",
+    "ZipStorage",
     "ProxyStorage",
 ]

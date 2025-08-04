@@ -19,26 +19,84 @@ To keep list of dependencies short, by default file-keeper supports only those
 storage types, that rely only on python's standard library. If you need other
 options, specify package extras during installation:
 
-| Provider             | Extras     | Example                                 |
-|----------------------|------------|-----------------------------------------|
-| AWS S3               | s3         | `pip install 'file-keeper[s3]'`         |
-| Apache Libcloud      | libcloud   | `pip install 'file-keeper[libcloud]'`   |
-| Apache OpenDAL       | opendal    | `pip install 'file-keeper[opendal]'`    |
-| Google Cloud Storage | gcs        | `pip install 'file-keeper[gcs]'`        |
-| Redis                | redis      | `pip install 'file-keeper[redis]'`      |
-| SQLAlchemy           | sqlalchemy | `pip install 'file-keeper[sqlalchemy]'` |
+| Storage Type         | Adapter Name             | Extras       | Example                                 |
+|----------------------|--------------------------|--------------|-----------------------------------------|
+| AWS S3               | `file_keeper:s3`         | `s3`         | `pip install 'file-keeper[s3]'`         |
+| Apache Libcloud      | `file_keeper:libcloud`   | `libcloud`   | `pip install 'file-keeper[libcloud]'`   |
+| Apache OpenDAL       | `file_keeper:opendal`    | `opendal`    | `pip install 'file-keeper[opendal]'`    |
+| Google Cloud Storage | `file_keeper:gcs`        | `gcs`        | `pip install 'file-keeper[gcs]'`        |
+| Redis                | `file_keeper:redis`      | `redis`      | `pip install 'file-keeper[redis]'`      |
+| SQLAlchemy           | `file_keeper:sqlalchemy` | `sqlalchemy` | `pip install 'file-keeper[sqlalchemy]'` |
 
 ## Usage
 
+/// details | TL;DR
+    type: tip
+```python
+from file_keeper import make_storage, make_upload, FileData
+
+## DO
+storage = make_storage("sandbox", {
+    "type": "file_keeper:fs",
+    "path": "/tmp/file-keeper",
+    "create_path": True,
+})
+
+## OR
+storage = make_storage("sandbox", {
+    "type": "file_keeper:redis",
+    "bucket": "file-keeper"
+})
+
+## OR
+storage = make_storage("sandbox", {
+    "type": "file_keeper:libcloud",
+    "provider": "MINIO",
+    "params": {"host": "127.0.0.1", "port": 9000, "secure": False},
+    "key": "***", "secret": "***",
+    "container_name": "file-keeper",
+})
+
+## OR
+storage = make_storage("sandbox", {
+    "type": "file_keeper:s3",
+    "endpoint": "http://127.0.0.1:9000",
+    "key": "***", "secret": "***",
+    "bucket": "file-keeper",
+})
+
+
+## THEN
+upload = make_upload(b"hello world")
+info = storage.upload("hello.txt", upload)
+
+content = storage.content(info)
+
+info = storage.move("moved-hello.txt", info) # is not supported by libcloud
+storage.remove(info)
+```
+///
+
 The main object required for managing files is a *storage*. Storage initialized
 using a mapping with settings that contains the type of the underlying
-driver. And, depending on the driver itself, additional options may be
+adapter. And, depending on the adapter itself, additional options may be
 required: FS storage needs the path inside the filesystem, while cloud storages
 would ask you to provide bucket names, secrets, etc.
 
+When storage is initialized, it can be used in the same way for every storage adapter.
+
+/// note
+
+The list of operations supported by the storage depends on the adapter. I.e,
+storage may not support `remove` or `copy`, but if it does support the
+operation, the interface of the operation is identicall accross all storages
+that support it.
+
+///
+
 ### Local filesystem
 
-Let's use the filesystem driver, which is called `file_keeper:fs`. This driver
+Let's use the filesystem adapter, which is called `file_keeper:fs`. This driver
 requires the `path` of a root directory where uploaded files are stored. If
 given path does not exist, the storage will raise an error during
 initialization. We can either create the directory in advance manually, or
@@ -126,7 +184,7 @@ pip install 'file-keeper[redis]'
 The adapter is called
 `file_keeper:redis`. It expects Redis DB to be available at
 `redis://localhost:6379/0`(which can be changed via `url` option). And it also
-requires `path` option, but here it will be used as a name of HASH where all
+requires `bucket` option, but here it will be used as a name of HASH where all
 the files are stored Redis.
 
 ```python
@@ -134,7 +192,7 @@ from file_keeper import make_storage, make_upload
 
 storage = make_storage("sandbox", {
     "type": "file_keeper:redis",
-    "path": "files-from-file-keeper"
+    "bucket": "files-from-file-keeper"
 })
 
 upload = make_upload(b"hello world")
