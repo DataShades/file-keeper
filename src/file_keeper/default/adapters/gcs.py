@@ -4,6 +4,7 @@ import base64
 import dataclasses
 import os
 import re
+from datetime import timedelta
 from typing import Any, cast
 
 import requests
@@ -251,7 +252,27 @@ class Uploader(fk.Uploader):
 
 class Manager(fk.Manager):
     storage: GoogleCloudStorage
-    capabilities: fk.Capability = fk.Capability.REMOVE
+    capabilities: fk.Capability = fk.Capability.REMOVE | fk.Capability.SIGNED
+
+    @override
+    def signed(
+        self,
+        action: fk.types.SignedAction,
+        duration: int,
+        location: fk.Location,
+        extras: dict[str, Any],
+    ) -> str:
+        name = self.storage.full_path(location)
+
+        client = self.storage.settings.client
+        bucket = client.bucket(self.storage.settings.bucket)
+        blob = bucket.blob(name)
+
+        method = {"download": "GET", "upload": "PUT", "delete": "DELETE"}[action]
+
+        return blob.generate_signed_url(
+            version="v4", expiration=timedelta(seconds=duration), method=method
+        )
 
     @override
     def remove(

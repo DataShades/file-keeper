@@ -213,6 +213,16 @@ class Manager(StorageService):
         """Return all details about filename."""
         raise NotImplementedError
 
+    def signed(
+        self,
+        action: types.SignedAction,
+        duration: int,
+        location: types.Location,
+        extras: dict[str, Any],
+    ) -> str:
+        """Make an URL for signed action."""
+        raise NotImplementedError
+
 
 class Reader(StorageService):
     """Service responsible for reading data from the storage.
@@ -462,7 +472,7 @@ class Storage(ABC):  # noqa: B024
             **kwargs: exra parameters for custom storages
 
         Returns:
-            relative filepath starting from the storage root
+            full path required to access location
         """
         return os.path.join(self.settings.path, location)
 
@@ -557,6 +567,17 @@ class Storage(ABC):  # noqa: B024
     def analyze(self, location: types.Location, /, **kwargs: Any) -> data.FileData:
         """Return file details for the given location."""
         return self.manager.analyze(location, kwargs)
+
+    @requires_capability(Capability.SIGNED)
+    def signed(
+        self,
+        action: types.SignedAction,
+        duration: int,
+        location: types.Location,
+        **kwargs: Any,
+    ) -> str:
+        """Make an URL for signed action."""
+        return self.manager.signed(action, duration, location, kwargs)
 
     @requires_capability(Capability.STREAM)
     def stream(self, data: data.FileData, /, **kwargs: Any) -> Iterable[bytes]:

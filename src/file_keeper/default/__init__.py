@@ -190,7 +190,7 @@ def register_adapters(registry: Registry[type[Storage]]):
     registry.register("file_keeper:fs", adapters.FsStorage)
     registry.register("file_keeper:null", adapters.NullStorage)
     registry.register("file_keeper:memory", adapters.MemoryStorage)
-    registry.register("file_keeper:proxy", adapters.ProxyStorage)  # pyright: ignore[reportArgumentType]
+    registry.register("file_keeper:zip", adapters.ZipStorage)
 
     if adapters.RedisStorage:
         registry.register("file_keeper:redis", adapters.RedisStorage)
@@ -212,3 +212,5 @@ def register_adapters(registry: Registry[type[Storage]]):
 
     if adapters.SqlAlchemyStorage:
         registry.register("file_keeper:sqlalchemy", adapters.SqlAlchemyStorage)
+
+    registry.register("file_keeper:proxy", adapters.ProxyStorage)  # pyright: ignore[reportArgumentType]

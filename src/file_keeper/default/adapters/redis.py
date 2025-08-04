@@ -11,7 +11,7 @@ from typing_extensions import override
 
 import file_keeper as fk
 
-pools = fk.Registry[redis.ConnectionPool]()
+pool = fk.Registry[redis.ConnectionPool]()
 
 
 @dataclasses.dataclass
@@ -34,15 +34,15 @@ class Settings(fk.Settings):
         super().__post_init__(**kwargs)
 
         if self.redis is None:  # pyright: ignore[reportUnnecessaryComparison]
-            if url not in pools:
-                pools.register(
-                    url,
+            if url not in pool:
+                conn = (
                     redis.ConnectionPool.from_url(url)
                     if url
-                    else redis.ConnectionPool(),
+                    else redis.ConnectionPool()
                 )
+                pool.register(url, conn)
 
-            self.redis = redis.Redis(connection_pool=pools[url])
+            self.redis = redis.Redis(connection_pool=pool[url])
 
 
 class Uploader(fk.Uploader):
