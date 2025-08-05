@@ -8,7 +8,7 @@ from datetime import timedelta
 from typing import Any, cast
 
 import requests
-from google.api_core.exceptions import Forbidden
+from google.api_core.exceptions import Forbidden, ServiceUnavailable, Timeout
 from google.cloud.storage import Client
 from google.oauth2.service_account import Credentials
 from typing_extensions import override
@@ -71,6 +71,7 @@ class Uploader(fk.Uploader):
         blob = client.bucket(self.storage.settings.bucket).blob(filepath)
 
         blob.upload_from_file(upload.stream)
+
         filehash = decode(blob.md5_hash)
         return fk.FileData(
             location,
@@ -133,14 +134,17 @@ class Uploader(fk.Uploader):
                     {"upload": ["Only the final part can be smaller than 256KiB"]},
                 )
 
-            resp = requests.put(
-                data.storage_data["session_url"],
-                data=upload.stream.read(),
-                headers={
-                    "content-range": f"bytes {first_byte}-{last_byte}/{size}",
-                },
-                timeout=10,
-            )
+            try:
+                resp = requests.put(
+                    data.storage_data["session_url"],
+                    data=upload.stream.read(),
+                    headers={
+                        "content-range": f"bytes {first_byte}-{last_byte}/{size}",
+                    },
+                    timeout=10,
+                )
+            except requests.exceptions.RequestException as e:
+                raise fk.exc.UploadError(f"Failed to update upload: {e}") from e
 
             if not resp.ok:
                 raise fk.exc.ExtrasError({"upload": [resp.text]})
@@ -173,14 +177,18 @@ class Uploader(fk.Uploader):
         data: fk.MultipartData,
         extras: dict[str, Any],
     ) -> fk.MultipartData:
-        resp = requests.put(
-            data.storage_data["session_url"],
-            headers={
-                "content-range": f"bytes */{data.size}",
-                "content-length": "0",
-            },
-            timeout=10,
-        )
+        try:
+            resp = requests.put(
+                data.storage_data["session_url"],
+                headers={
+                    "content-range": f"bytes */{data.size}",
+                    "content-length": "0",
+                },
+                timeout=10,
+            )
+        except requests.exceptions.RequestException as e:
+            raise fk.exc.UploadError(f"Failed to refresh upload: {e}") from e
+
         if not resp.ok:
             raise fk.exc.ExtrasError({"session_url": [resp.text]})
 
