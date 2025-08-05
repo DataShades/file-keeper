@@ -34,6 +34,7 @@ class Settings(fk.Settings):
     endpoint: dataclasses.InitVar[str | None] = None
 
     client: S3Client = None  # pyright: ignore[reportAssignmentType]
+    initialize: dataclasses.InitVar[bool] = False
 
     _required_options: ClassVar[list[str]] = ["bucket"]
 
@@ -43,6 +44,7 @@ class Settings(fk.Settings):
         secret: str | None,
         region: str | None,
         endpoint: str | None,
+        initialize: bool,
         **kwargs: Any,
     ):
         super().__post_init__(**kwargs)
@@ -57,6 +59,12 @@ class Settings(fk.Settings):
                 region_name=region,
                 endpoint_url=endpoint,
             )
+
+        if initialize:
+            try:
+                self.client.head_bucket(Bucket=self.bucket)
+            except self.client.exceptions.NoSuchBucket:
+                self.client.create_bucket(Bucket=self.bucket)
 
 
 class Reader(fk.Reader):
@@ -106,6 +114,7 @@ class Uploader(fk.Uploader):
             Bucket=self.storage.settings.bucket,
             Key=filepath,
             Body=upload.stream,  # pyright: ignore[reportArgumentType]
+            ContentType=upload.content_type,
         )
 
         filehash = obj["ETag"].strip('"')
@@ -246,6 +255,22 @@ class Uploader(fk.Uploader):
             obj["ETag"].strip('"'),
         )
 
+    @override
+    def multipart_refresh(
+        self, data: fk.MultipartData, extras: dict[str, Any]
+    ) -> fk.MultipartData:
+        client = self.storage.settings.client
+        filepath = self.storage.full_path(data.location)
+
+        result = client.list_multipart_uploads(
+            Bucket=self.storage.settings.bucket, Prefix=filepath
+        )
+        if _uploads := result.get("Uploads"):
+            # TODO: compute total uploaded size
+            return data
+
+        raise fk.exc.MissingFileError(self.storage, data.location)
+
 
 class Manager(fk.Manager):
     storage: S3Storage
@@ -366,7 +391,11 @@ class Manager(fk.Manager):
         filepath = self.storage.full_path(data.location)
         client = self.storage.settings.client
 
-        # TODO: check if file exists before removing to return correct status
+        try:
+            client.head_object(Bucket=self.storage.settings.bucket, Key=filepath)
+        except client.exceptions.ClientError:
+            return False
+
         client.delete_object(Bucket=self.storage.settings.bucket, Key=filepath)
 
         return True

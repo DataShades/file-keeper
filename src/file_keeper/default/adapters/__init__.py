@@ -1,8 +1,8 @@
 from .fs import FsStorage
 from .memory import MemoryStorage
 from .null import NullStorage
-from .zip import ZipStorage
 from .proxy import ProxyStorage
+from .zip import ZipStorage
 
 try:
     from .redis import RedisStorage
@@ -39,6 +39,11 @@ try:
 except ImportError:
     SqlAlchemyStorage = None
 
+try:
+    from .azure_blob import AzureBlobStorage
+except ImportError:
+    AzureBlobStorage = None
+
 __all__ = [
     "FsStorage",
     "RedisStorage",
@@ -51,5 +56,6 @@ __all__ = [
     "NullStorage",
     "MemoryStorage",
     "ZipStorage",
+    "AzureBlobStorage",
     "ProxyStorage",
 ]

@@ -213,4 +213,7 @@ def register_adapters(registry: Registry[type[Storage]]):
     if adapters.SqlAlchemyStorage:
         registry.register("file_keeper:sqlalchemy", adapters.SqlAlchemyStorage)
 
+    if adapters.AzureBlobStorage:
+        registry.register("file_keeper:azure_blob", adapters.AzureBlobStorage)
+
     registry.register("file_keeper:proxy", adapters.ProxyStorage)  # pyright: ignore[reportArgumentType]
