@@ -1,41 +1,44 @@
 from __future__ import annotations
+
 import os
-from pathlib import Path
 from typing import Any
 
-from faker import Faker
 import pytest
+from faker import Faker
 
-import file_keeper as fk
-import file_keeper.default.adapters.azure_blob as azure
+import file_keeper.default.adapters.s3 as s3
 
 from . import standard
 
-Settings = azure.Settings
-Storage = azure.AzureBlobStorage
+Settings = s3.Settings
+Storage = s3.S3Storage
 
 
 @pytest.fixture
 def storage(faker: Faker, storage_settings: dict[str, Any]):
-    name = os.getenv("FILE_KEEPER_TEST_AZURITE_ACCOUNT_NAME")
-    if not name:
-        pytest.skip("Azurite is not configured")
+    endpoint = os.getenv("FILE_KEEPER_TEST_MINIO_ENDPOINT")
+    if not endpoint:
+        pytest.skip("MinIO is not configured")
 
     settings = {
         "name": "test",
+        "bucket": "file-keeper",
         "path": faker.file_path(extension=[]),
-        "account_name": name,
-        "account_key": os.getenv("FILE_KEEPER_TEST_AZURITE_ACCOUNT_KEY"),
-        "container_name": os.getenv("FILE_KEEPER_TEST_AZURITE_CONTAINER_NAME"),
-        "account_url": os.getenv("FILE_KEEPER_TEST_AZURITE_ACCOUNT_URL"),
+        "key": os.getenv("FILE_KEEPER_TEST_MINIO_KEY"),
+        "secret": os.getenv("FILE_KEEPER_TEST_MINIO_SECRET"),
+        "endpoint": endpoint,
+        "initialize": True,
     }
     settings.update(storage_settings)
 
     storage = Storage(settings)
-    if storage.settings.container.exists():
-        storage.settings.container.delete_container()
 
-    storage.settings.container.create_container()
+    client = storage.settings.client
+
+    result = client.list_objects_v2(Bucket=storage.settings.bucket)
+    if items := result.get("Contents"):
+        keys = [{"Key": obj["Key"]} for obj in items]  # pyright: ignore[reportTypedDictNotRequiredAccess]
+        client.delete_objects(Bucket=storage.settings.bucket, Delete={"Objects": keys})  # pyright: ignore[reportArgumentType]
 
     return storage
 
@@ -44,6 +47,10 @@ class TestSettings: ...
 
 
 class TestUploaderUpload(standard.Uploader):
+    pass
+
+
+class TestUploaderMultipart(standard.Multiparter):
     pass
 
 

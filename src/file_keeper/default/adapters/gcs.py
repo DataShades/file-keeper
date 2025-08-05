@@ -8,7 +8,7 @@ from datetime import timedelta
 from typing import Any, cast
 
 import requests
-from google.api_core.exceptions import Forbidden, ServiceUnavailable, Timeout
+from google.api_core.exceptions import Forbidden
 from google.cloud.storage import Client
 from google.oauth2.service_account import Credentials
 from typing_extensions import override
@@ -144,7 +144,8 @@ class Uploader(fk.Uploader):
                     timeout=10,
                 )
             except requests.exceptions.RequestException as e:
-                raise fk.exc.UploadError(f"Failed to update upload: {e}") from e
+                msg = f"Failed to update upload: {e}"
+                raise fk.exc.UploadError(msg) from e
 
             if not resp.ok:
                 raise fk.exc.ExtrasError({"upload": [resp.text]})
@@ -187,7 +188,8 @@ class Uploader(fk.Uploader):
                 timeout=10,
             )
         except requests.exceptions.RequestException as e:
-            raise fk.exc.UploadError(f"Failed to refresh upload: {e}") from e
+            msg = f"Failed to refresh upload: {e}"
+            raise fk.exc.UploadError(msg) from e
 
         if not resp.ok:
             raise fk.exc.ExtrasError({"session_url": [resp.text]})

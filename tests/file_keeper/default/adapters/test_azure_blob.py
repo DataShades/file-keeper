@@ -1,12 +1,11 @@
 from __future__ import annotations
+
 import os
-from pathlib import Path
 from typing import Any
 
-from faker import Faker
 import pytest
+from faker import Faker
 
-import file_keeper as fk
 import file_keeper.default.adapters.azure_blob as azure
 
 from . import standard
@@ -28,6 +27,7 @@ def storage(faker: Faker, storage_settings: dict[str, Any]):
         "account_key": os.getenv("FILE_KEEPER_TEST_AZURITE_ACCOUNT_KEY"),
         "container_name": os.getenv("FILE_KEEPER_TEST_AZURITE_CONTAINER_NAME"),
         "account_url": os.getenv("FILE_KEEPER_TEST_AZURITE_ACCOUNT_URL"),
+        "initialize": True,
     }
     settings.update(storage_settings)
 

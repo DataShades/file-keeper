@@ -1,10 +1,11 @@
 from __future__ import annotations
+
+import dataclasses
+import zipfile
 from collections.abc import Iterable
+from typing import Any
 
 from typing_extensions import override
-import zipfile
-from typing import Any
-import dataclasses
 
 import file_keeper as fk
 
@@ -17,7 +18,7 @@ def _exists(info: zipfile.ZipInfo):
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
-    """Settings for a ZIP storage"""
+    """Settings for a ZIP storage."""
 
     path: str = ""
 

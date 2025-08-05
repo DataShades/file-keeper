@@ -1,20 +1,22 @@
 from __future__ import annotations
+
 import codecs
-from collections.abc import Iterable
+import dataclasses
 import os
-from typing_extensions import override
+from collections.abc import Iterable
 from datetime import datetime, timedelta, timezone
+from typing import Any
 
 from azure.storage.blob import (
+    BlobSasPermissions,
     BlobServiceClient,
     ContainerClient,
-    generate_blob_sas,
-    BlobSasPermissions,
     ContentSettings,
+    generate_blob_sas,
 )
+from typing_extensions import override
+
 import file_keeper as fk
-from typing import Any
-import dataclasses
 
 
 @dataclasses.dataclass
@@ -137,22 +139,8 @@ class Manager(fk.Manager):
     def move(
         self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]
     ) -> fk.FileData:
-        src_filepath = self.storage.full_path(data.location)
-        blob = self.storage.settings.container.get_blob_client(src_filepath)
-        if not blob.exists():
-            raise fk.exc.MissingFileError(self.storage, data.location)
-
-        dest_filepath = self.storage.full_path(location)
-        dest = self.storage.settings.container.get_blob_client(dest_filepath)
-        if not self.storage.settings.override_existing and dest.exists():
-            raise fk.exc.ExistingFileError(self.storage, location)
-
-        account_url = self.storage.settings.account_url
-        container_name = self.storage.settings.container_name
-        url = f"{account_url}/{container_name}/{src_filepath}"
-
-        dest.start_copy_from_url(url)
-        blob.delete_blob()
+        self.copy(location, data, extras)
+        self.remove(data, extras)
         return self.analyze(location, extras)
 
     @override
@@ -195,7 +183,7 @@ class Manager(fk.Manager):
         if not blob_client.exists():
             return False
 
-        result = blob_client.delete_blob()
+        blob_client.delete_blob()
         return True
 
     def azure_signed_action(
@@ -209,8 +197,6 @@ class Manager(fk.Manager):
             perms.create = True
         elif action == "delete":
             perms.delete = True
-        else:
-            raise fk.exc.UnsupportedOperationError(action, self.storage)
 
         client = self.storage.settings.client
         container = self.storage.settings.container

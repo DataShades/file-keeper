@@ -1,8 +1,8 @@
 from .fs import FsStorage
 from .memory import MemoryStorage
 from .null import NullStorage
-from .zip import ZipStorage
 from .proxy import ProxyStorage
+from .zip import ZipStorage
 
 try:
     from .redis import RedisStorage
