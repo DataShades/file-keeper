@@ -5,6 +5,13 @@
 ### 🚀 Features
 
 - [**breaking**] frozen FileData and MultipartData ([cb9dbf8](https://github.com/DataShades/file-keeper/commit/cb9dbf8ddf7516d461d0a295f69d41090b706195))
+- Azure Blob storage adapter ([fb491b2](https://github.com/DataShades/file-keeper/commit/fb491b2b22681aaf8e66589166baa848d4c40a18))
+- zip adapter ([3b3f978](https://github.com/DataShades/file-keeper/commit/3b3f978eb462139e53f1d1d62dd68e2f05061920))
+- add SIGNED capability ([fc5fcbb](https://github.com/DataShades/file-keeper/commit/fc5fcbba523691b4ec5d4e095e06b413b59d2ff2))
+- Storage.full_path ([7974aca](https://github.com/DataShades/file-keeper/commit/7974aca4a73a1e1f526afbeeb31f4fa106b3c4e4))
+- add generic disabled_capabilities option ([c335071](https://github.com/DataShades/file-keeper/commit/c335071a84c13879a052ce62e07982b1b1ffc46a))
+- add EXISTS, SCAN, MOVE and COPY to s3 adapter ([2cb762e](https://github.com/DataShades/file-keeper/commit/2cb762e5450cf7a881cd0861f2493a319a0dac01))
+- add EXISTS and ANALYZE to libcloud adapter ([12349aa](https://github.com/DataShades/file-keeper/commit/12349aa76ef106a157fd40e744a2522ab4544409))
 - less strict typing rules for storage settings ([247d1c6](https://github.com/DataShades/file-keeper/commit/247d1c6291ab1bc52324f13bdbf642b8c9c53c1b))
 - remove __str__ from exceptions ([2ecd8a2](https://github.com/DataShades/file-keeper/commit/2ecd8a2b8ca2cf90c8e7d1c9fc2e70f6dd39f216))
 - add memory storage ([3abc218](https://github.com/DataShades/file-keeper/commit/3abc2181493c50061ce05c185af29ebe65863d02))
@@ -14,8 +21,22 @@
 
 ### 🐛 Bug Fixes
 
+- s3 unconditionally overrides files ([c059f2b](https://github.com/DataShades/file-keeper/commit/c059f2b67550a2d46f169b890d4705d725b6e11c))
 - storage settings keep a lot of intermediate parameters ([cf69cf2](https://github.com/DataShades/file-keeper/commit/cf69cf26f4d7ad9e2b16204c6a9803ec6c0a2edb))
 - libcloud silently overrides existing objects ([599f099](https://github.com/DataShades/file-keeper/commit/599f09992ed14e926878b9997abd2bca2155326a))
+
+### 🚜 Refactor
+
+- [**breaking**] Storage.temporal_link requires `duration` parameter ([0d92777](https://github.com/DataShades/file-keeper/commit/0d92777e5a56b77c1b34cc0abdbffec3e7218eb6))
+- [**breaking**] Storage.stream_as_upload renamed to file_as_upload ([29ec68b](https://github.com/DataShades/file-keeper/commit/29ec68bae9325502f46e87c7813e4d7844b1e5c6))
+- [**breaking**] fs and opendal settings no longer have recursive flag ([3f6e29b](https://github.com/DataShades/file-keeper/commit/3f6e29b30d3cc552691c58c93d930e682841af17))
+- redis uses `bucket` option instead of `path` ([966241f](https://github.com/DataShades/file-keeper/commit/966241ff1627135cedea0de690fa95a314428f33))
+- remove pytz dependency ([43079ea](https://github.com/DataShades/file-keeper/commit/43079ead8b75af52ddefc75374d36ca857996197))
+- rename redis_url to url in redis settings ([2c998f4](https://github.com/DataShades/file-keeper/commit/2c998f4fe8876ce8ad44e24dea06e1ab0ac292bc))
+
+### 📚 Documentation
+
+- Add overview page ([6ad5c89](https://github.com/DataShades/file-keeper/commit/6ad5c893e4e7079f732630a4049071ea2b765f72))
 
 ## [v0.0.10](https://github.com/DataShades/file-keeper/releases/tag/v0.0.10) - 2025-07-13
 [Compare with v0.0.9](https://github.com/DataShades/file-keeper/compare/v0.0.9..v0.0.10)
