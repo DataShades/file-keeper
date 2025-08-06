@@ -13,28 +13,35 @@ You can install file-keeper using pip:
 pip install file-keeper
 ```
 
+/// note
 To use specific storage adapters, you'll need to install extra
 dependencies. Here's a table of available extras:
 
-| Storage Type         | Adapter Name             | Extras       |
-|----------------------|--------------------------|--------------|
-| AWS S3               | `file_keeper:s3`         | `s3`         |
-| Apache Libcloud      | `file_keeper:libcloud`   | `libcloud`   |
-| Apache OpenDAL       | `file_keeper:opendal`    | `opendal`    |
-| Google Cloud Storage | `file_keeper:gcs`        | `gcs`        |
-| Redis                | `file_keeper:redis`      | `redis`      |
-| SQLAlchemy           | `file_keeper:sqlalchemy` | `sqlalchemy` |
+| Storage Type         | Adapter Name             | Extras       | Driver                                                                 |
+|----------------------|--------------------------|--------------|------------------------------------------------------------------------|
+| AWS S3               | `file_keeper:s3`         | `s3`         | [boto3](https://pypi.org/project/boto3/)                               |
+| Apache Libcloud      | `file_keeper:libcloud`   | `libcloud`   | [apache-libcloud](https://pypi.org/project/apache-libcloud/)           |
+| Apache OpenDAL       | `file_keeper:opendal`    | `opendal`    | [opendal](https://pypi.org/project/opendal/)                           |
+| Azure Blob Storage   | `file_keeper:azure_blob` | `azure`      | [azure-storage-blob](https://pypi.org/project/azure-storage-blob/)     |
+| Google Cloud Storage | `file_keeper:gcs`        | `gcs`        | [google-cloud-storage](https://pypi.org/project/google-cloud-storage/) |
+| Redis                | `file_keeper:redis`      | `redis`      | [redis](https://pypi.org/project/redis/)                               |
+| SQLAlchemy           | `file_keeper:sqlalchemy` | `sqlalchemy` | [SQLAlchemy](https://pypi.org/project/SQLAlchemy/)                     |
+
+
 
 For example, to install file-keeper with S3 support:
 
 ```bash
 pip install 'file-keeper[s3]'
 ```
+///
 
 ## Basic configuration and usage (FS adapter)
 
 Let's start with a simple example using the local filesystem (FS) adapter.
 
+/// admonition
+    type: example
 ```python
 from file_keeper import make_storage, make_upload
 
@@ -62,7 +69,7 @@ print(file_data)
 
 # The file is now stored in /tmp/my_filekeeper_files/my_file.txt
 ```
-
+///
 **Explanation:**
 
 *   `make_storage()`: Creates a storage instance with the specified configuration.
