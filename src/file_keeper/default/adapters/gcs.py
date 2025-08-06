@@ -8,9 +8,12 @@ from datetime import timedelta
 from typing import Any, cast
 
 import requests
-from google.api_core.exceptions import Forbidden
+
+# from google.auth.credentials import Credentials, AnonymousCredentials
+from google.api_core.exceptions import Forbidden, NotFound
+from google.auth.credentials import Credentials
 from google.cloud.storage import Client
-from google.oauth2.service_account import Credentials
+from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 from typing_extensions import override
 
 import file_keeper as fk
@@ -25,32 +28,62 @@ def decode(value: str) -> str:
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
+    resumable_origin: str = ""  # ?
+
     bucket: str = ""
-
-    credentials_file: dataclasses.InitVar[str] = ""
-
-    resumable_origin: str = ""
-
     client: Client = None  # pyright: ignore[reportAssignmentType]
 
-    def __post_init__(self, credentials_file: str, **kwargs: Any):
+    service_account_file: dataclasses.InitVar[str] = ""
+    credentials: dataclasses.InitVar[Credentials] = None  # pyright: ignore[reportAssignmentType]
+    project_id: dataclasses.InitVar[str] = ""
+    client_options: dataclasses.InitVar[dict[str, Any] | None] = None
+    initialize: dataclasses.InitVar[bool] = False
+
+    def __post_init__(
+        self,
+        service_account_file: str,
+        credentials: Credentials | None,
+        project_id: str,
+        client_options: dict[str, Any] | None,
+        initialize: bool,
+        **kwargs: Any,
+    ):
         super().__post_init__(**kwargs)
-        self.path = self.path.lstrip("/")
 
-        if self.client is None:  # pyright: ignore[reportUnnecessaryComparison]
-            credentials = None
-            if credentials_file:
-                try:
-                    credentials = Credentials.from_service_account_file(
-                        credentials_file
+        if not self.client:
+            if not credentials:
+                if service_account_file:
+                    try:
+                        credentials = (
+                            ServiceAccountCredentials.from_service_account_file(
+                                service_account_file
+                            )
+                        )
+                    except OSError as err:
+                        raise fk.exc.InvalidStorageConfigurationError(
+                            self.name,
+                            f"file `{service_account_file}` does not exist",
+                        ) from err
+                    if not project_id:
+                        project_id = credentials.project_id or ""  # pyright: ignore[reportUnknownVariableType]
+                else:
+                    raise fk.exc.MissingStorageConfigurationError(
+                        self.name, "credentials_file"
                     )
-                except OSError as err:
-                    raise fk.exc.InvalidStorageConfigurationError(
-                        self.name,
-                        f"file `{credentials_file}` does not exist",
-                    ) from err
 
-            self.client = Client(credentials=credentials)
+            if not project_id:
+                raise fk.exc.MissingStorageConfigurationError(self.name, "project_id")
+
+            self.client = Client(
+                project_id,
+                credentials=credentials,
+                client_options=client_options,
+            )
+        if initialize:
+            try:
+                self.client.get_bucket(self.bucket)
+            except NotFound:
+                self.client.create_bucket(self.bucket)
 
 
 class Uploader(fk.Uploader):

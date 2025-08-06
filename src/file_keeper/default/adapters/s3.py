@@ -28,13 +28,14 @@ def decode(value: str) -> str:
 class Settings(fk.Settings):
     bucket: str = ""
 
+    client: S3Client = None  # pyright: ignore[reportAssignmentType]
+    initialize: dataclasses.InitVar[bool] = False
+
     key: dataclasses.InitVar[str | None] = None
     secret: dataclasses.InitVar[str | None] = None
     region: dataclasses.InitVar[str | None] = None
     endpoint: dataclasses.InitVar[str | None] = None
 
-    client: S3Client = None  # pyright: ignore[reportAssignmentType]
-    initialize: dataclasses.InitVar[bool] = False
 
     _required_options: ClassVar[list[str]] = ["bucket"]
 
