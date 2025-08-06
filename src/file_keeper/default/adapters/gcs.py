@@ -4,6 +4,7 @@ import base64
 import dataclasses
 import os
 import re
+from collections.abc import Iterable
 from datetime import timedelta
 from typing import Any, cast
 
@@ -12,7 +13,7 @@ import requests
 # from google.auth.credentials import Credentials, AnonymousCredentials
 from google.api_core.exceptions import Forbidden, NotFound
 from google.auth.credentials import Credentials
-from google.cloud.storage import Client
+from google.cloud.storage import Blob, Client
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 from typing_extensions import override
 
@@ -49,6 +50,10 @@ class Settings(fk.Settings):
         **kwargs: Any,
     ):
         super().__post_init__(**kwargs)
+
+        # GCS ignores first slash and keeping it complicates work for
+        # os.path.relpath
+        self.path = self.path.lstrip("/")
 
         if not self.client:
             if not credentials:
@@ -103,7 +108,10 @@ class Uploader(fk.Uploader):
         client = self.storage.settings.client
         blob = client.bucket(self.storage.settings.bucket).blob(filepath)
 
-        blob.upload_from_file(upload.stream)
+        if not self.storage.settings.override_existing and blob.exists():
+            raise fk.exc.ExistingFileError(self.storage, location)
+
+        blob.upload_from_file(upload.stream, content_type=upload.content_type)
 
         filehash = decode(blob.md5_hash)
         return fk.FileData(
@@ -211,6 +219,9 @@ class Uploader(fk.Uploader):
         data: fk.MultipartData,
         extras: dict[str, Any],
     ) -> fk.MultipartData:
+        if "session_url" not in data.storage_data:
+            raise fk.exc.MissingFileError(self.storage, data.location)
+
         try:
             resp = requests.put(
                 data.storage_data["session_url"],
@@ -292,9 +303,111 @@ class Uploader(fk.Uploader):
         )
 
 
+class Reader(fk.Reader):
+    storage: GoogleCloudStorage
+    capabilities = fk.Capability.STREAM
+
+    @override
+    def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
+        name = self.storage.full_path(data.location)
+        client = self.storage.settings.client
+        bucket = client.bucket(self.storage.settings.bucket)
+        blob = bucket.blob(name)
+
+        if not blob.exists():
+            raise fk.exc.MissingFileError(self.storage, data.location)
+
+        with blob.open("rb") as stream:
+            yield from cast(Iterable[bytes], stream)
+
+
 class Manager(fk.Manager):
     storage: GoogleCloudStorage
-    capabilities: fk.Capability = fk.Capability.REMOVE | fk.Capability.SIGNED
+    capabilities: fk.Capability = (
+        fk.Capability.REMOVE
+        | fk.Capability.SIGNED
+        | fk.Capability.COPY
+        | fk.Capability.MOVE
+        | fk.Capability.EXISTS
+        | fk.Capability.ANALYZE
+        | fk.Capability.SCAN
+    )
+
+    @override
+    def scan(self, extras: dict[str, Any]) -> Iterable[str]:
+        bucket = self.storage.settings.client.bucket(self.storage.settings.bucket)
+
+        for blob in cast(Iterable[Blob], bucket.list_blobs()):
+            name: str = cast(str, blob.name)
+            yield os.path.relpath(name, self.storage.settings.path)
+
+    @override
+    def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        filepath = self.storage.full_path(data.location)
+        bucket = self.storage.settings.client.bucket(self.storage.settings.bucket)
+        blob = bucket.blob(filepath)
+        return blob.exists()
+
+    @override
+    def move(
+        self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]
+    ) -> fk.FileData:
+        src_filepath = self.storage.full_path(data.location)
+        dest_filepath = self.storage.full_path(location)
+
+        bucket = self.storage.settings.client.bucket(self.storage.settings.bucket)
+        src_blob = bucket.blob(src_filepath)
+        if not src_blob.exists():
+            raise fk.exc.MissingFileError(self.storage, data.location)
+
+        dest_blob = bucket.blob(dest_filepath)
+        if not self.storage.settings.override_existing and dest_blob.exists():
+            raise fk.exc.ExistingFileError(self.storage, location)
+
+        bucket.rename_blob(src_blob, dest_filepath)
+        return self.analyze(location, extras)
+
+    @override
+    def copy(
+        self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]
+    ) -> fk.FileData:
+        src_filepath = self.storage.full_path(data.location)
+        dest_filepath = self.storage.full_path(location)
+
+        bucket = self.storage.settings.client.bucket(self.storage.settings.bucket)
+        src_blob = bucket.blob(src_filepath)
+        if not src_blob.exists():
+            raise fk.exc.MissingFileError(self.storage, data.location)
+
+        dest_blob = bucket.blob(dest_filepath)
+        if not self.storage.settings.override_existing and dest_blob.exists():
+            raise fk.exc.ExistingFileError(self.storage, location)
+
+        bucket.copy_blob(src_blob, bucket, dest_filepath)
+        return self.analyze(location, extras)
+
+    @override
+    def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+        filepath = self.storage.full_path(location)
+        bucket = self.storage.settings.client.bucket(self.storage.settings.bucket)
+        blob = bucket.blob(filepath)
+
+        if not blob.exists():
+            raise fk.exc.MissingFileError(self.storage, location)
+
+        blob.reload()  # pull hash, type, size
+
+        filehash = decode(blob.md5_hash)
+        size = cast(int, blob.size)
+
+        return fk.FileData(
+            location,
+            size,
+            blob.content_type,
+            filehash,
+        )
+
+        return blob.exists()
 
     @override
     def signed(
@@ -354,4 +467,4 @@ class GoogleCloudStorage(fk.Storage):
     SettingsFactory = Settings
     UploaderFactory = Uploader
     ManagerFactory = Manager
-    # ReaderFactory = Reader
+    ReaderFactory = Reader

@@ -36,7 +36,6 @@ class Settings(fk.Settings):
     endpoint: dataclasses.InitVar[str | None] = None
     initialize: dataclasses.InitVar[bool] = False
 
-
     _required_options: ClassVar[list[str]] = ["bucket"]
 
     def __post_init__(

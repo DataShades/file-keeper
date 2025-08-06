@@ -3,9 +3,9 @@ from __future__ import annotations
 import os
 from typing import Any
 
-from google.auth.credentials import AnonymousCredentials
 import pytest
 from faker import Faker
+from google.auth.credentials import AnonymousCredentials
 
 import file_keeper.default.adapters.gcs as gcs
 
