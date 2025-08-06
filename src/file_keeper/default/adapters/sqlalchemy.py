@@ -22,10 +22,7 @@ class Settings(fk.Settings):
     location: sa.Column[str] = None  # pyright: ignore[reportAssignmentType]
     content: sa.Column[bytes] = None  # pyright: ignore[reportAssignmentType]
 
-    def __post_init__(
-        self,
-        **kwargs: Any,
-    ):
+    def __post_init__(self, **kwargs: Any):  # noqa: C901, PLR0912
         super().__post_init__(**kwargs)
 
         if not self.engine:
@@ -181,7 +178,7 @@ class Manager(fk.Manager):
         self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]
     ) -> fk.FileData:
         if not self.exists(data, extras):
-            raise fk.exc.ExistingFileError(self.storage, data.location)
+            raise fk.exc.MissingFileError(self.storage, data.location)
 
         if self.exists(fk.FileData(location), extras):
             if self.storage.settings.override_existing:
@@ -206,6 +203,27 @@ class Manager(fk.Manager):
             )
 
         return fk.FileData.from_object(data, location=location)
+
+    @override
+    def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+        stmt = sa.select(self.storage.settings.content).where(
+            self.storage.settings.location == location
+        )
+        with self.storage.settings.engine.connect() as conn:
+            content = conn.scalar(stmt)
+
+        if not content:
+            raise fk.exc.MissingFileError(self.storage, location)
+
+        upload = fk.make_upload(content)
+        reader = upload.hashing_reader()
+        reader.exhaust()
+        return fk.FileData(
+            location,
+            upload.size,
+            upload.content_type,
+            reader.get_hash(),
+        )
 
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:

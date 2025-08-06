@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-import os
 from typing import Any
 
 import pytest
 from faker import Faker
-from google.auth.credentials import AnonymousCredentials
 
 import file_keeper.default.adapters.sqlalchemy as sqlalchemy
 
@@ -27,9 +25,7 @@ def storage(faker: Faker, storage_settings: dict[str, Any]):
     }
 
     settings.update(storage_settings)
-    storage = Storage(settings)
-
-    return storage
+    return Storage(settings)
 
 
 class TestSettings: ...
@@ -37,7 +33,6 @@ class TestSettings: ...
 
 class TestUploaderUpload(standard.Uploader):
     pass
-
 
 
 class TestReader(standard.Reader):

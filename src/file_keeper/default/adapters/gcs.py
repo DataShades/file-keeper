@@ -85,14 +85,14 @@ class Settings(fk.Settings):
 
         try:
             self.client.get_bucket(self.bucket_name)
-        except NotFound:
+        except NotFound as err:
             if self.initialize:
                 self.client.create_bucket(self.bucket_name)
             else:
                 raise fk.exc.InvalidStorageConfigurationError(
                     self.name,
                     f"bucket `{self.bucket_name}` does not exist",
-                )
+                ) from err
 
 
 class Uploader(fk.Uploader):
@@ -410,7 +410,6 @@ class Manager(fk.Manager):
             blob.content_type,
             filehash,
         )
-
 
     @override
     def signed(
