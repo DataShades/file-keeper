@@ -29,10 +29,10 @@ class Settings(fk.Settings):
     ## azurite
     # account_url: str = "http://127.0.0.1:10000/{account_name}"
 
-    initialize: dataclasses.InitVar[bool] = False
-
     client: BlobServiceClient = None  # pyright: ignore[reportAssignmentType]
     container: ContainerClient = None  # pyright: ignore[reportAssignmentType]
+
+    initialize: dataclasses.InitVar[bool] = False
 
     def __post_init__(self, initialize: bool, **kwargs: Any):
         self.account_url = self.account_url.format(account_name=self.account_name)

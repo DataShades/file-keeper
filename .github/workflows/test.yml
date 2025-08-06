@@ -8,6 +8,17 @@ jobs:
   test:
     name: test with ${{ matrix.env }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+      azurite:
+        image: mcr.microsoft.com/azure-storage/azurite
+        ports:
+          - 10000:10000
+
     strategy:
       fail-fast: false
       matrix:
@@ -20,13 +31,35 @@ jobs:
         os:
           - ubuntu-latest
 
+    env:
+      FILE_KEEPER_TEST_MINIO_ENDPOINT: "http://127.0.0.1:9000"
+      FILE_KEEPER_TEST_MINIO_KEY: "minioadmin"
+      FILE_KEEPER_TEST_MINIO_SECRET: "minioadmin"
+      FILE_KEEPER_TEST_MINIO_BUCKET: "file-keeper"
+
+      FILE_KEEPER_TEST_AZURITE_ACCOUNT_URL: "http://127.0.0.1:10000/{account_name}"
+      FILE_KEEPER_TEST_AZURITE_ACCOUNT_NAME: "devstoreaccount1"
+      FILE_KEEPER_TEST_AZURITE_ACCOUNT_KEY: "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=="
+      FILE_KEEPER_TEST_AZURITE_CONTAINER_NAME: "file-keeper"
+
+      FILE_KEEPER_TEST_GCS_ENDPOINT: "http://127.0.0.1:4443"
+
     steps:
       - uses: actions/checkout@v4
 
-      - uses: shogo82148/actions-setup-redis@v1
+      - name: Start GCS
+        uses: fsouza/fake-gcs-action@v0.4.1
         with:
-          redis-version: "7.x"
-      - run: redis-cli ping
+          version: "1.52.2"
+          scheme: http
+
+      - name: Start MinIO
+        uses: infleet/minio-action@v0.0.1
+        with:
+          port: "9000"
+          version: "latest"
+          username: "minioadmin"
+          password: "minioadmin"
 
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v3
