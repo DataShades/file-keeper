@@ -43,7 +43,7 @@ jobs:
           - ubuntu-latest
 
     env:
-      FILE_KEEPER_TEST_MINIO_ENDPOINT: "http://minio:9000"
+      FILE_KEEPER_TEST_MINIO_ENDPOINT: "http://127.0.0.1:9000"
       FILE_KEEPER_TEST_MINIO_KEY: "minioadmin"
       FILE_KEEPER_TEST_MINIO_SECRET: "minioadmin"
       FILE_KEEPER_TEST_MINIO_BUCKET: "file-keeper"
