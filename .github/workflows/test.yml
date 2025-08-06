@@ -8,25 +8,54 @@ jobs:
   test:
     name: test with ${{ matrix.env }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+
+    #  docker run -p 9000:9000 -p 9001:9001 --name minio -e
+
+    # docker run -p 10000:10000 --name azurite-blob mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0
+
+    # docker run -d --name gcs -p 4443:4443 fsouza/fake-gcs-server:1.52.2 -scheme http
+
+    services:
+      minio:
+        image: quay.io/minio/minio:RELEASE.2025-07-23T15-54-02Z
+        ports:
+          - 9000:9000
+        env:
+          MINIO_PUBLIC_ADDRESS: 0.0.0.0:9000
+
+
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+
+
     strategy:
       fail-fast: false
       matrix:
         env:
-          - "3.13"
-          - "3.12"
-          - "3.11"
-          - "3.10"
+          # - "3.13"
+          # - "3.12"
+          # - "3.11"
+          # - "3.10"
           - "3.9"
         os:
           - ubuntu-latest
 
+    env:
+      FILE_KEEPER_TEST_MINIO_ENDPOINT: "http://minio:9000"
+      FILE_KEEPER_TEST_MINIO_KEY: "minioadmin"
+      FILE_KEEPER_TEST_MINIO_SECRET: "minioadmin"
+      FILE_KEEPER_TEST_MINIO_BUCKET: "file-keeper"
+
+      # FILE_KEEPER_TEST_AZURITE_ACCOUNT_URL: "http://127.0.0.1:10000/{account_name}"
+      # FILE_KEEPER_TEST_AZURITE_ACCOUNT_NAME: "devstoreaccount1"
+      # FILE_KEEPER_TEST_AZURITE_ACCOUNT_KEY: "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=="
+      # FILE_KEEPER_TEST_AZURITE_CONTAINER_NAME: "file-keeper"
+      # FILE_KEEPER_TEST_GCS_ENDPOINT: "http://localhost:4443"
+
     steps:
       - uses: actions/checkout@v4
-
-      - uses: shogo82148/actions-setup-redis@v1
-        with:
-          redis-version: "7.x"
-      - run: redis-cli ping
 
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v3

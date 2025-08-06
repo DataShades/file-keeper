@@ -5,6 +5,16 @@
     *   Links to individual adapter documentation.
 
 
+```sh
+ docker run -p 9000:9000 -p 9001:9001 --name minio -e MINIO_PUBLIC_ADDRESS=0.0.0.0:9000 quay.io/minio/minio server /data --console-address ":9001"
+
+docker run -p 10000:10000 --name azurite-blob mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0
+
+docker run -d --name gcs -p 4443:4443 fsouza/fake-gcs-server -scheme http
+
+```
+
+
 ## Usage
 
 /// details | TL;DR
