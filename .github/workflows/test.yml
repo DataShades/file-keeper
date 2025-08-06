@@ -9,35 +9,24 @@ jobs:
     name: test with ${{ matrix.env }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
 
-    #  docker run -p 9000:9000 -p 9001:9001 --name minio -e
-
-    # docker run -p 10000:10000 --name azurite-blob mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0
-
-    # docker run -d --name gcs -p 4443:4443 fsouza/fake-gcs-server:1.52.2 -scheme http
-
     services:
-      minio:
-        image: quay.io/minio/minio:RELEASE.2025-07-23T15-54-02Z
-        ports:
-          - 9000:9000
-        env:
-          MINIO_PUBLIC_ADDRESS: 0.0.0.0:9000
-
-
       redis:
         image: redis
         ports:
           - 6379:6379
-
+      azurite:
+        image: mcr.microsoft.com/azure-storage/azurite
+        ports:
+          - 10000:10000
 
     strategy:
       fail-fast: false
       matrix:
         env:
-          # - "3.13"
-          # - "3.12"
-          # - "3.11"
-          # - "3.10"
+          - "3.13"
+          - "3.12"
+          - "3.11"
+          - "3.10"
           - "3.9"
         os:
           - ubuntu-latest
@@ -48,14 +37,29 @@ jobs:
       FILE_KEEPER_TEST_MINIO_SECRET: "minioadmin"
       FILE_KEEPER_TEST_MINIO_BUCKET: "file-keeper"
 
-      # FILE_KEEPER_TEST_AZURITE_ACCOUNT_URL: "http://127.0.0.1:10000/{account_name}"
-      # FILE_KEEPER_TEST_AZURITE_ACCOUNT_NAME: "devstoreaccount1"
-      # FILE_KEEPER_TEST_AZURITE_ACCOUNT_KEY: "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=="
-      # FILE_KEEPER_TEST_AZURITE_CONTAINER_NAME: "file-keeper"
-      # FILE_KEEPER_TEST_GCS_ENDPOINT: "http://localhost:4443"
+      FILE_KEEPER_TEST_AZURITE_ACCOUNT_URL: "http://127.0.0.1:10000/{account_name}"
+      FILE_KEEPER_TEST_AZURITE_ACCOUNT_NAME: "devstoreaccount1"
+      FILE_KEEPER_TEST_AZURITE_ACCOUNT_KEY: "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=="
+      FILE_KEEPER_TEST_AZURITE_CONTAINER_NAME: "file-keeper"
+
+      FILE_KEEPER_TEST_GCS_ENDPOINT: "http://127.0.0.1:4443"
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Start GCS
+        uses: fsouza/fake-gcs-action@v0.4.1
+        with:
+          version: "1.52.2"
+          scheme: http
+
+      - name: Start MinIO
+        uses: infleet/minio-action@v0.0.1
+        with:
+          port: "9000"
+          version: "latest"
+          username: "minioadmin"
+          password: "minioadmin"
 
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v3

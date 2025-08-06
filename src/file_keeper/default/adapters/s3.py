@@ -64,7 +64,7 @@ class Settings(fk.Settings):
         if initialize:
             try:
                 self.client.head_bucket(Bucket=self.bucket)
-            except self.client.exceptions.NoSuchBucket:
+            except self.client.exceptions.ClientError:
                 self.client.create_bucket(Bucket=self.bucket)
 
 
