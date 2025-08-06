@@ -25,7 +25,7 @@ storage = make_storage("sandbox", {
     "path": "/tmp/example",
     # this option creates the folder if it does not exist.
     # Without it storage raises an error if folder is missing
-    "create_path": True,
+    "initialize": True,
 })
 assert os.path.isdir("/tmp/example")
 ```

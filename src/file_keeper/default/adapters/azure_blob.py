@@ -32,9 +32,7 @@ class Settings(fk.Settings):
     client: BlobServiceClient = None  # pyright: ignore[reportAssignmentType]
     container: ContainerClient = None  # pyright: ignore[reportAssignmentType]
 
-    initialize: dataclasses.InitVar[bool] = False
-
-    def __post_init__(self, initialize: bool, **kwargs: Any):
+    def __post_init__(self, **kwargs: Any):
         self.account_url = self.account_url.format(account_name=self.account_name)
 
         if not self.client:
@@ -51,8 +49,14 @@ class Settings(fk.Settings):
         if not self.container:
             self.container = self.client.get_container_client(self.container_name)
 
-        if initialize and not self.container.exists():
-            self.container.create_container()
+        if not self.container.exists():
+            if self.initialize:
+                self.container.create_container()
+            else:
+                raise fk.exc.InvalidStorageConfigurationError(
+                    self.name,
+                    f"container `{self.container_name}` does not exist",
+                )
 
         return super().__post_init__(**kwargs)
 

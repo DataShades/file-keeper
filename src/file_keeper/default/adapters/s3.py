@@ -34,7 +34,6 @@ class Settings(fk.Settings):
     secret: dataclasses.InitVar[str | None] = None
     region: dataclasses.InitVar[str | None] = None
     endpoint: dataclasses.InitVar[str | None] = None
-    initialize: dataclasses.InitVar[bool] = False
 
     _required_options: ClassVar[list[str]] = ["bucket"]
 
@@ -44,7 +43,6 @@ class Settings(fk.Settings):
         secret: str | None,
         region: str | None,
         endpoint: str | None,
-        initialize: bool,
         **kwargs: Any,
     ):
         super().__post_init__(**kwargs)
@@ -60,11 +58,15 @@ class Settings(fk.Settings):
                 endpoint_url=endpoint,
             )
 
-        if initialize:
-            try:
-                self.client.head_bucket(Bucket=self.bucket)
-            except self.client.exceptions.ClientError:
+        try:
+            self.client.head_bucket(Bucket=self.bucket)
+        except self.client.exceptions.ClientError as err:
+            if self.initialize:
                 self.client.create_bucket(Bucket=self.bucket)
+            else:
+                raise fk.exc.InvalidStorageConfigurationError(
+                    self.name, f"container {self.bucket} does not exist"
+                ) from err
 
 
 class Reader(fk.Reader):

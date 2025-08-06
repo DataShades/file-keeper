@@ -124,5 +124,5 @@ class TestStorage:
         subpath = faker.file_path(absolute=False, extension="")
         path = os.path.join(tmp_path, subpath)
 
-        fs.FsStorage({"path": path, "create_path": True})
+        fs.FsStorage({"path": path, "initialize": True})
         assert os.path.exists(path)

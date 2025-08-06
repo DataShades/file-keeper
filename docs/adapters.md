@@ -26,7 +26,7 @@ from file_keeper import make_storage, make_upload, FileData
 storage = make_storage("sandbox", {
     "type": "file_keeper:fs",
     "path": "/tmp/file-keeper",
-    "create_path": True,
+    "initialize": True,
 })
 
 ## OR
@@ -87,7 +87,7 @@ Let's use the filesystem adapter, which is called `file_keeper:fs`. This driver
 requires the `path` of a root directory where uploaded files are stored. If
 given path does not exist, the storage will raise an error during
 initialization. We can either create the directory in advance manually, or
-enable `create_path` option of the storage, to automatically add missing
+enable `initialize` option of the storage, to automatically add missing
 folders instead of raising an exception.
 
 To initialize the storage, one must call `make_storage` function, that accepts
@@ -100,7 +100,7 @@ from file_keeper import make_storage
 storage = make_storage("sandbox", {
     "type": "file_keeper:fs",
     "path": "/tmp/example",
-    "create_path": True,
+    "initialize": True,
 })
 ```
 

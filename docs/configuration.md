@@ -94,7 +94,7 @@ settings:
 
 ### `file_keeper:fs`
 
-*   **`create_path` (bool, default: `False`):** If `True`, the `path` directory
+*   **`initialize` (bool, default: `False`):** If `True`, the `path` directory
     will be created if it doesn't exist. If `False`, an
     `InvalidStorageConfigurationError` will be raised if the `path` directory
     doesn't exist.
@@ -136,7 +136,7 @@ Here are some examples of how to configure different storage adapters:
 settings = {
     "type": "file_keeper:fs",
     "path": "/tmp/my_files",
-    "create_path": True,
+    "initialize": True,
 }
 ```
 
@@ -171,7 +171,7 @@ from file_keeper.default.adapters.fs import Settings
 
 settings_data = {
     "path": "/tmp/my_files",
-    "create_path": True,
+    "initialize": True,
     "extra_setting": "some_value",  # This will be stored in settings._extra_settings
 }
 

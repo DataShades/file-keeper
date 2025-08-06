@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 from collections.abc import Iterable
-from typing import Any, ClassVar
+from typing import Any
 
 import sqlalchemy as sa
 from typing_extensions import override
@@ -12,45 +12,66 @@ import file_keeper as fk
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
-    db_url: dataclasses.InitVar[str] = ""
-    table_name: dataclasses.InitVar[str] = ""
-    location_column: dataclasses.InitVar[str] = ""
-    content_column: dataclasses.InitVar[str] = ""
+    db_url: str = ""
+    table_name: str = ""
+    location_column: str = ""
+    content_column: str = ""
 
     engine: sa.engine.Engine = None  # pyright: ignore[reportAssignmentType]
-    table: sa.TableClause = None  # pyright: ignore[reportAssignmentType]
-    location: sa.ColumnClause[str] = None  # pyright: ignore[reportAssignmentType]
-    content: sa.ColumnClause[bytes] = None  # pyright: ignore[reportAssignmentType]
-
-    _required_options: ClassVar[list[str]] = [
-        "db_url",
-        "table",
-        "location_column",
-        "content_column",
-    ]
+    table: sa.Table = None  # pyright: ignore[reportAssignmentType]
+    location: sa.Column[str] = None  # pyright: ignore[reportAssignmentType]
+    content: sa.Column[bytes] = None  # pyright: ignore[reportAssignmentType]
 
     def __post_init__(
         self,
-        db_url: str,
-        table_name: str,
-        location_column: str,
-        content_column: str,
         **kwargs: Any,
     ):
         super().__post_init__(**kwargs)
 
         if not self.engine:
-            self.engine = sa.create_engine(db_url)
+            if not self.db_url:
+                raise fk.exc.MissingStorageConfigurationError(self.name, "db_url")
+            self.engine = sa.create_engine(self.db_url)
+
         if self.location is None:  # pyright: ignore[reportUnnecessaryComparison]
-            self.location = sa.column(location_column)
+            if not self.location_column:
+                raise fk.exc.MissingStorageConfigurationError(
+                    self.name, "location_column"
+                )
+            self.location = sa.Column(self.location_column, sa.Text, primary_key=True)
+        else:
+            self.location_column = self.location.name
+
         if self.content is None:  # pyright: ignore[reportUnnecessaryComparison]
-            self.content = sa.column(content_column)
+            if not self.content_column:
+                raise fk.exc.MissingStorageConfigurationError(
+                    self.name, "content_column"
+                )
+            self.content = sa.Column(self.content_column, sa.LargeBinary)
+        else:
+            self.content_column = self.content.name
+
         if self.table is None:  # pyright: ignore[reportUnnecessaryComparison]
-            self.table = sa.table(
-                table_name,
+            if not self.table_name:
+                raise fk.exc.MissingStorageConfigurationError(self.name, "table_name")
+
+            self.table = sa.Table(
+                self.table_name,
+                sa.MetaData(),
                 self.location,
                 self.content,
             )
+        else:
+            self.table_name = self.table.name
+
+        inspector = sa.inspect(self.engine)
+        if not inspector.has_table(self.table.name):
+            if self.initialize:
+                self.table.create(self.engine)
+            else:
+                raise fk.exc.InvalidStorageConfigurationError(
+                    self.name, f"table {self.table.name} does not exist"
+                )
 
 
 class Reader(fk.Reader):
@@ -91,10 +112,27 @@ class Uploader(fk.Uploader):
             self.storage.settings.location: location,
             self.storage.settings.content: reader.read(),
         }
-        stmt = sa.insert(self.storage.settings.table).values(values)
 
-        with self.storage.settings.engine.connect() as conn:
-            conn.execute(stmt)
+        table = self.storage.settings.table
+
+        with self.storage.settings.engine.begin() as conn:
+            if conn.scalar(
+                sa.select(1)
+                .select_from(table)
+                .where(self.storage.settings.location == location)
+            ):
+                if self.storage.settings.override_existing:
+                    stmt = (
+                        sa.update(table)
+                        .where(self.storage.settings.location == location)
+                        .values(values)
+                    )
+                    conn.execute(stmt)
+                else:
+                    raise fk.exc.ExistingFileError(self.storage, location)
+            else:
+                stmt = sa.insert(self.storage.settings.table).values(values)
+                conn.execute(stmt)
 
         return fk.FileData(
             location,
@@ -106,7 +144,78 @@ class Uploader(fk.Uploader):
 
 class Manager(fk.Manager):
     storage: SqlAlchemyStorage
-    capabilities: fk.Capability = fk.Capability.SCAN | fk.Capability.REMOVE
+    capabilities: fk.Capability = (
+        fk.Capability.SCAN
+        | fk.Capability.REMOVE
+        | fk.Capability.EXISTS
+        | fk.Capability.ANALYZE
+        | fk.Capability.COPY
+        | fk.Capability.MOVE
+    )
+
+    @override
+    def move(
+        self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]
+    ) -> fk.FileData:
+        if not self.exists(data, extras):
+            raise fk.exc.MissingFileError(self.storage, data.location)
+
+        if self.exists(fk.FileData(location), extras):
+            if self.storage.settings.override_existing:
+                self.remove(fk.FileData(location), extras)
+            else:
+                raise fk.exc.ExistingFileError(self.storage, location)
+
+        stmt = (
+            sa.update(self.storage.settings.table)
+            .where(self.storage.settings.location == data.location)
+            .values({self.storage.settings.location: location})
+        )
+        with self.storage.settings.engine.begin() as conn:
+            conn.execute(stmt)
+
+        return fk.FileData.from_object(data, location=location)
+
+    @override
+    def copy(
+        self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]
+    ) -> fk.FileData:
+        if not self.exists(data, extras):
+            raise fk.exc.ExistingFileError(self.storage, data.location)
+
+        if self.exists(fk.FileData(location), extras):
+            if self.storage.settings.override_existing:
+                self.remove(fk.FileData(location), extras)
+            else:
+                raise fk.exc.ExistingFileError(self.storage, location)
+
+        with self.storage.settings.engine.begin() as conn:
+            content = conn.scalar(
+                sa.select(self.storage.settings.content).where(
+                    self.storage.settings.location == data.location
+                )
+            )
+
+            conn.execute(
+                sa.insert(self.storage.settings.table).values(
+                    {
+                        self.storage.settings.location: location,
+                        self.storage.settings.content: content,
+                    }
+                )
+            )
+
+        return fk.FileData.from_object(data, location=location)
+
+    @override
+    def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        stmt = (
+            sa.select(1)
+            .select_from(self.storage.settings.table)
+            .where(self.storage.settings.location == data.location)
+        )
+        with self.storage.settings.engine.connect() as conn:
+            return bool(conn.scalar(stmt))
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
@@ -123,10 +232,16 @@ class Manager(fk.Manager):
         data: fk.FileData | fk.MultipartData,
         extras: dict[str, Any],
     ) -> bool:
+        if isinstance(data, fk.MultipartData):
+            return False
+
+        if not self.exists(data, extras):
+            return False
+
         stmt = sa.delete(self.storage.settings.table).where(
             self.storage.settings.location == data.location,
         )
-        with self.storage.settings.engine.connect() as conn:
+        with self.storage.settings.engine.begin() as conn:
             conn.execute(stmt)
         return True
 

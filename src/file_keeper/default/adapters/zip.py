@@ -19,9 +19,6 @@ def _exists(info: zipfile.ZipInfo):
 @dataclasses.dataclass()
 class Settings(fk.Settings):
     """Settings for a ZIP storage."""
-
-    path: str = ""
-
     _required_options = ["path"]
 
 

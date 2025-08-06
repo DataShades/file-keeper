@@ -19,22 +19,15 @@ log = logging.getLogger(__name__)
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
-    """Settings for FS storage.
-
-    Args:
-        create_path: create `path` if it does not exist
-        path: non-empty location for storage folder
-    """
-
-    create_path: dataclasses.InitVar[bool] = False
+    """Settings for FS storage."""
 
     _required_options: ClassVar[list[str]] = ["path"]
 
-    def __post_init__(self, create_path: bool, **kwargs: Any):
+    def __post_init__(self, **kwargs: Any):
         super().__post_init__(**kwargs)
 
         if not os.path.exists(self.path):
-            if not create_path:
+            if not self.initialize:
                 raise fk.exc.InvalidStorageConfigurationError(
                     self.name,
                     f"path `{self.path}` does not exist",

@@ -39,14 +39,14 @@ Let's start with a simple example using the local filesystem (FS) adapter.
 from file_keeper import make_storage, make_upload
 
 # Create a storage instance.  The 'path' setting specifies the root directory
-# for storing files. 'create_path' will automatically create the directory
+# for storing files. 'initialize' will automatically create the directory
 # if it doesn't exist.
 storage = make_storage(
     "my_fs_storage",  # A name for your storage (for logging/debugging)
     {
         "type": "file_keeper:fs",
         "path": "/tmp/my_filekeeper_files",
-        "create_path": True,
+        "initialize": True,
     },
 )
 

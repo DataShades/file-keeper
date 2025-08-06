@@ -299,6 +299,9 @@ class Settings:
     )
     """Capabilities that are not supported even if implemented"""
 
+    initialize: bool = False
+    """Prepare storage backend for uploads(create path, bucket, DB)"""
+
     _required_options: ClassVar[list[str]] = []
     _extra_settings: dict[str, Any] = cast(
         "dict[str, Any]", dataclasses.field(default_factory=dict)

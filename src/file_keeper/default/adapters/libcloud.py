@@ -66,8 +66,12 @@ class Settings(fk.Settings):
                 self.container = self.driver.get_container(container_name)
 
             except ContainerDoesNotExistError as err:
-                msg = f"Container {container_name} does not exist"
-                raise fk.exc.InvalidStorageConfigurationError(self.name, msg) from err
+                if self.initialize:
+                    self.container = self.driver.create_container(container_name)
+                else:
+                    raise fk.exc.InvalidStorageConfigurationError(
+                        self.name, f"container {container_name} does not exist"
+                    ) from err
 
             except (LibcloudError, requests.RequestException) as err:
                 raise fk.exc.InvalidStorageConfigurationError(
