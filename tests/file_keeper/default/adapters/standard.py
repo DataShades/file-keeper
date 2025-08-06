@@ -386,7 +386,9 @@ class Reader:
         )
 
         actual = b"".join(storage.stream(result))
-        assert storage.content(result) == actual, "Content does not match stream"
+        assert storage.content(result) == actual, (
+            "storage.content does not match storage.stream"
+        )
 
     def test_std_missing(self, storage: fk.Storage, faker: Faker):
         """Missing files cannot be read."""
@@ -396,7 +398,7 @@ class Reader:
         wrong_location = fk.types.Location(result.location + faker.file_name())
 
         with pytest.raises(fk.exc.MissingFileError):
-            storage.stream(fk.FileData(wrong_location))
+            next(iter(storage.stream(fk.FileData(wrong_location))))
 
 
 class Multiparter:
