@@ -899,7 +899,7 @@ the <code>s3_settings</code> dictionary.  The <code>extra_option</code> is store
 settings:</p>
 <h3 id="file_keeperfs"><code>file_keeper:fs</code></h3>
 <ul>
-<li><strong><code>create_path</code> (bool, default: <code>False</code>):</strong> If <code>True</code>, the <code>path</code> directory
+<li><strong><code>initialize</code> (bool, default: <code>False</code>):</strong> If <code>True</code>, the <code>path</code> directory
     will be created if it doesn't exist. If <code>False</code>, an
     <code>InvalidStorageConfigurationError</code> will be raised if the <code>path</code> directory
     doesn't exist.</li>
@@ -937,7 +937,7 @@ settings:</p>
 <div class="highlight"><pre><span></span><code><span class="n">settings</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:fs&quot;</span><span class="p">,</span>
     <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp/my_files&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;create_path&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;initialize&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>S3 Adapter:</strong></p>
@@ -962,7 +962,7 @@ settings:</p>
 
 <span class="n">settings_data</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp/my_files&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;create_path&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;initialize&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
     <span class="s2">&quot;extra_setting&quot;</span><span class="p">:</span> <span class="s2">&quot;some_value&quot;</span><span class="p">,</span>  <span class="c1"># This will be stored in settings._extra_settings</span>
 <span class="p">}</span>
 

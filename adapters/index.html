@@ -713,6 +713,12 @@
 *   Table listing adapters with brief descriptions.
 *   Links to individual adapter documentation.
 </code></pre>
+<div class="highlight"><pre><span></span><code><span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">9000</span>:9000<span class="w"> </span>-p<span class="w"> </span><span class="m">9001</span>:9001<span class="w"> </span>--name<span class="w"> </span>minio<span class="w"> </span>-e<span class="w"> </span><span class="nv">MINIO_PUBLIC_ADDRESS</span><span class="o">=</span><span class="m">0</span>.0.0.0:9000<span class="w"> </span>quay.io/minio/minio<span class="w"> </span>server<span class="w"> </span>/data<span class="w"> </span>--console-address<span class="w"> </span><span class="s2">&quot;:9001&quot;</span>
+
+docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">10000</span>:10000<span class="w"> </span>--name<span class="w"> </span>azurite-blob<span class="w"> </span>mcr.microsoft.com/azure-storage/azurite<span class="w"> </span>azurite-blob<span class="w"> </span>--blobHost<span class="w"> </span><span class="m">0</span>.0.0.0
+
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span>gcs<span class="w"> </span>-p<span class="w"> </span><span class="m">4443</span>:4443<span class="w"> </span>fsouza/fake-gcs-server<span class="w"> </span>-scheme<span class="w"> </span>http
+</code></pre></div>
 <h2 id="usage">Usage</h2>
 <details class="tip">
 <summary>TL;DR</summary>
@@ -722,7 +728,7 @@
 <span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;sandbox&quot;</span><span class="p">,</span> <span class="p">{</span>
     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:fs&quot;</span><span class="p">,</span>
     <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp/file-keeper&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;create_path&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;initialize&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">})</span>
 
 <span class="c1">## OR</span>
@@ -777,7 +783,7 @@ that support it.</p>
 requires the <code>path</code> of a root directory where uploaded files are stored. If
 given path does not exist, the storage will raise an error during
 initialization. We can either create the directory in advance manually, or
-enable <code>create_path</code> option of the storage, to automatically add missing
+enable <code>initialize</code> option of the storage, to automatically add missing
 folders instead of raising an exception.</p>
 <p>To initialize the storage, one must call <code>make_storage</code> function, that accepts
 the name of the storage(used internally for making readable error messages) and
@@ -787,7 +793,7 @@ the mapping with settings.</p>
 <span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;sandbox&quot;</span><span class="p">,</span> <span class="p">{</span>
     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:fs&quot;</span><span class="p">,</span>
     <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp/example&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;create_path&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;initialize&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">})</span>
 </code></pre></div>
 <p>Now we need at least one file uploaded into the storage via it's <code>upload</code>

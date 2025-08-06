@@ -593,6 +593,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#refactor" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚜 Refactor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      📚 Documentation
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -792,7 +810,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#refactor" class="md-nav__link">
+  <a href="#refactor_1" class="md-nav__link">
     <span class="md-ellipsis">
       🚜 Refactor
     </span>
@@ -843,7 +861,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#refactor_1" class="md-nav__link">
+  <a href="#refactor_2" class="md-nav__link">
     <span class="md-ellipsis">
       🚜 Refactor
     </span>
@@ -934,6 +952,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#refactor" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚜 Refactor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      📚 Documentation
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1133,7 +1169,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#refactor" class="md-nav__link">
+  <a href="#refactor_1" class="md-nav__link">
     <span class="md-ellipsis">
       🚜 Refactor
     </span>
@@ -1184,7 +1220,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#refactor_1" class="md-nav__link">
+  <a href="#refactor_2" class="md-nav__link">
     <span class="md-ellipsis">
       🚜 Refactor
     </span>
@@ -1241,6 +1277,14 @@
 <h3 id="features">🚀 Features</h3>
 <ul>
 <li>[<strong>breaking</strong>] frozen FileData and MultipartData (<a href="https://github.com/DataShades/file-keeper/commit/cb9dbf8ddf7516d461d0a295f69d41090b706195">cb9dbf8</a>)</li>
+<li>complete GCS adapter (<a href="https://github.com/DataShades/file-keeper/commit/db97e201532627d65265d0bf81bdc581ad19309d">db97e20</a>)</li>
+<li>Azure Blob storage adapter (<a href="https://github.com/DataShades/file-keeper/commit/fb491b2b22681aaf8e66589166baa848d4c40a18">fb491b2</a>)</li>
+<li>zip adapter (<a href="https://github.com/DataShades/file-keeper/commit/3b3f978eb462139e53f1d1d62dd68e2f05061920">3b3f978</a>)</li>
+<li>add SIGNED capability (<a href="https://github.com/DataShades/file-keeper/commit/fc5fcbba523691b4ec5d4e095e06b413b59d2ff2">fc5fcbb</a>)</li>
+<li>Storage.full_path (<a href="https://github.com/DataShades/file-keeper/commit/7974aca4a73a1e1f526afbeeb31f4fa106b3c4e4">7974aca</a>)</li>
+<li>add generic disabled_capabilities option (<a href="https://github.com/DataShades/file-keeper/commit/c335071a84c13879a052ce62e07982b1b1ffc46a">c335071</a>)</li>
+<li>add EXISTS, SCAN, MOVE and COPY to s3 adapter (<a href="https://github.com/DataShades/file-keeper/commit/2cb762e5450cf7a881cd0861f2493a319a0dac01">2cb762e</a>)</li>
+<li>add EXISTS and ANALYZE to libcloud adapter (<a href="https://github.com/DataShades/file-keeper/commit/12349aa76ef106a157fd40e744a2522ab4544409">12349aa</a>)</li>
 <li>less strict typing rules for storage settings (<a href="https://github.com/DataShades/file-keeper/commit/247d1c6291ab1bc52324f13bdbf642b8c9c53c1b">247d1c6</a>)</li>
 <li>remove <strong>str</strong> from exceptions (<a href="https://github.com/DataShades/file-keeper/commit/2ecd8a2b8ca2cf90c8e7d1c9fc2e70f6dd39f216">2ecd8a2</a>)</li>
 <li>add memory storage (<a href="https://github.com/DataShades/file-keeper/commit/3abc2181493c50061ce05c185af29ebe65863d02">3abc218</a>)</li>
@@ -1250,8 +1294,23 @@
 </ul>
 <h3 id="bug-fixes">🐛 Bug Fixes</h3>
 <ul>
+<li>s3 unconditionally overrides files (<a href="https://github.com/DataShades/file-keeper/commit/c059f2b67550a2d46f169b890d4705d725b6e11c">c059f2b</a>)</li>
 <li>storage settings keep a lot of intermediate parameters (<a href="https://github.com/DataShades/file-keeper/commit/cf69cf26f4d7ad9e2b16204c6a9803ec6c0a2edb">cf69cf2</a>)</li>
 <li>libcloud silently overrides existing objects (<a href="https://github.com/DataShades/file-keeper/commit/599f09992ed14e926878b9997abd2bca2155326a">599f099</a>)</li>
+</ul>
+<h3 id="refactor">🚜 Refactor</h3>
+<ul>
+<li>[<strong>breaking</strong>] <code>create_path</code> option for fs renamed to <code>initialize</code> (<a href="https://github.com/DataShades/file-keeper/commit/1329997ba923d77fa2a8379dc9edf76562a88ad3">1329997</a>)</li>
+<li>[<strong>breaking</strong>] Storage.temporal_link requires <code>duration</code> parameter (<a href="https://github.com/DataShades/file-keeper/commit/0d92777e5a56b77c1b34cc0abdbffec3e7218eb6">0d92777</a>)</li>
+<li>[<strong>breaking</strong>] Storage.stream_as_upload renamed to file_as_upload (<a href="https://github.com/DataShades/file-keeper/commit/29ec68bae9325502f46e87c7813e4d7844b1e5c6">29ec68b</a>)</li>
+<li>[<strong>breaking</strong>] fs and opendal settings no longer have recursive flag (<a href="https://github.com/DataShades/file-keeper/commit/3f6e29b30d3cc552691c58c93d930e682841af17">3f6e29b</a>)</li>
+<li>redis uses <code>bucket</code> option instead of <code>path</code> (<a href="https://github.com/DataShades/file-keeper/commit/966241ff1627135cedea0de690fa95a314428f33">966241f</a>)</li>
+<li>remove pytz dependency (<a href="https://github.com/DataShades/file-keeper/commit/43079ead8b75af52ddefc75374d36ca857996197">43079ea</a>)</li>
+<li>rename redis_url to url in redis settings (<a href="https://github.com/DataShades/file-keeper/commit/2c998f4fe8876ce8ad44e24dea06e1ab0ac292bc">2c998f4</a>)</li>
+</ul>
+<h3 id="documentation">📚 Documentation</h3>
+<ul>
+<li>Add overview page (<a href="https://github.com/DataShades/file-keeper/commit/6ad5c893e4e7079f732630a4049071ea2b765f72">6ad5c89</a>)</li>
 </ul>
 <h2 id="v0010-2025-07-13"><a href="https://github.com/DataShades/file-keeper/releases/tag/v0.0.10">v0.0.10</a> - 2025-07-13</h2>
 <p><a href="https://github.com/DataShades/file-keeper/compare/v0.0.9..v0.0.10">Compare with v0.0.9</a></p>
@@ -1316,7 +1375,7 @@
 <ul>
 <li>storages accept any type of upload (<a href="https://github.com/DataShades/file-keeper/commit/a64ee3da989930201964f22b4f32c62641da9294">a64ee3d</a>)</li>
 </ul>
-<h3 id="refactor">🚜 Refactor</h3>
+<h3 id="refactor_1">🚜 Refactor</h3>
 <ul>
 <li>remove validation from storage (<a href="https://github.com/DataShades/file-keeper/commit/93392f9d8473a913623b8dd35cd202d35b4368ec">93392f9</a>)</li>
 <li>remove type and size validation from append and compose (<a href="https://github.com/DataShades/file-keeper/commit/890c89a8109c64f2a783c6b8dcd0c59d4c94cd89">890c89a</a>)</li>
@@ -1340,7 +1399,7 @@
 <li>map error during settings initialization into custom exception (<a href="https://github.com/DataShades/file-keeper/commit/f59603787c634d060a854b4bbf0b86451ffeaea5">f596037</a>)</li>
 <li>fs adapter: infer <code>uploaded</code> size if it is not specified in <code>multipart_update</code> (<a href="https://github.com/DataShades/file-keeper/commit/620ec3a16a18fe2101b98d634cc9815ec93bf20c">620ec3a</a>)</li>
 </ul>
-<h3 id="refactor_1">🚜 Refactor</h3>
+<h3 id="refactor_2">🚜 Refactor</h3>
 <ul>
 <li><code>location_strategy: str</code> become <code>location_transformers: list[str]</code> (<a href="https://github.com/DataShades/file-keeper/commit/daf2dc6155b273815d198a7abf4cde6983f7855d">daf2dc6</a>)</li>
 <li>remove default range implementation from reader (<a href="https://github.com/DataShades/file-keeper/commit/36f5f31da0d6791d82d20d8ea276140c59b578d0">36f5f31</a>)</li>

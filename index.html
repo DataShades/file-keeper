@@ -736,14 +736,14 @@ dependencies. Here's a table of available extras:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_storage</span><span class="p">,</span> <span class="n">make_upload</span>
 
 <span class="c1"># Create a storage instance.  The &#39;path&#39; setting specifies the root directory</span>
-<span class="c1"># for storing files. &#39;create_path&#39; will automatically create the directory</span>
+<span class="c1"># for storing files. &#39;initialize&#39; will automatically create the directory</span>
 <span class="c1"># if it doesn&#39;t exist.</span>
 <span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span>
     <span class="s2">&quot;my_fs_storage&quot;</span><span class="p">,</span>  <span class="c1"># A name for your storage (for logging/debugging)</span>
     <span class="p">{</span>
         <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:fs&quot;</span><span class="p">,</span>
         <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp/my_filekeeper_files&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;create_path&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;initialize&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">},</span>
 <span class="p">)</span>
 
