@@ -200,7 +200,7 @@ requires = ["tox>=4"]
 env_list = ["3.15", "3.14", "3.13", "3.12", "3.11", "3.10", "3.9"]
 
 [tool.tox.env_run_base]
-
+passenv = ["FILE_KEEPER_TEST_*"]
 description = "run unit tests"
 deps = [
     "pytest>=8",
