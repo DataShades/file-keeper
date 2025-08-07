@@ -97,28 +97,3 @@ class FileData(BaseData[TData]):
     """
 
     content_type: str = "application/octet-stream"
-
-
-@dataclasses.dataclass(frozen=True)
-class MultipartData(BaseData[TData]):
-    """Information required by storage to operate the incomplete upload.
-
-    Args:
-        location: filepath, filename or any other type of unique identifier
-        size: expected size of the file in bytes
-        content_type: expected MIMEtype of the file
-        hash: expected checksum of the file
-        storage_data: additional details set by storage adapter
-
-    Example:
-        ```
-        MultipartData(
-            "local/path.txt",
-            expected_size,
-            expected_content_type,
-            expected_hash,
-        )
-        ```
-    """
-
-    location: types.Location = types.Location("")

@@ -14,7 +14,6 @@ from file_keeper import (
     Capability,
     FileData,
     Manager,
-    MultipartData,
     Reader,
     Settings,
     Storage,
@@ -52,16 +51,37 @@ class TestUploader:
             uploader.upload(fk.types.Location(faker.file_name()), make_upload(b""), {})
 
         with pytest.raises(NotImplementedError):
-            uploader.multipart_start(fk.types.Location(faker.file_name()), MultipartData(), {})
+            uploader.multipart_start(
+                fk.types.Location(faker.file_name()),
+                FileData(
+                    fk.Location(""),
+                ),
+                {},
+            )
 
         with pytest.raises(NotImplementedError):
-            uploader.multipart_refresh(MultipartData(), {})
+            uploader.multipart_refresh(
+                FileData(
+                    fk.Location(""),
+                ),
+                {},
+            )
 
         with pytest.raises(NotImplementedError):
-            uploader.multipart_update(MultipartData(), {})
+            uploader.multipart_update(
+                FileData(
+                    fk.Location(""),
+                ),
+                {},
+            )
 
         with pytest.raises(NotImplementedError):
-            uploader.multipart_complete(MultipartData(), {})
+            uploader.multipart_complete(
+                FileData(
+                    fk.Location(""),
+                ),
+                {},
+            )
 
 
 class TestManager:

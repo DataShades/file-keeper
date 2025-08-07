@@ -110,50 +110,48 @@ class Uploader(StorageService):
         """
         raise NotImplementedError
 
-    def multipart_start(
-        self, location: types.Location, data: data.MultipartData, extras: dict[str, Any]
-    ) -> data.MultipartData:
+    def multipart_start(self, location: types.Location, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
         """Prepare everything for multipart(resumable) upload.
 
         Args:
             location: The destination location for the upload.
-            data: The MultipartData object containing the upload metadata.
+            data: The FileData object containing the upload metadata.
             extras: Additional metadata for the upload.
         """
         raise NotImplementedError
 
-    def multipart_refresh(self, data: data.MultipartData, extras: dict[str, Any]) -> data.MultipartData:
+    def multipart_refresh(self, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
         """Show details of the incomplete upload.
 
         Args:
-            data: The MultipartData object containing the upload metadata.
+            data: The FileData object containing the upload metadata.
             extras: Additional metadata for the upload.
         """
         raise NotImplementedError
 
-    def multipart_update(self, data: data.MultipartData, extras: dict[str, Any]) -> data.MultipartData:
+    def multipart_update(self, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
         """Add data to the incomplete upload.
 
         Args:
-            data: The MultipartData object containing the upload metadata.
+            data: The FileData object containing the upload metadata.
             extras: Additional metadata for the upload.
         """
         raise NotImplementedError
 
-    def multipart_complete(self, data: data.MultipartData, extras: dict[str, Any]) -> data.FileData:
+    def multipart_complete(self, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
         """Verify file integrity and finalize incomplete upload.
 
         Args:
-            data: The MultipartData object containing the upload metadata.
+            data: The FileData object containing the upload metadata.
             extras: Additional metadata for the upload.
         """
         raise NotImplementedError
 
-    def multipart_remove(self, data: data.MultipartData, extras: dict[str, Any]) -> bool:
+    def multipart_remove(self, data: data.FileData, extras: dict[str, Any]) -> bool:
         """Interrupt and remove incomplete upload.
 
         Args:
-            data: The MultipartData object containing the upload metadata.
+            data: The FileData object containing the upload metadata.
             extras: Additional metadata for the upload.
         """
         raise NotImplementedError
@@ -169,7 +167,7 @@ class Manager(StorageService):
         ```python
         class MyManager(Manager):
             def remove(
-                self, data: FileData|MultipartData, extras: dict[str, Any]
+                self, data: FileData|FileData, extras: dict[str, Any]
             ) -> bool:
                 os.remove(data.location)
                 return True
@@ -601,54 +599,52 @@ class Storage(ABC):  # noqa: B024
         return self.uploader.upload(location, upload, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_start(
-        self, location: types.Location, data: data.MultipartData, /, **kwargs: Any
-    ) -> data.MultipartData:
+    def multipart_start(self, location: types.Location, data: data.FileData, /, **kwargs: Any) -> data.FileData:
         """Prepare everything for multipart(resumable) upload.
 
         Args:
             location: The destination location for the upload.
-            data: The MultipartData object containing the upload metadata.
+            data: The FileData object containing the upload metadata.
             **kwargs: Additional metadata for the upload.
         """
         return self.uploader.multipart_start(location, data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_refresh(self, data: data.MultipartData, /, **kwargs: Any) -> data.MultipartData:
+    def multipart_refresh(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
         """Show details of the incomplete upload.
 
         Args:
-            data: The MultipartData object containing the upload metadata.
+            data: The FileData object containing the upload metadata.
             **kwargs: Additional metadata for the upload.
         """
         return self.uploader.multipart_refresh(data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_update(self, data: data.MultipartData, /, **kwargs: Any) -> data.MultipartData:
+    def multipart_update(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
         """Add data to the incomplete upload.
 
         Args:
-            data: The MultipartData object containing the upload metadata.
+            data: The FileData object containing the upload metadata.
             **kwargs: Additional metadata for the upload.
         """
         return self.uploader.multipart_update(data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_complete(self, data: data.MultipartData, /, **kwargs: Any) -> data.FileData:
+    def multipart_complete(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
         """Verify file integrity and finalize incomplete upload.
 
         Args:
-            data: The MultipartData object containing the upload metadata.
+            data: The FileData object containing the upload metadata.
             **kwargs: Additional metadata for the upload.
         """
         return self.uploader.multipart_complete(data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_remove(self, data: data.MultipartData, /, **kwargs: Any) -> bool:
+    def multipart_remove(self, data: data.FileData, /, **kwargs: Any) -> bool:
         """Interrupt and remove incomplete upload.
 
         Args:
-            data: The MultipartData object containing the upload metadata.
+            data: The FileData object containing the upload metadata.
             **kwargs: Additional metadata for the upload.
         """
         return self.uploader.multipart_remove(data, kwargs)

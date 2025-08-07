@@ -115,9 +115,7 @@ class Uploader(fk.Uploader):
         )
 
     @override
-    def multipart_start(
-        self, location: fk.types.Location, data: fk.MultipartData, extras: dict[str, Any]
-    ) -> fk.MultipartData:
+    def multipart_start(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         filepath = self.storage.full_path(location)
 
         client = self.storage.settings.client
@@ -135,7 +133,7 @@ class Uploader(fk.Uploader):
             msg = "Cannot initialize session URL"
             raise fk.exc.UploadError(msg)
 
-        result = fk.MultipartData.from_object(data, location=location)
+        result = fk.FileData.from_object(data, location=location)
         result.storage_data.update(
             {
                 "session_url": url,
@@ -145,7 +143,7 @@ class Uploader(fk.Uploader):
         return result
 
     @override
-    def multipart_update(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
+    def multipart_update(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         if "upload" in extras:
             upload = fk.make_upload(extras["upload"])
 
@@ -200,7 +198,7 @@ class Uploader(fk.Uploader):
         return data
 
     @override
-    def multipart_refresh(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
+    def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         if "session_url" not in data.storage_data:
             raise fk.exc.MissingFileError(self.storage, data.location)
 
@@ -250,7 +248,7 @@ class Uploader(fk.Uploader):
         return data
 
     @override
-    def multipart_complete(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.FileData:
+    def multipart_complete(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         data = self.multipart_refresh(data, extras)
         if data.storage_data["uploaded"] != data.size:
             raise fk.exc.UploadSizeMismatchError(
@@ -395,9 +393,6 @@ class Manager(fk.Manager):
 
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        if isinstance(data, fk.MultipartData):
-            return False
-
         filepath = self.storage.full_path(data.location)
         client: Client = self.storage.settings.client
         blob = client.bucket(self.storage.settings.bucket_name).blob(filepath)

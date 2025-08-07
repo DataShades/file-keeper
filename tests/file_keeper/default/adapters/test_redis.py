@@ -61,7 +61,7 @@ class TestUploaderMultipart(standard.Multiparter, standard.MultiparterWithUpload
         content: Any = faker.binary(10)
         data = storage.multipart_start(
             fk.types.Location(faker.file_name()),
-            fk.MultipartData(size=len(content)),
+            fk.FileData(fk.Location(""), size=len(content)),
         )
         storage.settings.redis.hset(storage.settings.bucket, data.location, content)
 

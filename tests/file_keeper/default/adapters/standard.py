@@ -15,14 +15,14 @@ class Analyzer:
 
     def test_std_analyze(self, storage: fk.Storage, faker: Faker):
         """Analyzer returns the same data as uploader upon file creation."""
-        data = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b"hello"))
+        data = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b"hello"))
 
         assert storage.analyze(data.location) == data, "Analyzed data does not match creation data"
 
     def test_std_missing(self, storage: fk.Storage, faker: Faker):
         """Missing path cannot be analyzed and must be reported."""
         with pytest.raises(fk.exc.MissingFileError):
-            storage.analyze(fk.types.Location(faker.file_name()))
+            storage.analyze(fk.Location(faker.file_name()))
 
 
 class Scanner:
@@ -35,9 +35,9 @@ class Scanner:
         second = faker.file_name()
         third = faker.file_path(absolute=False)
 
-        storage.upload(fk.types.Location(first), fk.make_upload(b""))
-        storage.upload(fk.types.Location(second), fk.make_upload(b""))
-        storage.upload(fk.types.Location(third), fk.make_upload(b""))
+        storage.upload(fk.Location(first), fk.make_upload(b""))
+        storage.upload(fk.Location(second), fk.make_upload(b""))
+        storage.upload(fk.Location(third), fk.make_upload(b""))
         discovered = set(storage.scan())
 
         assert discovered == {first, second, third}
@@ -50,7 +50,7 @@ class Remover:
 
     def test_std_removal_missing(self, storage: fk.Storage, faker: Faker):
         """Removal of the missing file must return `False`."""
-        assert not storage.remove(fk.FileData(fk.types.Location(faker.file_name()))), (
+        assert not storage.remove(fk.FileData(fk.Location(faker.file_name()))), (
             "Storage pretends that non-existing file was removed."
         )
 
@@ -59,7 +59,7 @@ class Remover:
         if not storage.supports(fk.Capability.EXISTS):
             pytest.skip("Cannot test removal without EXIST capability")
 
-        result = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b"hello world"))
+        result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b"hello world"))
         assert storage.remove(result), "Storage pretends that file does never existed"
         assert not storage.exists(result), "File still exists available after removal"
 
@@ -71,12 +71,12 @@ class Exister:
 
     def test_std_exists(self, storage: fk.Storage, faker: Faker):
         """Newly uploaded file exists."""
-        data = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b""))
+        data = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
         assert storage.exists(data), "Storage does not see uploaded file"
 
     def test_std_exists_missing(self, storage: fk.Storage, faker: Faker):
         """Fake file does not exists."""
-        assert not storage.exists(fk.FileData(fk.types.Location(faker.file_name()))), "Storage sees non-existing file"
+        assert not storage.exists(fk.FileData(fk.Location(faker.file_name()))), "Storage sees non-existing file"
 
 
 class Mover:
@@ -90,9 +90,9 @@ class Mover:
             pytest.skip("Cannot test move without EXIST capability")
 
         content = faker.binary(10)
-        original = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(content))
+        original = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
         result = storage.move(
-            fk.types.Location(faker.file_name()),
+            fk.Location(faker.file_name()),
             original,
         )
 
@@ -103,15 +103,15 @@ class Mover:
         """Attempt to move non-existing file is reported."""
         with pytest.raises(fk.exc.MissingFileError):
             storage.move(
-                fk.types.Location(faker.file_name()),
-                fk.FileData(fk.types.Location(faker.file_name())),
+                fk.Location(faker.file_name()),
+                fk.FileData(fk.Location(faker.file_name())),
             )
 
     def test_std_move_into_existing_is_not_allowed_by_default(self, storage: fk.Storage, faker: Faker):
         """Attempt to override existing destination is reported."""
         content = faker.binary(10)
-        data = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(content))
-        existing = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b""))
+        data = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
+        existing = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
 
         with pytest.raises(fk.exc.ExistingFileError):
             storage.move(
@@ -126,8 +126,8 @@ class Mover:
             pytest.skip("Cannot test move with allowed override without EXIST capability")
 
         content = faker.binary(10)
-        data = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(content))
-        existing = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b""))
+        data = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
+        existing = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
 
         result = storage.move(
             existing.location,
@@ -146,9 +146,9 @@ class Copier:
     def test_std_copy(self, storage: fk.Storage, faker: Faker):
         """Copied file retains attributes of the original with different location."""
         content = faker.binary(10)
-        original = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(content))
+        original = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
         copy = storage.copy(
-            fk.types.Location(faker.file_name()),
+            fk.Location(faker.file_name()),
             original,
         )
         assert original.location != copy.location, "File retains old location after the copy"
@@ -158,15 +158,15 @@ class Copier:
         """Cannot copy non-existing file."""
         with pytest.raises(fk.exc.MissingFileError):
             storage.copy(
-                fk.types.Location(faker.file_name()),
-                fk.FileData(fk.types.Location(faker.file_name())),
+                fk.Location(faker.file_name()),
+                fk.FileData(fk.Location(faker.file_name())),
             )
 
     def test_std_copy_into_existing_is_not_allowed_by_default(self, storage: fk.Storage, faker: Faker):
         """Cannot copy into existing location."""
         content = faker.binary(10)
-        data = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(content))
-        existing = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b""))
+        data = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
+        existing = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
 
         with pytest.raises(fk.exc.ExistingFileError):
             storage.copy(
@@ -178,8 +178,8 @@ class Copier:
     def test_std_copy_into_existing_can_be_enabled(self, storage: fk.Storage, faker: Faker):
         """Overrides during copy can be enabled explicitly."""
         content = faker.binary(10)
-        data = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(content))
-        existing = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b""))
+        data = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
+        existing = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
 
         result = storage.copy(
             existing.location,
@@ -197,7 +197,7 @@ class Appender:
     def test_std_append(self, storage: fk.Storage, faker: Faker):
         """Content can be appended to the file."""
         content = faker.binary(50)
-        result = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(content))
+        result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
 
         result = storage.append(result, fk.make_upload(content))
         assert storage.content(result) == content + content, "Content was modified in unexpected way during the appendy"
@@ -205,7 +205,7 @@ class Appender:
     def test_std_missing(self, storage: fk.Storage, faker: Faker):
         """Append to non-existing file is reported."""
         with pytest.raises(fk.exc.MissingFileError):
-            storage.append(fk.FileData(fk.types.Location(faker.file_name())), fk.make_upload(b""))
+            storage.append(fk.FileData(fk.Location(faker.file_name())), fk.make_upload(b""))
 
 
 class Composer:
@@ -218,10 +218,10 @@ class Composer:
         content_1 = faker.binary(10)
         content_2 = faker.binary(10)
 
-        first = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(content_1))
-        second = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(content_2))
+        first = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content_1))
+        second = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content_2))
 
-        result = storage.compose(fk.types.Location(faker.file_name()), first, second)
+        result = storage.compose(fk.Location(faker.file_name()), first, second)
         assert result.size == first.size + second.size, "Composed file has wrong size"
         assert storage.content(result) == content_1 + content_2, "Composed file has wrong content"
         assert result.location not in [
@@ -231,24 +231,24 @@ class Composer:
 
     def test_std_compose_with_missing_source(self, storage: fk.Storage, faker: Faker):
         """If source is missing, composition is impossible."""
-        first = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b"hello"))
+        first = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b"hello"))
 
-        location = fk.types.Location(faker.file_name())
+        location = fk.Location(faker.file_name())
 
         with pytest.raises(fk.exc.MissingFileError):
             storage.compose(
                 location,
                 first,
-                fk.FileData(fk.types.Location(faker.file_name())),
+                fk.FileData(fk.Location(faker.file_name())),
             )
 
         assert not storage.exists(fk.FileData(location)), "Composed file created even though the source is missing"
 
     def test_std_compose_override_default_prevented(self, storage: fk.Storage, faker: Faker):
         """By default, composition cannot override existing file."""
-        first = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b""))
-        second = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b""))
-        existing = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b""))
+        first = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
+        second = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
+        existing = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
 
         with pytest.raises(fk.exc.ExistingFileError):
             storage.compose(existing.location, first, second)
@@ -256,9 +256,9 @@ class Composer:
     @pytest.mark.fk_storage_option("override_existing", True)
     def test_std_compose_with_allowed_override(self, storage: fk.Storage, faker: Faker):
         """Overrides are supported when explicitly enabled."""
-        first = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b"hello"))
-        second = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b" world"))
-        existing = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b""))
+        first = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b"hello"))
+        second = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b" world"))
+        existing = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
 
         result = storage.compose(existing.location, first, second)
         assert result.location == existing.location, "Composed file has unexpected location"
@@ -267,7 +267,7 @@ class Composer:
     def test_std_compose_with_no_data(self, storage: fk.Storage, faker: Faker):
         """Composition with zero sources is possible."""
         result = storage.compose(
-            fk.types.Location(faker.file_name()),
+            fk.Location(faker.file_name()),
         )
         assert result.size == 0, "Composed file must be empty"
         assert result.content_type == "application/x-empty", "Empty file has unexpected content type"
@@ -283,7 +283,7 @@ class Reader:
     def test_std_stream(self, storage: fk.Storage, faker: Faker):
         """Content of uploaded file can be received."""
         content = faker.binary(100)
-        result = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(content))
+        result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
 
         actual = b"".join(storage.stream(result))
         assert actual == content, "Content of the file was modified during stream"
@@ -291,15 +291,15 @@ class Reader:
     def test_std_content_matches_stream(self, storage: fk.Storage, faker: Faker):
         """Content and stream produces the same result received."""
         content = faker.binary(100)
-        result = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(content))
+        result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
 
         actual = b"".join(storage.stream(result))
         assert storage.content(result) == actual, "storage.content does not match storage.stream"
 
     def test_std_missing(self, storage: fk.Storage, faker: Faker):
         """Missing files cannot be read."""
-        result = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b""))
-        wrong_location = fk.types.Location(result.location + faker.file_name())
+        result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
+        wrong_location = fk.Location(result.location + faker.file_name())
 
         with pytest.raises(fk.exc.MissingFileError):
             next(iter(storage.stream(fk.FileData(wrong_location))))
@@ -314,7 +314,7 @@ class Multiparter:
 
     def test_std_refresh_missing(self, faker: Faker, storage: fk.Storage):
         with pytest.raises(fk.exc.MissingFileError):
-            storage.multipart_refresh(fk.MultipartData(fk.types.Location(faker.file_name())))
+            storage.multipart_refresh(fk.FileData(fk.Location(faker.file_name())))
 
 
 class MultiparterWithUploaded:
@@ -324,12 +324,12 @@ class MultiparterWithUploaded:
         """`multipart_start` creates an empty file."""
         size = faker.pyint()
         data = storage.multipart_start(
-            fk.types.Location(faker.file_name()),
-            fk.MultipartData(size=size),
+            fk.Location(faker.file_name()),
+            fk.FileData(fk.Location(""), size=size),
         )
         assert data.size == size
         assert data.storage_data["uploaded"] == 0
-        assert storage.content(fk.FileData(fk.types.Location(data.location))) == b""
+        assert storage.content(fk.FileData(fk.Location(data.location))) == b""
 
     def test_std_update(self, storage: fk.Storage, faker: Faker):
         """`multipart_update` appends parts by default."""
@@ -338,8 +338,8 @@ class MultiparterWithUploaded:
 
         content = faker.binary(size)
         data = storage.multipart_start(
-            fk.types.Location(faker.file_name()),
-            fk.MultipartData(size=size),
+            fk.Location(faker.file_name()),
+            fk.FileData(fk.Location(""), size=size),
         )
 
         for pos in range(0, size, step):
@@ -357,8 +357,8 @@ class MultiparterWithUploaded:
 
         content = faker.binary(size)
         data = storage.multipart_start(
-            fk.types.Location(faker.file_name()),
-            fk.MultipartData(size=size),
+            fk.Location(faker.file_name()),
+            fk.FileData(fk.Location(""), size=size),
         )
 
         for pos in range(0, size, step):
@@ -370,7 +370,7 @@ class MultiparterWithUploaded:
             assert data.storage_data.pop("uploaded") == min(size, pos + step)
 
     def test_std_update_without_upload_field(self, storage: fk.Storage, faker: Faker):
-        data = storage.multipart_start(fk.types.Location(faker.file_name()), fk.MultipartData(size=10))
+        data = storage.multipart_start(fk.Location(faker.file_name()), fk.FileData(fk.Location(""), size=10))
 
         with pytest.raises(fk.exc.MissingExtrasError):
             storage.multipart_update(data)
@@ -379,8 +379,8 @@ class MultiparterWithUploaded:
         """`multipart_update` controls size of the upload."""
         content = b"hello world"
         data = storage.multipart_start(
-            fk.types.Location(faker.file_name()),
-            fk.MultipartData(size=len(content) // 2),
+            fk.Location(faker.file_name()),
+            fk.FileData(fk.Location(""), size=len(content) // 2),
         )
 
         with pytest.raises(fk.exc.UploadOutOfBoundError):
@@ -389,7 +389,7 @@ class MultiparterWithUploaded:
     def test_std_update_missing(self, storage: fk.Storage, faker: Faker):
         with pytest.raises(fk.exc.MissingFileError):
             storage.multipart_update(
-                fk.MultipartData(fk.types.Location(faker.file_path())),
+                fk.FileData(fk.Location(faker.file_path())),
                 upload=fk.make_upload(b""),
             )
 
@@ -397,8 +397,8 @@ class MultiparterWithUploaded:
         """File parameters validated upon completion."""
         content = b"hello world"
         data = storage.multipart_start(
-            fk.types.Location(faker.file_name()),
-            fk.MultipartData(content_type="text/plain", size=len(content)),
+            fk.Location(faker.file_name()),
+            fk.FileData(fk.Location(""), content_type="text/plain", size=len(content)),
         )
 
         with pytest.raises(fk.exc.UploadSizeMismatchError):
@@ -416,8 +416,9 @@ class MultiparterWithUploaded:
         """File parameters validated upon completion."""
         content = b"hello world"
         data = storage.multipart_start(
-            fk.types.Location(faker.file_name()),
-            fk.MultipartData(
+            fk.Location(faker.file_name()),
+            fk.FileData(
+                fk.Location(""),
                 content_type="text/plain",
                 size=len(content),
                 hash="hello",
@@ -432,8 +433,9 @@ class MultiparterWithUploaded:
         """File parameters validated upon completion."""
         content = b'{"hello":"world"}'
         data = storage.multipart_start(
-            fk.types.Location(faker.file_name()),
-            fk.MultipartData(
+            fk.Location(faker.file_name()),
+            fk.FileData(
+                fk.Location(""),
                 content_type="text/plain",
                 size=len(content),
             ),
@@ -446,7 +448,7 @@ class MultiparterWithUploaded:
     def test_std_complete_missing(self, storage: fk.Storage, faker: Faker):
         with pytest.raises(fk.exc.MissingFileError):
             storage.multipart_complete(
-                fk.MultipartData(fk.types.Location(faker.file_path())),
+                fk.FileData(fk.Location(faker.file_path())),
                 upload=fk.make_upload(b""),
             )
 
@@ -461,7 +463,7 @@ class Uploader:
     def test_std_content(self, storage: fk.Storage, faker: Faker):
         """Content matches the uploaded data"""
         content = faker.binary(100)
-        result = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(content))
+        result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
 
         assert result.size == 100, "Uploaded file has wrong filesize"
         assert storage.content(result) == content, "Uploaded file has wrong content"
@@ -469,27 +471,27 @@ class Uploader:
     def test_std_empty_upload(self, storage: fk.Storage, faker: Faker):
         """Empty file can be created."""
         filename = faker.file_name()
-        result = storage.upload(fk.types.Location(filename), fk.make_upload(b""))
+        result = storage.upload(fk.Location(filename), fk.make_upload(b""))
 
         assert result.size == 0
         assert storage.content(result) == b""
 
     def test_std_existing_is_not_replaced_by_default(self, storage: fk.Storage, faker: Faker):
         """Attempt to replace existing file is reported."""
-        result = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b""))
+        result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
         with pytest.raises(fk.exc.ExistingFileError):
             storage.upload(result.location, fk.make_upload(b""))
 
     def test_sub_directory_allowed(self, storage: fk.Storage, faker: Faker):
         """Can upload into nested dirs."""
         path = faker.file_path(absolute=False)
-        result = storage.upload(fk.types.Location(path), fk.make_upload(b""))
+        result = storage.upload(fk.Location(path), fk.make_upload(b""))
         assert result.location == path
 
     @pytest.mark.fk_storage_option("override_existing", True)
     def test_std_replace_existing(self, storage: fk.Storage, faker: Faker):
         """Overrides can be explicitly enabled."""
-        origin = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b"hello world"))
+        origin = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b"hello world"))
         overriden = storage.upload(origin.location, fk.make_upload(b"bye"))
 
         assert origin.location == overriden.location, "Location of uploaded file was changed"
@@ -497,9 +499,9 @@ class Uploader:
 
     def test_std_hash(self, storage: fk.Storage, faker: Faker):
         """Hash computed using full content."""
-        result = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(b""))
+        result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
         assert result.hash == hashlib.md5().hexdigest(), "Content hash of empty file differs from expected value"
 
         content = faker.binary(100)
-        result = storage.upload(fk.types.Location(faker.file_name()), fk.make_upload(content))
+        result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
         assert result.hash == hashlib.md5(content).hexdigest(), "Content hash differs from expected value"

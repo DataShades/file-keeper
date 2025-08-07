@@ -18,7 +18,6 @@ Utilities available for import directly from the `file_keeper` module.
 ::: file_keeper.Reader
 
 ::: file_keeper.FileData
-::: file_keeper.MultipartData
 
 ::: file_keeper.Upload
 

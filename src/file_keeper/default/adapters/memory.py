@@ -36,28 +36,26 @@ class Uploader(fk.Uploader):
         return fk.FileData(location, upload.size, upload.content_type, hash=reader.get_hash())
 
     @override
-    def multipart_start(
-        self, location: fk.Location, data: fk.MultipartData, extras: dict[str, Any]
-    ) -> fk.MultipartData:
+    def multipart_start(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         self.storage.settings.bucket[location] = b""
 
-        result = fk.MultipartData.from_object(data, location=location)
+        result = fk.FileData.from_object(data, location=location)
         result.storage_data["uploaded"] = 0
         return result
 
     @override
-    def multipart_refresh(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
+    def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         bucket = self.storage.settings.bucket
 
         if data.location not in bucket:
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        result = fk.MultipartData.from_object(data)
+        result = fk.FileData.from_object(data)
         result.storage_data["uploaded"] = len(bucket[data.location])
         return result
 
     @override
-    def multipart_update(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
+    def multipart_update(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         if "upload" not in extras:
             raise fk.exc.MissingExtrasError("upload")
 
@@ -77,7 +75,7 @@ class Uploader(fk.Uploader):
         return data
 
     @override
-    def multipart_complete(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.FileData:
+    def multipart_complete(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         bucket = self.storage.settings.bucket
 
         if data.location not in bucket:

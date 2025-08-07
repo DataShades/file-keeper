@@ -120,9 +120,7 @@ class Uploader(fk.Uploader):
         )
 
     @override
-    def multipart_start(
-        self, location: fk.types.Location, data: fk.MultipartData, extras: dict[str, Any]
-    ) -> fk.MultipartData:
+    def multipart_start(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         filepath = self.storage.full_path(location)
         client = self.storage.settings.client
         obj = client.create_multipart_upload(
@@ -131,7 +129,7 @@ class Uploader(fk.Uploader):
             ContentType=data.content_type,
         )
 
-        result = fk.MultipartData.from_object(data, location=location)
+        result = fk.FileData.from_object(data, location=location)
 
         result.storage_data.update(
             {
@@ -156,7 +154,7 @@ class Uploader(fk.Uploader):
         )
 
     @override
-    def multipart_update(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
+    def multipart_update(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         filepath = self.storage.full_path(data.location)
         if "upload" in extras:
             upload = fk.make_upload(extras["upload"])
@@ -200,7 +198,7 @@ class Uploader(fk.Uploader):
         return data
 
     @override
-    def multipart_complete(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.FileData:
+    def multipart_complete(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         filepath = self.storage.full_path(data.location)
 
         result = self.storage.settings.client.complete_multipart_upload(
@@ -227,7 +225,7 @@ class Uploader(fk.Uploader):
         )
 
     @override
-    def multipart_refresh(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
+    def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         client = self.storage.settings.client
         filepath = self.storage.full_path(data.location)
 
@@ -335,9 +333,6 @@ class Manager(fk.Manager):
 
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        if isinstance(data, fk.MultipartData):
-            return False
-
         filepath = self.storage.full_path(data.location)
         client = self.storage.settings.client
 

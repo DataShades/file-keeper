@@ -2,7 +2,7 @@ __version__ = "0.0.10"
 
 from .core import exceptions as exc
 from .core import types
-from .core.data import BaseData, FileData, MultipartData
+from .core.data import BaseData, FileData
 from .core.registry import Registry
 from .core.storage import (
     Manager,
@@ -33,7 +33,6 @@ __all__ = [
     "HashingReader",
     "IterableBytesReader",
     "Manager",
-    "MultipartData",
     "Reader",
     "Registry",
     "Settings",

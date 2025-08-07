@@ -91,6 +91,7 @@ select = [
 ignore = [
        "RET503", # don't enforce return-None
        "D107", # undocumented __init__
+       "D105", # undocumented magic methods
 ]
 
 [tool.ruff.lint.per-file-ignores]

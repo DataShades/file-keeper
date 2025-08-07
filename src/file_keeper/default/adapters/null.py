@@ -27,25 +27,23 @@ class Uploader(fk.Uploader):
         return fk.FileData(location, hash=reader.get_hash())
 
     @override
-    def multipart_start(
-        self, location: fk.Location, data: fk.MultipartData, extras: dict[str, Any]
-    ) -> fk.MultipartData:
-        return fk.MultipartData(location)
+    def multipart_start(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        return fk.FileData(location)
 
     @override
-    def multipart_refresh(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
+    def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         return data
 
     @override
-    def multipart_update(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
+    def multipart_update(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         return data
 
     @override
-    def multipart_complete(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.FileData:
+    def multipart_complete(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         return fk.FileData.from_object(data)
 
     @override
-    def multipart_remove(self, data: fk.MultipartData, extras: dict[str, Any]) -> bool:
+    def multipart_remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         return False
 
 

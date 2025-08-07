@@ -220,9 +220,6 @@ class Manager(fk.Manager):
 
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        if isinstance(data, fk.MultipartData):
-            return False
-
         if not self.exists(data, extras):
             return False
 

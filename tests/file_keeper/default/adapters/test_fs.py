@@ -43,7 +43,7 @@ class TestUploaderMultipart(standard.Multiparter, standard.MultiparterWithUpload
         content = faker.binary(10)
         data = storage.multipart_start(
             fk.types.Location(faker.file_name()),
-            fk.MultipartData(size=len(content)),
+            fk.FileData(fk.Location(""), size=len(content)),
         )
         with open(os.path.join(storage.settings.path, data.location), "wb") as dest:
             dest.write(content)
@@ -56,7 +56,7 @@ class TestUploaderMultipart(standard.Multiparter, standard.MultiparterWithUpload
         content = b"hello world"
         data = storage.multipart_start(
             fk.types.Location(faker.file_name()),
-            fk.MultipartData(size=len(content)),
+            fk.FileData(fk.Location(""), size=len(content)),
         )
 
         data = storage.multipart_update(
