@@ -309,28 +309,6 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../adapters/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Storage Adapters
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
     
     
       
@@ -348,10 +326,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -364,8 +342,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Core Concepts
           </label>
@@ -1300,6 +1278,7 @@
 </ul>
 <h3 id="refactor">🚜 Refactor</h3>
 <ul>
+<li>[<strong>breaking</strong>] <code>Storage.remove</code> does not accept <code>MultipartData</code>. Use <code>Storage.multipart_remove</code> instead (<a href="https://github.com/DataShades/file-keeper/commit/ce3e522667126d2738d6c100db20dd88b60a41de">ce3e522</a>)</li>
 <li>[<strong>breaking</strong>] <code>create_path</code> option for fs renamed to <code>initialize</code> (<a href="https://github.com/DataShades/file-keeper/commit/1329997ba923d77fa2a8379dc9edf76562a88ad3">1329997</a>)</li>
 <li>[<strong>breaking</strong>] Storage.temporal_link requires <code>duration</code> parameter (<a href="https://github.com/DataShades/file-keeper/commit/0d92777e5a56b77c1b34cc0abdbffec3e7218eb6">0d92777</a>)</li>
 <li>[<strong>breaking</strong>] Storage.stream_as_upload renamed to file_as_upload (<a href="https://github.com/DataShades/file-keeper/commit/29ec68bae9325502f46e87c7813e4d7844b1e5c6">29ec68b</a>)</li>

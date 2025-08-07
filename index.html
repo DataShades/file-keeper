@@ -378,28 +378,6 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="adapters/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Storage Adapters
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
     
     
       
@@ -417,10 +395,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -433,8 +411,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Core Concepts
           </label>
@@ -685,14 +663,19 @@ regardless of the underlying storage.</p>
 <p>You can install file-keeper using pip:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>file-keeper
 </code></pre></div>
-<p>To use specific storage adapters, you'll need to install extra
-dependencies. Here's a table of available extras:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To use specific storage adapters, you may need to install extra
+dependencies. Most standard adapters do <em>not</em> require extras, but some – like
+those interfacing with external cloud providers – do. Here's a table of
+available extras:</p>
 <table>
 <thead>
 <tr>
 <th>Storage Type</th>
 <th>Adapter Name</th>
 <th>Extras</th>
+<th>Driver</th>
 </tr>
 </thead>
 <tbody>
@@ -700,39 +683,54 @@ dependencies. Here's a table of available extras:</p>
 <td>AWS S3</td>
 <td><code>file_keeper:s3</code></td>
 <td><code>s3</code></td>
+<td><a href="https://pypi.org/project/boto3/">boto3</a></td>
 </tr>
 <tr>
 <td>Apache Libcloud</td>
 <td><code>file_keeper:libcloud</code></td>
 <td><code>libcloud</code></td>
+<td><a href="https://pypi.org/project/apache-libcloud/">apache-libcloud</a></td>
 </tr>
 <tr>
 <td>Apache OpenDAL</td>
 <td><code>file_keeper:opendal</code></td>
 <td><code>opendal</code></td>
+<td><a href="https://pypi.org/project/opendal/">opendal</a></td>
+</tr>
+<tr>
+<td>Azure Blob Storage</td>
+<td><code>file_keeper:azure_blob</code></td>
+<td><code>azure</code></td>
+<td><a href="https://pypi.org/project/azure-storage-blob/">azure-storage-blob</a></td>
 </tr>
 <tr>
 <td>Google Cloud Storage</td>
 <td><code>file_keeper:gcs</code></td>
 <td><code>gcs</code></td>
+<td><a href="https://pypi.org/project/google-cloud-storage/">google-cloud-storage</a></td>
 </tr>
 <tr>
 <td>Redis</td>
 <td><code>file_keeper:redis</code></td>
 <td><code>redis</code></td>
+<td><a href="https://pypi.org/project/redis/">redis</a></td>
 </tr>
 <tr>
 <td>SQLAlchemy</td>
 <td><code>file_keeper:sqlalchemy</code></td>
 <td><code>sqlalchemy</code></td>
+<td><a href="https://pypi.org/project/SQLAlchemy/">SQLAlchemy</a></td>
 </tr>
 </tbody>
 </table>
 <p>For example, to install file-keeper with S3 support:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;file-keeper[s3]&#39;</span>
 </code></pre></div>
+</div>
 <h2 id="basic-configuration-and-usage-fs-adapter">Basic configuration and usage (FS adapter)</h2>
 <p>Let's start with a simple example using the local filesystem (FS) adapter.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_storage</span><span class="p">,</span> <span class="n">make_upload</span>
 
 <span class="c1"># Create a storage instance.  The &#39;path&#39; setting specifies the root directory</span>
@@ -758,19 +756,24 @@ dependencies. Here's a table of available extras:</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">file_data</span><span class="p">)</span>
 
 <span class="c1"># The file is now stored in /tmp/my_filekeeper_files/my_file.txt</span>
+
+<span class="c1"># Get the content of file using corresponding gFileData object</span>
+<span class="n">content</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">content</span><span class="p">(</span><span class="n">file_data</span><span class="p">)</span>
 </code></pre></div>
+</div>
 <p><strong>Explanation:</strong></p>
 <ul>
 <li><code>make_storage()</code>: Creates a storage instance with the specified configuration.</li>
 <li><code>make_upload()</code>: Creates an <code>Upload</code> object from the data you want to store.</li>
 <li><code>storage.upload()</code>: Uploads the data to the storage.</li>
 <li><code>FileData</code>:  A dataclass that contains metadata about the uploaded file, including its location, size, content type, and hash.</li>
+<li><code>storage.content()</code>: Locates file using <code>FileData</code> and returs byte string with its content</li>
 </ul>
 <h2 id="next-steps">Next Steps</h2>
 <p>This is just a basic example to get you started.  For more detailed information, see the following documentation pages:</p>
 <ul>
 <li><a href="configuration/">Configuration</a>: Learn about all the available settings and how to configure different storage adapters.</li>
-<li><a href="adapters/">Storage Adapters</a>:  Explore the different storage adapters supported by file-keeper.</li>
+<li><a href="adapters.md">Storage Adapters</a>:  Explore the different storage adapters supported by file-keeper.</li>
 </ul>
 
 
