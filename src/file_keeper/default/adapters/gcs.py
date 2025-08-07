@@ -115,8 +115,8 @@ class Uploader(fk.Uploader):
         )
 
     @override
-    def multipart_start(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        filepath = self.storage.full_path(location)
+    def multipart_start(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        filepath = self.storage.full_path(data.location)
 
         client = self.storage.settings.client
         blob = client.bucket(self.storage.settings.bucket_name).blob(filepath)
@@ -133,7 +133,7 @@ class Uploader(fk.Uploader):
             msg = "Cannot initialize session URL"
             raise fk.exc.UploadError(msg)
 
-        result = fk.FileData.from_object(data, location=location)
+        result = fk.FileData.from_object(data)
         result.storage_data.update(
             {
                 "session_url": url,

@@ -60,8 +60,7 @@ class TestUploaderMultipart(standard.Multiparter, standard.MultiparterWithUpload
         """`multipart_refresh` synchronized filesize."""
         content: Any = faker.binary(10)
         data = storage.multipart_start(
-            fk.types.Location(faker.file_name()),
-            fk.FileData(fk.Location(""), size=len(content)),
+            fk.FileData(fk.types.Location(faker.file_name()), size=len(content)),
         )
         storage.settings.redis.hset(storage.settings.bucket, data.location, content)
 

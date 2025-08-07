@@ -324,8 +324,7 @@ class MultiparterWithUploaded:
         """`multipart_start` creates an empty file."""
         size = faker.pyint()
         data = storage.multipart_start(
-            fk.Location(faker.file_name()),
-            fk.FileData(fk.Location(""), size=size),
+            fk.FileData(fk.Location(faker.file_name()), size=size),
         )
         assert data.size == size
         assert data.storage_data["uploaded"] == 0
@@ -338,8 +337,7 @@ class MultiparterWithUploaded:
 
         content = faker.binary(size)
         data = storage.multipart_start(
-            fk.Location(faker.file_name()),
-            fk.FileData(fk.Location(""), size=size),
+            fk.FileData(fk.Location(faker.file_name()), size=size),
         )
 
         for pos in range(0, size, step):
@@ -357,8 +355,7 @@ class MultiparterWithUploaded:
 
         content = faker.binary(size)
         data = storage.multipart_start(
-            fk.Location(faker.file_name()),
-            fk.FileData(fk.Location(""), size=size),
+            fk.FileData(fk.Location(faker.file_name()), size=size),
         )
 
         for pos in range(0, size, step):
@@ -370,7 +367,7 @@ class MultiparterWithUploaded:
             assert data.storage_data.pop("uploaded") == min(size, pos + step)
 
     def test_std_update_without_upload_field(self, storage: fk.Storage, faker: Faker):
-        data = storage.multipart_start(fk.Location(faker.file_name()), fk.FileData(fk.Location(""), size=10))
+        data = storage.multipart_start(fk.FileData(fk.Location(faker.file_name()), size=10))
 
         with pytest.raises(fk.exc.MissingExtrasError):
             storage.multipart_update(data)
@@ -379,8 +376,7 @@ class MultiparterWithUploaded:
         """`multipart_update` controls size of the upload."""
         content = b"hello world"
         data = storage.multipart_start(
-            fk.Location(faker.file_name()),
-            fk.FileData(fk.Location(""), size=len(content) // 2),
+            fk.FileData(fk.Location(faker.file_name()), size=len(content) // 2),
         )
 
         with pytest.raises(fk.exc.UploadOutOfBoundError):
@@ -397,8 +393,7 @@ class MultiparterWithUploaded:
         """File parameters validated upon completion."""
         content = b"hello world"
         data = storage.multipart_start(
-            fk.Location(faker.file_name()),
-            fk.FileData(fk.Location(""), content_type="text/plain", size=len(content)),
+            fk.FileData(fk.Location(faker.file_name()), content_type="text/plain", size=len(content)),
         )
 
         with pytest.raises(fk.exc.UploadSizeMismatchError):
@@ -416,9 +411,8 @@ class MultiparterWithUploaded:
         """File parameters validated upon completion."""
         content = b"hello world"
         data = storage.multipart_start(
-            fk.Location(faker.file_name()),
             fk.FileData(
-                fk.Location(""),
+                fk.Location(faker.file_name()),
                 content_type="text/plain",
                 size=len(content),
                 hash="hello",
@@ -433,9 +427,8 @@ class MultiparterWithUploaded:
         """File parameters validated upon completion."""
         content = b'{"hello":"world"}'
         data = storage.multipart_start(
-            fk.Location(faker.file_name()),
             fk.FileData(
-                fk.Location(""),
+                fk.Location(faker.file_name()),
                 content_type="text/plain",
                 size=len(content),
             ),

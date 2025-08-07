@@ -73,7 +73,7 @@ class Uploader(fk.Uploader):
         )
 
     @override
-    def multipart_start(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+    def multipart_start(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         """Create an empty file using `upload` method.
 
         Put `uploaded=0` into `data.storage_data` and copy the `location` from
@@ -84,11 +84,11 @@ class Uploader(fk.Uploader):
         """
         upload = fk.Upload(
             BytesIO(),
-            location,
+            data.location,
             data.size,
             data.content_type,
         )
-        tmp_result = self.upload(location, upload, extras)
+        tmp_result = self.upload(data.location, upload, extras)
 
         result = fk.FileData.from_object(data, location=tmp_result.location)
         result.storage_data.update({"uploaded": 0})

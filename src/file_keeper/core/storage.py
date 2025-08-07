@@ -110,11 +110,10 @@ class Uploader(StorageService):
         """
         raise NotImplementedError
 
-    def multipart_start(self, location: types.Location, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
+    def multipart_start(self, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
         """Prepare everything for multipart(resumable) upload.
 
         Args:
-            location: The destination location for the upload.
             data: The FileData object containing the upload metadata.
             extras: Additional metadata for the upload.
         """
@@ -599,15 +598,14 @@ class Storage(ABC):  # noqa: B024
         return self.uploader.upload(location, upload, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_start(self, location: types.Location, data: data.FileData, /, **kwargs: Any) -> data.FileData:
+    def multipart_start(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
         """Prepare everything for multipart(resumable) upload.
 
         Args:
-            location: The destination location for the upload.
             data: The FileData object containing the upload metadata.
             **kwargs: Additional metadata for the upload.
         """
-        return self.uploader.multipart_start(location, data, kwargs)
+        return self.uploader.multipart_start(data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
     def multipart_refresh(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:

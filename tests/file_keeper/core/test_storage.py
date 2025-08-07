@@ -52,9 +52,8 @@ class TestUploader:
 
         with pytest.raises(NotImplementedError):
             uploader.multipart_start(
-                fk.types.Location(faker.file_name()),
                 FileData(
-                    fk.Location(""),
+                    fk.types.Location(faker.file_name()),
                 ),
                 {},
             )

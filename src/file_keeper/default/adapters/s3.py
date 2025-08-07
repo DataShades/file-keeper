@@ -120,8 +120,8 @@ class Uploader(fk.Uploader):
         )
 
     @override
-    def multipart_start(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        filepath = self.storage.full_path(location)
+    def multipart_start(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        filepath = self.storage.full_path(data.location)
         client = self.storage.settings.client
         obj = client.create_multipart_upload(
             Bucket=self.storage.settings.bucket,
@@ -129,7 +129,7 @@ class Uploader(fk.Uploader):
             ContentType=data.content_type,
         )
 
-        result = fk.FileData.from_object(data, location=location)
+        result = fk.FileData.from_object(data)
 
         result.storage_data.update(
             {

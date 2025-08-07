@@ -42,8 +42,7 @@ class TestUploaderMultipart(standard.Multiparter, standard.MultiparterWithUpload
         """`multipart_refresh` synchronized filesize."""
         content = faker.binary(10)
         data = storage.multipart_start(
-            fk.types.Location(faker.file_name()),
-            fk.FileData(fk.Location(""), size=len(content)),
+            fk.FileData(fk.types.Location(faker.file_name()), size=len(content)),
         )
         with open(os.path.join(storage.settings.path, data.location), "wb") as dest:
             dest.write(content)
@@ -55,8 +54,7 @@ class TestUploaderMultipart(standard.Multiparter, standard.MultiparterWithUpload
         """`multipart_update` can override existing parts."""
         content = b"hello world"
         data = storage.multipart_start(
-            fk.types.Location(faker.file_name()),
-            fk.FileData(fk.Location(""), size=len(content)),
+            fk.FileData(fk.types.Location(faker.file_name()), size=len(content)),
         )
 
         data = storage.multipart_update(
