@@ -378,50 +378,26 @@ class Reader(StorageService):
 class Settings:
     """Settings for the storage adapter."""
 
-    name: str = dataclasses.field(
-        default="unknown",
-        metadata={"help": "Descriptive name of the storage used for debugging."},
-    )
+    name: str = "unknown"
+    """Descriptive name of the storage used for debugging."""
 
-    override_existing: bool = dataclasses.field(
-        default=False,
-        metadata={"help": "If file already exists, replace it with new content."},
-    )
+    override_existing: bool = False
+    """If file already exists, replace it with new content."""
 
-    path: str = dataclasses.field(
-        default="",
-        metadata={"help": "Prefix for the file's location."},
-    )
+    path: str = ""
+    """Prefix for the file's location."""
 
-    location_transformers: list[str] = cast(
-        "list[str]",
-        dataclasses.field(
-            default_factory=list,
-            metadata={"help": "List of transformations applied to the file location."},
-        ),
-    )
+    location_transformers: list[str] = cast("list[str]", dataclasses.field(default_factory=list))
+    """List of transformations applied to the file location."""
 
-    disabled_capabilities: list[str] = cast(
-        "list[str]",
-        dataclasses.field(
-            default_factory=list,
-            metadata={"help": "Capabilities that are not supported even if implemented."},
-        ),
-    )
+    disabled_capabilities: list[str] = cast("list[str]", dataclasses.field(default_factory=list))
+    """Capabilities that are not supported even if implemented."""
 
-    initialize: bool = dataclasses.field(
-        default=False,
-        metadata={"help": "Prepare storage backend for uploads(create path, bucket, DB)"},
-    )
+    initialize: bool = False
+    """Prepare storage backend for uploads(create path, bucket, DB)"""
 
     _required_options: ClassVar[list[str]] = []
-    _extra_settings: dict[str, Any] = cast(
-        "dict[str, Any]",
-        dataclasses.field(
-            default_factory=dict,
-            metadata={"help": "Any additional fields that are not known to the settings class."},
-        ),
-    )
+    _extra_settings: dict[str, Any] = cast("dict[str, Any]", dataclasses.field(default_factory=dict))
 
     def __post_init__(self, **kwargs: Any):
         for attr in self._required_options:

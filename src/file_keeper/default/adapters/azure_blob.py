@@ -21,16 +21,16 @@ import file_keeper as fk
 
 @dataclasses.dataclass
 class Settings(fk.Settings):
-    account_name: str = dataclasses.field(default="", metadata={"help": ""})
-    account_key: str = dataclasses.field(default="", metadata={"help": ""})
-    container_name: str = dataclasses.field(default="", metadata={"help": ""})
+    account_name: str = ""
+    account_key: str = ""
+    container_name: str = ""
 
-    account_url: str = dataclasses.field(default="https://{account_name}.blob.core.windows.net", metadata={"help": ""})
+    account_url: str = "https://{account_name}.blob.core.windows.net"
     ## azurite
     # account_url: str = "http://127.0.0.1:10000/{account_name}"
 
-    client: BlobServiceClient = dataclasses.field(default=None, metadata={"help": ""})  # pyright: ignore[reportAssignmentType]
-    container: ContainerClient = dataclasses.field(default=None, metadata={"help": ""})  # pyright: ignore[reportAssignmentType]
+    client: BlobServiceClient = None  # pyright: ignore[reportAssignmentType]
+    container: ContainerClient = None  # pyright: ignore[reportAssignmentType]
 
     def __post_init__(self, **kwargs: Any):
         self.account_url = self.account_url.format(account_name=self.account_name)
