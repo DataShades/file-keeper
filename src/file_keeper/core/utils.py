@@ -162,6 +162,9 @@ class Capability(enum.Flag):
     REMOVE = enum.auto()
     """Remove file from the storage"""
 
+    RESUMABLE = enum.auto()
+    """Perform resumable uploads that can be continued after interruption"""
+
     SCAN = enum.auto()
     """Iterate over all files in the storage"""
 
@@ -182,7 +185,7 @@ class Capability(enum.Flag):
 
     MANAGER_CAPABILITIES = ANALYZE | SCAN | COPY | MOVE | APPEND | COMPOSE | EXISTS | REMOVE | SIGNED
     READER_CAPABILITIES = RANGE | STREAM | PERMANENT_LINK | TEMPORAL_LINK | ONE_TIME_LINK
-    UPLOADER_CAPABILITIES = CREATE | MULTIPART
+    UPLOADER_CAPABILITIES = CREATE | MULTIPART | RESUMABLE
 
     def exclude(self, *capabilities: Capability):
         """Remove capabilities from the cluster.

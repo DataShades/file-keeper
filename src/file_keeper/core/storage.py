@@ -110,6 +110,42 @@ class Uploader(StorageService):
         """
         raise NotImplementedError
 
+    def resumable_start(self, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
+        """Prepare everything for resumable upload.
+
+        Args:
+            data: The FileData object containing the upload metadata.
+            extras: Additional metadata for the upload.
+        """
+        raise NotImplementedError
+
+    def resumable_refresh(self, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
+        """Show details of the incomplete resumable upload.
+
+        Args:
+            data: The FileData object containing the upload metadata.
+            extras: Additional metadata for the upload.
+        """
+        raise NotImplementedError
+
+    def resumable_resume(self, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
+        """Resume the interrupted resumable upload.
+
+        Args:
+            data: The FileData object containing the upload metadata.
+            extras: Additional metadata for the upload.
+        """
+        raise NotImplementedError
+
+    def resumable_remove(self, data: data.FileData, extras: dict[str, Any]) -> bool:
+        """Remove incomplete resumable upload.
+
+        Args:
+            data: The FileData object containing the upload metadata.
+            extras: Additional metadata for the upload.
+        """
+        raise NotImplementedError
+
     def multipart_start(self, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
         """Prepare everything for multipart(resumable) upload.
 
@@ -597,9 +633,49 @@ class Storage(ABC):  # noqa: B024
         """
         return self.uploader.upload(location, upload, kwargs)
 
+    @requires_capability(Capability.RESUMABLE)
+    def resumable_start(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
+        """Prepare everything for resumable upload.
+
+        Args:
+            data: The FileData object containing the upload metadata.
+            **kwargs: Additional metadata for the upload.
+        """
+        return self.uploader.resumable_start(data, kwargs)
+
+    @requires_capability(Capability.RESUMABLE)
+    def resumable_refresh(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
+        """Show details of the incomplete resumable upload.
+
+        Args:
+            data: The FileData object containing the upload metadata.
+            **kwargs: Additional metadata for the upload.
+        """
+        return self.uploader.resumable_refresh(data, kwargs)
+
+    @requires_capability(Capability.RESUMABLE)
+    def resumable_resume(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
+        """Resume the interrupted resumable upload.
+
+        Args:
+            data: The FileData object containing the upload metadata.
+            **kwargs: Additional metadata for the upload.
+        """
+        return self.uploader.resumable_resume(data, kwargs)
+
+    @requires_capability(Capability.RESUMABLE)
+    def resumable_remove(self, data: data.FileData, /, **kwargs: Any) -> bool:
+        """Remove incomplete resumable upload.
+
+        Args:
+            data: The FileData object containing the upload metadata.
+            **kwargs: Additional metadata for the upload.
+        """
+        return self.uploader.resumable_remove(data, kwargs)
+
     @requires_capability(Capability.MULTIPART)
     def multipart_start(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
-        """Prepare everything for multipart(resumable) upload.
+        """Prepare everything for multipart upload.
 
         Args:
             data: The FileData object containing the upload metadata.
