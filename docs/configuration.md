@@ -1,8 +1,8 @@
 # Configuration
 
-file-keeper's behavior is highly configurable through the `Settings`
-class. This page details the available settings and how to use them to
-customize your storage setup.
+Behavior of every storage is configurable through the `Settings` class. This
+page details the available settings and how to use them to customize your
+storage setup.
 
 ## The `Settings` Class
 

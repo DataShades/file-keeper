@@ -14,8 +14,11 @@ pip install file-keeper
 ```
 
 /// note
-To use specific storage adapters, you'll need to install extra
-dependencies. Here's a table of available extras:
+
+To use specific storage adapters, you may need to install extra
+dependencies. Most standard adapters do *not* require extras, but some – like
+those interfacing with external cloud providers – do. Here's a table of
+available extras:
 
 | Storage Type         | Adapter Name             | Extras       | Driver                                                                 |
 |----------------------|--------------------------|--------------|------------------------------------------------------------------------|
@@ -68,6 +71,9 @@ file_data = storage.upload("my_file.txt", upload)
 print(file_data)
 
 # The file is now stored in /tmp/my_filekeeper_files/my_file.txt
+
+# Get the content of file using corresponding gFileData object
+content: bytes = storage.content(file_data)
 ```
 ///
 **Explanation:**
@@ -76,6 +82,7 @@ print(file_data)
 *   `make_upload()`: Creates an `Upload` object from the data you want to store.
 *   `storage.upload()`: Uploads the data to the storage.
 *   `FileData`:  A dataclass that contains metadata about the uploaded file, including its location, size, content type, and hash.
+*   `storage.content()`: Locates file using `FileData` and returs byte string with its content
 
 ## Next Steps
 

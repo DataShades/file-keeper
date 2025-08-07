@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import dataclasses
 import os
 from typing import Any
-
+import file_keeper as fk
 import pytest
 from faker import Faker
 
@@ -40,7 +41,19 @@ def storage(faker: Faker, storage_settings: dict[str, Any]):
     return storage
 
 
-class TestSettings: ...
+class TestSettings:
+    def test_initialize(self, storage: Storage):
+        """Initialize flag controls container creation."""
+        storage.settings.container.delete_container()
+        assert not storage.settings.container.exists()
+
+        params = dataclasses.asdict(storage.settings)
+
+        with pytest.raises(fk.exc.InvalidStorageConfigurationError):
+            storage.SettingsFactory.from_dict(dict(params, initialize=False))
+
+        storage.SettingsFactory.from_dict(params)
+        assert storage.settings.container.exists()
 
 
 class TestUploaderUpload(standard.Uploader):
