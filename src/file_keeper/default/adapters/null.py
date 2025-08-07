@@ -22,47 +22,31 @@ class Uploader(fk.Uploader):
     capabilities: fk.Capability = fk.Capability.UPLOADER_CAPABILITIES
 
     @override
-    def upload(
-        self,
-        location: fk.Location,
-        upload: fk.Upload,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def upload(self, location: fk.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         reader = upload.hashing_reader()
         return fk.FileData(location, hash=reader.get_hash())
 
     @override
     def multipart_start(
-        self,
-        location: fk.Location,
-        data: fk.MultipartData,
-        extras: dict[str, Any],
+        self, location: fk.Location, data: fk.MultipartData, extras: dict[str, Any]
     ) -> fk.MultipartData:
         return fk.MultipartData(location)
 
     @override
-    def multipart_refresh(
-        self,
-        data: fk.MultipartData,
-        extras: dict[str, Any],
-    ) -> fk.MultipartData:
+    def multipart_refresh(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
         return data
 
     @override
-    def multipart_update(
-        self,
-        data: fk.MultipartData,
-        extras: dict[str, Any],
-    ) -> fk.MultipartData:
+    def multipart_update(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
         return data
 
     @override
-    def multipart_complete(
-        self,
-        data: fk.MultipartData,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def multipart_complete(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.FileData:
         return fk.FileData.from_object(data)
+
+    @override
+    def multipart_remove(self, data: fk.MultipartData, extras: dict[str, Any]) -> bool:
+        return False
 
 
 class Manager(fk.Manager):
@@ -70,7 +54,7 @@ class Manager(fk.Manager):
     capabilities: fk.Capability = fk.Capability.MANAGER_CAPABILITIES
 
     @override
-    def remove(self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]) -> bool:
+    def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         return False
 
     @override
@@ -78,39 +62,19 @@ class Manager(fk.Manager):
         return False
 
     @override
-    def compose(
-        self,
-        location: fk.Location,
-        datas: Iterable[fk.FileData],
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def compose(self, location: fk.Location, datas: Iterable[fk.FileData], extras: dict[str, Any]) -> fk.FileData:
         return fk.FileData(location)
 
     @override
-    def append(
-        self,
-        data: fk.FileData,
-        upload: fk.Upload,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def append(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         return fk.FileData.from_object(data)
 
     @override
-    def copy(
-        self,
-        location: fk.Location,
-        data: fk.FileData,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def copy(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         return fk.FileData.from_object(data, location=location)
 
     @override
-    def move(
-        self,
-        location: fk.Location,
-        data: fk.FileData,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def move(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         return fk.FileData.from_object(data, location=location)
 
     @override
@@ -118,11 +82,7 @@ class Manager(fk.Manager):
         return []
 
     @override
-    def analyze(
-        self,
-        location: fk.Location,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
         return fk.FileData(location)
 
 
@@ -135,13 +95,7 @@ class Reader(fk.Reader):
         return []
 
     @override
-    def range(
-        self,
-        data: fk.FileData,
-        start: int,
-        end: int | None,
-        extras: dict[str, Any],
-    ) -> Iterable[bytes]:
+    def range(self, data: fk.FileData, start: int, end: int | None, extras: dict[str, Any]) -> Iterable[bytes]:
         return []
 
     @override
@@ -149,12 +103,7 @@ class Reader(fk.Reader):
         return data.location
 
     @override
-    def temporal_link(
-        self,
-        data: fk.FileData,
-        duration: int,
-        extras: dict[str, Any],
-    ) -> str:
+    def temporal_link(self, data: fk.FileData, duration: int, extras: dict[str, Any]) -> str:
         return data.location
 
     @override

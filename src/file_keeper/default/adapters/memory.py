@@ -26,12 +26,7 @@ class Uploader(fk.Uploader):
     capabilities: fk.Capability = fk.Capability.UPLOADER_CAPABILITIES
 
     @override
-    def upload(
-        self,
-        location: fk.Location,
-        upload: fk.Upload,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def upload(self, location: fk.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         reader = upload.hashing_reader()
         if location in self.storage.settings.bucket and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
@@ -42,10 +37,7 @@ class Uploader(fk.Uploader):
 
     @override
     def multipart_start(
-        self,
-        location: fk.Location,
-        data: fk.MultipartData,
-        extras: dict[str, Any],
+        self, location: fk.Location, data: fk.MultipartData, extras: dict[str, Any]
     ) -> fk.MultipartData:
         self.storage.settings.bucket[location] = b""
 
@@ -54,11 +46,7 @@ class Uploader(fk.Uploader):
         return result
 
     @override
-    def multipart_refresh(
-        self,
-        data: fk.MultipartData,
-        extras: dict[str, Any],
-    ) -> fk.MultipartData:
+    def multipart_refresh(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
         bucket = self.storage.settings.bucket
 
         if data.location not in bucket:
@@ -69,11 +57,7 @@ class Uploader(fk.Uploader):
         return result
 
     @override
-    def multipart_update(
-        self,
-        data: fk.MultipartData,
-        extras: dict[str, Any],
-    ) -> fk.MultipartData:
+    def multipart_update(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
         if "upload" not in extras:
             raise fk.exc.MissingExtrasError("upload")
 
@@ -93,11 +77,7 @@ class Uploader(fk.Uploader):
         return data
 
     @override
-    def multipart_complete(
-        self,
-        data: fk.MultipartData,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def multipart_complete(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.FileData:
         bucket = self.storage.settings.bucket
 
         if data.location not in bucket:
@@ -129,7 +109,7 @@ class Manager(fk.Manager):
     capabilities: fk.Capability = fk.Capability.MANAGER_CAPABILITIES
 
     @override
-    def remove(self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]) -> bool:
+    def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         bucket = self.storage.settings.bucket
         result = bucket.pop(data.location, None)
         return result is not None
@@ -140,12 +120,7 @@ class Manager(fk.Manager):
         return data.location in bucket
 
     @override
-    def compose(
-        self,
-        location: fk.Location,
-        datas: Iterable[fk.FileData],
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def compose(self, location: fk.Location, datas: Iterable[fk.FileData], extras: dict[str, Any]) -> fk.FileData:
         bucket = self.storage.settings.bucket
         if location in bucket and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
@@ -161,12 +136,7 @@ class Manager(fk.Manager):
         return self.analyze(location, extras)
 
     @override
-    def append(
-        self,
-        data: fk.FileData,
-        upload: fk.Upload,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def append(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         bucket = self.storage.settings.bucket
         if data.location not in bucket:
             raise fk.exc.MissingFileError(self.storage, data.location)
@@ -175,12 +145,7 @@ class Manager(fk.Manager):
         return self.analyze(data.location, extras)
 
     @override
-    def copy(
-        self,
-        location: fk.Location,
-        data: fk.FileData,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def copy(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         bucket = self.storage.settings.bucket
         if location in bucket and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
@@ -192,12 +157,7 @@ class Manager(fk.Manager):
         return self.analyze(location, extras)
 
     @override
-    def move(
-        self,
-        location: fk.Location,
-        data: fk.FileData,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def move(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         bucket = self.storage.settings.bucket
         if location in bucket and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
@@ -213,11 +173,7 @@ class Manager(fk.Manager):
         yield from self.storage.settings.bucket
 
     @override
-    def analyze(
-        self,
-        location: fk.Location,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
         try:
             content = self.storage.settings.bucket[location]
         except KeyError as err:
@@ -241,13 +197,7 @@ class Reader(fk.Reader):
             raise fk.exc.MissingFileError(self.storage, data.location) from err
 
     @override
-    def range(
-        self,
-        data: fk.FileData,
-        start: int,
-        end: int | None,
-        extras: dict[str, Any],
-    ) -> Iterable[bytes]:
+    def range(self, data: fk.FileData, start: int, end: int | None, extras: dict[str, Any]) -> Iterable[bytes]:
         try:
             return [self.storage.settings.bucket[data.location][start:end]]
         except KeyError as err:

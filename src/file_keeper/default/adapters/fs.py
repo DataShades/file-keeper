@@ -47,12 +47,7 @@ class Uploader(fk.Uploader):
     capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
 
     @override
-    def upload(
-        self,
-        location: fk.types.Location,
-        upload: fk.Upload,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def upload(self, location: fk.types.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         """Upload file to computed location.
 
         File location is relative the configured `path`. The location is not
@@ -90,10 +85,7 @@ class Uploader(fk.Uploader):
 
     @override
     def multipart_start(
-        self,
-        location: fk.types.Location,
-        data: fk.MultipartData,
-        extras: dict[str, Any],
+        self, location: fk.types.Location, data: fk.MultipartData, extras: dict[str, Any]
     ) -> fk.MultipartData:
         """Create an empty file using `upload` method.
 
@@ -119,11 +111,7 @@ class Uploader(fk.Uploader):
         )
 
     @override
-    def multipart_refresh(
-        self,
-        data: fk.MultipartData,
-        extras: dict[str, Any],
-    ) -> fk.MultipartData:
+    def multipart_refresh(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
         """Synchronize `storage_data["uploaded"]` with actual value.
 
         Raises:
@@ -142,11 +130,7 @@ class Uploader(fk.Uploader):
         return data
 
     @override
-    def multipart_update(
-        self,
-        data: fk.MultipartData,
-        extras: dict[str, Any],
-    ) -> fk.MultipartData:
+    def multipart_update(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
         """Add part to existing multipart upload.
 
         The content of upload is taken from `extras["upload"]`.
@@ -209,11 +193,7 @@ class Uploader(fk.Uploader):
         return data
 
     @override
-    def multipart_complete(
-        self,
-        data: fk.MultipartData,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def multipart_complete(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.FileData:
         """Finalize the upload.
 
         Raises:
@@ -285,12 +265,7 @@ class Manager(fk.Manager):
     )
 
     @override
-    def compose(
-        self,
-        location: fk.types.Location,
-        datas: Iterable[fk.FileData],
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def compose(self, location: fk.types.Location, datas: Iterable[fk.FileData], extras: dict[str, Any]) -> fk.FileData:
         """Combine multipe files inside the storage into a new one.
 
         If final content type is not supported by the storage, the file is
@@ -322,12 +297,7 @@ class Manager(fk.Manager):
         return self.analyze(location, extras)
 
     @override
-    def append(
-        self,
-        data: fk.FileData,
-        upload: fk.Upload,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def append(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         """Append content to existing file.
 
         If final content type is not supported by the storage, original file is
@@ -346,12 +316,7 @@ class Manager(fk.Manager):
         return self.analyze(data.location, extras)
 
     @override
-    def copy(
-        self,
-        location: fk.types.Location,
-        data: fk.FileData,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def copy(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         """Copy file inside the storage.
 
         Raises:
@@ -371,12 +336,7 @@ class Manager(fk.Manager):
         return fk.FileData.from_object(data, location=location)
 
     @override
-    def move(
-        self,
-        location: fk.types.Location,
-        data: fk.FileData,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def move(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         """Move file to a different location inside the storage.
 
         Raises:
@@ -405,7 +365,7 @@ class Manager(fk.Manager):
         return os.path.exists(filepath)
 
     @override
-    def remove(self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]) -> bool:
+    def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         """Remove the file."""
         filepath = self.storage.full_path(data.location)
         if not os.path.exists(filepath):

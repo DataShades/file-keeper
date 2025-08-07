@@ -83,12 +83,7 @@ class Uploader(fk.Uploader):
     capabilities: fk.Capability = fk.Capability.CREATE
 
     @override
-    def upload(
-        self,
-        location: fk.types.Location,
-        upload: fk.Upload,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def upload(self, location: fk.types.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         dest = self.storage.full_path(location)
 
         if not self.storage.settings.override_existing:
@@ -157,11 +152,7 @@ class Manager(fk.Manager):
             yield os.path.relpath(item.name, path)
 
     @override
-    def remove(
-        self,
-        data: fk.FileData | fk.MultipartData,
-        extras: dict[str, Any],
-    ) -> bool:
+    def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         location = self.storage.full_path(data.location)
 
         try:

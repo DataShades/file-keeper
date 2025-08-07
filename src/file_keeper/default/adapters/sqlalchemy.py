@@ -219,11 +219,7 @@ class Manager(fk.Manager):
                 yield row[0]
 
     @override
-    def remove(
-        self,
-        data: fk.FileData | fk.MultipartData,
-        extras: dict[str, Any],
-    ) -> bool:
+    def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         if isinstance(data, fk.MultipartData):
             return False
 

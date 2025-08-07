@@ -95,12 +95,7 @@ class Uploader(fk.Uploader):
     capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
 
     @override
-    def upload(
-        self,
-        location: fk.types.Location,
-        upload: fk.Upload,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def upload(self, location: fk.types.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         if not self.storage.settings.override_existing and self.storage.exists(fk.FileData(location), **extras):
             raise fk.exc.ExistingFileError(self.storage, location)
 
@@ -126,10 +121,7 @@ class Uploader(fk.Uploader):
 
     @override
     def multipart_start(
-        self,
-        location: fk.types.Location,
-        data: fk.MultipartData,
-        extras: dict[str, Any],
+        self, location: fk.types.Location, data: fk.MultipartData, extras: dict[str, Any]
     ) -> fk.MultipartData:
         filepath = self.storage.full_path(location)
         client = self.storage.settings.client
@@ -164,11 +156,7 @@ class Uploader(fk.Uploader):
         )
 
     @override
-    def multipart_update(
-        self,
-        data: fk.MultipartData,
-        extras: dict[str, Any],
-    ) -> fk.MultipartData:
+    def multipart_update(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
         filepath = self.storage.full_path(data.location)
         if "upload" in extras:
             upload = fk.make_upload(extras["upload"])
@@ -212,11 +200,7 @@ class Uploader(fk.Uploader):
         return data
 
     @override
-    def multipart_complete(
-        self,
-        data: fk.MultipartData,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def multipart_complete(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.FileData:
         filepath = self.storage.full_path(data.location)
 
         result = self.storage.settings.client.complete_multipart_upload(
@@ -270,11 +254,7 @@ class Manager(fk.Manager):
 
     @override
     def signed(
-        self,
-        action: fk.types.SignedAction,
-        duration: int,
-        location: fk.Location,
-        extras: dict[str, Any],
+        self, action: fk.types.SignedAction, duration: int, location: fk.Location, extras: dict[str, Any]
     ) -> str:
         client = self.storage.settings.client
         method = {
@@ -292,12 +272,7 @@ class Manager(fk.Manager):
         )
 
     @override
-    def copy(
-        self,
-        location: fk.Location,
-        data: fk.FileData,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
+    def copy(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         client = self.storage.settings.client
         bucket = self.storage.settings.bucket
 
@@ -359,7 +334,7 @@ class Manager(fk.Manager):
         return True
 
     @override
-    def remove(self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]) -> bool:
+    def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         if isinstance(data, fk.MultipartData):
             return False
 

@@ -224,7 +224,7 @@ class Manager(fk.Manager):
     @override
     def remove(
         self,
-        data: fk.FileData | fk.MultipartData,
+        data: fk.FileData,
         extras: dict[str, Any],
     ) -> bool:
         """Remove the file."""

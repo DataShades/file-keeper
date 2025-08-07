@@ -29,12 +29,7 @@ class Uploader(fk.Uploader):
     capabilities = fk.Capability.CREATE
 
     @override
-    def upload(
-        self,
-        location: fk.Location,
-        upload: fk.Upload,
-        extras: dict[str, Any],
-    ):
+    def upload(self, location: fk.Location, upload: fk.Upload, extras: dict[str, Any]):
         reader = fk.HashingReader(upload.stream)
         with zipfile.ZipFile(self.storage.settings.path, "a") as z:
             try:
@@ -84,7 +79,7 @@ class Manager(fk.Manager):
     capabilities = fk.Capability.REMOVE | fk.Capability.SCAN | fk.Capability.EXISTS
 
     @override
-    def remove(self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]):
+    def remove(self, data: fk.FileData, extras: dict[str, Any]):
         with zipfile.ZipFile(self.storage.settings.path, "a") as z:
             try:
                 info = z.getinfo(data.location)
