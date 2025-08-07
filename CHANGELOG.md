@@ -28,6 +28,7 @@
 
 ### 🚜 Refactor
 
+- [**breaking**] `Storage.remove` does not accept `MultipartData`. Use `Storage.multipart_remove` instead ([ce3e522](https://github.com/DataShades/file-keeper/commit/ce3e522667126d2738d6c100db20dd88b60a41de))
 - [**breaking**] `create_path` option for fs renamed to `initialize` ([1329997](https://github.com/DataShades/file-keeper/commit/1329997ba923d77fa2a8379dc9edf76562a88ad3))
 - [**breaking**] Storage.temporal_link requires `duration` parameter ([0d92777](https://github.com/DataShades/file-keeper/commit/0d92777e5a56b77c1b34cc0abdbffec3e7218eb6))
 - [**breaking**] Storage.stream_as_upload renamed to file_as_upload ([29ec68b](https://github.com/DataShades/file-keeper/commit/29ec68bae9325502f46e87c7813e4d7844b1e5c6))

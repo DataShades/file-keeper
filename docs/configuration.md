@@ -1,38 +1,29 @@
 # Configuration
 
-Behavior of every storage is configurable through the `Settings` class. This
-page details the available settings and how to use them to customize your
-storage setup.
+Behavior of every storage is configurable through the
+[Settings][file_keeper.Settings] class. This page details the available
+settings and how to use them to customize your storage setup.
 
-## The `Settings` Class
+## The [Settings][file_keeper.Settings] Class
 
-The `Settings` class is the central point for configuring each storage
+The [Settings][file_keeper.Settings] class is the central point for configuring each storage
 adapter. It defines the options that control how the adapter interacts with the
-underlying storage.  Each adapter has its own subclass of `Settings` that adds
+underlying storage.  Each adapter has its own subclass of [Settings][file_keeper.Settings] that adds
 adapter-specific options.
 
-While you *can* directly instantiate a `Settings` subclass with its arguments,
-the most common approach is to pass a dictionary of options to the storage
-adapter constructor. file-keeper automatically handles the transformation of
-this dictionary into a `Settings` object. This provides a more flexible and
+While you *can* directly instantiate a [Settings][file_keeper.Settings]
+subclass with its arguments, the most common approach is to pass a dictionary
+of options to the storage adapter constructor. file-keeper automatically
+handles the transformation of this dictionary into a
+[Settings][file_keeper.Settings] object. This provides a more flexible and
 user-friendly configuration experience.
 
-**How it Works:**
-
-1.  You provide a dictionary containing the configuration options for the
-    storage adapter.
-2.  file-keeper's `make_storage` function (or the adapter's constructor
-    directly) uses the `SettingsFactory` associated with the adapter to create
-    a `Settings` object from the dictionary.
-3.  The `SettingsFactory.from_dict()` method handles the conversion, including
-    validation and handling of any unexpected options.  Any unrecognized
-    options are stored in the `_extra_settings` attribute for later use if
-    needed.
-
-**Example:**
+/// admonition
+    type: example
 
 Let's say you want to configure the S3 adapter. Instead of creating a
-`Settings` object directly, you can simply pass a dictionary like this:
+[Settings][file_keeper.Settings] object directly, you can simply pass a
+dictionary like this:
 
 ```python
 from file_keeper import make_storage
@@ -43,19 +34,34 @@ s3_settings = {
     "key": "YOUR_AWS_ACCESS_KEY_ID",
     "secret": "YOUR_AWS_SECRET_ACCESS_KEY",
     "region": "us-east-1",
-    "extra_option": "some_value",  # This will be stored in _extra_settings
 }
 
 storage = make_storage("my_s3_storage", s3_settings)
 
 # Accessing the settings (for demonstration)
-print(storage.settings.bucket)  # Output: my-s3-bucket
-print(storage.settings._extra_settings.get("extra_option"))  # Output: some_value
+print(storage.settings.bucket) # (1)!
 ```
 
+1. Output: my-s3-bucket
+
 In this example, `make_storage` automatically creates a `Settings` object from
-the `s3_settings` dictionary.  The `extra_option` is stored in the
-`_extra_settings` dictionary, allowing you to access it if needed.
+the `s3_settings` dictionary.
+///
+
+**How it Works:**
+
+1.  You provide a dictionary containing the configuration options for the
+    storage adapter.
+2.  file-keeper's [make_storage][file_keeper.make_storage] function (or the
+    adapter's constructor directly) uses the
+    [SettingsFactory][file_keeper.Storage.SettingsFactory] associated with the
+    adapter to create a [Settings][file_keeper.Settings] object from the
+    dictionary.
+3.  The [Settings.from_dict()][file_keeper.Settings.from_dict] method handles the conversion, including
+    validation and handling of any unexpected options.  Any unrecognized
+    options are stored in the `_extra_settings` attribute for later use if
+    needed.
+
 
 **Benefits of using a dictionary:**
 
@@ -70,116 +76,110 @@ the `s3_settings` dictionary.  The `extra_option` is stored in the
 
 These settings are available for most storage adapters:
 
-*   **`override_existing` (bool, default: `False`):** If `True`, existing files
-    will be overwritten during upload. If `False` (the default), an
-    `ExistingFileError` will be raised if a file with the same location already
-    exists.
-*   **`path` (str, required for most adapters):** The base path or directory
-    where files are stored.  The exact meaning of this setting depends on the
-    adapter (e.g., a path in the filesystem for the FS adapter, a prefix-path
-    inside the bucket for S3).
-*   **`location_transformers` (list[str], default: `[]`):** A list of names of
-    location transformers to apply to file locations.  These transformers can
-    be used to sanitize or modify file paths before they are used to store
-    files.  See the [Extending file-keeper documentation](extending.md) for
-    details on creating custom location transformers.
-*   **`disabled_capabilities` (list[str], default: `[]`):** A list of
-    capabilities to disable for the storage adapter. This can be useful for
-    limiting the functionality of an adapter or for testing purposes.
+
+| Setting                 | Type      | Default     | Description                                                                                                                                                                                                                                        |
+|-------------------------|-----------|-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `name`                  | str       | `"unknown"` | Descriptive name of the storage used for debugging.                                                                                                                                                                                                |
+| `override_existing`     | bool      | `False`     | If `True`, existing files will be overwritten during upload. If `False`, an `ExistingFileError` will be raised if a file with the same location already exists.                                                                                    |
+| `path`                  | str       | `""`        | The base path or directory where files are stored. The exact meaning depends on the adapter (e.g., a path in the filesystem for the FS adapter, a prefix-path inside the bucket for S3).  Required for most adapters.                              |
+| `location_transformers` | list[str] | `[]`        | A list of names of location transformers to apply to file locations. These transformers can be used to sanitize or modify file paths before they are used to store files. See the [Extending file-keeper documentation](extending.md) for details. |
+| `disabled_capabilities` | list[str] | `[]`        | A list of capabilities to disable for the storage adapter. This can be useful for limiting the functionality of an adapter or for testing purposes.                                                                                                |
+| `initialize`            | bool      | `False`     | Prepare storage backend for uploads. The exact meaning depends on the adapter. Filesystem adapter created the upload folder if it's missing; cloud adapters create a bucket/container if it does not exists.                                       |
 
 ## Adapter-Specific Settings
 
 In addition to the common settings, each adapter has its own specific
 settings:
 
+TODO
+
+```sh
+ docker run -p 9000:9000 -p 9001:9001 --name minio -e MINIO_PUBLIC_ADDRESS=0.0.0.0:9000 quay.io/minio/minio server /data --console-address ":9001"
+
+docker run -p 10000:10000 --name azurite-blob mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0
+
+docker run -d --name gcs -p 4443:4443 fsouza/fake-gcs-server -scheme http
+
+```
+```sh
+ docker run -p 9000:9000 -p 9001:9001 --name minio -e MINIO_PUBLIC_ADDRESS=0.0.0.0:9000 quay.io/minio/minio server /data --console-address ":9001"
+
+docker run -p 10000:10000 --name azurite-blob mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0
+
+docker run -d --name gcs -p 4443:4443 fsouza/fake-gcs-server -scheme http
+
+```
+
+
 ### `file_keeper:fs`
+| option | description |
+|--------|-------------|
+|        |             |
 
-*   **`initialize` (bool, default: `False`):** If `True`, the `path` directory
-    will be created if it doesn't exist. If `False`, an
-    `InvalidStorageConfigurationError` will be raised if the `path` directory
-    doesn't exist.
+/// admonition
+    type: example
 
+```py
+storage = make_storage("sandbox", {
+    "type": "file_keeper:fs",
+    "path": "/tmp/file-keeper",
+    "initialize": True,
+})
+```
+///
+
+### `file_keeper:null`
+### `file_keeper:memory`
+### `file_keeper:zip`
+
+### `file_keeper:redis`
+/// admonition
+    type: example
+
+```py
+storage = make_storage("sandbox", {
+    "type": "file_keeper:redis",
+    "bucket": "file-keeper"
+})
+```
+///
+### `file_keeper:opendal`
 ### `file_keeper:libcloud`
 
-*   **`container_name` (str, required):** The name of the cloud container to use.
-*   **`key` (str):** The access key.
-*   **`secret` (str):** The secret access key.
-*   **`provider` (str):** apache-libcloud storage provider.
-*   **`params` (str):** JSON object with additional parameters passed directly to storage constructor.
+/// admonition
+    type: example
 
+```py
+storage = make_storage("sandbox", {
+    "type": "file_keeper:libcloud",
+    "provider": "MINIO",
+    "params": {"host": "127.0.0.1", "port": 9000, "secure": False},
+    "key": "***", "secret": "***",
+    "container_name": "file-keeper",
+})
+```
+///
+
+### `file_keeper:gcs`
 ### `file_keeper:s3`
+/// admonition
+    type: example
 
-*   **`bucket` (str):** The name of the S3 bucket to use.
-*   **`key` (str):** The AWS access key ID.  If not provided, the AWS
-    credentials will be loaded from the environment or the AWS configuration
-    file.
-*   **`secret` (str):** The AWS secret access key.  If not provided, the AWS
-    credentials will be loaded from the environment or the AWS configuration
-    file.
-*   **`region` (str):** The AWS region to use.  If not provided, the AWS
-    credentials will be used to determine the region.
-*   **`endpoint` (str):** The S3 endpoint URL.  This can be used to connect to
-    a custom S3-compatible storage service.
-
-### GCS Adapter
-
-*   **`bucket` (str):** The name of the GCS bucket to use.
-*   **`credentials_file` (str):** The path to the Google Cloud service account credentials file. If not provided, the credentials will be loaded from the environment.
-
-## Configuration Examples
-
-Here are some examples of how to configure different storage adapters:
-
-**FS Adapter:**
-
-```python
-settings = {
-    "type": "file_keeper:fs",
-    "path": "/tmp/my_files",
-    "initialize": True,
-}
-```
-
-**S3 Adapter:**
-
-```python
-settings = {
+```py
+storage = make_storage("sandbox", {
     "type": "file_keeper:s3",
-    "bucket": "my-s3-bucket",
-    "key": "YOUR_AWS_ACCESS_KEY_ID",
-    "secret": "YOUR_AWS_SECRET_ACCESS_KEY",
-    "region": "us-east-1",
-}
+    "endpoint": "http://127.0.0.1:9000",
+    "key": "***", "secret": "***",
+    "bucket": "file-keeper",
+})
 ```
+///
 
-**GCS Adapter:**
+### `file_keeper:filebin`
+### `file_keeper:sqlalchemy`
+### `file_keeper:azure_blob`
+### `file_keeper:proxy`
 
-```python
-settings = {
-    "type": "file_keeper:gcs",
-    "bucket": "my-gcs-bucket",
-    "credentials_file": "/path/to/your/credentials.json",
-}
-```
-
-## Using `Settings.from_dict()`
-
-The `Settings.from_dict()` method provides a convenient way to create a `Settings` object from a dictionary. It also handles validation and provides a way to pass in extra settings that are not defined in the `Settings` class.
-
-```python
-from file_keeper.default.adapters.fs import Settings
-
-settings_data = {
-    "path": "/tmp/my_files",
-    "initialize": True,
-    "extra_setting": "some_value",  # This will be stored in settings._extra_settings
-}
-
-settings = Settings.from_dict(settings_data)
-
-print(settings.path)  # Output: /tmp/my_files
-print(settings._extra_settings["extra_setting"])  # Output: some_value
-```
 
 ## Important Considerations
 

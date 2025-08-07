@@ -4,6 +4,7 @@ repo_url:  https://github.com/DataShades/file-keeper
 
 markdown_extensions:
     - pymdownx.snippets
+    - tables
     - pymdownx.blocks.admonition
     - pymdownx.blocks.details
     - pymdownx.emoji:
@@ -79,7 +80,6 @@ theme:
 nav:
   - index.md
   - Configuration: configuration.md
-  - Storage Adapters: adapters.md
   - Core Concepts:
     - Data Model: core_concepts/data_model.md
     - Uploads: core_concepts/uploads.md

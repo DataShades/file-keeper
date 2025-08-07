@@ -3,29 +3,29 @@
 Hierarchy:
 
 * Exception
-    * FilesError
-        * StorageError
-            * UnknownAdapterError
-            * UnknownStorageError
-            * UnsupportedOperationError
-            * PermissionError
-            * LocationError
-                * MissingFileError
-                * ExistingFileError
-            * ExtrasError
-                * MissingExtrasError
-            * InvalidStorageConfigurationError
-                * MissingStorageConfigurationError
-            * UploadError
-                * WrongUploadTypeError
-                * LocationTransformerError
-                * ContentError
-                * LargeUploadError
-                    * UploadOutOfBoundError
-                * UploadMismatchError
-                    * UploadTypeMismatchError
-                    * UploadHashMismatchError
-                    * UploadSizeMismatchError
+    * [FilesError][file_keeper.exc.FilesError]
+        * [StorageError][file_keeper.exc.StorageError]
+            * [UnknownAdapterError][file_keeper.exc.UnknownAdapterError]
+            * [UnknownStorageError][file_keeper.exc.UnknownStorageError]
+            * [UnsupportedOperationError][file_keeper.exc.UnsupportedOperationError]
+            * [PermissionError][file_keeper.exc.PermissionError]
+            * [LocationError][file_keeper.exc.LocationError]
+                * [MissingFileError][file_keeper.exc.MissingFileError]
+                * [ExistingFileError][file_keeper.exc.ExistingFileError]
+            * [ExtrasError][file_keeper.exc.ExtrasError]
+                * [MissingExtrasError][file_keeper.exc.MissingExtrasError]
+            * [InvalidStorageConfigurationError][file_keeper.exc.InvalidStorageConfigurationError]
+                * [MissingStorageConfigurationError][file_keeper.exc.MissingStorageConfigurationError]
+            * [UploadError][file_keeper.exc.UploadError]
+                * [WrongUploadTypeError][file_keeper.exc.WrongUploadTypeError]
+                * [LocationTransformerError][file_keeper.exc.LocationTransformerError]
+                * [ContentError][file_keeper.exc.ContentError]
+                * [LargeUploadError][file_keeper.exc.LargeUploadError]
+                    * [UploadOutOfBoundError][file_keeper.exc.UploadOutOfBoundError]
+                * [UploadMismatchError][file_keeper.exc.UploadMismatchError]
+                    * [UploadTypeMismatchError][file_keeper.exc.UploadTypeMismatchError]
+                    * [UploadHashMismatchError][file_keeper.exc.UploadHashMismatchError]
+                    * [UploadSizeMismatchError][file_keeper.exc.UploadSizeMismatchError]
 
 """
 
@@ -131,7 +131,7 @@ class LargeUploadError(UploadError):
 
 
 class UploadOutOfBoundError(LargeUploadError):
-    """Multipart upload exceeds expected size."""
+    """Ongoing upload exceeds expected size."""
 
     tpl: str = "Upload size {actual_size} exceeds expected size {max_size}"
 

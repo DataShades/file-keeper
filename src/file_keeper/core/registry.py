@@ -13,13 +13,17 @@ class Registry(Generic[V, K]):
     """Mutable collection of objects.
 
     Example:
-    >>> col = Registry()
-    >>>
-    >>> col.register("one", 1)
-    >>> assert col.get("one") == 1
-    >>>
-    >>> col.reset()
-    >>> assert col.get("one") is None
+        ```py
+        col = Registry()
+
+        col.register("one", 1)
+        assert col.get("one") == 1
+
+        col.reset()
+        assert col.get("one") is None
+
+        assert list(col) == ["one"]
+        ```
     """
 
     members: MutableMapping[K, V]

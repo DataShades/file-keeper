@@ -133,7 +133,7 @@ class Capability(enum.Flag):
     NONE = 0
 
     ANALYZE = enum.auto()
-    """Return file details from the storage, as if file was uploaded just now"""
+    """Return file details from the storage"""
 
     APPEND = enum.auto()
     """Add content to the existing file"""
@@ -237,8 +237,6 @@ def humanize_filesize(value: int | float, base: int = SI_BASE) -> str:
 
     Args:
         value: size in bytes
-
-    Named args:
         base: 1000 for SI(KB, MB) or 1024 for binary(KiB, MiB)
 
     Raises:

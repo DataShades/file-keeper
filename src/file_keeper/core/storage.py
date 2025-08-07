@@ -34,18 +34,20 @@ TCallable = TypeVar("TCallable", bound=Callable[..., Any])
 log = logging.getLogger(__name__)
 
 Capability: TypeAlias = utils.Capability
-MultipartData = data.MultipartData
-FileData = data.FileData
-Location = types.Location
 
 adapters = Registry["type[Storage]"]()
 location_transformers = Registry[types.LocationTransformer]()
 
 
 def requires_capability(capability: Capability):
+    """Decorator to ensure a method requires a specific capability."""
+
     def decorator(func: TCallable) -> TCallable:
+        """Wraps the function to check for the required capability."""
+
         @functools.wraps(func)
         def method(self: Any, *args: Any, **kwargs: Any):
+            """Executes the function if the capability is supported."""
             if not self.supports(capability):
                 raise exceptions.UnsupportedOperationError(str(capability.name), self)
             return func(self, *args, **kwargs)
@@ -83,7 +85,7 @@ class Uploader(StorageService):
         ```python
         class MyUploader(Uploader):
             def upload(
-                self, location: Location, upload: Upload, extras: dict[str, Any]
+                self, location: types.Location, upload: Upload, extras: dict[str, Any]
             ) -> FileData:
                 reader = upload.hashing_reader()
 
@@ -98,28 +100,62 @@ class Uploader(StorageService):
         ```
     """
 
-    def upload(self, location: Location, upload: Upload, extras: dict[str, Any]) -> FileData:
-        """Upload file using single stream."""
+    def upload(self, location: types.Location, upload: Upload, extras: dict[str, Any]) -> data.FileData:
+        """Upload file using single stream.
+
+        Args:
+            location: The destination location for the upload.
+            upload: The Upload object containing the file data.
+            extras: Additional metadata for the upload.
+        """
         raise NotImplementedError
 
-    def multipart_start(self, location: Location, data: MultipartData, extras: dict[str, Any]) -> MultipartData:
-        """Prepare everything for multipart(resumable) upload."""
+    def multipart_start(
+        self, location: types.Location, data: data.MultipartData, extras: dict[str, Any]
+    ) -> data.MultipartData:
+        """Prepare everything for multipart(resumable) upload.
+
+        Args:
+            location: The destination location for the upload.
+            data: The MultipartData object containing the upload metadata.
+            extras: Additional metadata for the upload.
+        """
         raise NotImplementedError
 
-    def multipart_refresh(self, data: MultipartData, extras: dict[str, Any]) -> MultipartData:
-        """Show details of the incomplete upload."""
+    def multipart_refresh(self, data: data.MultipartData, extras: dict[str, Any]) -> data.MultipartData:
+        """Show details of the incomplete upload.
+
+        Args:
+            data: The MultipartData object containing the upload metadata.
+            extras: Additional metadata for the upload.
+        """
         raise NotImplementedError
 
-    def multipart_update(self, data: MultipartData, extras: dict[str, Any]) -> MultipartData:
-        """Add data to the incomplete upload."""
+    def multipart_update(self, data: data.MultipartData, extras: dict[str, Any]) -> data.MultipartData:
+        """Add data to the incomplete upload.
+
+        Args:
+            data: The MultipartData object containing the upload metadata.
+            extras: Additional metadata for the upload.
+        """
         raise NotImplementedError
 
-    def multipart_complete(self, data: MultipartData, extras: dict[str, Any]) -> FileData:
-        """Verify file integrity and finalize incomplete upload."""
+    def multipart_complete(self, data: data.MultipartData, extras: dict[str, Any]) -> data.FileData:
+        """Verify file integrity and finalize incomplete upload.
+
+        Args:
+            data: The MultipartData object containing the upload metadata.
+            extras: Additional metadata for the upload.
+        """
         raise NotImplementedError
 
-    def multipart_remove(self, data: MultipartData, extras: dict[str, Any]) -> bool:
-        """Interrupt and remove incomplete upload."""
+    def multipart_remove(self, data: data.MultipartData, extras: dict[str, Any]) -> bool:
+        """Interrupt and remove incomplete upload.
+
+        Args:
+            data: The MultipartData object containing the upload metadata.
+            extras: Additional metadata for the upload.
+        """
         raise NotImplementedError
 
 
@@ -140,40 +176,94 @@ class Manager(StorageService):
         ```
     """
 
-    def remove(self, data: FileData, extras: dict[str, Any]) -> bool:
-        """Remove file from the storage."""
+    def remove(self, data: data.FileData, extras: dict[str, Any]) -> bool:
+        """Remove file from the storage.
+
+        Args:
+            data: The FileData object representing the file to remove.
+            extras: Additional metadata for the operation.
+        """
         raise NotImplementedError
 
-    def exists(self, data: FileData, extras: dict[str, Any]) -> bool:
-        """Check if file exists in the storage."""
+    def exists(self, data: data.FileData, extras: dict[str, Any]) -> bool:
+        """Check if file exists in the storage.
+
+        Args:
+            data: The FileData object representing the file to check.
+            extras: Additional metadata for the operation.
+        """
         raise NotImplementedError
 
-    def compose(self, location: Location, datas: Iterable[FileData], extras: dict[str, Any]) -> FileData:
-        """Combine multipe file inside the storage into a new one."""
+    def compose(
+        self, location: types.Location, datas: Iterable[data.FileData], extras: dict[str, Any]
+    ) -> data.FileData:
+        """Combine multipe file inside the storage into a new one.
+
+        Args:
+            location: The destination location for the composed file.
+            datas: An iterable of FileData objects representing the files to combine.
+            extras: Additional metadata for the operation.
+        """
         raise NotImplementedError
 
-    def append(self, data: FileData, upload: Upload, extras: dict[str, Any]) -> FileData:
-        """Append content to existing file."""
+    def append(self, data: data.FileData, upload: Upload, extras: dict[str, Any]) -> data.FileData:
+        """Append content to existing file.
+
+        Args:
+            data: The FileData object representing the file to append to.
+            upload: The Upload object containing the content to append.
+            extras: Additional metadata for the operation.
+        """
         raise NotImplementedError
 
-    def copy(self, location: Location, data: FileData, extras: dict[str, Any]) -> FileData:
-        """Copy file inside the storage."""
+    def copy(self, location: types.Location, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
+        """Copy file inside the storage.
+
+        Args:
+            location: The destination location for the copied file.
+            data: The FileData object representing the file to copy.
+            extras: Additional metadata for the operation.
+        """
         raise NotImplementedError
 
-    def move(self, location: Location, data: FileData, extras: dict[str, Any]) -> FileData:
-        """Move file to a different location inside the storage."""
+    def move(self, location: types.Location, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
+        """Move file to a different location inside the storage.
+
+        Args:
+            location: The destination location for the moved file.
+            data: The FileData object representing the file to move.
+            extras: Additional metadata for the operation.
+        """
         raise NotImplementedError
 
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
-        """List all locations(filenames) in storage."""
+        """List all locations(filenames) in storage.
+
+        Args:
+            extras: Additional metadata for the operation.
+        """
         raise NotImplementedError
 
-    def analyze(self, location: Location, extras: dict[str, Any]) -> FileData:
-        """Return all details about filename."""
+    def analyze(self, location: types.Location, extras: dict[str, Any]) -> data.FileData:
+        """Return details about location.
+
+        Args:
+            location: The location of the file to analyze.
+            extras: Additional metadata for the operation.
+        """
         raise NotImplementedError
 
-    def signed(self, action: types.SignedAction, duration: int, location: Location, extras: dict[str, Any]) -> str:
-        """Make an URL for signed action."""
+    def signed(
+        self, action: types.SignedAction, duration: int, location: types.Location, extras: dict[str, Any]
+    ) -> str:
+        """Make an URL for signed action.
+
+        Args:
+            action: The action to sign (e.g., "upload", "download").
+            duration: The duration for which the signed URL is valid.
+            location: The location of the file to sign.
+            extras: Additional metadata for the operation.
+        """
         raise NotImplementedError
 
 
@@ -187,45 +277,74 @@ class Reader(StorageService):
         ```python
         class MyReader(Reader):
             def stream(
-                self, data: FileData, extras: dict[str, Any]
+                self, data: data.FileData, extras: dict[str, Any]
             ) -> Iterable[bytes]:
                 return open(data.location, "rb")
         ```
     """
 
-    def stream(self, data: FileData, extras: dict[str, Any]) -> Iterable[bytes]:
-        """Return byte-stream of the file content."""
-        raise NotImplementedError
-
-    def content(self, data: FileData, extras: dict[str, Any]) -> bytes:
-        """Return file content as a single byte object."""
-        return b"".join(self.stream(data, extras))
-
-    def range(self, data: FileData, start: int, end: int | None, extras: dict[str, Any]) -> Iterable[bytes]:
-        """Return slice of the file content."""
-        raise NotImplementedError
-
-    def permanent_link(self, data: FileData, extras: dict[str, Any]) -> str:
-        """Return permanent download link."""
-        raise NotImplementedError
-
-    def temporal_link(self, data: FileData, duration: int, extras: dict[str, Any]) -> str:
-        """Return temporal download link.
+    def stream(self, data: data.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
+        """Return byte-stream of the file content.
 
         Args:
-            data: file details
-            duration: controls lifetime of the link
-            extras: additional parameters
+            data: The FileData object representing the file to stream.
+            extras: Additional metadata for the operation.
         """
         raise NotImplementedError
 
-    def one_time_link(self, data: FileData, extras: dict[str, Any]) -> str:
-        """Return one-time download link."""
+    def content(self, data: data.FileData, extras: dict[str, Any]) -> bytes:
+        """Return file content as a single byte object.
+
+        Args:
+            data: The FileData object representing the file to read.
+            extras: Additional metadata for the operation.
+        """
+        return b"".join(self.stream(data, extras))
+
+    def range(self, data: data.FileData, start: int, end: int | None, extras: dict[str, Any]) -> Iterable[bytes]:
+        """Return slice of the file content.
+
+        Args:
+            data: The FileData object representing the file to read.
+            start: The starting byte offset.
+            end: The ending byte offset (inclusive).
+            extras: Additional metadata for the operation.
+        """
+        raise NotImplementedError
+
+    def permanent_link(self, data: data.FileData, extras: dict[str, Any]) -> str:
+        """Return permanent download link.
+
+        Args:
+            data: The FileData object representing the file.
+            extras: Additional metadata for the operation.
+        """
+        raise NotImplementedError
+
+    def temporal_link(self, data: data.FileData, duration: int, extras: dict[str, Any]) -> str:
+        """Return temporal download link.
+
+        Args:
+            data: The FileData object representing the file.
+            duration: The duration for which the link is valid.
+            extras: Additional metadata for the operation.
+        """
+        raise NotImplementedError
+
+    def one_time_link(self, data: data.FileData, extras: dict[str, Any]) -> str:
+        """Return one-time download link.
+
+        Args:
+            data: The FileData object representing the file.
+            extras: Additional metadata for the operation.
+        """
         raise NotImplementedError
 
 
 @dataclasses.dataclass()
 class Settings:
+    """Settings for the storage adapter."""
+
     name: str = dataclasses.field(
         default="unknown",
         metadata={"help": "Descriptive name of the storage used for debugging."},
@@ -325,21 +444,19 @@ class Storage(ABC):  # noqa: B024
     Args:
         settings: storage configuration
 
-    Examples:
-        >>> class MyStorage(Storage):
-        >>>     def make_uploader(self):
-        >>>         return MyUploader(self)
-
-        >>>     def make_reader(self):
-        >>>         return MyReader(self)
-
-        >>>     def make_manager(self):
-        >>>         return MyManager(self)
+    Example:
+        ```py
+        class MyStorage(Storage):
+            SettingsFactory = MySettings
+            UploaderFactory = MyUploader
+            ManagerFactory = MyManager
+            ReaderFactory = MyReader
+        ```
     """
 
     # do not show storage adapter
     hidden: bool = False
-    """Flag used to identify unsafe/experimental storages."""
+    """Flag that marks unsafe/experimental storages."""
 
     capabilities: Capability = Capability.NONE
     """Operations supported by storage. Computed from capabilities of
@@ -358,7 +475,7 @@ class Storage(ABC):  # noqa: B024
     def __str__(self) -> str:
         return self.settings.name
 
-    def __init__(self, settings: dict[str, Any] | Settings, /):
+    def __init__(self, settings: Mapping[str, Any] | Settings, /):
         self.settings = self.configure(settings)
         self.uploader = self.make_uploader()
         self.manager = self.make_manager()
@@ -367,15 +484,15 @@ class Storage(ABC):  # noqa: B024
         self.capabilities = self.compute_capabilities()
 
     def make_uploader(self):
-        """Initialize uploader service."""
+        """Initialize [uploader][file_keeper.Uploader] service."""
         return self.UploaderFactory(self)
 
     def make_manager(self):
-        """Initialize manager service."""
+        """Initialize [manager][file_keeper.Manager] service."""
         return self.ManagerFactory(self)
 
     def make_reader(self):
-        """Initialize reader service."""
+        """Initialize [reader][file_keeper.Reader] service."""
         return self.ReaderFactory(self)
 
     @classmethod
@@ -397,6 +514,7 @@ class Storage(ABC):  # noqa: B024
         return cls.SettingsFactory.from_dict(settings)
 
     def compute_capabilities(self) -> Capability:
+        """Computes the capabilities of the storage based on its services."""
         result = self.uploader.capabilities | self.manager.capabilities | self.reader.capabilities
 
         for name in self.settings.disabled_capabilities:
@@ -430,7 +548,7 @@ class Storage(ABC):  # noqa: B024
 
         return False
 
-    def full_path(self, location: Location, /, **kwargs: Any) -> str:
+    def full_path(self, location: types.Location, /, **kwargs: Any) -> str:
         """Compute path to the file from the storage's root.
 
         Args:
@@ -454,8 +572,13 @@ class Storage(ABC):  # noqa: B024
 
         return types.Location(location)
 
-    def file_as_upload(self, data: FileData, **kwargs: Any) -> Upload:
-        """Make an Upload with file content."""
+    def file_as_upload(self, data: data.FileData, **kwargs: Any) -> Upload:
+        """Make an [Upload][file_keeper.Upload] with file content.
+
+        Args:
+            data: The FileData object to wrap into Upload
+            **kwargs: Additional metadata for the upload.
+        """
         stream = self.stream(data, **kwargs)
         stream = cast(types.PStream, stream) if hasattr(stream, "read") else utils.IterableBytesReader(stream)
 
@@ -467,53 +590,106 @@ class Storage(ABC):  # noqa: B024
         )
 
     @requires_capability(Capability.CREATE)
-    def upload(self, location: Location, upload: Upload, /, **kwargs: Any) -> FileData:
-        """Upload data into specified location."""
+    def upload(self, location: types.Location, upload: Upload, /, **kwargs: Any) -> data.FileData:
+        """Upload file using single stream.
+
+        Args:
+            location: The destination location for the upload.
+            upload: The Upload object containing the file data.
+            **kwargs: Additional metadata for the upload.
+        """
         return self.uploader.upload(location, upload, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_start(self, location: Location, data: MultipartData, /, **kwargs: Any) -> MultipartData:
-        """Initialize multipart upload."""
+    def multipart_start(
+        self, location: types.Location, data: data.MultipartData, /, **kwargs: Any
+    ) -> data.MultipartData:
+        """Prepare everything for multipart(resumable) upload.
+
+        Args:
+            location: The destination location for the upload.
+            data: The MultipartData object containing the upload metadata.
+            **kwargs: Additional metadata for the upload.
+        """
         return self.uploader.multipart_start(location, data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_refresh(self, data: MultipartData, /, **kwargs: Any) -> MultipartData:
-        """Return the current state of the multipart upload."""
+    def multipart_refresh(self, data: data.MultipartData, /, **kwargs: Any) -> data.MultipartData:
+        """Show details of the incomplete upload.
+
+        Args:
+            data: The MultipartData object containing the upload metadata.
+            **kwargs: Additional metadata for the upload.
+        """
         return self.uploader.multipart_refresh(data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_update(self, data: MultipartData, /, **kwargs: Any) -> MultipartData:
-        """Update multipart upload."""
+    def multipart_update(self, data: data.MultipartData, /, **kwargs: Any) -> data.MultipartData:
+        """Add data to the incomplete upload.
+
+        Args:
+            data: The MultipartData object containing the upload metadata.
+            **kwargs: Additional metadata for the upload.
+        """
         return self.uploader.multipart_update(data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_complete(self, data: MultipartData, /, **kwargs: Any) -> FileData:
-        """Finalize multipart upload."""
+    def multipart_complete(self, data: data.MultipartData, /, **kwargs: Any) -> data.FileData:
+        """Verify file integrity and finalize incomplete upload.
+
+        Args:
+            data: The MultipartData object containing the upload metadata.
+            **kwargs: Additional metadata for the upload.
+        """
         return self.uploader.multipart_complete(data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_remove(self, data: MultipartData, /, **kwargs: Any) -> bool:
-        """Interrupt and remove multipart upload."""
+    def multipart_remove(self, data: data.MultipartData, /, **kwargs: Any) -> bool:
+        """Interrupt and remove incomplete upload.
+
+        Args:
+            data: The MultipartData object containing the upload metadata.
+            **kwargs: Additional metadata for the upload.
+        """
         return self.uploader.multipart_remove(data, kwargs)
 
     @requires_capability(Capability.EXISTS)
-    def exists(self, data: FileData, /, **kwargs: Any) -> bool:
-        """Test whether the file exists in the storage."""
+    def exists(self, data: data.FileData, /, **kwargs: Any) -> bool:
+        """Check if file exists in the storage.
+
+        Args:
+            data: The FileData object representing the file to check.
+            **kwargs: Additional metadata for the operation.
+        """
         return self.manager.exists(data, kwargs)
 
     @requires_capability(Capability.REMOVE)
-    def remove(self, data: FileData, /, **kwargs: Any) -> bool:
-        """Remove file from the storage."""
+    def remove(self, data: data.FileData, /, **kwargs: Any) -> bool:
+        """Remove file from the storage.
+
+        Args:
+            data: The FileData object representing the file to remove.
+            **kwargs: Additional metadata for the operation.
+        """
         return self.manager.remove(data, kwargs)
 
     @requires_capability(Capability.SCAN)
     def scan(self, **kwargs: Any) -> Iterable[str]:
-        """Discover existing locations in the storage."""
+        """List all locations(filenames) in storage.
+
+        Args:
+            **kwargs: Additional metadata for the operation.
+        """
         return self.manager.scan(kwargs)
 
     @requires_capability(Capability.ANALYZE)
-    def analyze(self, location: Location, /, **kwargs: Any) -> FileData:
-        """Return file details for the given location."""
+    def analyze(self, location: types.Location, /, **kwargs: Any) -> data.FileData:
+        """Return file details.
+
+        Args:
+            location: The location of the file to analyze.
+            **kwargs: Additional metadata for the operation.
+        """
         return self.manager.analyze(location, kwargs)
 
     @requires_capability(Capability.SIGNED)
@@ -521,26 +697,52 @@ class Storage(ABC):  # noqa: B024
         self,
         action: types.SignedAction,
         duration: int,
-        location: Location,
+        location: types.Location,
         **kwargs: Any,
     ) -> str:
-        """Make an URL for signed action."""
+        """Make an URL for signed action.
+
+        Args:
+            action: The action to sign (e.g., "upload", "download").
+            duration: The duration for which the signed URL is valid.
+            location: The location of the file to sign.
+            **kwargs: Additional metadata for the operation.
+        """
         return self.manager.signed(action, duration, location, kwargs)
 
     @requires_capability(Capability.STREAM)
-    def stream(self, data: FileData, /, **kwargs: Any) -> Iterable[bytes]:
-        """Return the stream of file's content."""
+    def stream(self, data: data.FileData, /, **kwargs: Any) -> Iterable[bytes]:
+        """Return byte-stream of the file content.
+
+        Args:
+            data: The FileData object representing the file to stream.
+            **kwargs: Additional metadata for the operation.
+        """
         return self.reader.stream(data, kwargs)
 
     @requires_capability(Capability.RANGE)
-    def range(self, data: FileData, start: int = 0, end: int | None = None, /, **kwargs: Any) -> Iterable[bytes]:
-        """Return byte-stream of the file's fragment."""
+    def range(self, data: data.FileData, start: int = 0, end: int | None = None, /, **kwargs: Any) -> Iterable[bytes]:
+        """Return slice of the file content.
+
+        Args:
+            data: The FileData object representing the file to read.
+            start: The starting byte offset.
+            end: The ending byte offset (inclusive).
+            **kwargs: Additional metadata for the operation.
+        """
         return self.reader.range(data, start, end, kwargs)
 
     def range_synthetic(
-        self, data: FileData, start: int = 0, end: int | None = None, /, **kwargs: Any
+        self, data: data.FileData, start: int = 0, end: int | None = None, /, **kwargs: Any
     ) -> Iterable[bytes]:
-        """Generic implementation of range operation that relies on STREAM."""
+        """Generic implementation of range operation that relies on [STREAM][file_keeper.Capability.STREAM].
+
+        Args:
+            data: The FileData object representing the file to read.
+            start: The starting byte offset.
+            end: The ending byte offset (inclusive).
+            **kwargs: Additional metadata for the operation.
+        """
         if end is None:
             end = cast(int, float("inf"))
 
@@ -562,22 +764,48 @@ class Storage(ABC):  # noqa: B024
                 break
 
     @requires_capability(Capability.STREAM)
-    def content(self, data: FileData, /, **kwargs: Any) -> bytes:
-        """Return content of the file."""
+    def content(self, data: data.FileData, /, **kwargs: Any) -> bytes:
+        """Return file content as a single byte object.
+
+        Args:
+            data: The FileData object representing the file to read.
+            **kwargs: Additional metadata for the operation.
+        """
         return self.reader.content(data, kwargs)
 
     @requires_capability(Capability.APPEND)
-    def append(self, data: FileData, upload: Upload, /, **kwargs: Any) -> FileData:
-        """Append data to the file."""
+    def append(self, data: data.FileData, upload: Upload, /, **kwargs: Any) -> data.FileData:
+        """Append content to existing file.
+
+        Args:
+            data: The FileData object representing the file to append to.
+            upload: The Upload object containing the content to append.
+            **kwargs: Additional metadata for the operation.
+        """
         return self.manager.append(data, upload, kwargs)
 
     @requires_capability(Capability.COPY)
-    def copy(self, location: Location, data: FileData, /, **kwargs: Any) -> FileData:
-        """Copy file into specified location."""
+    def copy(self, location: types.Location, data: data.FileData, /, **kwargs: Any) -> data.FileData:
+        """Copy file inside the storage.
+
+        Args:
+            location: The destination location for the copied file.
+            data: The FileData object representing the file to copy.
+            **kwargs: Additional metadata for the operation.
+        """
         return self.manager.copy(location, data, kwargs)
 
-    def copy_synthetic(self, location: Location, data: FileData, dest_storage: Storage, /, **kwargs: Any) -> FileData:
-        """Generic implementation of the copy operation that relies on CREATE."""
+    def copy_synthetic(
+        self, location: types.Location, data: data.FileData, dest_storage: Storage, /, **kwargs: Any
+    ) -> data.FileData:
+        """Generic implementation of the copy operation that relies on [CREATE][file_keeper.Capability.CREATE].
+
+        Args:
+            location: The destination location for the copied file.
+            data: The FileData object representing the file to copy.
+            dest_storage: The destination storage
+            **kwargs: Additional metadata for the operation.
+        """
         return dest_storage.upload(
             location,
             self.file_as_upload(data, **kwargs),
@@ -585,25 +813,57 @@ class Storage(ABC):  # noqa: B024
         )
 
     @requires_capability(Capability.MOVE)
-    def move(self, location: Location, data: FileData, /, **kwargs: Any) -> FileData:
-        """Move file to specific location."""
+    def move(self, location: types.Location, data: data.FileData, /, **kwargs: Any) -> data.FileData:
+        """Move file to a different location inside the storage.
+
+        Args:
+            location: The destination location for the moved file.
+            data: The FileData object representing the file to move.
+            **kwargs: Additional metadata for the operation.
+        """
         return self.manager.move(location, data, kwargs)
 
-    def move_synthetic(self, location: Location, data: FileData, dest_storage: Storage, /, **kwargs: Any) -> FileData:
-        """Generic implementation of move operation that relies on CREATE and REMOVE."""
+    def move_synthetic(
+        self, location: types.Location, data: data.FileData, dest_storage: Storage, /, **kwargs: Any
+    ) -> data.FileData:
+        """Generic implementation of move operation.
+
+        Relies on [CREATE][file_keeper.Capability.CREATE] and
+        [REMOVE][file_keeper.Capability.REMOVE].
+
+        Args:
+            location: The destination location for the moved file.
+            data: The FileData object representing the file to move.
+            dest_storage: The destination storage
+            **kwargs: Additional metadata for the operation.
+
+        """
         result = dest_storage.upload(location, self.file_as_upload(data, **kwargs), **kwargs)
         self.remove(data)
         return result
 
     @requires_capability(Capability.COMPOSE)
-    def compose(self, location: Location, /, *files: FileData, **kwargs: Any) -> FileData:
-        """Combine multiple files into a new file."""
+    def compose(self, location: types.Location, /, *files: data.FileData, **kwargs: Any) -> data.FileData:
+        """Combine multiple files into a new file.
+
+        Args:
+            location: The destination location for the composed file.
+            *files: FileData objects representing the files to combine.
+            **kwargs: Additional metadata for the operation.
+        """
         return self.manager.compose(location, files, kwargs)
 
     def compose_synthetic(
-        self, location: Location, dest_storage: Storage, /, *files: FileData, **kwargs: Any
-    ) -> FileData:
-        """Generic composition that relies on APPEND."""
+        self, location: types.Location, dest_storage: Storage, /, *files: data.FileData, **kwargs: Any
+    ) -> data.FileData:
+        """Generic composition that relies on [APPEND][file_keeper.Capability.APPEND].
+
+        Args:
+            location: The destination location for the composed file.
+            dest_storage: The destination storage
+            *files: FileData objects representing the files to combine.
+            **kwargs: Additional metadata for the operation.
+        """
         result = dest_storage.upload(location, make_upload(b""), **kwargs)
 
         # when first append succeeded with the fragment of the file added
@@ -627,24 +887,34 @@ class Storage(ABC):  # noqa: B024
 
         return result
 
-    def one_time_link(self, data: FileData, /, **kwargs: Any) -> str | None:
-        """Link that can be used limited number of times."""
+    def one_time_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
+        """Return one-time download link.
+
+        Args:
+            data: The FileData object representing the file.
+            **kwargs: Additional metadata for the operation.
+        """
         if self.supports(Capability.ONE_TIME_LINK):
             return self.reader.one_time_link(data, kwargs)
 
-    def temporal_link(self, data: FileData, duration: int, /, **kwargs: Any) -> str | None:
-        """Link that remains valid for a limited duration of time.
+    def temporal_link(self, data: data.FileData, duration: int, /, **kwargs: Any) -> str | None:
+        """Return temporal download link.
 
         Args:
-            data: file details
-            duration: controls lifetime of the link.
-            **kwargs: exra parameters for custom storages
+            data: The FileData object representing the file.
+            duration: The duration for which the link is valid.
+            **kwargs: Additional metadata for the operation.
         """
         if self.supports(Capability.TEMPORAL_LINK):
             return self.reader.temporal_link(data, duration, kwargs)
 
-    def permanent_link(self, data: FileData, /, **kwargs: Any) -> str | None:
-        """Link that remains valid as long as file exists."""
+    def permanent_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
+        """Return permanent download link.
+
+        Args:
+            data: The FileData object representing the file.
+            **kwargs: Additional metadata for the operation.
+        """
         if self.supports(Capability.PERMANENT_LINK):
             return self.reader.permanent_link(data, kwargs)
 

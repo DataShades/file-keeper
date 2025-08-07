@@ -85,10 +85,11 @@ class Upload:
 
 
 def make_upload(value: Any) -> Upload:
-    """Convert value into Upload object.
+    """Convert value into [Upload][file_keeper.Upload] object.
 
-    Use this function for simple and reliable initialization of Upload
-    object. Avoid creating Upload manually, unless you are 100% sure you can
+    Use this function for simple and reliable initialization of
+    [Upload][file_keeper.Upload] object. Avoid creating
+    [Upload][file_keeper.Upload] manually, unless you are 100% sure you can
     provide correct MIMEtype, size and stream.
 
     Args:
@@ -102,7 +103,7 @@ def make_upload(value: Any) -> Upload:
 
     Example:
         ```python
-        storage.upload("file.txt", make_upload(b"hello world"))
+        upload = storage.upload("file.txt", make_upload(b"hello world"))
         ```
 
     """

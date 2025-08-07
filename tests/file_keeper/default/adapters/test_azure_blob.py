@@ -3,10 +3,11 @@ from __future__ import annotations
 import dataclasses
 import os
 from typing import Any
-import file_keeper as fk
+
 import pytest
 from faker import Faker
 
+import file_keeper as fk
 import file_keeper.default.adapters.azure_blob as azure
 
 from . import standard

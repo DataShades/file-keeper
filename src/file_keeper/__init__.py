@@ -13,7 +13,7 @@ from .core.storage import (
     adapters,
     make_storage,
 )
-from .core.types import Location
+from .core.types import Location, SignedAction
 from .core.upload import Upload, make_upload
 from .core.utils import (
     Capability,
@@ -28,6 +28,7 @@ __all__ = [
     "BaseData",
     "Capability",
     "Location",
+    "SignedAction",
     "FileData",
     "HashingReader",
     "IterableBytesReader",
