@@ -18,9 +18,7 @@ log = logging.getLogger(__name__)
 class Settings(fk.Settings):
     """Settings for Null storage."""
 
-    bucket: dict[str, bytes] = cast(
-        "dict[str, bytes]", dataclasses.field(default_factory=dict)
-    )
+    bucket: dict[str, bytes] = cast("dict[str, bytes]", dataclasses.field(default_factory=dict))
 
 
 class Uploader(fk.Uploader):
@@ -35,17 +33,12 @@ class Uploader(fk.Uploader):
         extras: dict[str, Any],
     ) -> fk.FileData:
         reader = upload.hashing_reader()
-        if (
-            location in self.storage.settings.bucket
-            and not self.storage.settings.override_existing
-        ):
+        if location in self.storage.settings.bucket and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
 
         self.storage.settings.bucket[location] = reader.read()
 
-        return fk.FileData(
-            location, upload.size, upload.content_type, hash=reader.get_hash()
-        )
+        return fk.FileData(location, upload.size, upload.content_type, hash=reader.get_hash())
 
     @override
     def multipart_start(
@@ -136,9 +129,7 @@ class Manager(fk.Manager):
     capabilities: fk.Capability = fk.Capability.MANAGER_CAPABILITIES
 
     @override
-    def remove(
-        self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]
-    ) -> bool:
+    def remove(self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]) -> bool:
         bucket = self.storage.settings.bucket
         result = bucket.pop(data.location, None)
         return result is not None

@@ -11,9 +11,7 @@ from . import registry, types, utils
 
 SAMPLE_SIZE = 1024 * 2
 
-UploadFactory: TypeAlias = Callable[
-    [Any], "Upload | BytesIO | BufferedReader | bytes | bytearray | None"
-]
+UploadFactory: TypeAlias = Callable[[Any], "Upload | BytesIO | BufferedReader | bytes | bytearray | None"]
 
 upload_factories = registry.Registry[UploadFactory, type]()
 

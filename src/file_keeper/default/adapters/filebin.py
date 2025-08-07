@@ -79,9 +79,7 @@ class Reader(fk.Reader):
 
 class Manager(fk.Manager):
     storage: FilebinStorage
-    capabilities: fk.Capability = (
-        fk.Capability.REMOVE | fk.Capability.SCAN | fk.Capability.ANALYZE
-    )
+    capabilities: fk.Capability = fk.Capability.REMOVE | fk.Capability.SCAN | fk.Capability.ANALYZE
 
     @override
     def remove(
@@ -107,9 +105,7 @@ class Manager(fk.Manager):
             yield record["filename"]
 
     @override
-    def analyze(
-        self, location: fk.types.Location, extras: dict[str, Any]
-    ) -> fk.FileData:
+    def analyze(self, location: fk.types.Location, extras: dict[str, Any]) -> fk.FileData:
         resp = requests.get(
             f"{API_URL}/{self.storage.settings.bin}",
             headers={"accept": "application/json"},

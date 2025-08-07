@@ -51,10 +51,7 @@ class TestCapabilities:
     def test_multi_unit_exclusion(self):
         """Multiple units can be excluded at once."""
         cluster = Capability.CREATE | Capability.REMOVE | Capability.STREAM
-        assert (
-            Capability.exclude(cluster, Capability.REMOVE, Capability.CREATE)
-            == Capability.STREAM
-        )
+        assert Capability.exclude(cluster, Capability.REMOVE, Capability.CREATE) == Capability.STREAM
 
     def test_exclusion_of_cluster(self):
         """The whole cluster can be excluded at once."""

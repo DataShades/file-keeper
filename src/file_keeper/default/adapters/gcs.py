@@ -57,11 +57,7 @@ class Settings(fk.Settings):
             if not credentials:
                 if service_account_file:
                     try:
-                        credentials = (
-                            ServiceAccountCredentials.from_service_account_file(
-                                service_account_file
-                            )
-                        )
+                        credentials = ServiceAccountCredentials.from_service_account_file(service_account_file)
                     except OSError as err:
                         raise fk.exc.InvalidStorageConfigurationError(
                             self.name,
@@ -70,9 +66,7 @@ class Settings(fk.Settings):
                     if not project_id:
                         project_id = credentials.project_id or ""  # pyright: ignore[reportUnknownVariableType]
                 else:
-                    raise fk.exc.MissingStorageConfigurationError(
-                        self.name, "credentials_file"
-                    )
+                    raise fk.exc.MissingStorageConfigurationError(self.name, "credentials_file")
 
             if not project_id:
                 raise fk.exc.MissingStorageConfigurationError(self.name, "project_id")
@@ -249,8 +243,7 @@ class Uploader(fk.Uploader):
                     raise fk.exc.ExtrasError(
                         {
                             "session_url": [
-                                "Invalid response from Google Cloud:"
-                                + " missing range header",
+                                "Invalid response from Google Cloud:" + " missing range header",
                             ],
                         },
                     )
@@ -265,8 +258,7 @@ class Uploader(fk.Uploader):
             raise fk.exc.ExtrasError(
                 {
                     "session_url": [
-                        "Invalid response from Google Cloud:"
-                        + f" unexpected status {resp.status_code}",
+                        "Invalid response from Google Cloud:" + f" unexpected status {resp.status_code}",
                     ],
                 },
             )
@@ -353,9 +345,7 @@ class Manager(fk.Manager):
         return blob.exists()
 
     @override
-    def move(
-        self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]
-    ) -> fk.FileData:
+    def move(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         src_filepath = self.storage.full_path(data.location)
         dest_filepath = self.storage.full_path(location)
 
@@ -372,9 +362,7 @@ class Manager(fk.Manager):
         return self.analyze(location, extras)
 
     @override
-    def copy(
-        self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]
-    ) -> fk.FileData:
+    def copy(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         src_filepath = self.storage.full_path(data.location)
         dest_filepath = self.storage.full_path(location)
 
@@ -427,14 +415,10 @@ class Manager(fk.Manager):
 
         method = {"download": "GET", "upload": "PUT", "delete": "DELETE"}[action]
 
-        return blob.generate_signed_url(
-            version="v4", expiration=timedelta(seconds=duration), method=method
-        )
+        return blob.generate_signed_url(version="v4", expiration=timedelta(seconds=duration), method=method)
 
     @override
-    def remove(
-        self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]
-    ) -> bool:
+    def remove(self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]) -> bool:
         if isinstance(data, fk.MultipartData):
             return False
 

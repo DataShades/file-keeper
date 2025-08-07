@@ -11,9 +11,7 @@ if TYPE_CHECKING:
 
 Location = NewType("Location", str)
 
-LocationTransformer: TypeAlias = Callable[
-    [str, "Upload | BaseData | None", "dict[str, Any]"], str
-]
+LocationTransformer: TypeAlias = Callable[[str, "Upload | BaseData | None", "dict[str, Any]"], str]
 
 SignedAction = Literal["upload", "download", "delete"]
 

@@ -35,11 +35,7 @@ class Settings(fk.Settings):
 
         if self.redis is None:  # pyright: ignore[reportUnnecessaryComparison]
             if url not in pool:
-                conn = (
-                    redis.ConnectionPool.from_url(url)
-                    if url
-                    else redis.ConnectionPool()
-                )
+                conn = redis.ConnectionPool.from_url(url) if url else redis.ConnectionPool()
                 pool.register(url, conn)
 
             self.redis = redis.Redis(connection_pool=pool[url])
@@ -277,9 +273,7 @@ class Manager(fk.Manager):
         if not cfg.redis.hexists(cfg.bucket, data.location):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        if not self.storage.settings.override_existing and cfg.redis.hexists(
-            cfg.bucket, location
-        ):
+        if not self.storage.settings.override_existing and cfg.redis.hexists(cfg.bucket, location):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         content: Any = cfg.redis.hget(cfg.bucket, data.location)
@@ -324,9 +318,7 @@ class Manager(fk.Manager):
         return bool(cfg.redis.hexists(cfg.bucket, data.location))
 
     @override
-    def remove(
-        self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]
-    ) -> bool:
+    def remove(self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]) -> bool:
         """Remove the file."""
         cfg = self.storage.settings
         result = cfg.redis.hdel(cfg.bucket, data.location)
@@ -340,9 +332,7 @@ class Manager(fk.Manager):
             yield key.decode()
 
     @override
-    def analyze(
-        self, location: fk.types.Location, extras: dict[str, Any]
-    ) -> fk.FileData:
+    def analyze(self, location: fk.types.Location, extras: dict[str, Any]) -> fk.FileData:
         """Return all details about location.
 
         Raises:

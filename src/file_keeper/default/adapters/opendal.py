@@ -29,9 +29,7 @@ class FileStream:
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
-    params: dataclasses.InitVar[dict[str, Any] | None] = cast(
-        "dict[str, Any]|None", dataclasses.field(default=None)
-    )
+    params: dataclasses.InitVar[dict[str, Any] | None] = cast("dict[str, Any]|None", dataclasses.field(default=None))
     scheme: dataclasses.InitVar[str] = ""
 
     operator: opendal.Operator = None  # pyright: ignore[reportAssignmentType]
@@ -150,9 +148,7 @@ class Manager(fk.Manager):
     )
 
     @override
-    def copy(
-        self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]
-    ) -> fk.FileData:
+    def copy(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         """Copy file inside the storage.
 
         Raises:
@@ -164,9 +160,7 @@ class Manager(fk.Manager):
         if not self.exists(data, extras):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        if not self.storage.settings.override_existing and self.exists(
-            fk.FileData(location), extras
-        ):
+        if not self.storage.settings.override_existing and self.exists(fk.FileData(location), extras):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         src_location = self.storage.full_path(data.location)
@@ -177,9 +171,7 @@ class Manager(fk.Manager):
         return fk.FileData.from_object(data, location=location)
 
     @override
-    def move(
-        self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]
-    ) -> fk.FileData:
+    def move(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         """Move file to a different location inside the storage.
 
         Raises:
@@ -191,9 +183,7 @@ class Manager(fk.Manager):
         if not self.exists(data, extras):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        if not self.storage.settings.override_existing and self.exists(
-            fk.FileData(location), extras
-        ):
+        if not self.storage.settings.override_existing and self.exists(fk.FileData(location), extras):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         src_location = self.storage.full_path(data.location)
@@ -216,9 +206,7 @@ class Manager(fk.Manager):
         return True
 
     @override
-    def analyze(
-        self, location: fk.types.Location, extras: dict[str, Any]
-    ) -> fk.FileData:
+    def analyze(self, location: fk.types.Location, extras: dict[str, Any]) -> fk.FileData:
         """Check if file exists."""
         stream = self.storage.stream(fk.FileData(location))
 
@@ -260,9 +248,7 @@ class Manager(fk.Manager):
                 yield entry.path
 
     @override
-    def append(
-        self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]
-    ) -> fk.FileData:
+    def append(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         """Append content to existing file.
 
         If final content type is not supported by the storage, original file is

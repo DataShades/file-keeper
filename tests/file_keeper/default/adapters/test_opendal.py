@@ -92,9 +92,7 @@ class TestStorage:
         )
 
     def test_capabilities_http(self):
-        storage = Storage(
-            {"scheme": "http", "params": {"endpoint": "https://google.com"}}
-        )
+        storage = Storage({"scheme": "http", "params": {"endpoint": "https://google.com"}})
         assert not storage.supports(fk.Capability.REMOVE)
         assert not storage.supports(fk.Capability.SCAN)
         assert not storage.supports(fk.Capability.CREATE)

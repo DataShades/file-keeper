@@ -70,9 +70,7 @@ class Manager(fk.Manager):
     capabilities: fk.Capability = fk.Capability.MANAGER_CAPABILITIES
 
     @override
-    def remove(
-        self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]
-    ) -> bool:
+    def remove(self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]) -> bool:
         return False
 
     @override

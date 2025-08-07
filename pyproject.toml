@@ -52,6 +52,7 @@ default = "file_keeper.default"
 
 [tool.ruff]
 target-version = "py39"
+line-length = 120
 
 [tool.ruff.lint]
 select = [

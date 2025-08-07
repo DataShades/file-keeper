@@ -32,18 +32,14 @@ class Settings(fk.Settings):
 
         if self.location is None:  # pyright: ignore[reportUnnecessaryComparison]
             if not self.location_column:
-                raise fk.exc.MissingStorageConfigurationError(
-                    self.name, "location_column"
-                )
+                raise fk.exc.MissingStorageConfigurationError(self.name, "location_column")
             self.location = sa.Column(self.location_column, sa.Text, primary_key=True)
         else:
             self.location_column = self.location.name
 
         if self.content is None:  # pyright: ignore[reportUnnecessaryComparison]
             if not self.content_column:
-                raise fk.exc.MissingStorageConfigurationError(
-                    self.name, "content_column"
-                )
+                raise fk.exc.MissingStorageConfigurationError(self.name, "content_column")
             self.content = sa.Column(self.content_column, sa.LargeBinary)
         else:
             self.content_column = self.content.name
@@ -66,9 +62,7 @@ class Settings(fk.Settings):
             if self.initialize:
                 self.table.create(self.engine)
             else:
-                raise fk.exc.InvalidStorageConfigurationError(
-                    self.name, f"table {self.table.name} does not exist"
-                )
+                raise fk.exc.InvalidStorageConfigurationError(self.name, f"table {self.table.name} does not exist")
 
 
 class Reader(fk.Reader):
@@ -113,17 +107,9 @@ class Uploader(fk.Uploader):
         table = self.storage.settings.table
 
         with self.storage.settings.engine.begin() as conn:
-            if conn.scalar(
-                sa.select(1)
-                .select_from(table)
-                .where(self.storage.settings.location == location)
-            ):
+            if conn.scalar(sa.select(1).select_from(table).where(self.storage.settings.location == location)):
                 if self.storage.settings.override_existing:
-                    stmt = (
-                        sa.update(table)
-                        .where(self.storage.settings.location == location)
-                        .values(values)
-                    )
+                    stmt = sa.update(table).where(self.storage.settings.location == location).values(values)
                     conn.execute(stmt)
                 else:
                     raise fk.exc.ExistingFileError(self.storage, location)
@@ -151,9 +137,7 @@ class Manager(fk.Manager):
     )
 
     @override
-    def move(
-        self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]
-    ) -> fk.FileData:
+    def move(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         if not self.exists(data, extras):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
@@ -174,9 +158,7 @@ class Manager(fk.Manager):
         return fk.FileData.from_object(data, location=location)
 
     @override
-    def copy(
-        self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]
-    ) -> fk.FileData:
+    def copy(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         if not self.exists(data, extras):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
@@ -188,9 +170,7 @@ class Manager(fk.Manager):
 
         with self.storage.settings.engine.begin() as conn:
             content = conn.scalar(
-                sa.select(self.storage.settings.content).where(
-                    self.storage.settings.location == data.location
-                )
+                sa.select(self.storage.settings.content).where(self.storage.settings.location == data.location)
             )
 
             conn.execute(
@@ -206,9 +186,7 @@ class Manager(fk.Manager):
 
     @override
     def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
-        stmt = sa.select(self.storage.settings.content).where(
-            self.storage.settings.location == location
-        )
+        stmt = sa.select(self.storage.settings.content).where(self.storage.settings.location == location)
         with self.storage.settings.engine.connect() as conn:
             content = conn.scalar(stmt)
 
@@ -228,18 +206,14 @@ class Manager(fk.Manager):
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         stmt = (
-            sa.select(1)
-            .select_from(self.storage.settings.table)
-            .where(self.storage.settings.location == data.location)
+            sa.select(1).select_from(self.storage.settings.table).where(self.storage.settings.location == data.location)
         )
         with self.storage.settings.engine.connect() as conn:
             return bool(conn.scalar(stmt))
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
-        stmt = sa.select(self.storage.settings.location).select_from(
-            self.storage.settings.table
-        )
+        stmt = sa.select(self.storage.settings.location).select_from(self.storage.settings.table)
         with self.storage.settings.engine.connect() as conn:
             for row in conn.execute(stmt):
                 yield row[0]

@@ -28,9 +28,7 @@ class Settings(fk.Settings):
     container_name: dataclasses.InitVar[str] = ""
 
     secret: dataclasses.InitVar[str | None] = None
-    params: dataclasses.InitVar[dict[str, Any] | None] = cast(
-        "dict[str, Any] | None", dataclasses.field(default=None)
-    )
+    params: dataclasses.InitVar[dict[str, Any] | None] = cast("dict[str, Any] | None", dataclasses.field(default=None))
 
     public_prefix: str = ""
 
@@ -149,10 +147,7 @@ class Reader(fk.Reader):
 class Manager(fk.Manager):
     storage: LibCloudStorage
     capabilities: fk.Capability = (
-        fk.Capability.SCAN
-        | fk.Capability.REMOVE
-        | fk.Capability.EXISTS
-        | fk.Capability.ANALYZE
+        fk.Capability.SCAN | fk.Capability.REMOVE | fk.Capability.EXISTS | fk.Capability.ANALYZE
     )
 
     @override

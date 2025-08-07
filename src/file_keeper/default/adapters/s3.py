@@ -79,9 +79,7 @@ class Reader(fk.Reader):
         filepath = self.storage.full_path(data.location)
 
         try:
-            obj: Any = client.get_object(
-                Bucket=self.storage.settings.bucket, Key=filepath
-            )
+            obj: Any = client.get_object(Bucket=self.storage.settings.bucket, Key=filepath)
         except client.exceptions.NoSuchKey as err:
             raise fk.exc.MissingFileError(
                 self.storage.settings.name,
@@ -103,9 +101,7 @@ class Uploader(fk.Uploader):
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
-        if not self.storage.settings.override_existing and self.storage.exists(
-            fk.FileData(location), **extras
-        ):
+        if not self.storage.settings.override_existing and self.storage.exists(fk.FileData(location), **extras):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         filepath = self.storage.full_path(location)
@@ -186,9 +182,7 @@ class Uploader(fk.Uploader):
                 raise fk.exc.UploadOutOfBoundError(last_byte, size)
 
             if upload.size < 1024 * 1024 * 5 and last_byte < size:
-                raise fk.exc.ExtrasError(
-                    {"upload": ["Only the final part can be smaller than 5MiB"]}
-                )
+                raise fk.exc.ExtrasError({"upload": ["Only the final part can be smaller than 5MiB"]})
 
             resp = self.storage.settings.client.upload_part(
                 Bucket=self.storage.settings.bucket,
@@ -203,14 +197,10 @@ class Uploader(fk.Uploader):
 
         elif "etag" in extras:
             etag = extras["etag"].strip('"')
-            data.storage_data["uploaded"] = data.storage_data["uploaded"] + extras.get(
-                "uploaded", 0
-            )
+            data.storage_data["uploaded"] = data.storage_data["uploaded"] + extras.get("uploaded", 0)
 
         else:
-            raise fk.exc.ExtrasError(
-                {"upload": ["Either upload or etag must be specified"]}
-            )
+            raise fk.exc.ExtrasError({"upload": ["Either upload or etag must be specified"]})
 
         data.storage_data["etags"][data.storage_data["part_number"]] = etag
         data.storage_data["part_number"] = data.storage_data["part_number"] + 1
@@ -234,16 +224,11 @@ class Uploader(fk.Uploader):
             Key=filepath,
             UploadId=data.storage_data["upload_id"],
             MultipartUpload={
-                "Parts": [
-                    {"PartNumber": int(num), "ETag": tag}
-                    for num, tag in data.storage_data["etags"].items()
-                ]
+                "Parts": [{"PartNumber": int(num), "ETag": tag} for num, tag in data.storage_data["etags"].items()]
             },
         )
 
-        obj = self.storage.settings.client.get_object(
-            Bucket=self.storage.settings.bucket, Key=result["Key"]
-        )
+        obj = self.storage.settings.client.get_object(Bucket=self.storage.settings.bucket, Key=result["Key"])
 
         return fk.FileData(
             fk.types.Location(
@@ -258,15 +243,11 @@ class Uploader(fk.Uploader):
         )
 
     @override
-    def multipart_refresh(
-        self, data: fk.MultipartData, extras: dict[str, Any]
-    ) -> fk.MultipartData:
+    def multipart_refresh(self, data: fk.MultipartData, extras: dict[str, Any]) -> fk.MultipartData:
         client = self.storage.settings.client
         filepath = self.storage.full_path(data.location)
 
-        result = client.list_multipart_uploads(
-            Bucket=self.storage.settings.bucket, Prefix=filepath
-        )
+        result = client.list_multipart_uploads(Bucket=self.storage.settings.bucket, Prefix=filepath)
         if _uploads := result.get("Uploads"):
             # TODO: compute total uploaded size
             return data
@@ -323,24 +304,18 @@ class Manager(fk.Manager):
         if not self.exists(data, extras):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        if not self.storage.settings.override_existing and self.exists(
-            fk.FileData(location), extras
-        ):
+        if not self.storage.settings.override_existing and self.exists(fk.FileData(location), extras):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         old_key = self.storage.full_path(data.location)
         new_key = self.storage.full_path(location)
 
-        client.copy_object(
-            Bucket=bucket, CopySource={"Bucket": bucket, "Key": old_key}, Key=new_key
-        )
+        client.copy_object(Bucket=bucket, CopySource={"Bucket": bucket, "Key": old_key}, Key=new_key)
 
         return self.analyze(location, extras)
 
     @override
-    def move(
-        self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]
-    ) -> fk.FileData:
+    def move(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         result = self.copy(location, data, extras)
         self.remove(data, extras)
 
@@ -384,9 +359,7 @@ class Manager(fk.Manager):
         return True
 
     @override
-    def remove(
-        self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]
-    ) -> bool:
+    def remove(self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]) -> bool:
         if isinstance(data, fk.MultipartData):
             return False
 
@@ -403,9 +376,7 @@ class Manager(fk.Manager):
         return True
 
     @override
-    def analyze(
-        self, location: fk.types.Location, extras: dict[str, Any]
-    ) -> fk.FileData:
+    def analyze(self, location: fk.types.Location, extras: dict[str, Any]) -> fk.FileData:
         """Return all details about location."""
         filepath = self.storage.full_path(location)
         client = self.storage.settings.client

@@ -405,9 +405,7 @@ class Manager(fk.Manager):
         return os.path.exists(filepath)
 
     @override
-    def remove(
-        self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]
-    ) -> bool:
+    def remove(self, data: fk.FileData | fk.MultipartData, extras: dict[str, Any]) -> bool:
         """Remove the file."""
         filepath = self.storage.full_path(data.location)
         if not os.path.exists(filepath):
@@ -428,9 +426,7 @@ class Manager(fk.Manager):
             yield os.path.relpath(entry, path)
 
     @override
-    def analyze(
-        self, location: fk.types.Location, extras: dict[str, Any]
-    ) -> fk.FileData:
+    def analyze(self, location: fk.types.Location, extras: dict[str, Any]) -> fk.FileData:
         """Return all details about location.
 
         Raises:

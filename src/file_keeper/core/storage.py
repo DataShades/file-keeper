@@ -155,9 +155,7 @@ class Manager(StorageService):
         ```
     """
 
-    def remove(
-        self, data: data.FileData | data.MultipartData, extras: dict[str, Any]
-    ) -> bool:
+    def remove(self, data: data.FileData | data.MultipartData, extras: dict[str, Any]) -> bool:
         """Remove file from the storage."""
         raise NotImplementedError
 
@@ -262,9 +260,7 @@ class Reader(StorageService):
         """Return permanent download link."""
         raise NotImplementedError
 
-    def temporal_link(
-        self, data: data.FileData, duration: int, extras: dict[str, Any]
-    ) -> str:
+    def temporal_link(self, data: data.FileData, duration: int, extras: dict[str, Any]) -> str:
         """Return temporal download link.
 
         Args:
@@ -281,30 +277,49 @@ class Reader(StorageService):
 
 @dataclasses.dataclass()
 class Settings:
-    name: str = "unknown"
-    """Name of the storage"""
-    override_existing: bool = False
-    """Allow overriding existing files."""
+    name: str = dataclasses.field(
+        default="unknown",
+        metadata={"help": "Descriptive name of the storage used for debugging."},
+    )
 
-    path: str = ""
-    """Prefix for the file's location."""
+    override_existing: bool = dataclasses.field(
+        default=False,
+        metadata={"help": "If file already exists, replace it with new content."},
+    )
+
+    path: str = dataclasses.field(
+        default="",
+        metadata={"help": "Prefix for the file's location."},
+    )
 
     location_transformers: list[str] = cast(
-        "list[str]", dataclasses.field(default_factory=list)
+        "list[str]",
+        dataclasses.field(
+            default_factory=list,
+            metadata={"help": "List of transformations applied to the file location."},
+        ),
     )
 
-    """Names of functions used to sanitize location"""
     disabled_capabilities: list[str] = cast(
-        "list[str]", dataclasses.field(default_factory=list)
+        "list[str]",
+        dataclasses.field(
+            default_factory=list,
+            metadata={"help": "Capabilities that are not supported even if implemented."},
+        ),
     )
-    """Capabilities that are not supported even if implemented"""
 
-    initialize: bool = False
-    """Prepare storage backend for uploads(create path, bucket, DB)"""
+    initialize: bool = dataclasses.field(
+        default=False,
+        metadata={"help": "Prepare storage backend for uploads(create path, bucket, DB)"},
+    )
 
     _required_options: ClassVar[list[str]] = []
     _extra_settings: dict[str, Any] = cast(
-        "dict[str, Any]", dataclasses.field(default_factory=dict)
+        "dict[str, Any]",
+        dataclasses.field(
+            default_factory=dict,
+            metadata={"help": "Any additional fields that are not known to the settings class."},
+        ),
     )
 
     def __post_init__(self, **kwargs: Any):
@@ -433,11 +448,7 @@ class Storage(ABC):  # noqa: B024
         return cls.SettingsFactory.from_dict(settings)
 
     def compute_capabilities(self) -> Capability:
-        result = (
-            self.uploader.capabilities
-            | self.manager.capabilities
-            | self.reader.capabilities
-        )
+        result = self.uploader.capabilities | self.manager.capabilities | self.reader.capabilities
 
         for name in self.settings.disabled_capabilities:
             result = result.exclude(Capability[name])
@@ -501,10 +512,7 @@ class Storage(ABC):  # noqa: B024
     def file_as_upload(self, data: data.FileData, **kwargs: Any) -> Upload:
         """Make an Upload with file content."""
         stream = self.stream(data, **kwargs)
-        if hasattr(stream, "read"):
-            stream = cast(types.PStream, stream)
-        else:
-            stream = utils.IterableBytesReader(stream)
+        stream = cast(types.PStream, stream) if hasattr(stream, "read") else utils.IterableBytesReader(stream)
 
         return Upload(
             stream,
@@ -514,9 +522,7 @@ class Storage(ABC):  # noqa: B024
         )
 
     @requires_capability(Capability.CREATE)
-    def upload(
-        self, location: types.Location, upload: Upload, /, **kwargs: Any
-    ) -> data.FileData:
+    def upload(self, location: types.Location, upload: Upload, /, **kwargs: Any) -> data.FileData:
         """Upload data into specified location."""
         return self.uploader.upload(location, upload, kwargs)
 
@@ -532,23 +538,17 @@ class Storage(ABC):  # noqa: B024
         return self.uploader.multipart_start(location, data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_refresh(
-        self, data: data.MultipartData, /, **kwargs: Any
-    ) -> data.MultipartData:
+    def multipart_refresh(self, data: data.MultipartData, /, **kwargs: Any) -> data.MultipartData:
         """Return the current state of the multipart upload."""
         return self.uploader.multipart_refresh(data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_update(
-        self, data: data.MultipartData, /, **kwargs: Any
-    ) -> data.MultipartData:
+    def multipart_update(self, data: data.MultipartData, /, **kwargs: Any) -> data.MultipartData:
         """Update multipart upload."""
         return self.uploader.multipart_update(data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_complete(
-        self, data: data.MultipartData, /, **kwargs: Any
-    ) -> data.FileData:
+    def multipart_complete(self, data: data.MultipartData, /, **kwargs: Any) -> data.FileData:
         """Finalize multipart upload."""
         return self.uploader.multipart_complete(data, kwargs)
 
@@ -558,9 +558,7 @@ class Storage(ABC):  # noqa: B024
         return self.manager.exists(data, kwargs)
 
     @requires_capability(Capability.REMOVE)
-    def remove(
-        self, data: data.FileData | data.MultipartData, /, **kwargs: Any
-    ) -> bool:
+    def remove(self, data: data.FileData | data.MultipartData, /, **kwargs: Any) -> bool:
         """Remove file from the storage."""
         return self.manager.remove(data, kwargs)
 
@@ -749,9 +747,7 @@ class Storage(ABC):  # noqa: B024
         if self.supports(Capability.ONE_TIME_LINK):
             return self.reader.one_time_link(data, kwargs)
 
-    def temporal_link(
-        self, data: data.FileData, duration: int, /, **kwargs: Any
-    ) -> str | None:
+    def temporal_link(self, data: data.FileData, duration: int, /, **kwargs: Any) -> str | None:
         """Link that remains valid for a limited duration of time.
 
         Args:

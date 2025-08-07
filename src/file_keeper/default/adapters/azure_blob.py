@@ -120,9 +120,7 @@ class Manager(fk.Manager):
     )
 
     @override
-    def copy(
-        self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]
-    ) -> fk.FileData:
+    def copy(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         src_filepath = self.storage.full_path(data.location)
         blob = self.storage.settings.container.get_blob_client(src_filepath)
         if not blob.exists():
@@ -140,9 +138,7 @@ class Manager(fk.Manager):
         return self.analyze(location, extras)
 
     @override
-    def move(
-        self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]
-    ) -> fk.FileData:
+    def move(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         self.copy(location, data, extras)
         self.remove(data, extras)
         return self.analyze(location, extras)
@@ -190,9 +186,7 @@ class Manager(fk.Manager):
         blob_client.delete_blob()
         return True
 
-    def azure_signed_action(
-        self, action: fk.types.SignedAction, duration: int, location: fk.Location
-    ):
+    def azure_signed_action(self, action: fk.types.SignedAction, duration: int, location: fk.Location):
         perms = BlobSasPermissions()
         if action == "download":
             perms.read = True

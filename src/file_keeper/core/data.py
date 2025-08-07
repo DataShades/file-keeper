@@ -30,9 +30,7 @@ class BaseData(Generic[TData]):
     size: int = 0
     content_type: str = ""
     hash: str = ""
-    storage_data: dict[str, Any] = cast(
-        "dict[str, Any]", dataclasses.field(default_factory=dict)
-    )
+    storage_data: dict[str, Any] = cast("dict[str, Any]", dataclasses.field(default_factory=dict))
 
     _plain_keys: ClassVar[list[str]] = ["location", "size", "content_type", "hash"]
     _complex_keys: ClassVar[list[str]] = ["storage_data"]
@@ -60,9 +58,7 @@ class BaseData(Generic[TData]):
                 if checker(source, key)
             ],
             *[
-                overrides[key]
-                if key in overrides
-                else copy.deepcopy(getter(source, key))
+                overrides[key] if key in overrides else copy.deepcopy(getter(source, key))
                 for key in cls._complex_keys
                 if checker(source, key)
             ],

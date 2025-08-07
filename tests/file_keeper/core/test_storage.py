@@ -35,10 +35,7 @@ class TestSettings:
 
             record = caplog.records[0]
 
-            assert (
-                record.message
-                == "Storage test received unknow settings: {'hello': 'world'}"
-            )
+            assert record.message == "Storage test received unknow settings: {'hello': 'world'}"
             assert record.levelname == "WARNING"
 
             assert settings._extra_settings == {"hello": "world"}  # pyright: ignore[reportPrivateUsage]
@@ -55,9 +52,7 @@ class TestUploader:
             uploader.upload(fk.types.Location(faker.file_name()), make_upload(b""), {})
 
         with pytest.raises(NotImplementedError):
-            uploader.multipart_start(
-                fk.types.Location(faker.file_name()), MultipartData(), {}
-            )
+            uploader.multipart_start(fk.types.Location(faker.file_name()), MultipartData(), {})
 
         with pytest.raises(NotImplementedError):
             uploader.multipart_refresh(MultipartData(), {})
@@ -121,9 +116,7 @@ class TestStorage:
     def test_inherited_capabilities(self):
         """Storage combine capabilities of its services."""
         storage = FakeStorage({})
-        assert storage.capabilities == (
-            Capability.REMOVE | Capability.STREAM | Capability.CREATE
-        )
+        assert storage.capabilities == (Capability.REMOVE | Capability.STREAM | Capability.CREATE)
 
     def test_disabled_capabilities(self):
         """Existing capabilities can be Ignored."""
