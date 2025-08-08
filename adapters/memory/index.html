@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://datashades.github.io/file-keeper/core_concepts/uploads/">
+        <link rel="canonical" href="https://datashades.github.io/file-keeper/adapters/memory/">
       
       
-        <link rel="prev" href="../data_model/">
+        <link rel="prev" href="../fs/">
       
       
-        <link rel="next" href="../capabilities/">
+        <link rel="next" href="../null/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Upload - file-keeper</title>
+        <title>Memory - file-keeper</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#upload" class="md-skip">
+        <a href="#memory" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Upload
+              Memory
             
           </span>
         </div>
@@ -309,8 +309,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -346,11 +348,11 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
@@ -366,7 +368,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Storage adapters
@@ -380,7 +382,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/emulate/" class="md-nav__link">
+      <a href="../emulate/" class="md-nav__link">
         
   
   
@@ -403,7 +405,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/libcloud/" class="md-nav__link">
+      <a href="../libcloud/" class="md-nav__link">
         
   
   
@@ -426,7 +428,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/opendal/" class="md-nav__link">
+      <a href="../opendal/" class="md-nav__link">
         
   
   
@@ -449,7 +451,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/s3/" class="md-nav__link">
+      <a href="../s3/" class="md-nav__link">
         
   
   
@@ -472,7 +474,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/azure_blob/" class="md-nav__link">
+      <a href="../azure_blob/" class="md-nav__link">
         
   
   
@@ -495,7 +497,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/filebin/" class="md-nav__link">
+      <a href="../filebin/" class="md-nav__link">
         
   
   
@@ -518,7 +520,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/gcs/" class="md-nav__link">
+      <a href="../gcs/" class="md-nav__link">
         
   
   
@@ -541,228 +543,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/fs/" class="md-nav__link">
+      <a href="../fs/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Local filesystem
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../adapters/memory/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Memory
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../adapters/null/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Null
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../adapters/proxy/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Proxy storage
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../adapters/redis/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Redis
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../adapters/sqlalchemy/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    SQLAlchemy
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../adapters/zip/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    ZIP
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-    
-  
-  
-  
-    
-    
-      
-        
-      
-        
-      
-        
-      
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    Core Concepts
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4">
-            <span class="md-nav__icon md-icon"></span>
-            Core Concepts
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../data_model/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Data model
     
   </span>
   
@@ -794,7 +580,7 @@
   
   
   <span class="md-ellipsis">
-    Upload
+    Memory
     
   </span>
   
@@ -813,7 +599,221 @@
   
   
     <li class="md-nav__item">
-      <a href="../capabilities/" class="md-nav__link">
+      <a href="../null/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Null
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../proxy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Proxy storage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../redis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Redis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sqlalchemy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SQLAlchemy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zip/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ZIP
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Core Concepts
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Core Concepts
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core_concepts/data_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data model
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core_concepts/uploads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Upload
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core_concepts/capabilities/" class="md-nav__link">
         
   
   
@@ -961,12 +961,8 @@
   
 
 
-<h1 id="upload">Upload</h1>
-<pre><code>*   Explanation of the `Upload` class.
-*   How to create an `Upload` object.
-*   Streaming uploads.
-*   Hashing.
-</code></pre>
+<h1 id="memory">Memory</h1>
+<p><code>file_keeper:memory</code></p>
 
 
 
@@ -1002,7 +998,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../data_model/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Data model">
+          <a href="../fs/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Local filesystem">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1012,20 +1008,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Data model
+                Local filesystem
               </div>
             </div>
           </a>
         
         
           
-          <a href="../capabilities/" class="md-footer__link md-footer__link--next" aria-label="Next: Capabilities">
+          <a href="../null/" class="md-footer__link md-footer__link--next" aria-label="Next: Null">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Capabilities
+                Null
               </div>
             </div>
             <div class="md-footer__button md-icon">

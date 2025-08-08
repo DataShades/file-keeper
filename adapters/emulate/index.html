@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://datashades.github.io/file-keeper/core_concepts/uploads/">
+        <link rel="canonical" href="https://datashades.github.io/file-keeper/adapters/emulate/">
       
       
-        <link rel="prev" href="../data_model/">
+        <link rel="prev" href="../../configuration/">
       
       
-        <link rel="next" href="../capabilities/">
+        <link rel="next" href="../libcloud/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Upload - file-keeper</title>
+        <title>Emulate cloud providers with Docker - file-keeper</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#upload" class="md-skip">
+        <a href="#emulate-cloud-providers-with-docker" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Upload
+              Emulate cloud providers with Docker
             
           </span>
         </div>
@@ -309,8 +309,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -346,11 +348,11 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
@@ -366,7 +368,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Storage adapters
@@ -377,10 +379,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../adapters/emulate/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Emulate cloud providers with Docker
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -391,6 +415,53 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#minio-s3-compatible" class="md-nav__link">
+    <span class="md-ellipsis">
+      MinIO (S3-compatible)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#azurite-azure-blob-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Azurite (Azure Blob Storage)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fake-gcs-server-google-cloud-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fake GCS Server (Google Cloud Storage)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -403,7 +474,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/libcloud/" class="md-nav__link">
+      <a href="../libcloud/" class="md-nav__link">
         
   
   
@@ -426,7 +497,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/opendal/" class="md-nav__link">
+      <a href="../opendal/" class="md-nav__link">
         
   
   
@@ -449,7 +520,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/s3/" class="md-nav__link">
+      <a href="../s3/" class="md-nav__link">
         
   
   
@@ -472,7 +543,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/azure_blob/" class="md-nav__link">
+      <a href="../azure_blob/" class="md-nav__link">
         
   
   
@@ -495,7 +566,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/filebin/" class="md-nav__link">
+      <a href="../filebin/" class="md-nav__link">
         
   
   
@@ -518,7 +589,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/gcs/" class="md-nav__link">
+      <a href="../gcs/" class="md-nav__link">
         
   
   
@@ -541,7 +612,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/fs/" class="md-nav__link">
+      <a href="../fs/" class="md-nav__link">
         
   
   
@@ -564,7 +635,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/memory/" class="md-nav__link">
+      <a href="../memory/" class="md-nav__link">
         
   
   
@@ -587,7 +658,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/null/" class="md-nav__link">
+      <a href="../null/" class="md-nav__link">
         
   
   
@@ -610,7 +681,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/proxy/" class="md-nav__link">
+      <a href="../proxy/" class="md-nav__link">
         
   
   
@@ -633,7 +704,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/redis/" class="md-nav__link">
+      <a href="../redis/" class="md-nav__link">
         
   
   
@@ -656,7 +727,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/sqlalchemy/" class="md-nav__link">
+      <a href="../sqlalchemy/" class="md-nav__link">
         
   
   
@@ -679,7 +750,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adapters/zip/" class="md-nav__link">
+      <a href="../zip/" class="md-nav__link">
         
   
   
@@ -706,10 +777,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -723,11 +792,11 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
@@ -743,7 +812,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Core Concepts
@@ -757,7 +826,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../data_model/" class="md-nav__link">
+      <a href="../../core_concepts/data_model/" class="md-nav__link">
         
   
   
@@ -777,19 +846,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../core_concepts/uploads/" class="md-nav__link">
         
   
   
@@ -800,7 +860,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -813,7 +872,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../capabilities/" class="md-nav__link">
+      <a href="../../core_concepts/capabilities/" class="md-nav__link">
         
   
   
@@ -944,6 +1003,41 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#minio-s3-compatible" class="md-nav__link">
+    <span class="md-ellipsis">
+      MinIO (S3-compatible)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#azurite-azure-blob-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Azurite (Azure Blob Storage)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fake-gcs-server-google-cloud-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fake GCS Server (Google Cloud Storage)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -961,12 +1055,34 @@
   
 
 
-<h1 id="upload">Upload</h1>
-<pre><code>*   Explanation of the `Upload` class.
-*   How to create an `Upload` object.
-*   Streaming uploads.
-*   Hashing.
-</code></pre>
+<h1 id="emulate-cloud-providers-with-docker">Emulate cloud providers with Docker</h1>
+<p>For local development and testing, you can emulate cloud providers using Docker
+containers. This allows you to test your file-keeper integrations without
+incurring costs or requiring access to real cloud resources.</p>
+<p>Remember to adjust the port mappings and environment variables as needed for
+your specific setup.</p>
+<h2 id="minio-s3-compatible">MinIO (S3-compatible)</h2>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span><span class="m">9000</span>:9000<span class="w"> </span>-p<span class="w"> </span><span class="m">9001</span>:9001<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="w"> </span>minio<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-e<span class="w"> </span><span class="nv">MINIO_PUBLIC_ADDRESS</span><span class="o">=</span><span class="m">0</span>.0.0.0:9000<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>quay.io/minio/minio<span class="w"> </span>server<span class="w"> </span>/data<span class="w"> </span>--console-address<span class="w"> </span><span class="s2">&quot;:9001&quot;</span>
+</code></pre></div>
+<p>Default username and password set to <code>minioadmin</code>, endpoint
+available at <code>http://127.0.0.1:9000</code>.</p>
+<h2 id="azurite-azure-blob-storage">Azurite (Azure Blob Storage)</h2>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span><span class="m">10000</span>:10000<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="w"> </span>azurite-blob<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>mcr.microsoft.com/azure-storage/azurite<span class="w"> </span>azurite-blob<span class="w"> </span>--blobHost<span class="w"> </span><span class="m">0</span>.0.0.0
+</code></pre></div>
+<p>Default account name is <code>devstoreaccount1</code>. Default secret key is
+<code>Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==</code>. Endpoint
+available at <code>http://127.0.0.1:10000</code></p>
+<h2 id="fake-gcs-server-google-cloud-storage">Fake GCS Server (Google Cloud Storage)</h2>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span><span class="m">4443</span>:4443<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>--name<span class="w"> </span>gcs<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>fsouza/fake-gcs-server<span class="w"> </span>-scheme<span class="w"> </span>http
+</code></pre></div>
+<p>Endpoint available at <code>http://127.0.0.1:4443</code> and does not requires credentials.</p>
 
 
 
@@ -1002,7 +1118,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../data_model/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Data model">
+          <a href="../../configuration/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Configuration">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1012,20 +1128,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Data model
+                Configuration
               </div>
             </div>
           </a>
         
         
           
-          <a href="../capabilities/" class="md-footer__link md-footer__link--next" aria-label="Next: Capabilities">
+          <a href="../libcloud/" class="md-footer__link md-footer__link--next" aria-label="Next: Apache Libcloud">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Capabilities
+                Apache Libcloud
               </div>
             </div>
             <div class="md-footer__button md-icon">
