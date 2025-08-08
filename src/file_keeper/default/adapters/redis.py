@@ -16,29 +16,27 @@ pool = fk.Registry[redis.ConnectionPool]()
 
 @dataclasses.dataclass
 class Settings(fk.Settings):
-    """Settings for Redis storage.
-
-    Args:
-        redis: existing redis connection
-        redis_url: URL of the redis DB. Used only if `redis` is empty
-    """
+    """Settings for Redis storage."""
 
     bucket: str = ""
+    """Key of the Redis HASH for uploaded objects."""
     redis: redis.Redis = None  # pyright: ignore[reportAssignmentType]
+    """Existing redis connection"""
 
-    url: dataclasses.InitVar[str] = ""
+    url: str = ""
+    """URL of the Redis DB. Used only if `redis` is empty"""
 
     _required_options: ClassVar[list[str]] = ["bucket"]
 
-    def __post_init__(self, url: str, **kwargs: Any):
+    def __post_init__(self, **kwargs: Any):
         super().__post_init__(**kwargs)
 
         if self.redis is None:  # pyright: ignore[reportUnnecessaryComparison]
-            if url not in pool:
-                conn = redis.ConnectionPool.from_url(url) if url else redis.ConnectionPool()
-                pool.register(url, conn)
+            if self.url not in pool:
+                conn = redis.ConnectionPool.from_url(self.url) if self.url else redis.ConnectionPool()
+                pool.register(self.url, conn)
 
-            self.redis = redis.Redis(connection_pool=pool[url])
+            self.redis = redis.Redis(connection_pool=pool[self.url])
 
 
 class Uploader(fk.Uploader):

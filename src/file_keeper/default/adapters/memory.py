@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 import logging
-from collections.abc import Iterable
+from collections.abc import Iterable, MutableMapping
 from io import BytesIO
 from typing import Any, cast
 
@@ -18,7 +18,8 @@ log = logging.getLogger(__name__)
 class Settings(fk.Settings):
     """Settings for Null storage."""
 
-    bucket: dict[str, bytes] = cast("dict[str, bytes]", dataclasses.field(default_factory=dict))
+    bucket: MutableMapping[str, bytes] = cast("dict[str, bytes]", dataclasses.field(default_factory=dict))
+    """Container for uploaded objects."""
 
 
 class Uploader(fk.Uploader):

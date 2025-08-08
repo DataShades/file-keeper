@@ -27,22 +27,22 @@ def decode(value: str) -> str:
 @dataclasses.dataclass()
 class Settings(fk.Settings):
     bucket: str = ""
-
+    """Name of the storage bucket."""
     client: S3Client = None  # pyright: ignore[reportAssignmentType]
-
-    key: dataclasses.InitVar[str | None] = None
-    secret: dataclasses.InitVar[str | None] = None
-    region: dataclasses.InitVar[str | None] = None
-    endpoint: dataclasses.InitVar[str | None] = None
+    """Existing S3 client."""
+    key: str | None = None
+    """The AWS Access Key."""
+    secret: str | None = None
+    """The AWS Secret Key."""
+    region: str | None = None
+    """AWS Region of the bucket."""
+    endpoint: str | None = None
+    """Custom AWS endpoint."""
 
     _required_options: ClassVar[list[str]] = ["bucket"]
 
     def __post_init__(
         self,
-        key: str | None,
-        secret: str | None,
-        region: str | None,
-        endpoint: str | None,
         **kwargs: Any,
     ):
         super().__post_init__(**kwargs)
@@ -52,10 +52,10 @@ class Settings(fk.Settings):
         if self.client is None:  # pyright: ignore[reportUnnecessaryComparison]
             self.client = boto3.client(
                 "s3",
-                aws_access_key_id=key,
-                aws_secret_access_key=secret,
-                region_name=region,
-                endpoint_url=endpoint,
+                aws_access_key_id=self.key,
+                aws_secret_access_key=self.secret,
+                region_name=self.region,
+                endpoint_url=self.endpoint,
             )
 
         try:

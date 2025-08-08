@@ -36,7 +36,7 @@ Homepage = "https://github.com/DataShades/file-keeper"
 
 [project.optional-dependencies]
 test = [ "pytest-cov", "pytest-faker", "responses", "werkzeug" ]
-docs = [ "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]",]
+docs = [ "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]", ]
 dev = [ "pytest-cov", "pytest-faker", "responses", "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]",]
 
 azure = ["azure-storage-blob",]

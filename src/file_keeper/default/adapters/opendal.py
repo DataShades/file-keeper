@@ -29,22 +29,22 @@ class FileStream:
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
-    params: dataclasses.InitVar[dict[str, Any] | None] = cast("dict[str, Any]|None", dataclasses.field(default=None))
-    scheme: dataclasses.InitVar[str] = ""
-
+    params: dict[str, Any] = cast("dict[str, Any]", dataclasses.field(default_factory=dict))
+    """Parameters for OpenDAL operator initialization."""
+    scheme: str = ""
+    """Name of OpenDAL operator's scheme."""
     operator: opendal.Operator = None  # pyright: ignore[reportAssignmentType]
+    """Existing OpenDAL operator."""
 
-    def __post_init__(self, params: dict[str, Any] | None, scheme: str, **kwargs: Any):
+    def __post_init__(self, **kwargs: Any):
         super().__post_init__(**kwargs)
 
         if self.operator is None:  # pyright: ignore[reportUnnecessaryComparison]
-            if not scheme:
+            if not self.scheme:
                 raise fk.exc.MissingStorageConfigurationError(self.name, "scheme")
 
             try:
-                if params is None:
-                    params = {}
-                self.operator = opendal.Operator(scheme, **params)
+                self.operator = opendal.Operator(self.scheme, **self.params)
             except opendal.exceptions.ConfigInvalid as err:
                 raise fk.exc.InvalidStorageConfigurationError(
                     self.name,

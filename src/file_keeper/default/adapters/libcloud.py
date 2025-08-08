@@ -23,52 +23,53 @@ get_driver: Any
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
-    provider: dataclasses.InitVar[str] = ""
-    key: dataclasses.InitVar[str] = ""
-    container_name: dataclasses.InitVar[str] = ""
+    provider: str = ""
+    key: str = ""
+    """Access key of the cloud account."""
 
-    secret: dataclasses.InitVar[str | None] = None
-    params: dataclasses.InitVar[dict[str, Any] | None] = cast("dict[str, Any] | None", dataclasses.field(default=None))
+    secret: str | None = None
+    """Secret key of the cloud account."""
+
+    container_name: str = ""
+    """Name of the cloud container."""
+    params: dict[str, Any] = cast("dict[str, Any]", dataclasses.field(default_factory=dict))
+    """Additional parameters for cloud provider."""
 
     public_prefix: str = ""
+    """Root URL for containers with public access."""
 
     driver: StorageDriver = None  # pyright: ignore[reportAssignmentType]
+    """Existing storage driver."""
     container: Container = None  # pyright: ignore[reportAssignmentType]
+    """Existing container object."""
 
     def __post_init__(
         self,
-        provider: str,
-        key: str,
-        container_name: str,
-        secret: str | None,
-        params: dict[str, Any] | None,
         **kwargs: Any,
     ):
         super().__post_init__(**kwargs)
 
         if self.driver is None:  # pyright: ignore[reportUnnecessaryComparison]
             try:
-                make_driver = get_driver(DriverType.STORAGE, provider)
+                make_driver = get_driver(DriverType.STORAGE, self.provider)
             except AttributeError as err:
                 raise fk.exc.InvalidStorageConfigurationError(
                     self.name,
                     str(err),
                 ) from err
 
-            if params is None:
-                params = {}
-            self.driver = make_driver(key, secret, **params)
+            self.driver = make_driver(self.key, self.secret, **self.params)
 
         if self.container is None:  # pyright: ignore[reportUnnecessaryComparison]
             try:
-                self.container = self.driver.get_container(container_name)
+                self.container = self.driver.get_container(self.container_name)
 
             except ContainerDoesNotExistError as err:
                 if self.initialize:
-                    self.container = self.driver.create_container(container_name)
+                    self.container = self.driver.create_container(self.container_name)
                 else:
                     raise fk.exc.InvalidStorageConfigurationError(
-                        self.name, f"container {container_name} does not exist"
+                        self.name, f"container {self.container_name} does not exist"
                     ) from err
 
             except (LibcloudError, requests.RequestException) as err:

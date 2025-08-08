@@ -13,14 +13,22 @@ import file_keeper as fk
 @dataclasses.dataclass()
 class Settings(fk.Settings):
     db_url: str = ""
+    """URL of the storage DB."""
     table_name: str = ""
+    """Name of the storage table."""
     location_column: str = ""
+    """Name of the column that contains file location."""
     content_column: str = ""
+    """Name of the column that contains file content."""
 
     engine: sa.engine.Engine = None  # pyright: ignore[reportAssignmentType]
+    """Existing DB engine."""
     table: sa.Table = None  # pyright: ignore[reportAssignmentType]
+    """Existing DB table."""
     location: sa.Column[str] = None  # pyright: ignore[reportAssignmentType]
+    """Existing column for location."""
     content: sa.Column[bytes] = None  # pyright: ignore[reportAssignmentType]
+    """Existing column for content."""
 
     def __post_init__(self, **kwargs: Any):  # noqa: C901, PLR0912
         super().__post_init__(**kwargs)

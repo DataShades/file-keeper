@@ -22,15 +22,20 @@ import file_keeper as fk
 @dataclasses.dataclass
 class Settings(fk.Settings):
     account_name: str = ""
+    """Name of the account."""
     account_key: str = ""
+    """Key for the account."""
     container_name: str = ""
-
+    """Name of the storage container."""
     account_url: str = "https://{account_name}.blob.core.windows.net"
+    """Custom resource URL."""
     ## azurite
     # account_url: str = "http://127.0.0.1:10000/{account_name}"
 
     client: BlobServiceClient = None  # pyright: ignore[reportAssignmentType]
+    """Existing storage client."""
     container: ContainerClient = None  # pyright: ignore[reportAssignmentType]
+    """Existing container client."""
 
     def __post_init__(self, **kwargs: Any):
         self.account_url = self.account_url.format(account_name=self.account_name)

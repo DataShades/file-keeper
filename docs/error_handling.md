@@ -61,3 +61,7 @@ except exc.ExistingFileError as e:
 ```
 
 ::: file_keeper.exc
+    options:
+        show_source: false
+        show_signature: true
+        merge_init_into_class: true

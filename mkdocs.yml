@@ -5,6 +5,10 @@ repo_url:  https://github.com/DataShades/file-keeper
 markdown_extensions:
     - pymdownx.snippets
     - tables
+    - attr_list
+    - abbr
+    - footnotes
+    - md_in_html
     - pymdownx.blocks.admonition
     - pymdownx.blocks.details
     - pymdownx.emoji:
@@ -49,22 +53,22 @@ theme:
       # Palette toggle for automatic mode
       - media: "(prefers-color-scheme)"
         toggle:
-          icon: material/brightness-auto
+          icon: material/weather-sunny
           name: Switch to light mode
 
       # Palette toggle for light mode
       - media: "(prefers-color-scheme: light)"
         scheme: default
-        primary: blue
+        primary: indigo
         toggle:
-          icon: material/brightness-7
+          icon: material/weather-night
           name: Switch to dark mode
 
       # Palette toggle for dark mode
       - media: "(prefers-color-scheme: dark)"
         scheme: slate
         toggle:
-          icon: material/brightness-4
+          icon: material/brightness-auto
           name: Switch to system preference
     features:
         - navigation.instant
@@ -76,15 +80,32 @@ theme:
         - content.code.copy
         - content.code.select
         - content.code.annotate
-
+        - content.tooltips
+        - content.footnote.tooltips
 nav:
   - index.md
-  - Configuration: configuration.md
+  - configuration.md
+  - Storage adapters:
+      - adapters/emulate.md
+      - adapters/libcloud.md
+      - adapters/opendal.md
+      - adapters/s3.md
+      - adapters/azure_blob.md
+      - adapters/filebin.md
+      - adapters/gcs.md
+      - adapters/fs.md
+      - adapters/memory.md
+      - adapters/null.md
+      - adapters/proxy.md
+      - adapters/redis.md
+      - adapters/sqlalchemy.md
+      - adapters/zip.md
+
   - Core Concepts:
-    - Data Model: core_concepts/data_model.md
-    - Uploads: core_concepts/uploads.md
-    - Capabilities: core_concepts/capabilities.md
-  - Extending file-keeper: extending.md
-  - Error Handling: error_handling.md
-  - API Reference: api.md
-  - Changelog: changelog.md
+    - core_concepts/data_model.md
+    - core_concepts/uploads.md
+    - core_concepts/capabilities.md
+  - extending.md
+  - error_handling.md
+  - api.md
+  - changelog.md

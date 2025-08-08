@@ -186,15 +186,17 @@ class LocationTransformerError(UploadError):
 class ExtrasError(StorageError):
     """Wrong extras passed during upload."""
 
-    def __init__(self, extras: Any):
-        super().__init__(f"Wrong extras: {extras}")
+    tpl: str = "Wrong extras: {problem}"
+
+    def __init__(self, problem: Any):
+        super().__init__(self.tpl.format(problem=problem))
 
 
 class MissingExtrasError(ExtrasError):
     """Wrong extras passed to storage method."""
 
     def __init__(self, key: Any):
-        super().__init__(f"Key {key} is missing from extras")
+        super().__init__(f"key {key} is missing")
 
 
 class ContentError(UploadError):

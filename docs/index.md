@@ -72,7 +72,7 @@ print(file_data)
 
 # The file is now stored in /tmp/my_filekeeper_files/my_file.txt
 
-# Get the content of file using corresponding gFileData object
+# Get the content of file using corresponding FileData object
 content: bytes = storage.content(file_data)
 ```
 ///
@@ -83,10 +83,3 @@ content: bytes = storage.content(file_data)
 *   `storage.upload()`: Uploads the data to the storage.
 *   `FileData`:  A dataclass that contains metadata about the uploaded file, including its location, size, content type, and hash.
 *   `storage.content()`: Locates file using `FileData` and returs byte string with its content
-
-## Next Steps
-
-This is just a basic example to get you started.  For more detailed information, see the following documentation pages:
-
-*   [Configuration](configuration.md): Learn about all the available settings and how to configure different storage adapters.
-*   [Storage Adapters](adapters.md):  Explore the different storage adapters supported by file-keeper.

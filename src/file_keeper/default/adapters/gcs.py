@@ -9,11 +9,9 @@ from datetime import timedelta
 from typing import Any, cast
 
 import requests
-
-# from google.auth.credentials import Credentials, AnonymousCredentials
-from google.api_core.exceptions import Forbidden, NotFound
-from google.auth.credentials import Credentials
-from google.cloud.storage import Blob, Client
+from google.api_core.exceptions import Forbidden
+from google.auth.credentials import AnonymousCredentials, Credentials
+from google.cloud.storage import Blob, Bucket, Client
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 from typing_extensions import override
 
@@ -29,22 +27,25 @@ def decode(value: str) -> str:
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
-    resumable_origin: str = ""  # ?
-
     bucket_name: str = ""
+    """Name of the storage bucket."""
     client: Client = None  # pyright: ignore[reportAssignmentType]
+    """Existing storage client."""
+    bucket: Bucket = None  # pyright: ignore[reportAssignmentType]
+    """Existing storage bucket."""
 
-    service_account_file: dataclasses.InitVar[str] = ""
-    credentials: dataclasses.InitVar[Credentials] = None  # pyright: ignore[reportAssignmentType]
-    project_id: dataclasses.InitVar[str] = ""
-    client_options: dataclasses.InitVar[dict[str, Any] | None] = None
+    credentials_file: str = ""
+    """Path to the JSON with cloud credentials."""
+    credentials: Credentials = None  # pyright: ignore[reportAssignmentType]
+    """Existing cloud credentials."""
+    project_id: str = ""
+    """The project which the client acts on behalf of."""
+
+    client_options: dict[str, Any] | None = None
+    """Client options for storage client."""
 
     def __post_init__(
         self,
-        service_account_file: str,
-        credentials: Credentials | None,
-        project_id: str,
-        client_options: dict[str, Any] | None,
         **kwargs: Any,
     ):
         super().__post_init__(**kwargs)
@@ -54,39 +55,40 @@ class Settings(fk.Settings):
         self.path = self.path.lstrip("/")
 
         if not self.client:
-            if not credentials:
-                if service_account_file:
+            if not self.credentials:
+                if self.credentials_file:
                     try:
-                        credentials = ServiceAccountCredentials.from_service_account_file(service_account_file)
+                        self.credentials = ServiceAccountCredentials.from_service_account_file(self.credentials_file)
                     except OSError as err:
                         raise fk.exc.InvalidStorageConfigurationError(
                             self.name,
-                            f"file `{service_account_file}` does not exist",
+                            f"file `{self.credentials_file}` does not exist",
                         ) from err
-                    if not project_id:
-                        project_id = credentials.project_id or ""  # pyright: ignore[reportUnknownVariableType]
+                    if not self.project_id:
+                        self.project_id = self.credentials.project_id or ""
                 else:
-                    raise fk.exc.MissingStorageConfigurationError(self.name, "credentials_file")
+                    self.credentials = AnonymousCredentials()
 
-            if not project_id:
+            if not self.project_id:
                 raise fk.exc.MissingStorageConfigurationError(self.name, "project_id")
 
             self.client = Client(
-                project_id,
-                credentials=credentials,
-                client_options=client_options,
+                self.project_id,
+                credentials=self.credentials,
+                client_options=self.client_options,
             )
 
-        try:
-            self.client.get_bucket(self.bucket_name)
-        except NotFound as err:
+        if not self.bucket:
+            self.bucket = self.client.bucket(self.bucket_name)
+
+        if not self.bucket.exists():
             if self.initialize:
                 self.client.create_bucket(self.bucket_name)
             else:
                 raise fk.exc.InvalidStorageConfigurationError(
                     self.name,
                     f"bucket `{self.bucket_name}` does not exist",
-                ) from err
+                )
 
 
 class Uploader(fk.Uploader):
@@ -123,10 +125,7 @@ class Uploader(fk.Uploader):
 
         url = cast(
             str,
-            blob.create_resumable_upload_session(
-                size=data.size,
-                origin=self.storage.settings.resumable_origin,
-            ),
+            blob.create_resumable_upload_session(size=data.size),
         )
 
         if not url:

@@ -48,30 +48,6 @@ In this example, `make_storage` automatically creates a `Settings` object from
 the `s3_settings` dictionary.
 ///
 
-**How it Works:**
-
-1.  You provide a dictionary containing the configuration options for the
-    storage adapter.
-2.  file-keeper's [make_storage][file_keeper.make_storage] function (or the
-    adapter's constructor directly) uses the
-    [SettingsFactory][file_keeper.Storage.SettingsFactory] associated with the
-    adapter to create a [Settings][file_keeper.Settings] object from the
-    dictionary.
-3.  The [Settings.from_dict()][file_keeper.Settings.from_dict] method handles the conversion, including
-    validation and handling of any unexpected options.  Any unrecognized
-    options are stored in the `_extra_settings` attribute for later use if
-    needed.
-
-
-**Benefits of using a dictionary:**
-
-*   **Flexibility:** Easily pass configuration options from environment
-    variables, configuration files, or other sources.
-*   **Readability:** Dictionaries are often more concise and easier to read
-    than creating `Settings` objects directly.
-*   **Extensibility:** Allows you to pass custom options that are not
-    explicitly defined in the `Settings` class.
-
 ## Common Settings
 
 These settings are available for most storage adapters:
@@ -86,103 +62,145 @@ These settings are available for most storage adapters:
 | `disabled_capabilities` | list[str] | `[]`        | A list of capabilities to disable for the storage adapter. This can be useful for limiting the functionality of an adapter or for testing purposes.                                                                                                |
 | `initialize`            | bool      | `False`     | Prepare storage backend for uploads. The exact meaning depends on the adapter. Filesystem adapter created the upload folder if it's missing; cloud adapters create a bucket/container if it does not exists.                                       |
 
+
+/// warning | Important Considerations
+
+|                    |                                                                                                                                                                                              |
+|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Security**       | Be careful when storing sensitive information like AWS access keys and secret keys in your configuration.  Consider using environment variables or a secure configuration management system. |
+| **Validation**     | file-keeper performs some basic validation of the configuration settings, but it's important to ensure that your settings are correct for your specific storage adapter.                     |
+| **Error Handling** | Be prepared to handle `InvalidStorageConfigurationError` exceptions if your configuration is invalid.                                                                                        |
+
+///
+
 ## Adapter-Specific Settings
 
-In addition to the common settings, each adapter has its own specific
-settings:
+In addition to the common settings, adapters have their own specific settings:
 
-TODO
+### `file_keeper:azure_blob`
 
-```sh
- docker run -p 9000:9000 -p 9001:9001 --name minio -e MINIO_PUBLIC_ADDRESS=0.0.0.0:9000 quay.io/minio/minio server /data --console-address ":9001"
-
-docker run -p 10000:10000 --name azurite-blob mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0
-
-docker run -d --name gcs -p 4443:4443 fsouza/fake-gcs-server -scheme http
-
-```
-```sh
- docker run -p 9000:9000 -p 9001:9001 --name minio -e MINIO_PUBLIC_ADDRESS=0.0.0.0:9000 quay.io/minio/minio server /data --console-address ":9001"
-
-docker run -p 10000:10000 --name azurite-blob mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0
-
-docker run -d --name gcs -p 4443:4443 fsouza/fake-gcs-server -scheme http
-
-```
-
-
-### `file_keeper:fs`
-| option | description |
-|--------|-------------|
-|        |             |
-
-/// admonition
-    type: example
-
-```py
-storage = make_storage("sandbox", {
-    "type": "file_keeper:fs",
-    "path": "/tmp/file-keeper",
-    "initialize": True,
-})
-```
-///
-
-### `file_keeper:null`
-### `file_keeper:memory`
-### `file_keeper:zip`
-
-### `file_keeper:redis`
-/// admonition
-    type: example
-
-```py
-storage = make_storage("sandbox", {
-    "type": "file_keeper:redis",
-    "bucket": "file-keeper"
-})
-```
-///
-### `file_keeper:opendal`
-### `file_keeper:libcloud`
-
-/// admonition
-    type: example
-
-```py
-storage = make_storage("sandbox", {
-    "type": "file_keeper:libcloud",
-    "provider": "MINIO",
-    "params": {"host": "127.0.0.1", "port": 9000, "secure": False},
-    "key": "***", "secret": "***",
-    "container_name": "file-keeper",
-})
-```
-///
-
-### `file_keeper:gcs`
-### `file_keeper:s3`
-/// admonition
-    type: example
-
-```py
-storage = make_storage("sandbox", {
-    "type": "file_keeper:s3",
-    "endpoint": "http://127.0.0.1:9000",
-    "key": "***", "secret": "***",
-    "bucket": "file-keeper",
-})
-```
-///
+| Setting          | Type                                                               | Default                                          | Description                                   |
+|------------------|--------------------------------------------------------------------|--------------------------------------------------|-----------------------------------------------|
+| `account_name`   | str                                                                | `""`                                             | Name of the account.                          |
+| `account_key`    | str                                                                | `""`                                             | Key for the account.                          |
+| `container_name` | str                                                                | `""`                                             | Name of the storage container.                |
+| `account_url`    | str                                                                | `"https://{account_name}.blob.core.windows.net"` | Custom resource URL.                          |
+| `client`         | BlobServiceClient { title="azure.storage.blob.BlobServiceClient" } | `None`                                           | Existing storage client.                      |
+| `container`      | ContainerClient { title="azure.storage.blob.ContainerClient" }     | `None`                                           | Existing container client.                    |
+| `path`           | str                                                                | `""`                                             | Prefix for the file location.                 |
+| `initialize`     | bool                                                               | `False`                                          | Create `container_name` if it does not exist. |
 
 ### `file_keeper:filebin`
-### `file_keeper:sqlalchemy`
-### `file_keeper:azure_blob`
+
+| Setting   | Type | Default | Description                 |
+|-----------|------|---------|-----------------------------|
+| `bin`     | str  | `""`    | The name of the bin.        |
+| `timeout` | int  | `10`    | Request timeout in seconds. |
+
+### `file_keeper:fs`
+
+| Setting      | Type | Default | Description                                |
+|--------------|------|---------|--------------------------------------------|
+| `path`       | str  | `""`    | The base directory where files are stored. |
+| `initialize` | bool | `False` | Create `path` if it does not exist.        |
+
+### `file_keeper:gcs`
+
+| Setting            | Type                                                        | Default | Description                                     |
+|--------------------|-------------------------------------------------------------|---------|-------------------------------------------------|
+| `bucket_name`      | str                                                         | `""`    | Name of the storage bucket.                     |
+| `client`           | Client { title="google.cloud.storage.Client" }              | `None`  | Existing storage client.                        |
+| `bucket`           | Bucket { title="google.cloud.storage.Bucket" }              | `None`  | Existing storage bucket.                        |
+| `credentials`      | Credentials { title="google.auth.credentials.Credentials" } | `None`  | Existing cloud credentials.                     |
+| `credentials_file` | str                                                         | `""`    | Path to the JSON with cloud credentials.        |
+| `project_id`       | str                                                         | `""`    | The project which the client acts on behalf of. |
+| `client_options`   | dict                                                        | `None`  | Client options for storage client.              |
+| `path`             | str                                                         | `""`    | Prefix for the file location.                   |
+| `initialize`       | bool                                                        | `False` | Create `bucket_name` if it does not exist.      |
+
+### `file_keeper:libcloud`
+
+| Setting          | Type                                                          | Default | Description                                                                                                                               |
+|------------------|---------------------------------------------------------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| `provider`       | str                                                           | `""`    | Name of the [Libcloud provider][libcloud providers]                                                                                       |
+| `key`            | str                                                           | `""`    | Access key of the cloud account.                                                                                                          |
+| `secret`         | str or None                                                   | `None`  | Secret key of the cloud account.                                                                                                          |
+| `params`         | dict                                                          | `{}`    | Additional parameters for cloud provider.                                                                                                 |
+| `container_name` | str                                                           | `""`    | Name of the cloud container.                                                                                                              |
+| `public_prefix`  | str                                                           | `""`    | Root URL for containers with public access. This URL will be used as a prefix for the file object location when building permanent links. |
+| `driver`         | StorageDriver { title="libcloud.storage.base.StorageDriver" } | `None`  | Existing storage driver.                                                                                                                  |
+| `container`      | Container { title="libcloud.storage.base.Container" }         | `None`  | Existing container object.                                                                                                                |
+| `path`           | str                                                           | `""`    | Prefix for the file location.                                                                                                             |
+| `initialize`     | bool                                                          | `False` | Create `container_name` if it does not exist.                                                                                             |
+
+[libcloud providers]: https://libcloud.readthedocs.io/en/stable/supported_providers.html
+
+### `file_keeper:memory`
+
+| Setting  | Type                       | Default | Description                     |
+|----------|----------------------------|---------|---------------------------------|
+| `bucket` | MutableMapping[str, bytes] | `{}`    | Container for uploaded objects. |
+
+### `file_keeper:null`
+
+No specific settings
+
+### `file_keeper:opendal`
+
+| Setting    | Type             | Default | Description                                     |
+|------------|------------------|---------|-------------------------------------------------|
+| `operator` | opendal.Operator | `None`  | Existing [OpenDAL operator][opendal operators]  |
+| `scheme`   | str              | `""`    | Name of OpenDAL operator's scheme.              |
+| `params`   | dict             | `{}`    | Parameters for OpenDAL operator initialization. |
+| `path`     | str              | `""`    | Prefix for the file location.                   |
+
+[opendal operators]: https://opendal.apache.org/docs/python/api/operator/
+
 ### `file_keeper:proxy`
 
+| Setting   | Type | Default | Description                         |
+|-----------|------|---------|-------------------------------------|
+| `adapter` | str  | `None`  | Name of the proxified adapter.      |
+| `options` | dict | `{}`    | Settings for the proxified adapter. |
 
-## Important Considerations
 
-*   **Security:**  Be careful when storing sensitive information like AWS access keys and secret keys in your configuration.  Consider using environment variables or a secure configuration management system.
-*   **Validation:**  file-keeper performs some basic validation of the configuration settings, but it's important to ensure that your settings are correct for your specific storage adapter.
-*   **Error Handling:**  Be prepared to handle `InvalidStorageConfigurationError` exceptions if your configuration is invalid.
+### `file_keeper:redis`
+
+| Setting  | Type        | Default | Description                                 |
+|----------|-------------|---------|---------------------------------------------|
+| `redis`  | redis.Redis | `None`  | Optional existing connection to Redis DB    |
+| `url`    | str         | `""`    | URL of the Redis DB.                        |
+| `bucket` | str         | `""`    | Key of the Redis HASH for uploaded objects. |
+
+### `file_keeper:s3`
+
+| Setting      | Type     | Default | Description                           |
+|--------------|----------|---------|---------------------------------------|
+| `bucket`     | str      | `""`    | Name of the storage bucket.           |
+| `client`     | S3Client | `None"` | Existing S3 client.                   |
+| `key`        | str      | `None`  | The AWS Access Key.                   |
+| `secret`     | str      | `None`  | The AWS Secret Key.                   |
+| `region`     | str      | `None`  | The AWS Region of the bucket.         |
+| `endpoint`   | str      | `None`  | Custom AWS endpoint.                  |
+| `path`       | str      | `""`    | Prefix for the file location.         |
+| `initialize` | bool     | `False` | Create `bucket` if it does not exist. |
+
+### `file_keeper:sqlalchemy`
+
+| Setting           | Type                                        | Default | Description                                     |
+|-------------------|---------------------------------------------|---------|-------------------------------------------------|
+| `db_url`          | str                                         | `""`    | URL of the storage DB.                          |
+| `table_name`      | str                                         | `""`    | Name of the storage table.                      |
+| `location_column` | str                                         | `""`    | Name of the column that contains file location. |
+| `content_column`  | str                                         | `""`    | Name of the column that contains file content.  |
+| `engine`          | Engine { title="sqlalchemy.engine.Engine" } | `None`  | Existing DB engine.                             |
+| `table`           | Engine { title="sqlalchemy.Table" }         | `None`  | Existing DB table.                              |
+| `location`        | Engine { title="sqlalchemy.Column[str]" }   | `None`  | Existing column for location.                   |
+| `content`         | Engine { title="sqlalchemy.Column[bytes]" } | `None`  | Existing column for content.                    |
+| `initialize`      | bool                                        | `False` | Create `table_name` if it does not exist.       |
+
+### `file_keeper:zip`
+
+| Setting | Type | Default | Description                                   |
+|---------|------|---------|-----------------------------------------------|
+| `path`  | str  | `""`    | Path of the ZIP archive for uploaded objects. |

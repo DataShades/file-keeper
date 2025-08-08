@@ -5,6 +5,7 @@
 ### 🚀 Features
 
 - [**breaking**] frozen FileData and MultipartData ([cb9dbf8](https://github.com/DataShades/file-keeper/commit/cb9dbf8ddf7516d461d0a295f69d41090b706195))
+- define `RESUMABLE` capability ([bab84fa](https://github.com/DataShades/file-keeper/commit/bab84fa419aa6188e9e80a85381bf24d9dc50747))
 - complete GCS adapter ([db97e20](https://github.com/DataShades/file-keeper/commit/db97e201532627d65265d0bf81bdc581ad19309d))
 - Azure Blob storage adapter ([fb491b2](https://github.com/DataShades/file-keeper/commit/fb491b2b22681aaf8e66589166baa848d4c40a18))
 - zip adapter ([3b3f978](https://github.com/DataShades/file-keeper/commit/3b3f978eb462139e53f1d1d62dd68e2f05061920))
@@ -28,6 +29,8 @@
 
 ### 🚜 Refactor
 
+- [**breaking**] remove `location` from arguments of `multipart_start` ([876ce46](https://github.com/DataShades/file-keeper/commit/876ce467995139c4a8790f912b850415e9501b1f))
+- [**breaking**] drop `MultipartData` and use `FileData` instead everywhere ([c1c01c3](https://github.com/DataShades/file-keeper/commit/c1c01c3ba4af087b29970cd84ecc743819e33675))
 - [**breaking**] `Storage.remove` does not accept `MultipartData`. Use `Storage.multipart_remove` instead ([ce3e522](https://github.com/DataShades/file-keeper/commit/ce3e522667126d2738d6c100db20dd88b60a41de))
 - [**breaking**] `create_path` option for fs renamed to `initialize` ([1329997](https://github.com/DataShades/file-keeper/commit/1329997ba923d77fa2a8379dc9edf76562a88ad3))
 - [**breaking**] Storage.temporal_link requires `duration` parameter ([0d92777](https://github.com/DataShades/file-keeper/commit/0d92777e5a56b77c1b34cc0abdbffec3e7218eb6))
