@@ -1,4 +1,5 @@
 """Apache Libcloud adapter."""
+
 from __future__ import annotations
 
 import contextlib
@@ -25,6 +26,7 @@ get_driver: Any
 @dataclasses.dataclass()
 class Settings(fk.Settings):
     """Libcloud settings."""
+
     provider: str = ""
     key: str = ""
     """Access key of the cloud account."""
@@ -83,6 +85,7 @@ class Settings(fk.Settings):
 
 class Uploader(fk.Uploader):
     """Libcloud uploader."""
+
     storage: LibCloudStorage
     capabilities: fk.Capability = fk.Capability.CREATE
 
@@ -111,6 +114,7 @@ class Uploader(fk.Uploader):
 
 class Reader(fk.Reader):
     """Libcloud reader."""
+
     storage: LibCloudStorage
     capabilities: fk.Capability = fk.Capability.STREAM | fk.Capability.PERMANENT_LINK
 
@@ -146,6 +150,7 @@ class Reader(fk.Reader):
 
 class Manager(fk.Manager):
     """Libcloud manager."""
+
     storage: LibCloudStorage
     capabilities: fk.Capability = (
         fk.Capability.SCAN | fk.Capability.REMOVE | fk.Capability.EXISTS | fk.Capability.ANALYZE
@@ -189,6 +194,7 @@ class Manager(fk.Manager):
 
 class LibCloudStorage(fk.Storage):
     """Apache Libcloud adapter."""
+
     settings: Settings
     SettingsFactory = Settings
     UploaderFactory = Uploader

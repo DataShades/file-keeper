@@ -1,4 +1,5 @@
 """Filesystem adapter."""
+
 from __future__ import annotations
 
 import dataclasses
@@ -45,6 +46,7 @@ class Settings(fk.Settings):
 
 class Uploader(fk.Uploader):
     """Filesystem uploader."""
+
     storage: FsStorage
     capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
 
@@ -232,6 +234,7 @@ class Uploader(fk.Uploader):
 
 class Reader(fk.Reader):
     """Filesystem reader."""
+
     storage: FsStorage
     capabilities: fk.Capability = fk.Capability.STREAM
 
@@ -254,6 +257,7 @@ class Reader(fk.Reader):
 
 class Manager(fk.Manager):
     """Filesystem manager."""
+
     storage: FsStorage
     capabilities: fk.Capability = (
         fk.Capability.REMOVE

@@ -1,4 +1,5 @@
 """OpenDAL adapter."""
+
 from __future__ import annotations
 
 import dataclasses
@@ -16,6 +17,7 @@ import file_keeper as fk
 
 class FileStream:
     """Wrapper for stream returned by OpenDAL."""
+
     file: opendal.File
 
     def __init__(self, file: opendal.File):
@@ -58,6 +60,7 @@ class Settings(fk.Settings):
 
 class Uploader(fk.Uploader):
     """OpenDAL uploader."""
+
     storage: OpenDalStorage
     capabilities: fk.Capability = fk.Capability.CREATE
 
@@ -118,6 +121,7 @@ class Uploader(fk.Uploader):
 
 class Reader(fk.Reader):
     """OpenDAL reader."""
+
     storage: OpenDalStorage
     capabilities: fk.Capability = fk.Capability.STREAM
 
@@ -143,6 +147,7 @@ class Reader(fk.Reader):
 
 class Manager(fk.Manager):
     """OpenDAL manager."""
+
     storage: OpenDalStorage
     capabilities: fk.Capability = (
         fk.Capability.REMOVE
@@ -278,6 +283,7 @@ class Manager(fk.Manager):
 
 class OpenDalStorage(fk.Storage):
     """OpenDAL adapter."""
+
     settings: Settings
     SettingsFactory = Settings
     UploaderFactory = Uploader
