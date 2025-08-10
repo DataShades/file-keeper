@@ -296,7 +296,29 @@ class AbstractReader(Generic[T], abc.ABC):
 
 
 class IterableBytesReader(AbstractReader[Iterable[int]]):
-    """Wrapper that transforms iterable of bytes into readable stream."""
+    """Wrapper that transforms iterable of bytes into readable stream.
+
+    Example:
+        The simplest iterable of bytes is a list that contains byte strings:
+        ```py
+        parts = [b"hello", b" ", b"world"]
+        reader = IterableBytesReader(parts)
+        assert reader.read() == b"hello world"
+        ```
+
+        More realistic scenario is wrapping generator that produces byte string
+        in order to initialize [Upload][file_keeper.Upload]:
+        ```py
+        def data_generator():
+            yield b"hello"
+            yield b" "
+            yield b"world"
+
+        stream = IterableBytesReader(data_generator())
+        upload = Upload(stream, "my_file.txt", 11, "text/plain")
+        ```
+
+    """
 
     def __init__(self, source: Iterable[bytes], chunk_size: int = CHUNK_SIZE):
         super().__init__(itertools.chain.from_iterable(source), chunk_size)

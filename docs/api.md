@@ -27,6 +27,7 @@ Utilities available for import directly from the `file_keeper` module.
 
 ::: file_keeper.HashingReader
 ::: file_keeper.Registry
+::: file_keeper.IterableBytesReader
 
 
 ::: file_keeper.adapters
