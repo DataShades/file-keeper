@@ -133,55 +133,55 @@ class Capability(enum.Flag):
     NONE = 0
 
     ANALYZE = enum.auto()
-    """Return file details from the storage"""
+    """Return file details from the storage."""
 
     APPEND = enum.auto()
-    """Add content to the existing file"""
+    """Add content to the existing file."""
 
     COMPOSE = enum.auto()
-    """Combine multiple files into a new one in the same storage"""
+    """Combine multiple files into a new one in the same storage."""
 
     COPY = enum.auto()
-    """Make a copy of the file inside the same storage"""
+    """Make a copy of the file inside the same storage."""
 
     CREATE = enum.auto()
-    """Create a file as an atomic object"""
+    """Create a file as an atomic object."""
 
     EXISTS = enum.auto()
-    """Check if file exists"""
+    """Check if file exists."""
 
     MOVE = enum.auto()
-    """Move file to a different location inside the same storage"""
+    """Move file to a different location inside the same storage."""
 
     MULTIPART = enum.auto()
-    """Create file in 3 stages: initialize, upload(repeatable), complete"""
+    """Create file in 3 stages: initialize, upload(repeatable), complete."""
 
     RANGE = enum.auto()
-    """Return specific range of bytes from the file"""
+    """Return specific range of bytes from the file."""
 
     REMOVE = enum.auto()
-    """Remove file from the storage"""
+    """Remove file from the storage."""
 
     RESUMABLE = enum.auto()
-    """Perform resumable uploads that can be continued after interruption"""
+    """Perform resumable uploads that can be continued after interruption."""
 
     SCAN = enum.auto()
-    """Iterate over all files in the storage"""
+    """Iterate over all files in the storage."""
 
     SIGNED = enum.auto()
-    """Generate signed URL for specific operation"""
+    """Generate signed URL for specific operation."""
 
     STREAM = enum.auto()
-    """Return file content as stream of bytes"""
+    """Return file content as stream of bytes."""
 
     PERMANENT_LINK = enum.auto()
-    """Make permanent download link"""
+    """Make permanent download link."""
 
     TEMPORAL_LINK = enum.auto()
-    """Make expiring download link"""
+    """Make expiring download link."""
 
     ONE_TIME_LINK = enum.auto()
-    """Make one-time download link"""
+    """Make one-time download link."""
 
     MANAGER_CAPABILITIES = ANALYZE | SCAN | COPY | MOVE | APPEND | COMPOSE | EXISTS | REMOVE | SIGNED
     READER_CAPABILITIES = RANGE | STREAM | PERMANENT_LINK | TEMPORAL_LINK | ONE_TIME_LINK

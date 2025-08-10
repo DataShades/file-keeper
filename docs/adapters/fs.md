@@ -1,41 +1,29 @@
-# Local filesystem
+# Local Filesystem Adapter
 
-`file_keeper:fs`
+The `file_keeper:fs` adapter allows you to use your local filesystem for storing and retrieving files. This adapter is useful for testing, development, or scenarios where you need to store files locally.
 
-No specific settings.
+## Overview
 
-If directory specified by `path` option does not exists, depending on
-`initialize` flag, storage will make an attempt to create `path` or rise
-[InvalidStorageConfigurationError][file_keeper.exc.InvalidStorageConfigurationError].
+This adapter provides a simple way to interact with the local filesystem. You'll need to specify the base path where files will be stored.
 
-/// details | Storage initialization
-```mermaid
-graph TD
-  check{<code>path</code> exists?};
-  check_initialize{<code>initialize</code> flag enabled?};
-  check_permission{Have permission to create <code>path</code> hierarchy?};
+## Initialization Example
 
-  no_work([Storage initialized]);
-  raise([raise InvalidStorageConfigurationError]);
-  create([Directories created and storage initialized]);
+Here's an example of how to initialize the local filesystem adapter:
 
-  check -->|Yes| no_work;
-  check -->|No| check_initialize;
-  check_initialize -->|No| raise;
-  check_initialize -->|Yes| check_permission;
-  check_permission -->|No| raise;
-  check_permission -->|Yes| create;
-```
-///
+```python
+from file_keeper import make_storage
 
-/// admonition
-    type: example
-
-```py
-storage = make_storage("sandbox", {
+storage = make_storage("my_local_storage", {
     "type": "file_keeper:fs",
-    "path": "/tmp/file-keeper",
-    "initialize": True,
+    "path": "/tmp/file-keeper",  # Replace with your desired base path
+    "initialize": True,  # Optional: Create the directory if it doesn't exist
 })
+
+# Now you can use the 'storage' object to upload, download, and manage files.
 ```
-///
+
+**Important Notes:**
+
+*   Replace `/tmp/file-keeper` with the desired base path on your system.
+*   The `initialize` option (defaulting to `False`) determines whether the adapter should attempt to create the specified directory if it doesn't exist. If `initialize` is `True` and the directory cannot be created (e.g., due to permissions issues), an error will be raised.
+*   Ensure that the process running File Keeper has the necessary permissions to read and write to the specified directory.
