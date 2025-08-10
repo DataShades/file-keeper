@@ -1,3 +1,5 @@
+"""Azure Blob Storage adapter."""
+
 from __future__ import annotations
 
 import codecs
@@ -21,6 +23,8 @@ import file_keeper as fk
 
 @dataclasses.dataclass
 class Settings(fk.Settings):
+    """Azure Blob Storage settings."""
+
     account_name: str = ""
     """Name of the account."""
     account_key: str = ""
@@ -67,6 +71,8 @@ class Settings(fk.Settings):
 
 
 class Uploader(fk.Uploader):
+    """Azure Blob Storage uploader."""
+
     storage: AzureBlobStorage
     capabilities = fk.Capability.CREATE
 
@@ -98,6 +104,8 @@ class Uploader(fk.Uploader):
 
 
 class Reader(fk.Reader):
+    """Azure Blob Storage reader."""
+
     storage: AzureBlobStorage
     capabilities = fk.Capability.STREAM
 
@@ -113,6 +121,8 @@ class Reader(fk.Reader):
 
 
 class Manager(fk.Manager):
+    """Azure Blob Storage manager."""
+
     storage: AzureBlobStorage
     capabilities = (
         fk.Capability.REMOVE
@@ -191,7 +201,8 @@ class Manager(fk.Manager):
         blob_client.delete_blob()
         return True
 
-    def azure_signed_action(self, action: fk.types.SignedAction, duration: int, location: fk.Location):
+    @override
+    def signed(self, action: fk.types.SignedAction, duration: int, location: fk.Location, extras: dict[str, Any]):
         perms = BlobSasPermissions()
         if action == "download":
             perms.read = True
@@ -217,6 +228,8 @@ class Manager(fk.Manager):
 
 
 class AzureBlobStorage(fk.Storage):
+    """Azure Blob Storage adapter."""
+
     settings: Settings
     SettingsFactory = Settings
     UploaderFactory = Uploader

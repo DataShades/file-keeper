@@ -1,3 +1,5 @@
+"""Null adapter."""
+
 from __future__ import annotations
 
 import dataclasses
@@ -18,6 +20,8 @@ class Settings(fk.Settings):
 
 
 class Uploader(fk.Uploader):
+    """Null uploader."""
+
     storage: NullStorage
     capabilities: fk.Capability = fk.Capability.UPLOADER_CAPABILITIES
 
@@ -46,8 +50,26 @@ class Uploader(fk.Uploader):
     def multipart_remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         return False
 
+    @override
+    def resumable_start(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        return super().resumable_start(data, extras)
+
+    @override
+    def resumable_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        return super().resumable_refresh(data, extras)
+
+    @override
+    def resumable_resume(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        return super().resumable_resume(data, extras)
+
+    @override
+    def resumable_remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        return super().resumable_remove(data, extras)
+
 
 class Manager(fk.Manager):
+    """Null manager."""
+
     storage: NullStorage
     capabilities: fk.Capability = fk.Capability.MANAGER_CAPABILITIES
 
@@ -83,8 +105,14 @@ class Manager(fk.Manager):
     def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
         return fk.FileData(location)
 
+    @override
+    def signed(self, action: fk.SignedAction, duration: int, location: fk.Location, extras: dict[str, Any]) -> str:
+        return location
+
 
 class Reader(fk.Reader):
+    """Null reader."""
+
     storage: NullStorage
     capabilities: fk.Capability = fk.Capability.READER_CAPABILITIES
 

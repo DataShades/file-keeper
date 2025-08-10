@@ -1,3 +1,4 @@
+"""Built-in storage adapters."""
 from .fs import FsStorage
 from .memory import MemoryStorage
 from .null import NullStorage

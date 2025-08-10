@@ -1,3 +1,4 @@
+"""Default implementations of file-keeper units."""
 from __future__ import annotations
 
 import contextlib
@@ -27,6 +28,7 @@ FILE_KEEPER_DNS = uuid.UUID("5b762d43-ec0d-3270-a565-8bb44bdaf6cf")
 
 @ext.hookimpl
 def register_location_transformers(registry: Registry[types.LocationTransformer]):
+    """Built-in location transformers."""
     registry.register("datetime_prefix", datetime_prefix_transformer)
     registry.register("datetime_with_extension", datetime_with_extension_transformer)
     registry.register("fix_extension", fix_extension_transformer)
@@ -102,6 +104,7 @@ def datetime_with_extension_transformer(location: str, upload: Upload | BaseData
 
 @ext.hookimpl
 def register_upload_factories(registry: Registry[UploadFactory, type]):
+    """Built-in upload converter."""
     registry.register(tempfile.SpooledTemporaryFile, tempfile_into_upload)
     registry.register(io.TextIOWrapper, textiowrapper_into_upload)
 
@@ -114,6 +117,7 @@ with contextlib.suppress(ImportError):  # pragma: no cover
         registry.register(cgi.FieldStorage, cgi_field_storage_into_upload)
 
     def cgi_field_storage_into_upload(value: cgi.FieldStorage):
+        """cgi.field-into-upload factory."""
         if not value.filename or not value.file:
             return None
 
@@ -142,6 +146,7 @@ with contextlib.suppress(ImportError):  # pragma: no cover
         registry.register(FileStorage, werkzeug_file_storage_into_upload)
 
     def werkzeug_file_storage_into_upload(value: FileStorage):
+        """werkzeug.FileStorage-into-upload converter."""
         name: str = value.filename or value.name or ""
         if value.content_length:
             size = value.content_length
@@ -157,6 +162,7 @@ with contextlib.suppress(ImportError):  # pragma: no cover
 
 
 def tempfile_into_upload(value: tempfile.SpooledTemporaryFile[bytes]):
+    """tmpfile-into-upload converter."""
     mime = magic.from_buffer(value.read(SAMPLE_SIZE), True)
     _ = value.seek(0, 2)
     size = value.tell()
@@ -166,11 +172,13 @@ def tempfile_into_upload(value: tempfile.SpooledTemporaryFile[bytes]):
 
 
 def textiowrapper_into_upload(value: io.TextIOWrapper):
+    """TextIO-into-upload converter."""
     return cast(io.BufferedReader, value.buffer)
 
 
 @ext.hookimpl
 def register_adapters(registry: Registry[type[Storage]]):
+    """Built-in storage adapters."""
     registry.register("file_keeper:fs", adapters.FsStorage)
     registry.register("file_keeper:null", adapters.NullStorage)
     registry.register("file_keeper:memory", adapters.MemoryStorage)

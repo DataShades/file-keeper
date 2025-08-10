@@ -22,7 +22,7 @@ def storage(faker: Faker, storage_settings: dict[str, Any]):
     if not name:
         pytest.skip("Azurite is not configured")
 
-    settings = {
+    settings: dict[str, Any] = {
         "name": "test",
         "path": faker.file_path(extension=[]),
         "account_name": name,

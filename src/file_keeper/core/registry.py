@@ -1,7 +1,8 @@
+"""Registry for collections."""
 from __future__ import annotations
 
-from collections.abc import Hashable, Mapping, MutableMapping
-from typing import Callable, Generic
+from collections.abc import Callable, Hashable, Mapping, MutableMapping
+from typing import Generic
 
 from typing_extensions import TypeVar
 
@@ -55,6 +56,7 @@ class Registry(Generic[V, K]):
         return item in self.members
 
     def collect(self):
+        """Collect members of the registry."""
         if self.collector:
             self.members.update(self.collector())
 
@@ -75,6 +77,7 @@ class Registry(Generic[V, K]):
         return self.members.pop(key, None)
 
     def decorated(self, key: K):
+        """Collect member via decorator."""
         def decorator(value: V):
             self.register(key, value)
             return value

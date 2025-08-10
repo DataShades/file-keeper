@@ -156,14 +156,6 @@ No specific settings
 
 [opendal operators]: https://opendal.apache.org/docs/python/api/operator/
 
-### `file_keeper:proxy`
-
-| Setting   | Type | Default | Description                         |
-|-----------|------|---------|-------------------------------------|
-| `adapter` | str  | `None`  | Name of the proxified adapter.      |
-| `options` | dict | `{}`    | Settings for the proxified adapter. |
-
-
 ### `file_keeper:redis`
 
 | Setting  | Type        | Default | Description                                 |

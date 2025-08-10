@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from typing import Any, cast
-import file_keeper as fk
+
 import pytest
+
+import file_keeper as fk
 
 
 @pytest.fixture

@@ -1,11 +1,12 @@
+"""Upload implementation."""
 from __future__ import annotations
 
 import dataclasses
+from collections.abc import Callable
 from io import BufferedReader, BytesIO
-from typing import Any, Callable, cast
+from typing import Any, TypeAlias, cast
 
 import magic
-from typing_extensions import TypeAlias
 
 from . import registry, types, utils
 
@@ -81,6 +82,7 @@ class Upload:
         return None
 
     def hashing_reader(self, **kwargs: Any) -> utils.HashingReader:
+        """Get reader for the upload that computes hash while reading content."""
         return utils.HashingReader(self.stream, **kwargs)
 
 
@@ -131,13 +133,13 @@ def make_upload(value: Any) -> Upload:
     if isinstance(value, Upload):
         return value
 
-    if isinstance(value, (bytes, bytearray)):
+    if isinstance(value, bytes | bytearray):
         value = BytesIO(value)
 
     # convenient situation: factory produced binary buffer and we know how to
     # transform it into an Upload. Factories will choose this option to avoid
     # repeating mimetype detection logic
-    if isinstance(value, (BytesIO, BufferedReader)):
+    if isinstance(value, BytesIO | BufferedReader):
         mime = magic.from_buffer(value.read(SAMPLE_SIZE), True)
         _ = value.seek(0, 2)
         size = value.tell()

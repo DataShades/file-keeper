@@ -1,3 +1,5 @@
+"""Memory adapter."""
+
 from __future__ import annotations
 
 import dataclasses
@@ -16,15 +18,17 @@ log = logging.getLogger(__name__)
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
-    """Settings for Null storage."""
+    """Settings for memory storage."""
 
     bucket: MutableMapping[str, bytes] = cast("dict[str, bytes]", dataclasses.field(default_factory=dict))
     """Container for uploaded objects."""
 
 
 class Uploader(fk.Uploader):
+    """Memory uploader."""
+
     storage: MemoryStorage
-    capabilities: fk.Capability = fk.Capability.UPLOADER_CAPABILITIES
+    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
 
     @override
     def upload(self, location: fk.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
@@ -104,8 +108,19 @@ class Uploader(fk.Uploader):
 
 
 class Manager(fk.Manager):
+    """Memory manager."""
+
     storage: MemoryStorage
-    capabilities: fk.Capability = fk.Capability.MANAGER_CAPABILITIES
+    capabilities: fk.Capability = (
+        fk.Capability.ANALYZE
+        | fk.Capability.SCAN
+        | fk.Capability.COPY
+        | fk.Capability.MOVE
+        | fk.Capability.APPEND
+        | fk.Capability.COMPOSE
+        | fk.Capability.EXISTS
+        | fk.Capability.REMOVE
+    )
 
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
@@ -185,6 +200,8 @@ class Manager(fk.Manager):
 
 
 class Reader(fk.Reader):
+    """Memory reader."""
+
     storage: MemoryStorage
     capabilities: fk.Capability = fk.Capability.READER_CAPABILITIES
 

@@ -1,3 +1,4 @@
+"""Initialization of file-keepers extensions."""
 from __future__ import annotations
 
 import os
@@ -14,6 +15,7 @@ plugin.add_hookspecs(spec)
 
 
 def setup():
+    """Discover and register file-keeper extensions."""
     plugin.load_setuptools_entrypoints(spec.name)
 
     for name in os.getenv("FILE_KEEPER_DISABLED_EXTENSIONS", "").split():
@@ -25,6 +27,7 @@ def setup():
 
 
 def register(reset: bool = False):
+    """Register built-in units."""
     if reset:
         storage.location_transformers.reset()
         upload.upload_factories.reset()

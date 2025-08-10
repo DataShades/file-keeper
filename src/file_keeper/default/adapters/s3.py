@@ -1,6 +1,7 @@
+"""AWS S3 adapter."""
+
 from __future__ import annotations
 
-import base64
 import dataclasses
 import os
 import re
@@ -20,12 +21,10 @@ RE_RANGE = re.compile(r"bytes=(?P<first_byte>\d+)-(?P<last_byte>\d+)")
 HTTP_RESUME = 308
 
 
-def decode(value: str) -> str:
-    return base64.decodebytes(value.encode()).hex()
-
-
 @dataclasses.dataclass()
 class Settings(fk.Settings):
+    """AWS S3 settings."""
+
     bucket: str = ""
     """Name of the storage bucket."""
     client: S3Client = None  # pyright: ignore[reportAssignmentType]
@@ -70,6 +69,8 @@ class Settings(fk.Settings):
 
 
 class Reader(fk.Reader):
+    """AWS S3 reader."""
+
     storage: S3Storage
     capabilities: fk.Capability = fk.Capability.STREAM
 
@@ -90,6 +91,8 @@ class Reader(fk.Reader):
 
 
 class Uploader(fk.Uploader):
+    """AWS S3 uploader."""
+
     storage: S3Storage
 
     capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
@@ -238,6 +241,8 @@ class Uploader(fk.Uploader):
 
 
 class Manager(fk.Manager):
+    """AWS S3 manager."""
+
     storage: S3Storage
 
     capabilities: fk.Capability = (
@@ -251,9 +256,7 @@ class Manager(fk.Manager):
     )
 
     @override
-    def signed(
-        self, action: fk.types.SignedAction, duration: int, location: fk.Location, extras: dict[str, Any]
-    ) -> str:
+    def signed(self, action: fk.types.SignedAction, duration: int, location: fk.Location, extras: dict[str, Any]):
         client = self.storage.settings.client
         method = {
             "download": "get_object",
@@ -365,6 +368,8 @@ class Manager(fk.Manager):
 
 
 class S3Storage(fk.Storage):
+    """AWS S3 adapter."""
+
     settings: Settings
     SettingsFactory = Settings
     UploaderFactory = Uploader

@@ -26,6 +26,7 @@ TData = TypeVar("TData", bound=types.PData, default=Any)
 
 @dataclasses.dataclass(frozen=True)
 class BaseData(Generic[TData]):
+    """Base class for file details."""
     location: types.Location
     size: int = 0
     content_type: str = ""
@@ -37,10 +38,12 @@ class BaseData(Generic[TData]):
 
     @classmethod
     def from_dict(cls, record: dict[str, Any], **overrides: Any):
+        """Transform dictionary into data object."""
         return cls._from(record, operator.getitem, operator.contains, overrides)
 
     @classmethod
     def from_object(cls, obj: TData, **overrides: Any):
+        """Copy data details from another object."""
         return cls._from(obj, getattr, hasattr, overrides)
 
     @classmethod
@@ -65,6 +68,7 @@ class BaseData(Generic[TData]):
         )
 
     def into_object(self, obj: TData):
+        """Copy data attributes into another object."""
         for key in self._plain_keys:
             setattr(obj, key, getattr(self, key))
 

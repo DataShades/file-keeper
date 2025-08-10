@@ -1,3 +1,4 @@
+"""Filebin adapter."""
 from __future__ import annotations
 
 import base64
@@ -15,6 +16,7 @@ API_URL = "https://filebin.net"
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
+    """Filebin settings."""
     timeout: int = 10
     bin: str = ""
 
@@ -22,6 +24,7 @@ class Settings(fk.Settings):
 
 
 class Uploader(fk.Uploader):
+    """Filebin uploader."""
     storage: FilebinStorage
     capabilities: fk.Capability = fk.Capability.CREATE
 
@@ -50,6 +53,7 @@ class Uploader(fk.Uploader):
 
 
 class Reader(fk.Reader):
+    """Filebin reader."""
     storage: FilebinStorage
     capabilities: fk.Capability = fk.Capability.STREAM | fk.Capability.PERMANENT_LINK
 
@@ -78,6 +82,7 @@ class Reader(fk.Reader):
 
 
 class Manager(fk.Manager):
+    """Filebin adapter."""
     storage: FilebinStorage
     capabilities: fk.Capability = fk.Capability.REMOVE | fk.Capability.SCAN | fk.Capability.ANALYZE
 
@@ -124,6 +129,7 @@ class Manager(fk.Manager):
 
 
 class FilebinStorage(fk.Storage):
+    """Filebin adapter."""
     hidden = True
 
     settings: Settings

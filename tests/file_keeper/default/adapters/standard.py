@@ -14,7 +14,7 @@ class Analyzer:
         """Analyzer supports ANALYZE capability."""
         assert storage.supports(fk.Capability.ANALYZE), "Does not support ANALYZE"
 
-    @pytest.mark.expect_storage_capability(fk.Capability.ANALYZE)
+    @pytest.mark.expect_storage_capability(fk.Capability.ANALYZE, fk.Capability.CREATE)
     def test_analyze_predictability(self, storage: fk.Storage, faker: Faker):
         """Analyzer returns the same data as uploader upon file creation."""
         data = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b"hello"))
@@ -34,7 +34,7 @@ class Appender:
         """Appender supports APPEND capability."""
         assert storage.supports(fk.Capability.APPEND), "Does not support APPEND"
 
-    @pytest.mark.expect_storage_capability(fk.Capability.APPEND)
+    @pytest.mark.expect_storage_capability(fk.Capability.APPEND, fk.Capability.CREATE, fk.Capability.STREAM)
     def test_append_content(self, storage: fk.Storage, faker: Faker):
         """Content can be appended to the file."""
         content = faker.binary(50)
@@ -56,7 +56,7 @@ class Composer:
         """Composer supports COMPOSE capability."""
         assert storage.supports(fk.Capability.COMPOSE), "Does not support COMPOSE"
 
-    @pytest.mark.expect_storage_capability(fk.Capability.COMPOSE)
+    @pytest.mark.expect_storage_capability(fk.Capability.COMPOSE, fk.Capability.CREATE, fk.Capability.STREAM)
     def test_compose_normal(self, storage: fk.Storage, faker: Faker):
         """Multiple files can be combined into a new file."""
         content_1 = faker.binary(10)
@@ -73,7 +73,7 @@ class Composer:
             second.location,
         ], "Composed file has the same location as one of its sources"
 
-    @pytest.mark.expect_storage_capability(fk.Capability.COMPOSE)
+    @pytest.mark.expect_storage_capability(fk.Capability.COMPOSE, fk.Capability.CREATE, fk.Capability.EXISTS)
     def test_compose_with_missing_source(self, storage: fk.Storage, faker: Faker):
         """If source is missing, composition is impossible."""
         first = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b"hello"))
@@ -89,7 +89,7 @@ class Composer:
 
         assert not storage.exists(fk.FileData(location)), "Composed file created even though the source is missing"
 
-    @pytest.mark.expect_storage_capability(fk.Capability.COMPOSE)
+    @pytest.mark.expect_storage_capability(fk.Capability.COMPOSE, fk.Capability.CREATE)
     def test_compose_override_default_prevented(self, storage: fk.Storage, faker: Faker):
         """By default, composition cannot override existing file."""
         first = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
@@ -99,7 +99,7 @@ class Composer:
         with pytest.raises(fk.exc.ExistingFileError):
             storage.compose(existing.location, first, second)
 
-    @pytest.mark.expect_storage_capability(fk.Capability.COMPOSE)
+    @pytest.mark.expect_storage_capability(fk.Capability.COMPOSE, fk.Capability.CREATE, fk.Capability.STREAM)
     @pytest.mark.fk_storage_option("override_existing", True)
     def test_compose_with_allowed_override(self, storage: fk.Storage, faker: Faker):
         """Overrides are supported when explicitly enabled."""
@@ -127,7 +127,7 @@ class Copier:
         """Copier supports COPY capability."""
         assert storage.supports(fk.Capability.COPY), "Does not support COPY"
 
-    @pytest.mark.expect_storage_capability(fk.Capability.COPY)
+    @pytest.mark.expect_storage_capability(fk.Capability.COPY, fk.Capability.CREATE)
     def test_copy_normal(self, storage: fk.Storage, faker: Faker):
         """Copied file retains attributes of the original with different location."""
         content = faker.binary(10)
@@ -148,7 +148,7 @@ class Copier:
                 fk.FileData(fk.Location(faker.file_name())),
             )
 
-    @pytest.mark.expect_storage_capability(fk.Capability.COPY)
+    @pytest.mark.expect_storage_capability(fk.Capability.COPY, fk.Capability.CREATE)
     def test_copy_into_existing_is_not_allowed_by_default(self, storage: fk.Storage, faker: Faker):
         """Cannot copy into existing location."""
         content = faker.binary(10)
@@ -161,7 +161,7 @@ class Copier:
                 data,
             )
 
-    @pytest.mark.expect_storage_capability(fk.Capability.COPY)
+    @pytest.mark.expect_storage_capability(fk.Capability.COPY, fk.Capability.CREATE, fk.Capability.STREAM)
     @pytest.mark.fk_storage_option("override_existing", True)
     def test_copy_into_existing_can_be_enabled(self, storage: fk.Storage, faker: Faker):
         """Overrides during copy can be enabled explicitly."""
@@ -185,7 +185,7 @@ class Creator:
         """Uploader supports CREATE capability."""
         assert storage.supports(fk.Capability.CREATE), "Does not support CREATE"
 
-    @pytest.mark.expect_storage_capability(fk.Capability.CREATE)
+    @pytest.mark.expect_storage_capability(fk.Capability.CREATE, fk.Capability.STREAM)
     def test_create_content_non_modified(self, storage: fk.Storage, faker: Faker):
         """Content matches the uploaded data"""
         content = faker.binary(100)
@@ -194,7 +194,7 @@ class Creator:
         assert result.size == 100, "Uploaded file has wrong filesize"
         assert storage.content(result) == content, "Uploaded file has wrong content"
 
-    @pytest.mark.expect_storage_capability(fk.Capability.CREATE)
+    @pytest.mark.expect_storage_capability(fk.Capability.CREATE, fk.Capability.STREAM)
     def test_create_empty_upload(self, storage: fk.Storage, faker: Faker):
         """Empty file can be created."""
         filename = faker.file_name()
@@ -217,7 +217,7 @@ class Creator:
         result = storage.upload(fk.Location(path), fk.make_upload(b""))
         assert result.location == path
 
-    @pytest.mark.expect_storage_capability(fk.Capability.CREATE)
+    @pytest.mark.expect_storage_capability(fk.Capability.CREATE, fk.Capability.STREAM)
     @pytest.mark.fk_storage_option("override_existing", True)
     def test_create_replace_existing(self, storage: fk.Storage, faker: Faker):
         """Overrides can be explicitly enabled."""
@@ -244,7 +244,7 @@ class Exister:
         """Existence supports EXISTS capability."""
         assert storage.supports(fk.Capability.EXISTS), "Does not support EXISTS"
 
-    @pytest.mark.expect_storage_capability(fk.Capability.EXISTS)
+    @pytest.mark.expect_storage_capability(fk.Capability.EXISTS, fk.Capability.CREATE)
     def test_exists_real(self, storage: fk.Storage, faker: Faker):
         """Newly uploaded file exists."""
         data = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
@@ -262,7 +262,9 @@ class Mover:
         """Mover supports MOVE capability."""
         assert storage.supports(fk.Capability.MOVE), "Does not support MOVE"
 
-    @pytest.mark.expect_storage_capability(fk.Capability.MOVE)
+    @pytest.mark.expect_storage_capability(
+        fk.Capability.MOVE, fk.Capability.CREATE, fk.Capability.EXISTS, fk.Capability.STREAM
+    )
     def test_move_real(self, storage: fk.Storage, faker: Faker):
         """File can be moved to a different location."""
         if not storage.supports(fk.Capability.EXISTS):
@@ -287,7 +289,7 @@ class Mover:
                 fk.FileData(fk.Location(faker.file_name())),
             )
 
-    @pytest.mark.expect_storage_capability(fk.Capability.MOVE)
+    @pytest.mark.expect_storage_capability(fk.Capability.MOVE, fk.Capability.CREATE)
     def test_move_into_existing_is_not_allowed_by_default(self, storage: fk.Storage, faker: Faker):
         """Attempt to override existing destination is reported."""
         content = faker.binary(10)
@@ -300,7 +302,9 @@ class Mover:
                 data,
             )
 
-    @pytest.mark.expect_storage_capability(fk.Capability.MOVE)
+    @pytest.mark.expect_storage_capability(
+        fk.Capability.MOVE, fk.Capability.CREATE, fk.Capability.EXISTS, fk.Capability.STREAM
+    )
     @pytest.mark.fk_storage_option("override_existing", True)
     def test_move_into_existing_can_be_enabled(self, storage: fk.Storage, faker: Faker):
         """When explicitly enabled, moved file can override existing destination."""
@@ -354,7 +358,7 @@ class Remover:
             "Storage pretends that non-existing file was removed."
         )
 
-    @pytest.mark.expect_storage_capability(fk.Capability.REMOVE)
+    @pytest.mark.expect_storage_capability(fk.Capability.REMOVE, fk.Capability.CREATE, fk.Capability.EXISTS)
     def test_remove_existing(self, storage: fk.Storage, faker: Faker):
         """Removed file is identified as non-existing."""
         if not storage.supports(fk.Capability.EXISTS):
