@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterator
-from typing import TYPE_CHECKING, Any, NewType, Protocol
-
-from typing_extensions import Literal, TypeAlias
+from typing import TYPE_CHECKING, Any, Literal, NewType, Protocol, TypeAlias
 
 if TYPE_CHECKING:
     from .data import BaseData

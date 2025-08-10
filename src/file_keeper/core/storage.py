@@ -18,9 +18,9 @@ import logging
 import os
 from abc import ABC
 from collections.abc import Callable, Iterable, Mapping
-from typing import Any, ClassVar, cast
+from typing import Any, ClassVar, TypeAlias, cast
 
-from typing_extensions import ParamSpec, TypeAlias, TypeVar, override
+from typing_extensions import ParamSpec, TypeVar, override
 
 from . import data, exceptions, types, utils
 from .registry import Registry

@@ -13,7 +13,7 @@ classifiers = [
 
 ]
 keywords = [ "file management", "cloud", "filesystem", "DAL", "storage", "file" ]
-requires-python = ">= 3.9"
+requires-python = ">= 3.10"
 dependencies = [ "typing_extensions", "pluggy", "python-magic" ]
 authors = [
     {name = "DataShades", email = "datashades@linkdigital.com.au"},
@@ -35,7 +35,7 @@ content-type = "text/markdown"
 Homepage = "https://github.com/DataShades/file-keeper"
 
 [project.optional-dependencies]
-test = [ "pytest-cov", "pytest-faker", "responses", "werkzeug" ]
+test = [ "pytest-cov", "pytest-faker", "responses", "werkzeug", "faker" ]
 docs = [ "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]", ]
 dev = [ "pytest-cov", "pytest-faker", "responses", "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]",]
 
@@ -51,7 +51,7 @@ sqlalchemy = ["sqlalchemy"]
 default = "file_keeper.default"
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 line-length = 120
 
 [tool.ruff.lint]
@@ -120,7 +120,7 @@ markers = [
 ]
 
 [tool.pyright]
-pythonVersion = "3.9"
+pythonVersion = "3.10"
 include = ["."]
 exclude = [
     # "**/test*",
@@ -200,7 +200,7 @@ omit = ["tests/*"]
 
 [tool.tox]
 requires = ["tox>=4"]
-env_list = ["3.15", "3.14", "3.13", "3.12", "3.11", "3.10", "3.9"]
+env_list = ["3.15", "3.14", "3.13", "3.12", "3.11", "3.10"]
 
 [tool.tox.env_run_base]
 passenv = ["FILE_KEEPER_TEST_*"]
