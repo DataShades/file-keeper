@@ -31,44 +31,4 @@ class TestSettings:
         Settings(path=str(tmp_path))
 
 
-class TestUploaderUpload(standard.Uploader):
-    pass
-
-
-class TestReader(standard.Reader):
-    pass
-
-
-# class TestManagerCompose(standard.Composer):
-#     pass
-
-
-# class TestManagerAppend(standard.Appender):
-#     pass
-
-
-# class TestManagerCopy(standard.Copier):
-#     pass
-
-
-# class TestManagerMove(standard.Mover):
-#     pass
-
-
-class TestManagerExists(standard.Exister):
-    pass
-
-
-class TestManagerRemove(standard.Remover):
-    pass
-
-
-class TestManagerScan(standard.Scanner):
-    pass
-
-
-# class TestManagerAnalyze(standard.Analyzer):
-#     pass
-
-
-class TestStorage: ...
+class TestStorage(standard.Standard): ...

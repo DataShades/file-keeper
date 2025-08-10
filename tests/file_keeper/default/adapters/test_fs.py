@@ -32,12 +32,21 @@ class TestSettings:
 
         Settings(path=str(tmp_path))
 
+    def test_missing_path(self, tmp_path: Path, faker: Faker):
+        path = faker.file_path(absolute=False, extension="")
 
-class TestUploaderUpload(standard.Uploader):
-    pass
+        with pytest.raises(fk.exc.InvalidStorageConfigurationError):
+            Settings(path=os.path.join(tmp_path, path))
+
+    def test_missing_path_created(self, tmp_path: Path, faker: Faker):
+        subpath = faker.file_path(absolute=False, extension="")
+        path = os.path.join(tmp_path, subpath)
+
+        Settings(path=path, initialize=True)
+        assert os.path.exists(path)
 
 
-class TestUploaderMultipart(standard.Multiparter, standard.MultiparterWithUploaded):
+class TestUploaderMultipart(standard.MultiparterWithUploaded):
     def test_refresh(self, faker: Faker, storage: fs.FsStorage):
         """`multipart_refresh` synchronized filesize."""
         content = faker.binary(10)
@@ -73,54 +82,4 @@ class TestUploaderMultipart(standard.Multiparter, standard.MultiparterWithUpload
         assert storage.content(fk.FileData(data.location)) == b"heLLO World"
 
 
-class TestReader(standard.Reader):
-    pass
-
-
-class TestManagerCompose(standard.Composer):
-    pass
-
-
-class TestManagerAppend(standard.Appender):
-    pass
-
-
-class TestManagerCopy(standard.Copier):
-    pass
-
-
-class TestManagerMove(standard.Mover):
-    pass
-
-
-class TestManagerExists(standard.Exister):
-    pass
-
-
-class TestManagerRemove(standard.Remover):
-    pass
-
-
-class TestManagerScan(standard.Scanner):
-    pass
-
-
-class TestManagerAnalyze(standard.Analyzer):
-    pass
-
-
-class TestStorage:
-    def test_missing_path(self, tmp_path: Path, faker: Faker):
-        path = faker.file_path(absolute=False, extension="")
-
-        with pytest.raises(fk.exc.InvalidStorageConfigurationError):
-            fs.FsStorage(
-                {"path": os.path.join(tmp_path, path)},
-            )
-
-    def test_missing_path_created(self, tmp_path: Path, faker: Faker):
-        subpath = faker.file_path(absolute=False, extension="")
-        path = os.path.join(tmp_path, subpath)
-
-        fs.FsStorage({"path": path, "initialize": True})
-        assert os.path.exists(path)
+class TestStorage(standard.Standard): ...

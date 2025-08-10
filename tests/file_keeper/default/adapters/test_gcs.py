@@ -50,40 +50,4 @@ def storage(faker: Faker, storage_settings: dict[str, Any]):
 class TestSettings: ...
 
 
-class TestUploaderUpload(standard.Uploader):
-    pass
-
-
-class TestUploaderMultipart(standard.Multiparter):
-    pass
-
-
-class TestReader(standard.Reader):
-    pass
-
-
-class TestManagerCopy(standard.Copier):
-    pass
-
-
-class TestManagerMove(standard.Mover):
-    pass
-
-
-class TestManagerExists(standard.Exister):
-    pass
-
-
-class TestManagerRemove(standard.Remover):
-    pass
-
-
-class TestManagerScan(standard.Scanner):
-    pass
-
-
-class TestManagerAnalyze(standard.Analyzer):
-    pass
-
-
-class TestStorage: ...
+class TestStorage(standard.Standard): ...

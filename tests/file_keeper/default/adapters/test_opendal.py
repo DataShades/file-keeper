@@ -42,42 +42,7 @@ class TestSettings:
         assert cfg.operator is op
 
 
-class TestUploaderUpload(standard.Uploader):
-    pass
-
-
-class TestReader(standard.Reader):
-    pass
-
-
-class TestManagerExists(standard.Exister):
-    pass
-
-
-class TestManagerRemove(standard.Remover):
-    pass
-
-
-class TestManagerScan(standard.Scanner):
-    pass
-
-
-class TestManagerCopy(standard.Copier):
-    pass
-
-
-class TestManagerMove(standard.Mover):
-    pass
-
-
-class TestManagerAnalyze(standard.Analyzer):
-    pass
-
-
-class TestManagerAppend(standard.Appender): ...
-
-
-class TestStorage:
+class TestStorage(standard.Standard):
     def test_capabilities_fs(self, storage: Storage):
         assert storage.supports(
             fk.Capability.STREAM
