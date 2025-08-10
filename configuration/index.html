@@ -440,15 +440,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#file_keeperproxy" class="md-nav__link">
-    <span class="md-ellipsis">
-      file_keeper:proxy
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#file_keeperredis" class="md-nav__link">
     <span class="md-ellipsis">
       file_keeper:redis
@@ -505,8 +496,6 @@
   
     
     
-      
-        
       
         
       
@@ -600,7 +589,7 @@
   
   
   <span class="md-ellipsis">
-    Apache Libcloud
+    Apache Libcloud Adapter
     
   </span>
   
@@ -646,7 +635,7 @@
   
   
   <span class="md-ellipsis">
-    AWS S3
+    AWS S3 Adapter
     
   </span>
   
@@ -692,7 +681,7 @@
   
   
   <span class="md-ellipsis">
-    Filebin
+    Filebin Adapter
     
   </span>
   
@@ -738,7 +727,7 @@
   
   
   <span class="md-ellipsis">
-    Local filesystem
+    Local Filesystem Adapter
     
   </span>
   
@@ -761,7 +750,7 @@
   
   
   <span class="md-ellipsis">
-    Memory
+    In-Memory Storage Adapter
     
   </span>
   
@@ -784,30 +773,7 @@
   
   
   <span class="md-ellipsis">
-    Null
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../adapters/proxy/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Proxy storage
+    Null Adapter
     
   </span>
   
@@ -830,7 +796,7 @@
   
   
   <span class="md-ellipsis">
-    Redis
+    Redis Adapter
     
   </span>
   
@@ -853,7 +819,7 @@
   
   
   <span class="md-ellipsis">
-    SQLAlchemy
+    SQLAlchemy Adapter
     
   </span>
   
@@ -876,7 +842,7 @@
   
   
   <span class="md-ellipsis">
-    ZIP
+    ZIP Archive Adapter
     
   </span>
   
@@ -925,7 +891,7 @@
   
   
   <span class="md-ellipsis">
-    Core Concepts
+    Core concepts
     
   </span>
   
@@ -936,7 +902,7 @@
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Core Concepts
+            Core concepts
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1022,9 +988,31 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../extending/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../extending/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -1033,7 +1021,73 @@
   </span>
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Extending file-keeper
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extending/adapters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Storage adapters
+    
+  </span>
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extending/location_transformers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Location transformers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1050,7 +1104,7 @@
   
   
   <span class="md-ellipsis">
-    Error Handling
+    Error handling
     
   </span>
   
@@ -1225,15 +1279,6 @@
   <a href="#file_keeperopendal" class="md-nav__link">
     <span class="md-ellipsis">
       file_keeper:opendal
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#file_keeperproxy" class="md-nav__link">
-    <span class="md-ellipsis">
-      file_keeper:proxy
     </span>
   </a>
   
@@ -1758,31 +1803,6 @@ the <code>s3_settings</code> dictionary.</p>
 <td>str</td>
 <td><code>""</code></td>
 <td>Prefix for the file location.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="file_keeperproxy"><code>file_keeper:proxy</code></h3>
-<table>
-<thead>
-<tr>
-<th>Setting</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>adapter</code></td>
-<td>str</td>
-<td><code>None</code></td>
-<td>Name of the proxified adapter.</td>
-</tr>
-<tr>
-<td><code>options</code></td>
-<td>dict</td>
-<td><code>{}</code></td>
-<td>Settings for the proxified adapter.</td>
 </tr>
 </tbody>
 </table>

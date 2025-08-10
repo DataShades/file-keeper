@@ -340,8 +340,6 @@
       
         
       
-        
-      
     
     
     
@@ -408,7 +406,7 @@
   
   
   <span class="md-ellipsis">
-    Apache Libcloud
+    Apache Libcloud Adapter
     
   </span>
   
@@ -454,7 +452,7 @@
   
   
   <span class="md-ellipsis">
-    AWS S3
+    AWS S3 Adapter
     
   </span>
   
@@ -500,7 +498,7 @@
   
   
   <span class="md-ellipsis">
-    Filebin
+    Filebin Adapter
     
   </span>
   
@@ -546,7 +544,7 @@
   
   
   <span class="md-ellipsis">
-    Local filesystem
+    Local Filesystem Adapter
     
   </span>
   
@@ -569,7 +567,7 @@
   
   
   <span class="md-ellipsis">
-    Memory
+    In-Memory Storage Adapter
     
   </span>
   
@@ -592,30 +590,7 @@
   
   
   <span class="md-ellipsis">
-    Null
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../adapters/proxy/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Proxy storage
+    Null Adapter
     
   </span>
   
@@ -638,7 +613,7 @@
   
   
   <span class="md-ellipsis">
-    Redis
+    Redis Adapter
     
   </span>
   
@@ -661,7 +636,7 @@
   
   
   <span class="md-ellipsis">
-    SQLAlchemy
+    SQLAlchemy Adapter
     
   </span>
   
@@ -684,7 +659,7 @@
   
   
   <span class="md-ellipsis">
-    ZIP
+    ZIP Archive Adapter
     
   </span>
   
@@ -735,7 +710,7 @@
   
   
   <span class="md-ellipsis">
-    Core Concepts
+    Core concepts
     
   </span>
   
@@ -746,7 +721,7 @@
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Core Concepts
+            Core concepts
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -789,6 +764,19 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Upload
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -800,6 +788,61 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-an-upload" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is an Upload?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-an-upload-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating an Upload Object
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#streaming-uploads" class="md-nav__link">
+    <span class="md-ellipsis">
+      Streaming Uploads
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hashing-for-data-integrity" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hashing for Data Integrity
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -842,9 +885,31 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../extending/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../extending/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -853,7 +918,73 @@
   </span>
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Extending file-keeper
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extending/adapters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Storage adapters
+    
+  </span>
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extending/location_transformers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Location transformers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -870,7 +1001,7 @@
   
   
   <span class="md-ellipsis">
-    Error Handling
+    Error handling
     
   </span>
   
@@ -944,6 +1075,50 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-an-upload" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is an Upload?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-an-upload-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating an Upload Object
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#streaming-uploads" class="md-nav__link">
+    <span class="md-ellipsis">
+      Streaming Uploads
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hashing-for-data-integrity" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hashing for Data Integrity
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -962,11 +1137,151 @@
 
 
 <h1 id="upload">Upload</h1>
-<pre><code>*   Explanation of the `Upload` class.
-*   How to create an `Upload` object.
-*   Streaming uploads.
-*   Hashing.
-</code></pre>
+<p>The <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Upload&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Upload">Upload</a> class represents the data you want to store in
+a storage backend. It's a key component in file-keeper, encapsulating the
+file's content, metadata, and instructions for how to transfer it to
+storage. This document explains how to create and use
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Upload&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Upload">Upload</a> objects, covering streaming uploads and hashing
+for data integrity.</p>
+<h2 id="what-is-an-upload">What is an <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Upload&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Upload">Upload</a>?</h2>
+<p>Think of an <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Upload&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Upload">Upload</a> as a package containing everything
+needed to send a file to storage. It's more than just the raw data; it includes
+information about the file itself, like its name, size, and content type. This
+metadata is essential for proper storage and retrieval.</p>
+<p>The <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Upload&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Upload">Upload</a> object decouples the <em>source</em> of the data from
+the <em>transfer</em> process. This allows file-keeper to handle various data sources
+– files on disk, in-memory buffers, network streams – without changing the core
+storage logic.</p>
+<h2 id="creating-an-upload-object">Creating an <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Upload&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Upload">Upload</a> Object</h2>
+<p>You can create an <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Upload&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Upload">Upload</a> object in several ways,
+depending on the source of your data. The recommended way is using
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-function&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;make_upload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../../api/#file_keeper.make_upload">make_upload</a> helper:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">File-like object</label><label for="__tabbed_1_2">Byte string</label><label for="__tabbed_1_3">Werkzeug's FileStorage</label><label for="__tabbed_1_4">Manually</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>If you have an open file, you can directly
+pass it to the <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-function&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;make_upload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../../api/#file_keeper.make_upload">make_upload</a> function. file-keeper will
+handle reading the data from the file.</p>
+<div class="highlight"><pre><span></span><code><span class="n">src</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;my_image.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+<span class="n">upload</span> <span class="o">=</span> <span class="n">make_upload</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>If your data is already in memory as a byte string,
+you can pass it directly.</p>
+<div class="highlight"><pre><span></span><code><span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;This is the content of my file.&quot;</span>
+<span class="n">upload</span> <span class="o">=</span> <span class="n">make_upload</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>When writing an application using werkzeug-based
+framework you can handle uploaded files in this way.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">werkzeug.datastructures</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileStorage</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">FileStorage</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="s2">&quot;my_data.txt&quot;</span><span class="p">)</span>
+<span class="n">upload</span> <span class="o">=</span> <span class="n">make_upload</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>This is useful for large files that
+don't fit in memory. You need to provide an object that has methods <code>read</code>
+and <code>__iter__</code> producing byte string as a first argument to
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Upload&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Upload">Upload</a> class. If you have a generator that yields
+data, wrap it into <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;IterableBytesReader&lt;/code&gt;" href="../../api/#file_keeper.IterableBytesReader">IterableBytesReader</a>
+instead of manually implementing class with required methods:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">Upload</span><span class="p">,</span> <span class="n">IterableBytesReader</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">data_generator</span><span class="p">():</span>
+    <span class="k">yield</span> <span class="sa">b</span><span class="s2">&quot;hello&quot;</span>
+    <span class="k">yield</span> <span class="sa">b</span><span class="s2">&quot; &quot;</span>
+    <span class="k">yield</span> <span class="sa">b</span><span class="s2">&quot;world&quot;</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">IterableBytesReader</span><span class="p">(</span><span class="n">data_generator</span><span class="p">())</span>
+<span class="n">upload</span> <span class="o">=</span> <span class="n">Upload</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="s2">&quot;my_file.txt&quot;</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-function&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;make_upload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../../api/#file_keeper.make_upload">make_upload</a> function automatically determines
+the file size and content type for supported source types.</p>
+<h2 id="streaming-uploads">Streaming Uploads</h2>
+<p>For very large files, loading the entire content into memory is
+impractical. Streaming uploads allow you to send the data in chunks, reducing
+memory usage and improving performance.</p>
+<p>As shown in the example above, you can create an <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Upload&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Upload">Upload</a>
+object from an iterable of bytes. file-keeper will then stream the data to the
+storage backend as it becomes available. This is the preferred method for
+handling large files, but it expects that you compute the size and content type
+of the upload in advance and provide these details to the
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Upload&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Upload">Upload</a> constructor.</p>
+<h2 id="hashing-for-data-integrity">Hashing for Data Integrity</h2>
+<p>Data integrity is crucial when transferring files. Hashing ensures that the
+data you upload is exactly the same as the data stored in the
+backend. file-keeper automatically calculates a hash of the upload data during
+the transfer process.</p>
+<p>The calculated hash is stored as part of the <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a>
+metadata. When you retrieve the file, file-keeper can recalculate the hash via
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-method&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;analyze&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../../api/#file_keeper.Storage.analyze">Storage.analyze</a> method to verify data
+integrity. If the hashes don't match, it indicates that the file has been
+corrupted or tampered with.</p>
+<p>Hashing is performed transparently during the upload process, so you don't need
+to worry about implementing it yourself. It provides an extra layer of
+assurance that your data is stored reliably.</p>
 
 
 

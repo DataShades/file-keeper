@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://datashades.github.io/file-keeper/adapters/fs/">
+        <link rel="canonical" href="https://datashades.github.io/file-keeper/extending/adapters/">
       
       
-        <link rel="prev" href="../gcs/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../memory/">
+        <link rel="next" href="../location_transformers/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Local Filesystem Adapter - file-keeper</title>
+        <title>Storage adapters - file-keeper</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#local-filesystem-adapter" class="md-skip">
+        <a href="#storage-adapters" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Local Filesystem Adapter
+              Storage adapters
             
           </span>
         </div>
@@ -309,10 +309,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -346,11 +344,11 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
@@ -366,7 +364,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Storage adapters
@@ -380,7 +378,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../emulate/" class="md-nav__link">
+      <a href="../../adapters/emulate/" class="md-nav__link">
         
   
   
@@ -403,7 +401,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../libcloud/" class="md-nav__link">
+      <a href="../../adapters/libcloud/" class="md-nav__link">
         
   
   
@@ -426,7 +424,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../opendal/" class="md-nav__link">
+      <a href="../../adapters/opendal/" class="md-nav__link">
         
   
   
@@ -449,7 +447,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../s3/" class="md-nav__link">
+      <a href="../../adapters/s3/" class="md-nav__link">
         
   
   
@@ -472,7 +470,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../azure_blob/" class="md-nav__link">
+      <a href="../../adapters/azure_blob/" class="md-nav__link">
         
   
   
@@ -495,7 +493,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../filebin/" class="md-nav__link">
+      <a href="../../adapters/filebin/" class="md-nav__link">
         
   
   
@@ -518,7 +516,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../gcs/" class="md-nav__link">
+      <a href="../../adapters/gcs/" class="md-nav__link">
         
   
   
@@ -538,32 +536,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Local Filesystem Adapter
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../adapters/fs/" class="md-nav__link">
         
   
   
@@ -574,44 +550,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Overview
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#initialization-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Initialization Example
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -624,7 +562,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../memory/" class="md-nav__link">
+      <a href="../../adapters/memory/" class="md-nav__link">
         
   
   
@@ -647,7 +585,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../null/" class="md-nav__link">
+      <a href="../../adapters/null/" class="md-nav__link">
         
   
   
@@ -670,7 +608,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../redis/" class="md-nav__link">
+      <a href="../../adapters/redis/" class="md-nav__link">
         
   
   
@@ -693,7 +631,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sqlalchemy/" class="md-nav__link">
+      <a href="../../adapters/sqlalchemy/" class="md-nav__link">
         
   
   
@@ -716,7 +654,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../zip/" class="md-nav__link">
+      <a href="../../adapters/zip/" class="md-nav__link">
         
   
   
@@ -865,6 +803,8 @@
       
   
   
+    
+  
   
   
     
@@ -882,15 +822,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../extending/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -909,7 +849,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Extending file-keeper
@@ -922,10 +862,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../extending/adapters/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Storage adapters
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -936,6 +898,86 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#steps-to-create-a-custom-adapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Steps to create a custom adapter
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Steps to create a custom adapter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#define-a-settings-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Define a Settings class
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implement-the-storage-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implement the Storage class
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implement-uploader-and-reader-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implement Uploader and Reader services
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#register-the-adapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Register the adapter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initialize-the-adapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialize the adapter
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -948,7 +990,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extending/location_transformers/" class="md-nav__link">
+      <a href="../location_transformers/" class="md-nav__link">
         
   
   
@@ -1064,20 +1106,62 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#steps-to-create-a-custom-adapter" class="md-nav__link">
     <span class="md-ellipsis">
-      Overview
+      Steps to create a custom adapter
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Steps to create a custom adapter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#define-a-settings-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Define a Settings class
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#initialization-example" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#implement-the-storage-class" class="md-nav__link">
     <span class="md-ellipsis">
-      Initialization Example
+      Implement the Storage class
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implement-uploader-and-reader-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implement Uploader and Reader services
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#register-the-adapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Register the adapter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initialize-the-adapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialize the adapter
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1100,28 +1184,139 @@
   
 
 
-<h1 id="local-filesystem-adapter">Local Filesystem Adapter</h1>
-<p>The <code>file_keeper:fs</code> adapter allows you to use your local filesystem for storing and retrieving files. This adapter is useful for testing, development, or scenarios where you need to store files locally.</p>
-<h2 id="overview">Overview</h2>
-<p>This adapter provides a simple way to interact with the local filesystem. You'll need to specify the base path where files will be stored.</p>
-<h2 id="initialization-example">Initialization Example</h2>
-<p>Here's an example of how to initialize the local filesystem adapter:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_storage</span>
+<h1 id="storage-adapters">Storage adapters</h1>
+<p>The core of file-keeper's flexibility lies in its storage adapters. Adapters
+encapsulate the logic for interacting with a specific storage system, allowing
+file-keeper to remain agnostic to the underlying implementation.  To create a
+custom adapter, you'll need to define a class that inherits from
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> and implements its services.</p>
+<h2 id="steps-to-create-a-custom-adapter">Steps to create a custom adapter</h2>
+<h3 id="define-a-settings-class">Define a Settings class</h3>
+<p>Create a dataclass to hold the configuration options for your storage
+adapter. This class should inherit from <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Settings&lt;/code&gt;
 
-<span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_local_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
-    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:fs&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp/file-keeper&quot;</span><span class="p">,</span>  <span class="c1"># Replace with your desired base path</span>
-    <span class="s2">&quot;initialize&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Optional: Create the directory if it doesn&#39;t exist</span>
-<span class="p">})</span>
 
-<span class="c1"># Now you can use the &#39;storage&#39; object to upload, download, and manage files.</span>
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Settings">Settings</a>.  This
+allows file-keeper to handle validation and default values.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fk</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyStorageSettings</span><span class="p">(</span><span class="n">fk</span><span class="o">.</span><span class="n">Settings</span><span class="p">):</span>
+    <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">endpoint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 </code></pre></div>
-<p><strong>Important Notes:</strong></p>
-<ul>
-<li>Replace <code>/tmp/file-keeper</code> with the desired base path on your system.</li>
-<li>The <code>initialize</code> option (defaulting to <code>False</code>) determines whether the adapter should attempt to create the specified directory if it doesn't exist. If <code>initialize</code> is <code>True</code> and the directory cannot be created (e.g., due to permissions issues), an error will be raised.</li>
-<li>Ensure that the process running File Keeper has the necessary permissions to read and write to the specified directory.</li>
-</ul>
+</div>
+<h3 id="implement-the-storage-class">Implement the <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> class</h3>
+<p>Create a class that inherits from <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> and sets the
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;SettingsFactory&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Settings&lt;/span&gt;&lt;/code&gt;
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Storage.SettingsFactory">SettingsFactory</a> class attribute to your settings
+class. It also sets <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;UploaderFactory&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Uploader&lt;/span&gt;&lt;/code&gt;
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Storage.UploaderFactory">UploaderFactory</a> and
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;ReaderFactory&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Reader&lt;/span&gt;&lt;/code&gt;
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Storage.ReaderFactory">ReaderFactory</a> in the same way. The
+implementation will follow soon.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyStorage</span><span class="p">(</span><span class="n">fk</span><span class="o">.</span><span class="n">Storage</span><span class="p">):</span>
+    <span class="n">settings</span><span class="p">:</span> <span class="n">MyStorageSettings</span>
+
+    <span class="n">SettingsFactory</span> <span class="o">=</span> <span class="n">MyStorageSettings</span>
+    <span class="n">UploaderFactory</span> <span class="o">=</span> <span class="n">MyUploader</span>
+    <span class="n">ReaderFactory</span> <span class="o">=</span> <span class="n">MyReader</span>
+</code></pre></div>
+</div>
+<h3 id="implement-uploader-and-reader-services">Implement <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Uploader&lt;/code&gt;" href="../../api/#file_keeper.Uploader">Uploader</a> and <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Reader&lt;/code&gt;" href="../../api/#file_keeper.Reader">Reader</a> services</h3>
+<p>Create classes for <code>Uploader</code> and <code>Reader</code> that inherit from
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Uploader&lt;/code&gt;" href="../../api/#file_keeper.Uploader">Uploader</a> and <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Reader&lt;/code&gt;" href="../../api/#file_keeper.Reader">Reader</a>
+respectively. These classes will contain the logic for uploading and reading
+files to and from your storage system.</p>
+<p>Make sure to add <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;auto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
+      &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Capability.CREATE">CREATE</a> capability to
+<code>Uploader</code> and <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;STREAM&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;auto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
+      &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Capability.STREAM">STREAM</a> capability to
+<code>Reader</code>. Otherwise storage will pretend that these services do not support these operations</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MyUploader</span><span class="p">(</span><span class="n">fk</span><span class="o">.</span><span class="n">Uploader</span><span class="p">):</span>
+
+    <span class="n">capabilities</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">CREATE</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Location</span><span class="p">,</span> <span class="n">upload</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Upload</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">:</span>
+        <span class="c1"># Implement your upload logic here</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">upload</span><span class="o">.</span><span class="n">hashing_reader</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+            <span class="c1"># send fragment to storage</span>
+
+        <span class="k">return</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">upload</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">upload</span><span class="o">.</span><span class="n">content_type</span><span class="p">,</span> <span class="n">reader</span><span class="o">.</span><span class="n">get_hash</span><span class="p">())</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyReader</span><span class="p">(</span><span class="n">fk</span><span class="o">.</span><span class="n">Reader</span><span class="p">):</span>
+
+    <span class="n">capabilities</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">STREAM</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
+        <span class="c1"># Implement your streaming logic here</span>
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">file_stream</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">chunk</span>
+</code></pre></div>
+</div>
+<h3 id="register-the-adapter">Register the adapter</h3>
+<p>If you are going to use custom adapter only inside a single script, you can
+register it directly using <code>adapters</code> registry:</p>
+<div class="highlight"><pre><span></span><code><span class="n">fk</span><span class="o">.</span><span class="n">adapters</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;local&quot;</span><span class="p">,</span> <span class="n">MyStorage</span><span class="p">)</span>
+</code></pre></div>
+<p>But if you are writing a library that will be used accross multiple project
+it's better to register storage using entrypoints of the python package.</p>
+<p>First, create a function with name <code>register_adapters</code> and decorate it with
+<code>hookimpl</code> decorator. This function is responsible to register the adapter</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@fk</span><span class="o">.</span><span class="n">hookimpl</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">register_adapters</span><span class="p">(</span><span class="n">registry</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Registry</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="n">fk</span><span class="o">.</span><span class="n">Storage</span><span class="p">]]):</span>
+    <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;local&quot;</span><span class="p">,</span> <span class="n">MyStorage</span><span class="p">)</span>
+</code></pre></div>
+<p>Next, add an entry-point named <code>file_keeper_ext</code> pointing to the module with
+<code>register_adapters</code> to you package's definition. For example, if you are using
+<code>pyproject.toml</code> add following lines there:</p>
+<div class="highlight"><pre><span></span><code><span class="k">[project.entry-points.</span><span class="s2">&quot;file_keeper_ext&quot;</span><span class="k">]</span>
+<span class="n">my_extension</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my_module.my_storage&quot;</span>
+</code></pre></div>
+<p>Finally, re-install the your package, to refresh entrypoints. From now on your
+custom adapter will be available just as any adapter shipped inside file-keeper
+as soon as you install your library.</p>
+<h3 id="initialize-the-adapter">Initialize the adapter</h3>
+<p>Now you can use your custom adapter:</p>
+<div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;local&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;adapter&quot;</span><span class="p">:</span> <span class="s2">&quot;local&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;api_key&quot;</span><span class="p">:</span> <span class="s2">&quot;123&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;endpoint&quot;</span><span class="p">:</span> <span class="s2">&quot;https://example.local&quot;</span><span class="p">,</span>
+<span class="p">})</span>
+</code></pre></div>
+<p>This is a basic example, but it demonstrates the fundamental principles of
+creating a custom storage adapter.  You can extend this example to support more
+complex features and integrate with a wider range of storage systems.</p>
 
 
 
@@ -1157,7 +1352,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../gcs/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Google Cloud Storage">
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Extending file-keeper">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1167,20 +1362,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Google Cloud Storage
+                Extending file-keeper
               </div>
             </div>
           </a>
         
         
           
-          <a href="../memory/" class="md-footer__link md-footer__link--next" aria-label="Next: In-Memory Storage Adapter">
+          <a href="../location_transformers/" class="md-footer__link md-footer__link--next" aria-label="Next: Location transformers">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                In-Memory Storage Adapter
+                Location transformers
               </div>
             </div>
             <div class="md-footer__button md-icon">

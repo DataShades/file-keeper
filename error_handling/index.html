@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://datashades.github.io/file-keeper/error_handling/">
       
       
-        <link rel="prev" href="../extending/">
+        <link rel="prev" href="../extending/location_transformers/">
       
       
         <link rel="next" href="../api/">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Error Handling - file-keeper</title>
+        <title>Error handling - file-keeper</title>
       
     
     
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Error Handling
+              Error handling
             
           </span>
         </div>
@@ -340,8 +340,6 @@
       
         
       
-        
-      
     
     
     
@@ -408,7 +406,7 @@
   
   
   <span class="md-ellipsis">
-    Apache Libcloud
+    Apache Libcloud Adapter
     
   </span>
   
@@ -454,7 +452,7 @@
   
   
   <span class="md-ellipsis">
-    AWS S3
+    AWS S3 Adapter
     
   </span>
   
@@ -500,7 +498,7 @@
   
   
   <span class="md-ellipsis">
-    Filebin
+    Filebin Adapter
     
   </span>
   
@@ -546,7 +544,7 @@
   
   
   <span class="md-ellipsis">
-    Local filesystem
+    Local Filesystem Adapter
     
   </span>
   
@@ -569,7 +567,7 @@
   
   
   <span class="md-ellipsis">
-    Memory
+    In-Memory Storage Adapter
     
   </span>
   
@@ -592,30 +590,7 @@
   
   
   <span class="md-ellipsis">
-    Null
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../adapters/proxy/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Proxy storage
+    Null Adapter
     
   </span>
   
@@ -638,7 +613,7 @@
   
   
   <span class="md-ellipsis">
-    Redis
+    Redis Adapter
     
   </span>
   
@@ -661,7 +636,7 @@
   
   
   <span class="md-ellipsis">
-    SQLAlchemy
+    SQLAlchemy Adapter
     
   </span>
   
@@ -684,7 +659,7 @@
   
   
   <span class="md-ellipsis">
-    ZIP
+    ZIP Archive Adapter
     
   </span>
   
@@ -733,7 +708,7 @@
   
   
   <span class="md-ellipsis">
-    Core Concepts
+    Core concepts
     
   </span>
   
@@ -744,7 +719,7 @@
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Core Concepts
+            Core concepts
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -830,9 +805,31 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../extending/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../extending/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -841,7 +838,73 @@
   </span>
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Extending file-keeper
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extending/adapters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Storage adapters
+    
+  </span>
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extending/location_transformers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Location transformers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -867,7 +930,7 @@
   
   
   <span class="md-ellipsis">
-    Error Handling
+    Error handling
     
   </span>
   
@@ -880,7 +943,7 @@
   
   
   <span class="md-ellipsis">
-    Error Handling
+    Error handling
     
   </span>
   
@@ -905,7 +968,7 @@
         <li class="md-nav__item">
   <a href="#general-exception-hierarchy" class="md-nav__link">
     <span class="md-ellipsis">
-      General Exception Hierarchy
+      General exception hierarchy
     </span>
   </a>
   
@@ -914,7 +977,7 @@
         <li class="md-nav__item">
   <a href="#example-error-handling" class="md-nav__link">
     <span class="md-ellipsis">
-      Example Error Handling
+      Example error handling
     </span>
   </a>
   
@@ -1223,7 +1286,7 @@
         <li class="md-nav__item">
   <a href="#general-exception-hierarchy" class="md-nav__link">
     <span class="md-ellipsis">
-      General Exception Hierarchy
+      General exception hierarchy
     </span>
   </a>
   
@@ -1232,7 +1295,7 @@
         <li class="md-nav__item">
   <a href="#example-error-handling" class="md-nav__link">
     <span class="md-ellipsis">
-      Example Error Handling
+      Example error handling
     </span>
   </a>
   
@@ -1479,11 +1542,11 @@
   
 
 
-<h1 id="error-handling">Error Handling</h1>
+<h1 id="error-handling">Error handling</h1>
 <p>file-keeper provides a comprehensive set of exceptions to help you handle
 errors gracefully. This page documents the available exceptions and provides
 guidance on how to handle them.</p>
-<h2 id="general-exception-hierarchy">General Exception Hierarchy</h2>
+<h2 id="general-exception-hierarchy">General exception hierarchy</h2>
 <p>All exceptions in file-keeper inherit from the base
 <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FilesError&lt;/code&gt;" href="#file_keeper.exc.FilesError"><code>FilesError</code></a> exception.  This allows you to catch
 all file-keeper related errors with a single <code>except</code> block.  More specific
@@ -1509,7 +1572,7 @@ of file-keeper module</p>
     <span class="o">...</span>
 </code></pre></div>
 </div>
-<h2 id="example-error-handling">Example Error Handling</h2>
+<h2 id="example-error-handling">Example error handling</h2>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_storage</span><span class="p">,</span> <span class="n">make_upload</span><span class="p">,</span> <span class="n">exc</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -2612,7 +2675,7 @@ of file-keeper module</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../extending/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Extending file-keeper">
+          <a href="../extending/location_transformers/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Location transformers">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2622,7 +2685,7 @@ of file-keeper module</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Extending file-keeper
+                Location transformers
               </div>
             </div>
           </a>

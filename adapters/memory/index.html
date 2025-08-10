@@ -22,7 +22,7 @@
     
     
       
-        <title>Memory - file-keeper</title>
+        <title>In-Memory Storage Adapter - file-keeper</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#memory" class="md-skip">
+        <a href="#in-memory-storage-adapter" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Memory
+              In-Memory Storage Adapter
             
           </span>
         </div>
@@ -342,8 +342,6 @@
       
         
       
-        
-      
     
     
     
@@ -410,7 +408,7 @@
   
   
   <span class="md-ellipsis">
-    Apache Libcloud
+    Apache Libcloud Adapter
     
   </span>
   
@@ -456,7 +454,7 @@
   
   
   <span class="md-ellipsis">
-    AWS S3
+    AWS S3 Adapter
     
   </span>
   
@@ -502,7 +500,7 @@
   
   
   <span class="md-ellipsis">
-    Filebin
+    Filebin Adapter
     
   </span>
   
@@ -548,7 +546,7 @@
   
   
   <span class="md-ellipsis">
-    Local filesystem
+    Local Filesystem Adapter
     
   </span>
   
@@ -575,17 +573,67 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    In-Memory Storage Adapter
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
   <span class="md-ellipsis">
-    Memory
+    In-Memory Storage Adapter
     
   </span>
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initialization-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialization Example
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -604,30 +652,7 @@
   
   
   <span class="md-ellipsis">
-    Null
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../proxy/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Proxy storage
+    Null Adapter
     
   </span>
   
@@ -650,7 +675,7 @@
   
   
   <span class="md-ellipsis">
-    Redis
+    Redis Adapter
     
   </span>
   
@@ -673,7 +698,7 @@
   
   
   <span class="md-ellipsis">
-    SQLAlchemy
+    SQLAlchemy Adapter
     
   </span>
   
@@ -696,7 +721,7 @@
   
   
   <span class="md-ellipsis">
-    ZIP
+    ZIP Archive Adapter
     
   </span>
   
@@ -745,7 +770,7 @@
   
   
   <span class="md-ellipsis">
-    Core Concepts
+    Core concepts
     
   </span>
   
@@ -756,7 +781,7 @@
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Core Concepts
+            Core concepts
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -842,9 +867,31 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../extending/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../extending/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -853,7 +900,73 @@
   </span>
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Extending file-keeper
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extending/adapters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Storage adapters
+    
+  </span>
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extending/location_transformers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Location transformers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -870,7 +983,7 @@
   
   
   <span class="md-ellipsis">
-    Error Handling
+    Error handling
     
   </span>
   
@@ -944,6 +1057,32 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initialization-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialization Example
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -961,8 +1100,26 @@
   
 
 
-<h1 id="memory">Memory</h1>
-<p><code>file_keeper:memory</code></p>
+<h1 id="in-memory-storage-adapter">In-Memory Storage Adapter</h1>
+<p>The <code>file_keeper:memory</code> adapter provides a simple in-memory storage solution. This adapter is primarily intended for testing and development purposes, as data is not persisted to disk.</p>
+<h2 id="overview">Overview</h2>
+<p>This adapter stores files entirely in memory, making it very fast but also volatile. Data is lost when the application exits. It's a convenient way to simulate a storage backend without requiring external dependencies.</p>
+<h2 id="initialization-example">Initialization Example</h2>
+<p>Here's an example of how to initialize the in-memory storage adapter:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_storage</span>
+
+<span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_memory_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:memory&quot;</span><span class="p">,</span>
+<span class="p">})</span>
+
+<span class="c1"># Now you can use the &#39;storage&#39; object to upload, download, and manage files.</span>
+</code></pre></div>
+<p><strong>Important Notes:</strong></p>
+<ul>
+<li>No configuration options are required for this adapter.</li>
+<li>All data is stored in memory and will be lost when the application terminates.</li>
+<li>This adapter is not suitable for production environments where data persistence is required.</li>
+</ul>
 
 
 
@@ -998,7 +1155,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../fs/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Local filesystem">
+          <a href="../fs/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Local Filesystem Adapter">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1008,20 +1165,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Local filesystem
+                Local Filesystem Adapter
               </div>
             </div>
           </a>
         
         
           
-          <a href="../null/" class="md-footer__link md-footer__link--next" aria-label="Next: Null">
+          <a href="../null/" class="md-footer__link md-footer__link--next" aria-label="Next: Null Adapter">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Null
+                Null Adapter
               </div>
             </div>
             <div class="md-footer__button md-icon">
