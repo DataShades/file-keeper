@@ -25,7 +25,9 @@ You can create an [Upload][file_keeper.Upload] object in several ways,
 depending on the source of your data. The recommended way is using
 [make_upload][file_keeper.make_upload] helper:
 
-*   **From a File-like Object:** If you have an open file, you can directly
+=== "File-like object"
+
+    If you have an open file, you can directly
     pass it to the [make_upload][file_keeper.make_upload] function. file-keeper will
     handle reading the data from the file.
 
@@ -34,7 +36,9 @@ depending on the source of your data. The recommended way is using
     upload = make_upload(src)
     ```
 
-*   **From a Byte String:** If your data is already in memory as a byte string,
+=== "Byte string"
+
+    If your data is already in memory as a byte string,
     you can pass it directly.
 
     ```python
@@ -42,8 +46,10 @@ depending on the source of your data. The recommended way is using
     upload = make_upload(data)
     ```
 
-*   **From an werkzeug's FileStorage:** when writing an application using
-    werkzeug-based framework you can handle uploaded files in this way.
+=== "Werkzeug's FileStorage"
+
+    When writing an application using werkzeug-based
+    framework you can handle uploaded files in this way.
 
     ```python
     from werkzeug.datastructures import FileStorage
@@ -52,7 +58,9 @@ depending on the source of your data. The recommended way is using
     upload = make_upload(data)
     ```
 
-*   **From arbitrary source manually:** This is useful for large files that
+=== "Manually"
+
+    This is useful for large files that
     don't fit in memory. You need to provide an object that has methods `read`
     and `__iter__` producing byte string as a first argument to
     [Upload][file_keeper.Upload] class. If you have a generator that yields

@@ -100,11 +100,14 @@ nav:
       - adapters/sqlalchemy.md
       - adapters/zip.md
 
-  - Core Concepts:
+  - Core concepts:
     - core_concepts/data_model.md
     - core_concepts/uploads.md
     - core_concepts/capabilities.md
-  - extending.md
+  - Extending file-keeper:
+      - extending/index.md
+      - extending/adapters.md
+      - extending/location_transformers.md
   - error_handling.md
   - api.md
   - changelog.md

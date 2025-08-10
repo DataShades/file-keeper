@@ -1,4 +1,4 @@
-# Data Model
+# Data model
 
 This document details the core data models used within the file-keeper system:
 [Storage][file_keeper.Storage], [FileData][file_keeper.FileData], and
@@ -34,7 +34,7 @@ storage. It's a consistent representation that allows file-keeper to work with
 different storage backends seamlessly.  It tracks essential information like
 the file's name, size, content type, and content hash.  It can also store
 additional, storage-specific metadata in the
-[FileData][file_keeper.FileData.storage_data] field.
+[storage_data][file_keeper.FileData] field.
 
 [FileData][file_keeper.FileData] is the key to operations like tracking
 progress during uploads, managing file versions, and providing consistent

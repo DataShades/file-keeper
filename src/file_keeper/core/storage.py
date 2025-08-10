@@ -100,6 +100,8 @@ class Uploader(StorageService):
     Example:
         ```python
         class MyUploader(Uploader):
+            capabilities = Capability.CREATE
+
             def upload(
                 self, location: types.Location, upload: Upload, extras: dict[str, Any]
             ) -> FileData:
@@ -217,6 +219,7 @@ class Manager(StorageService):
     Example:
         ```python
         class MyManager(Manager):
+            capabilities = Capability.REMOVE
             def remove(
                 self, data: FileData|FileData, extras: dict[str, Any]
             ) -> bool:
@@ -325,6 +328,8 @@ class Reader(StorageService):
     Example:
         ```python
         class MyReader(Reader):
+            capabilities = Capability.STREAM
+
             def stream(
                 self, data: data.FileData, extras: dict[str, Any]
             ) -> Iterable[bytes]:

@@ -1,10 +1,10 @@
-# Error Handling
+# Error handling
 
 file-keeper provides a comprehensive set of exceptions to help you handle
 errors gracefully. This page documents the available exceptions and provides
 guidance on how to handle them.
 
-## General Exception Hierarchy
+## General exception hierarchy
 
 All exceptions in file-keeper inherit from the base
 [`FilesError`][file_keeper.exc.FilesError] exception.  This allows you to catch
@@ -41,7 +41,7 @@ except exc.FilesError:
 
 ///
 
-## Example Error Handling
+## Example error handling
 
 ```python
 from file_keeper import make_storage, make_upload, exc
