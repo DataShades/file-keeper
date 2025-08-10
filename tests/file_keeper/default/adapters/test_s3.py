@@ -20,7 +20,7 @@ def storage(faker: Faker, storage_settings: dict[str, Any]):
     if not endpoint:
         pytest.skip("MinIO is not configured")
 
-    settings = {
+    settings: dict[str, Any] = {
         "name": "test",
         "bucket": "file-keeper",
         "path": faker.file_path(extension=[]),
