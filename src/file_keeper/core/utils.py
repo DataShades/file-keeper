@@ -277,6 +277,7 @@ def humanize_filesize(value: int | float, base: int = SI_BASE) -> str:
 
 class AbstractReader(Generic[T], abc.ABC):
     """Abstract wrapper that transforms data into readable stream."""
+
     source: T
     chunk_size: int
 
@@ -296,6 +297,7 @@ class AbstractReader(Generic[T], abc.ABC):
 
 class IterableBytesReader(AbstractReader[Iterable[int]]):
     """Wrapper that transforms iterable of bytes into readable stream."""
+
     def __init__(self, source: Iterable[bytes], chunk_size: int = CHUNK_SIZE):
         super().__init__(itertools.chain.from_iterable(source), chunk_size)
 

@@ -1,4 +1,5 @@
 """Registry for collections."""
+
 from __future__ import annotations
 
 from collections.abc import Callable, Hashable, Mapping, MutableMapping
@@ -78,6 +79,7 @@ class Registry(Generic[V, K]):
 
     def decorated(self, key: K):
         """Collect member via decorator."""
+
         def decorator(value: V):
             self.register(key, value)
             return value

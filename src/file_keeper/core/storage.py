@@ -14,17 +14,31 @@ from __future__ import annotations
 import dataclasses
 import functools
 import inspect
+import json
 import logging
 import os
+import pathlib
 from abc import ABC
 from collections.abc import Callable, Iterable, Mapping
-from typing import Any, ClassVar, TypeAlias, cast
+from typing import Any, ClassVar, Literal, TypeAlias, cast
 
 from typing_extensions import ParamSpec, TypeVar, override
 
 from . import data, exceptions, types, utils
 from .registry import Registry
 from .upload import Upload, make_upload
+
+try:
+    from platformdirs import user_config_dir  # pyright: ignore[reportAssignmentType]
+except ImportError:
+
+    def user_config_dir(
+        appname: str | None = None,
+        appauthor: str | Literal[False] | None = None,
+    ):
+        """Mock for user config locator."""
+        return
+
 
 P = ParamSpec("P")
 T = TypeVar("T")
@@ -36,6 +50,8 @@ log = logging.getLogger(__name__)
 Capability: TypeAlias = utils.Capability
 
 adapters = Registry["type[Storage]"]()
+storages = Registry["Storage"]()
+
 location_transformers = Registry[types.LocationTransformer]()
 
 
@@ -995,3 +1011,42 @@ def make_storage(name: str, settings: dict[str, Any]) -> Storage:
     settings.setdefault("name", name)
 
     return adapter(settings)
+
+
+def get_storage(name: str, settings: dict[str, Any] | None = None) -> Storage:
+    """Get storage from the pool.
+
+    If storage accessed for the first time, it's initialized and added to the
+    pool. After that the same storage is returned every time the function is
+    called with the given name.
+
+    """
+    if name not in storages:
+        if settings is None:
+            config_file = os.getenv("FILE_KEEPER_CONFIG")
+
+            if not config_file and (config_dir := user_config_dir("file-keeper")):
+                config_file = os.path.join(config_dir, "file-keeper.json")
+
+            if not config_file or not os.path.isfile(config_file):
+                path = pathlib.Path().absolute()
+
+                while len(path.parts) > 1:
+                    config_file = str(path / "file-keeper.json")
+                    if os.path.exists(config_file):
+                        break
+                    path = path.parent
+                else:
+                    config_file = None
+
+            if config_file:
+                log.debug("Load configuration from %s", config_file)
+                with open(config_file) as src:
+                    settings = json.load(src).get("storages", {}).get(name)
+
+            if not settings:
+                raise exceptions.UnknownStorageError(name)
+
+        storages.register(name, make_storage(name, settings))
+
+    return storages[name]

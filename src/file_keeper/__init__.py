@@ -1,4 +1,5 @@
 """Main entrypoint of the file-keeper."""
+
 __version__ = "0.1.0a0"
 
 from .core import exceptions as exc
@@ -12,6 +13,7 @@ from .core.storage import (
     Storage,
     Uploader,
     adapters,
+    get_storage,
     make_storage,
 )
 from .core.types import Location, SignedAction
@@ -45,6 +47,7 @@ __all__ = [
     "hookimpl",
     "humanize_filesize",
     "make_storage",
+    "get_storage",
     "make_upload",
     "parse_filesize",
     "types",

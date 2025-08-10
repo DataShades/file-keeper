@@ -1,4 +1,5 @@
 """Google Cloud Storage adapter."""
+
 from __future__ import annotations
 
 import base64
@@ -304,6 +305,7 @@ class Reader(fk.Reader):
 
 class Manager(fk.Manager):
     """GCS Manager."""
+
     storage: GoogleCloudStorage
     capabilities: fk.Capability = (
         fk.Capability.REMOVE
@@ -429,6 +431,7 @@ class Manager(fk.Manager):
 
 class GoogleCloudStorage(fk.Storage):
     """Google Cloud Storage adapter."""
+
     settings: Settings
     SettingsFactory = Settings
     UploaderFactory = Uploader

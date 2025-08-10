@@ -1,4 +1,5 @@
 """SQLAlchemy adapter."""
+
 from __future__ import annotations
 
 import dataclasses
@@ -14,6 +15,7 @@ import file_keeper as fk
 @dataclasses.dataclass()
 class Settings(fk.Settings):
     """SQLAlchemy settings."""
+
     db_url: str = ""
     """URL of the storage DB."""
     table_name: str = ""
@@ -77,6 +79,7 @@ class Settings(fk.Settings):
 
 class Reader(fk.Reader):
     """SQLAlchemy reader."""
+
     storage: SqlAlchemyStorage
     capabilities: fk.Capability = fk.Capability.STREAM
 
@@ -99,6 +102,7 @@ class Reader(fk.Reader):
 
 class Uploader(fk.Uploader):
     """SQLAlchemy uploader."""
+
     storage: SqlAlchemyStorage
     capabilities: fk.Capability = fk.Capability.CREATE
 
@@ -139,6 +143,7 @@ class Uploader(fk.Uploader):
 
 class Manager(fk.Manager):
     """SQLAlchemy manager."""
+
     storage: SqlAlchemyStorage
     capabilities: fk.Capability = (
         fk.Capability.SCAN
@@ -246,6 +251,7 @@ class Manager(fk.Manager):
 
 class SqlAlchemyStorage(fk.Storage):
     """SQLAlchemy adapter."""
+
     settings: Settings
     SettingsFactory = Settings
     UploaderFactory = Uploader

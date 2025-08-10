@@ -39,6 +39,8 @@ test = [ "pytest-cov", "pytest-faker", "responses", "werkzeug", "faker" ]
 docs = [ "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]", ]
 dev = [ "pytest-cov", "pytest-faker", "responses", "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]",]
 
+user_config = ["platformdirs"]
+
 azure = ["azure-storage-blob",]
 gcs = [ "google-cloud-storage",]
 libcloud = [ "apache-libcloud", "cryptography",]

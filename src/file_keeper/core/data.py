@@ -27,6 +27,7 @@ TData = TypeVar("TData", bound=types.PData, default=Any)
 @dataclasses.dataclass(frozen=True)
 class BaseData(Generic[TData]):
     """Base class for file details."""
+
     location: types.Location
     size: int = 0
     content_type: str = ""
