@@ -117,6 +117,7 @@ self = ["file_keeper"]
 addopts = "-p no:ckan"
 markers = [
         "fk_storage_option: modify storage configuration",
+        "expect_storage_capability: test relies on given capability available in the storage fixture"
 ]
 
 [tool.pyright]
