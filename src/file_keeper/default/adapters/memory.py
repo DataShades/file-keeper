@@ -1,3 +1,4 @@
+"""Memory adapter."""
 from __future__ import annotations
 
 import dataclasses
@@ -16,13 +17,14 @@ log = logging.getLogger(__name__)
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
-    """Settings for Null storage."""
+    """Settings for memory storage."""
 
     bucket: MutableMapping[str, bytes] = cast("dict[str, bytes]", dataclasses.field(default_factory=dict))
     """Container for uploaded objects."""
 
 
 class Uploader(fk.Uploader):
+    """Memory uploader."""
     storage: MemoryStorage
     capabilities: fk.Capability = fk.Capability.UPLOADER_CAPABILITIES
 
@@ -104,6 +106,7 @@ class Uploader(fk.Uploader):
 
 
 class Manager(fk.Manager):
+    """Memory manager."""
     storage: MemoryStorage
     capabilities: fk.Capability = fk.Capability.MANAGER_CAPABILITIES
 
@@ -185,6 +188,7 @@ class Manager(fk.Manager):
 
 
 class Reader(fk.Reader):
+    """Memory reader."""
     storage: MemoryStorage
     capabilities: fk.Capability = fk.Capability.READER_CAPABILITIES
 

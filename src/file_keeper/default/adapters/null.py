@@ -1,3 +1,4 @@
+"""Null adapter."""
 from __future__ import annotations
 
 import dataclasses
@@ -18,6 +19,7 @@ class Settings(fk.Settings):
 
 
 class Uploader(fk.Uploader):
+    """Null uploader."""
     storage: NullStorage
     capabilities: fk.Capability = fk.Capability.UPLOADER_CAPABILITIES
 
@@ -48,6 +50,7 @@ class Uploader(fk.Uploader):
 
 
 class Manager(fk.Manager):
+    """Null manager."""
     storage: NullStorage
     capabilities: fk.Capability = fk.Capability.MANAGER_CAPABILITIES
 
@@ -85,6 +88,7 @@ class Manager(fk.Manager):
 
 
 class Reader(fk.Reader):
+    """Null reader."""
     storage: NullStorage
     capabilities: fk.Capability = fk.Capability.READER_CAPABILITIES
 

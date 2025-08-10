@@ -1,3 +1,4 @@
+"""Type definitions."""
 from __future__ import annotations
 
 from collections.abc import Callable, Iterator
@@ -15,20 +16,28 @@ SignedAction = Literal["upload", "download", "delete"]
 
 
 class PReadable(Protocol):
+    """Readable object."""
     def read(self, size: Any = ..., /) -> bytes: ...
 
 
 class PStream(PReadable, Protocol):
+    """Readable stream."""
     def __iter__(self) -> Iterator[bytes]: ...
 
 
 class PSeekableStream(PStream, Protocol):
-    def tell(self) -> int: ...
+    """Stream that supports `seek` operation."""
+    def tell(self) -> int:
+        """Get the current position of the pointer."""
+        ...
 
-    def seek(self, offset: int, whence: int = 0) -> int: ...
+    def seek(self, offset: int, whence: int = 0) -> int:
+        """Move pointer to the specified position."""
+        ...
 
 
 class PData(Protocol):
+    """Structure of the *Data object."""
     location: Location
     size: int
     content_type: str

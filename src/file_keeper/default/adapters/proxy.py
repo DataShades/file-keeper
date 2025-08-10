@@ -1,3 +1,4 @@
+"""Proxy-storage adapter."""
 from __future__ import annotations
 
 import file_keeper as fk
@@ -9,4 +10,5 @@ import file_keeper as fk
 
 @fk.Storage.register
 class ProxyStorage:
+    """Wrapper for other storages."""
     hidden = True

@@ -1,3 +1,4 @@
+"""Google Cloud Storage adapter."""
 from __future__ import annotations
 
 import base64
@@ -22,11 +23,14 @@ HTTP_RESUME = 308
 
 
 def decode(value: str) -> str:
+    """Normalize base64-encoded md5-hash of file content."""
     return base64.decodebytes(value.encode()).hex()
 
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
+    """Settings for GCS adapter."""
+
     bucket_name: str = ""
     """Name of the storage bucket."""
     client: Client = None  # pyright: ignore[reportAssignmentType]
@@ -92,6 +96,8 @@ class Settings(fk.Settings):
 
 
 class Uploader(fk.Uploader):
+    """GCS Uploader."""
+
     storage: GoogleCloudStorage
 
     capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
@@ -277,6 +283,8 @@ class Uploader(fk.Uploader):
 
 
 class Reader(fk.Reader):
+    """GCS Reader."""
+
     storage: GoogleCloudStorage
     capabilities = fk.Capability.STREAM
 
@@ -295,6 +303,7 @@ class Reader(fk.Reader):
 
 
 class Manager(fk.Manager):
+    """GCS Manager."""
     storage: GoogleCloudStorage
     capabilities: fk.Capability = (
         fk.Capability.REMOVE
@@ -419,6 +428,7 @@ class Manager(fk.Manager):
 
 
 class GoogleCloudStorage(fk.Storage):
+    """Google Cloud Storage adapter."""
     settings: Settings
     SettingsFactory = Settings
     UploaderFactory = Uploader

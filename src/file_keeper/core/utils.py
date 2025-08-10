@@ -204,6 +204,7 @@ class Capability(enum.Flag):
         return result
 
     def can(self, operation: Capability) -> bool:
+        """Check whether the cluster supports given operation."""
         return (self & operation) == operation
 
 
@@ -275,6 +276,7 @@ def humanize_filesize(value: int | float, base: int = SI_BASE) -> str:
 
 
 class AbstractReader(Generic[T], abc.ABC):
+    """Abstract wrapper that transforms data into readable stream."""
     source: T
     chunk_size: int
 
@@ -287,10 +289,13 @@ class AbstractReader(Generic[T], abc.ABC):
             yield chunk
 
     @abc.abstractmethod
-    def read(self, size: int | None = None) -> bytes: ...
+    def read(self, size: int | None = None) -> bytes:
+        """Read bytes from the source."""
+        ...
 
 
 class IterableBytesReader(AbstractReader[Iterable[int]]):
+    """Wrapper that transforms iterable of bytes into readable stream."""
     def __init__(self, source: Iterable[bytes], chunk_size: int = CHUNK_SIZE):
         super().__init__(itertools.chain.from_iterable(source), chunk_size)
 

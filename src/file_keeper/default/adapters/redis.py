@@ -1,3 +1,4 @@
+"""Redis adapter."""
 from __future__ import annotations
 
 import dataclasses
@@ -40,6 +41,7 @@ class Settings(fk.Settings):
 
 
 class Uploader(fk.Uploader):
+    """Redis uploader."""
     storage: RedisStorage
     capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
 
@@ -192,6 +194,7 @@ class Uploader(fk.Uploader):
 
 
 class Reader(fk.Reader):
+    """Redis reader."""
     storage: RedisStorage
     capabilities: fk.Capability = fk.Capability.STREAM
 
@@ -220,6 +223,7 @@ class Reader(fk.Reader):
 
 
 class Manager(fk.Manager):
+    """Redis manager."""
     storage: RedisStorage
 
     capabilities: fk.Capability = (
@@ -322,6 +326,7 @@ class Manager(fk.Manager):
 
 
 class RedisStorage(fk.Storage):
+    """Redis adapter."""
     settings: Settings
     SettingsFactory = Settings
 

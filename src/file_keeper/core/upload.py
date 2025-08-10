@@ -1,3 +1,4 @@
+"""Upload implementation."""
 from __future__ import annotations
 
 import dataclasses
@@ -81,6 +82,7 @@ class Upload:
         return None
 
     def hashing_reader(self, **kwargs: Any) -> utils.HashingReader:
+        """Get reader for the upload that computes hash while reading content."""
         return utils.HashingReader(self.stream, **kwargs)
 
 
