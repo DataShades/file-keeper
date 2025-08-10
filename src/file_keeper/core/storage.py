@@ -1032,9 +1032,10 @@ def get_storage(name: str, settings: dict[str, Any] | None = None) -> Storage:
                 path = pathlib.Path().absolute()
 
                 while len(path.parts) > 1:
-                    config_file = str(path / "file-keeper.json")
+                    config_file = str(path / ".file-keeper.json")
                     if os.path.exists(config_file):
                         break
+
                     path = path.parent
                 else:
                     config_file = None
