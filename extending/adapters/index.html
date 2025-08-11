@@ -934,9 +934,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#implement-the-storage-class" class="md-nav__link">
+  <a href="#extend-the-storage-class" class="md-nav__link">
     <span class="md-ellipsis">
-      Implement the Storage class
+      Extend the Storage class
     </span>
   </a>
   
@@ -1125,9 +1125,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#implement-the-storage-class" class="md-nav__link">
+  <a href="#extend-the-storage-class" class="md-nav__link">
     <span class="md-ellipsis">
-      Implement the Storage class
+      Extend the Storage class
     </span>
   </a>
   
@@ -1211,7 +1211,7 @@ allows file-keeper to handle validation and default values.</p>
     <span class="n">endpoint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 </code></pre></div>
 </div>
-<h3 id="implement-the-storage-class">Implement the <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> class</h3>
+<h3 id="extend-the-storage-class">Extend the <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> class</h3>
 <p>Create a class that inherits from <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> and sets the
 <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;SettingsFactory&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Settings&lt;/span&gt;&lt;/code&gt;
 
@@ -1242,7 +1242,16 @@ implementation will follow soon.</p>
 </code></pre></div>
 </div>
 <h3 id="implement-uploader-and-reader-services">Implement <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Uploader&lt;/code&gt;" href="../../api/#file_keeper.Uploader">Uploader</a> and <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Reader&lt;/code&gt;" href="../../api/#file_keeper.Reader">Reader</a> services</h3>
-<p>Create classes for <code>Uploader</code> and <code>Reader</code> that inherit from
+<p>Create classes for <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;UploaderFactory&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Uploader&lt;/span&gt;&lt;/code&gt;
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Storage.UploaderFactory">UploaderFactory</a> and
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;ReaderFactory&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Reader&lt;/span&gt;&lt;/code&gt;
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Storage.ReaderFactory">ReaderFactory</a> that inherit from
 <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Uploader&lt;/code&gt;" href="../../api/#file_keeper.Uploader">Uploader</a> and <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Reader&lt;/code&gt;" href="../../api/#file_keeper.Reader">Reader</a>
 respectively. These classes will contain the logic for uploading and reading
 files to and from your storage system.</p>

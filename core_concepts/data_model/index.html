@@ -808,15 +808,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#how-they-work-together" class="md-nav__link">
-    <span class="md-ellipsis">
-      How They Work Together
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1108,15 +1099,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#how-they-work-together" class="md-nav__link">
-    <span class="md-ellipsis">
-      How They Work Together
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1225,62 +1207,6 @@ provides a mechanism for transforming <a class="autorefs autorefs-internal" titl
   &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> objects
 to different formats if needed, allowing for flexibility and compatibility with
 different storage systems.</p>
-<h2 id="how-they-work-together">How They Work Together</h2>
-<p>These three concepts work together to provide a robust and flexible file
-storage system:</p>
-<ol>
-<li><strong>You want to store a file:</strong> You provide the content and a desired
-    <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a>.</li>
-<li><strong>file-keeper creates <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
-
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a>:</strong> file-keeper
-    creates a <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
-
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> object to represent the file and
-    its metadata.</li>
-<li><strong><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> handles the details:</strong> The
-    <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> object uses its
-    <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Uploader&lt;/code&gt;" href="../../api/#file_keeper.Uploader">Uploader</a> service to write the file to the
-    underlying storage backend, using the <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> to
-    determine where to store it.</li>
-<li><strong><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
-
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> is updated:</strong> The
-    <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> object updates the
-    <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
-
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> object with any additional metadata
-    provided by the storage backend.</li>
-<li><strong>Retrieving a file:</strong> To retrieve a file, file-keeper uses the
-    <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
-
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> object to locate the file in the storage
-    backend via the <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> object and its
-    <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Reader&lt;/code&gt;" href="../../api/#file_keeper.Reader">Reader</a> service.</li>
-</ol>
 
 
 

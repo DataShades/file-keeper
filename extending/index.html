@@ -1019,39 +1019,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Available extension points">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#register_adaptersregistry-registrytypestoragestorage" class="md-nav__link">
-    <span class="md-ellipsis">
-      register_adapters(registry: Registry[type[storage.Storage]])
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#register_upload_factoriesregistry-registryuploaduploadfactory-type" class="md-nav__link">
-    <span class="md-ellipsis">
-      register_upload_factories(registry: Registry[upload.UploadFactory, type])
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#register_location_transformersregistry-registrytypeslocationtransformer" class="md-nav__link">
-    <span class="md-ellipsis">
-      register_location_transformers(registry: Registry[types.LocationTransformer])
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -1097,25 +1064,35 @@ storage backends, upload factories, and location transformers without modifying
 the core library. This is achieved through the use of the
 <a href="https://pluggy.readthedocs.io/">Pluggy</a> framework.</p>
 <h2 id="overview">Overview</h2>
-<p>file-keeper uses <code>pluggy</code> to discover and register extensions. To extend File
-Keeper's capabilities, you need to create a Python package that provides entry
-points for the <code>file_keeper_ext</code> hook specification.  Within your extension
-package, you can define functions decorated with <code>@file_keeper.hookimpl</code> to
-override or augment existing functionality.</p>
+<p>file-keeper uses <code>pluggy</code> to discover and register extensions. To extend
+file-keeper's capabilities, you need to create a Python package that provides
+entry points for the <code>file_keeper_ext</code> hook specification.  Within your
+extension package, you can define functions decorated with
+<code>@file_keeper.hookimpl</code> to override or augment existing functionality.</p>
 <h2 id="available-extension-points">Available extension points</h2>
 <p>The following extension points are currently available:</p>
-<h3 id="register_adaptersregistry-registrytypestoragestorage"><code>register_adapters(registry: Registry[type[storage.Storage]])</code></h3>
-<p>Use this function to register new storage adapters. The <code>registry</code> object
-allows you to add your <code>Storage</code> class to the list of available storage
-options.</p>
-<h3 id="register_upload_factoriesregistry-registryuploaduploadfactory-type"><code>register_upload_factories(registry: Registry[upload.UploadFactory, type])</code></h3>
-<p>Use this function to register new upload factories. The <code>registry</code> object
-allows you to add your <code>UploadFactory</code> class to the list of available upload
-factories.</p>
-<h3 id="register_location_transformersregistry-registrytypeslocationtransformer"><code>register_location_transformers(registry: Registry[types.LocationTransformer])</code></h3>
-<p>Use this function to register new location transformers. The <code>registry</code> object
-allows you to add your <code>LocationTransformer</code> function to the list of available
-location transformers.</p>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>register_adapters</code></td>
+<td>Use this function to register new storage adapters. The <code>registry</code> object allows you to add your <code>Storage</code> class to the list of available storage options.</td>
+</tr>
+<tr>
+<td><code>register_upload_factories</code></td>
+<td>Use this function to register new upload factories. The <code>registry</code> object allows you to add your <code>UploadFactory</code> class to the list of available upload factories.</td>
+</tr>
+<tr>
+<td><code>register_location_transformers</code></td>
+<td>Use this function to register new location transformers. The <code>registry</code> object allows you to add your <code>LocationTransformer</code> function to the list of available location transformers.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="example-registering-a-custom-storage-adapter">Example: registering a custom storage adapter</h2>
 <p>Let's say you want to add a new storage adapter that stores files in a local directory.  Here's how you would do it:</p>
 <ol>
@@ -1142,8 +1119,7 @@ location transformers.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">setuptools</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup</span>
 
 <span class="n">setup</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_storage_extension&quot;</span><span class="p">,</span>
-    <span class="c1"># ... other setup details ...</span>
+    <span class="o">...</span><span class="p">,</span>
     <span class="n">entry_points</span><span class="o">=</span><span class="p">{</span>
         <span class="s2">&quot;file_keeper_ext&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;my_storage_extension = my_storage&quot;</span><span class="p">],</span>
     <span class="p">},</span>
@@ -1151,9 +1127,7 @@ location transformers.</p>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="k">[project]</span>
-<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my_storage_extension&quot;</span>
-<span class="c1"># ... other project details ...</span>
+<div class="highlight"><pre><span></span><code><span class="p">...</span>
 
 <span class="k">[project.entry-points.file_keeper_ext]</span>
 <span class="n">my_storage_extension</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my_storage&quot;</span>
