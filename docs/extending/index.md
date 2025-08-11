@@ -7,33 +7,21 @@ the core library. This is achieved through the use of the
 
 ## Overview
 
-file-keeper uses `pluggy` to discover and register extensions. To extend File
-Keeper's capabilities, you need to create a Python package that provides entry
-points for the `file_keeper_ext` hook specification.  Within your extension
-package, you can define functions decorated with `@file_keeper.hookimpl` to
-override or augment existing functionality.
+file-keeper uses `pluggy` to discover and register extensions. To extend
+file-keeper's capabilities, you need to create a Python package that provides
+entry points for the `file_keeper_ext` hook specification.  Within your
+extension package, you can define functions decorated with
+`@file_keeper.hookimpl` to override or augment existing functionality.
 
 ## Available extension points
 
 The following extension points are currently available:
 
-### `register_adapters(registry: Registry[type[storage.Storage]])`
-
-Use this function to register new storage adapters. The `registry` object
-allows you to add your `Storage` class to the list of available storage
-options.
-
-### `register_upload_factories(registry: Registry[upload.UploadFactory, type])`
-
-Use this function to register new upload factories. The `registry` object
-allows you to add your `UploadFactory` class to the list of available upload
-factories.
-
-###  `register_location_transformers(registry: Registry[types.LocationTransformer])`
-
-Use this function to register new location transformers. The `registry` object
-allows you to add your `LocationTransformer` function to the list of available
-location transformers.
+| Hook                             | Description                                                                                                                                                                          |
+|----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `register_adapters`              | Use this function to register new storage adapters. The `registry` object allows you to add your `Storage` class to the list of available storage options.                           |
+| `register_upload_factories`      | Use this function to register new upload factories. The `registry` object allows you to add your `UploadFactory` class to the list of available upload factories.                    |
+| `register_location_transformers` | Use this function to register new location transformers. The `registry` object allows you to add your `LocationTransformer` function to the list of available location transformers. |
 
 
 ## Example: registering a custom storage adapter
@@ -63,8 +51,7 @@ Let's say you want to add a new storage adapter that stores files in a local dir
          from setuptools import setup
 
          setup(
-             name="my_storage_extension",
-             # ... other setup details ...
+             ...,
              entry_points={
                  "file_keeper_ext": ["my_storage_extension = my_storage"],
              },
@@ -74,9 +61,7 @@ Let's say you want to add a new storage adapter that stores files in a local dir
     === "pyproject.toml"
 
         ```toml
-        [project]
-        name = "my_storage_extension"
-        # ... other project details ...
+        ...
 
         [project.entry-points.file_keeper_ext]
         my_storage_extension = "my_storage"

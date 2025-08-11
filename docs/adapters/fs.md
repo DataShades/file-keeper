@@ -26,4 +26,4 @@ storage = make_storage("my_local_storage", {
 
 *   Replace `/tmp/file-keeper` with the desired base path on your system.
 *   The `initialize` option (defaulting to `False`) determines whether the adapter should attempt to create the specified directory if it doesn't exist. If `initialize` is `True` and the directory cannot be created (e.g., due to permissions issues), an error will be raised.
-*   Ensure that the process running File Keeper has the necessary permissions to read and write to the specified directory.
+*   Ensure that the process running file-keeper has the necessary permissions to read and write to the specified directory.

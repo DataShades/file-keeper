@@ -28,7 +28,7 @@ class MyStorageSettings(fk.Settings):
 ```
 ///
 
-### Implement the [Storage][file_keeper.Storage] class
+### Extend the [Storage][file_keeper.Storage] class
 
 Create a class that inherits from [Storage][file_keeper.Storage] and sets the
 [SettingsFactory][file_keeper.Storage.SettingsFactory] class attribute to your settings
@@ -53,7 +53,8 @@ class MyStorage(fk.Storage):
 
 ### Implement [Uploader][file_keeper.Uploader] and [Reader][file_keeper.Reader] services
 
-Create classes for `Uploader` and `Reader` that inherit from
+Create classes for [UploaderFactory][file_keeper.Storage.UploaderFactory] and
+[ReaderFactory][file_keeper.Storage.ReaderFactory] that inherit from
 [Uploader][file_keeper.Uploader] and [Reader][file_keeper.Reader]
 respectively. These classes will contain the logic for uploading and reading
 files to and from your storage system.

@@ -150,6 +150,15 @@ class Capability(enum.Flag):
     EXISTS = enum.auto()
     """Check if file exists."""
 
+    LINK_PERMANENT = enum.auto()
+    """Make permanent download link."""
+
+    LINK_TEMPORAL = enum.auto()
+    """Make expiring download link."""
+
+    LINK_ONE_TIME = enum.auto()
+    """Make one-time download link."""
+
     MOVE = enum.auto()
     """Move file to a different location inside the same storage."""
 
@@ -174,17 +183,8 @@ class Capability(enum.Flag):
     STREAM = enum.auto()
     """Return file content as stream of bytes."""
 
-    PERMANENT_LINK = enum.auto()
-    """Make permanent download link."""
-
-    TEMPORAL_LINK = enum.auto()
-    """Make expiring download link."""
-
-    ONE_TIME_LINK = enum.auto()
-    """Make one-time download link."""
-
     MANAGER_CAPABILITIES = ANALYZE | SCAN | COPY | MOVE | APPEND | COMPOSE | EXISTS | REMOVE | SIGNED
-    READER_CAPABILITIES = RANGE | STREAM | PERMANENT_LINK | TEMPORAL_LINK | ONE_TIME_LINK
+    READER_CAPABILITIES = RANGE | STREAM | LINK_PERMANENT | LINK_TEMPORAL | LINK_ONE_TIME
     UPLOADER_CAPABILITIES = CREATE | MULTIPART | RESUMABLE
 
     def exclude(self, *capabilities: Capability):

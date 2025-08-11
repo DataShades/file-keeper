@@ -440,21 +440,21 @@ class Streamer:
 
 
 class PermanentLinker:
-    @pytest.mark.expect_storage_capability(fk.Capability.PERMANENT_LINK)
+    @pytest.mark.expect_storage_capability(fk.Capability.LINK_PERMANENT)
     def test_permanent_link_capabilities(self, storage: fk.Storage):
-        assert storage.supports(fk.Capability.PERMANENT_LINK), "Does not support PERMANENT_LINK"
+        assert storage.supports(fk.Capability.LINK_PERMANENT), "Does not support LINK_PERMANENT"
 
 
 class TemporalLinker:
-    @pytest.mark.expect_storage_capability(fk.Capability.TEMPORAL_LINK)
+    @pytest.mark.expect_storage_capability(fk.Capability.LINK_TEMPORAL)
     def test_temporal_link_capabilities(self, storage: fk.Storage):
-        assert storage.supports(fk.Capability.TEMPORAL_LINK), "Does not support TEMPORAL_LINK"
+        assert storage.supports(fk.Capability.LINK_TEMPORAL), "Does not support LINK_TEMPORAL"
 
 
 class OneTimeLinker:
-    @pytest.mark.expect_storage_capability(fk.Capability.ONE_TIME_LINK)
+    @pytest.mark.expect_storage_capability(fk.Capability.LINK_ONE_TIME)
     def test_one_time_link_capabilities(self, storage: fk.Storage):
-        assert storage.supports(fk.Capability.ONE_TIME_LINK), "Does not support ONE_TIME_LINK"
+        assert storage.supports(fk.Capability.LINK_ONE_TIME), "Does not support LINK_ONE_TIME"
 
 
 @pytest.mark.usefixtures("expect_storage_capability")

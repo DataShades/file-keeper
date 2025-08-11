@@ -31,6 +31,9 @@ Here's a breakdown of the key capabilities:
 | [COPY][file_keeper.Capability.COPY]                     | Make a copy of the file inside the same storage.                    |
 | [CREATE][file_keeper.Capability.CREATE]                 | Create a file as an atomic object.                                  |
 | [EXISTS][file_keeper.Capability.EXISTS]                 | Check if file exists.                                               |
+| [LINK_PERMANENT][file_keeper.Capability.LINK_PERMANENT] | Make permanent download link.                                       |
+| [LINK_TEMPORAL][file_keeper.Capability.LINK_TEMPORAL]   | Make expiring download link.                                        |
+| [LINK_ONE_TIME][file_keeper.Capability.LINK_ONE_TIME]   | Make one-time download link.                                        |
 | [MOVE][file_keeper.Capability.MOVE]                     | Move file to a different location inside the same storage.          |
 | [MULTIPART][file_keeper.Capability.MULTIPART]           | Create file in 3 stages: initialize, upload(repeatable), complete.  |
 | [RANGE][file_keeper.Capability.RANGE]                   | Return specific range of bytes from the file.                       |
@@ -39,9 +42,6 @@ Here's a breakdown of the key capabilities:
 | [SCAN][file_keeper.Capability.SCAN]                     | Iterate over all files in the storage.                              |
 | [SIGNED][file_keeper.Capability.SIGNED]                 | Generate signed URL for specific operation.                         |
 | [STREAM][file_keeper.Capability.STREAM]                 | Return file content as stream of bytes.                             |
-| [PERMANENT_LINK][file_keeper.Capability.PERMANENT_LINK] | Make permanent download link.                                       |
-| [TEMPORAL_LINK][file_keeper.Capability.TEMPORAL_LINK]   | Make expiring download link.                                        |
-| [ONE_TIME_LINK][file_keeper.Capability.ONE_TIME_LINK]   | Make one-time download link.                                        |
 
 
 ## Checking for Capability Support
@@ -51,19 +51,26 @@ the [supports()][file_keeper.Storage.supports] method:
 
 
 ```python
-from file_keeper import Capability, make_storage
+from file_keeper import Capability, make_storage, make_upload
 
 storage = make_storage("my_storage", {"adapter": "s3", "region": "us-east-1"})
 
-if storage.supports(Capability.RESUMABLE):
-    print("This storage supports resumable uploads!")
-else:
-    print("Resumable uploads are not supported by this storage.")
+if storage.supports(Capability.REMOVE | Capability.CREATE):
+    upload = make_upload(b"hello world")
+    info = storage.upload("hello.txt", upload)
+    storage.remove(info)
 
-if storage.supports(Capability.REMOVE):
-    print("This storage supports file removal.")
 else:
-    print("File removal is not supported by this storage.")
+    raise TypeError("File creation and removal is not supported by this storage.")
+
+
+if storage.supports(Capability.EXISTS):
+    assert not storage.exists(info)
+
+else:
+    print("File existence cannot be checked by this storage.")
+
+
 ```
 
 The `supports()` method returns `True` if the storage backend has the specified

@@ -4,7 +4,7 @@ The `file_keeper:redis` adapter allows you to use Redis as a storage backend. Th
 
 ## Overview
 
-This adapter provides a simple way to integrate Redis with File Keeper. You'll need to have a running Redis instance and the `redis` Python library installed (`pip install redis`).  This adapter is suitable for smaller files and scenarios where fast access is critical.
+This adapter provides a simple way to integrate Redis with file-keeper. You'll need to have a running Redis instance and the `redis` Python library installed (`pip install redis`).  This adapter is suitable for smaller files and scenarios where fast access is critical.
 
 ## Initialization Example
 

@@ -4,7 +4,7 @@ The `file_keeper:azure_blob` adapter allows you to use Microsoft Azure Blob Stor
 
 ## Overview
 
-This adapter provides a convenient way to integrate Azure Blob Storage with File Keeper. You'll need to have the `azure-storage-blob` library installed (`pip install azure-storage-blob`) and configure it with the appropriate credentials for your Azure account.
+This adapter provides a convenient way to integrate Azure Blob Storage with file-keeper. You'll need to have the `azure-storage-blob` library installed (`pip install azure-storage-blob`) and configure it with the appropriate credentials for your Azure account.
 
 ## Initialization Example
 

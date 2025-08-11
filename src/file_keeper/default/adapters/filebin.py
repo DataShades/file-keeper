@@ -59,7 +59,7 @@ class Reader(fk.Reader):
     """Filebin reader."""
 
     storage: FilebinStorage
-    capabilities: fk.Capability = fk.Capability.STREAM | fk.Capability.PERMANENT_LINK
+    capabilities: fk.Capability = fk.Capability.STREAM | fk.Capability.LINK_PERMANENT
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> IO[bytes]:

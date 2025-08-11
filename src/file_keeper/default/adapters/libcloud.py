@@ -116,7 +116,7 @@ class Reader(fk.Reader):
     """Libcloud reader."""
 
     storage: LibCloudStorage
-    capabilities: fk.Capability = fk.Capability.STREAM | fk.Capability.PERMANENT_LINK
+    capabilities: fk.Capability = fk.Capability.STREAM | fk.Capability.LINK_PERMANENT
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
@@ -205,6 +205,6 @@ class LibCloudStorage(fk.Storage):
     def compute_capabilities(self) -> fk.Capability:
         cluster = super().compute_capabilities()
         if not self.settings.public_prefix:
-            cluster = cluster.exclude(fk.Capability.PERMANENT_LINK)
+            cluster = cluster.exclude(fk.Capability.LINK_PERMANENT)
 
         return cluster

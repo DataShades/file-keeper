@@ -4,7 +4,7 @@ The `file_keeper:filebin` adapter allows you to use Filebin for storing and retr
 
 ## Overview
 
-This adapter provides a convenient way to integrate Filebin with File Keeper. You'll need to have the `filebin` library installed (`pip install filebin`) and a running Filebin instance.
+This adapter provides a convenient way to integrate Filebin with file-keeper. You'll need to have the `filebin` library installed (`pip install filebin`) and a running Filebin instance.
 
 ## Initialization Example
 

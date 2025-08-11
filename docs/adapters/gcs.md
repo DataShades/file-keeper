@@ -4,7 +4,7 @@ The `file_keeper:gcs` adapter allows you to use Google Cloud Storage for storing
 
 ## Overview
 
-This adapter provides a convenient way to integrate Google Cloud Storage with File Keeper. You'll need to have the `google-cloud-storage` library installed (`pip install google-cloud-storage`) and configure it with the appropriate credentials for your Google Cloud project.
+This adapter provides a convenient way to integrate Google Cloud Storage with file-keeper. You'll need to have the `google-cloud-storage` library installed (`pip install google-cloud-storage`) and configure it with the appropriate credentials for your Google Cloud project.
 
 ## Initialization Example
 

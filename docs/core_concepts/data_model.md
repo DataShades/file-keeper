@@ -55,27 +55,3 @@ file-keeper uses [Location][file_keeper.Location] objects to tell the
 provides a mechanism for transforming [Location][file_keeper.Location] objects
 to different formats if needed, allowing for flexibility and compatibility with
 different storage systems.
-
-## How They Work Together
-
-These three concepts work together to provide a robust and flexible file
-storage system:
-
-1.  **You want to store a file:** You provide the content and a desired
-    [Location][file_keeper.Location].
-2.  **file-keeper creates [FileData][file_keeper.FileData]:** file-keeper
-    creates a [FileData][file_keeper.FileData] object to represent the file and
-    its metadata.
-3.  **[Storage][file_keeper.Storage] handles the details:** The
-    [Storage][file_keeper.Storage] object uses its
-    [Uploader][file_keeper.Uploader] service to write the file to the
-    underlying storage backend, using the [Location][file_keeper.Location] to
-    determine where to store it.
-4.  **[FileData][file_keeper.FileData] is updated:** The
-    [Storage][file_keeper.Storage] object updates the
-    [FileData][file_keeper.FileData] object with any additional metadata
-    provided by the storage backend.
-5.  **Retrieving a file:** To retrieve a file, file-keeper uses the
-    [FileData][file_keeper.FileData] object to locate the file in the storage
-    backend via the [Storage][file_keeper.Storage] object and its
-    [Reader][file_keeper.Reader] service.

@@ -4,7 +4,7 @@ The `file_keeper:sqlalchemy` adapter allows you to use a relational database man
 
 ## Overview
 
-This adapter provides a way to integrate a relational database with File Keeper. You'll need to have SQLAlchemy installed (`pip install sqlalchemy`) and a configured database connection string.  This adapter is suitable for scenarios where you need to store file metadata alongside the file content in a structured manner.
+This adapter provides a way to integrate a relational database with file-keeper. You'll need to have SQLAlchemy installed (`pip install sqlalchemy`) and a configured database connection string.  This adapter is suitable for scenarios where you need to store file metadata alongside the file content in a structured manner.
 
 ## Initialization Example
 

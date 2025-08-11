@@ -40,6 +40,20 @@ except ImportError:
         return
 
 
+try:
+    import tomllib as toml  # pyright: ignore[reportMissingImports]
+except ImportError:
+    try:
+        import tomli as toml
+    except ImportError:
+        toml = None
+
+try:
+    import yaml
+except ImportError:
+    yaml = None
+
+
 P = ParamSpec("P")
 T = TypeVar("T")
 S = TypeVar("S", bound="Storage")
@@ -961,7 +975,7 @@ class Storage(ABC):  # noqa: B024
             data: The FileData object representing the file.
             **kwargs: Additional metadata for the operation.
         """
-        if self.supports(Capability.ONE_TIME_LINK):
+        if self.supports(Capability.LINK_ONE_TIME):
             return self.reader.one_time_link(data, kwargs)
 
     def temporal_link(self, data: data.FileData, duration: int, /, **kwargs: Any) -> str | None:
@@ -972,7 +986,7 @@ class Storage(ABC):  # noqa: B024
             duration: The duration for which the link is valid.
             **kwargs: Additional metadata for the operation.
         """
-        if self.supports(Capability.TEMPORAL_LINK):
+        if self.supports(Capability.LINK_TEMPORAL):
             return self.reader.temporal_link(data, duration, kwargs)
 
     def permanent_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
@@ -982,7 +996,7 @@ class Storage(ABC):  # noqa: B024
             data: The FileData object representing the file.
             **kwargs: Additional metadata for the operation.
         """
-        if self.supports(Capability.PERMANENT_LINK):
+        if self.supports(Capability.LINK_PERMANENT):
             return self.reader.permanent_link(data, kwargs)
 
 
@@ -1025,30 +1039,67 @@ def get_storage(name: str, settings: dict[str, Any] | None = None) -> Storage:
     pool. After that the same storage is returned every time the function is
     called with the given name.
 
+    Settings are required only for initialization, so you can omit them if you
+    are sure that storage exists. Additionally, if `settins` are not specified
+    but storage is missing from the pool, file-keeper makes an attempt to
+    initialize storage usign global configuration. Global configuration can be
+    provided as:
+
+    * `FILE_KEEPER_CONFIG` environment variable that points to a file with configuration
+    * `.file-keeper.json` in the current directory hierarchy
+
+    * `file-keeper/file-keeper.json` in the user's config directory(usually,
+      `~/.config/`) when [platformdirs](https://pypi.org/project/platformdirs/)
+      installed in the environment, for example via `pip install
+      'file-keeper[user_config]'` extras.
+
+    File must contain storage configuration provided in format
+
+    ```json
+    {
+        "storages": {
+            # storage name
+            "my_storage": {
+                # storage options
+                "type": "file_keeper:memory"
+            }
+        }
+    }
+    ```
+
+    JSON configuration is used by default, because python has built-in JSON
+    support. Additional file extensions are checked if environment contains
+    correspoinding package:
+
+    | Package | Extension |
+    |---|---|
+    | [tomllib](https://docs.python.org/3/library/tomllib.html) | `.toml` |
+    | [tomli](https://pypi.org/project/tomli/) | `.toml` |
+    | [pyyaml](https://pypi.org/project/PyYAML/) | `.yaml`, `.yml` |
+
+    Extensions are checked in order `.toml`, `.yaml`, `.yml`, `.json`.
+
     """
     if name not in storages:
         if settings is None:
             config_file = os.getenv("FILE_KEEPER_CONFIG")
 
             if not config_file and (config_dir := user_config_dir("file-keeper")):
-                config_file = os.path.join(config_dir, "file-keeper.json")
+                config_file = _get_config_file_name(config_dir)
 
-            if not config_file or not os.path.isfile(config_file):
+            if not config_file:
                 path = pathlib.Path().absolute()
 
                 while len(path.parts) > 1:
-                    config_file = str(path / ".file-keeper.json")
-                    if os.path.exists(config_file):
+                    if config_file := _get_config_file_name(str(path), hidden=True):
                         break
 
                     path = path.parent
-                else:
-                    config_file = None
 
             if config_file:
                 log.debug("Load configuration from %s", config_file)
-                with open(config_file) as src:
-                    settings = json.load(src).get("storages", {}).get(name)
+                cfg = _load_config_file(config_file)
+                settings = cfg.get("storages", {}).get(name)
 
             if not settings:
                 raise exceptions.UnknownStorageError(name)
@@ -1056,3 +1107,39 @@ def get_storage(name: str, settings: dict[str, Any] | None = None) -> Storage:
         storages.register(name, make_storage(name, settings))
 
     return storages[name]
+
+
+def _get_config_file_name(path: str, /, hidden: bool = False):
+    basename = ".file-keeper" if hidden else "file-keeper"
+    plain_name = os.path.join(path, basename)
+
+    if toml and os.path.exists(f"{plain_name}.toml"):
+        return f"{plain_name}.toml"
+
+    if yaml:
+        if os.path.exists(f"{plain_name}.yaml"):
+            return f"{plain_name}.yaml"
+
+        if os.path.exists(f"{plain_name}.yml"):
+            return f"{plain_name}.yml"
+
+    if os.path.exists(f"{plain_name}.json"):
+        return f"{plain_name}.json"
+
+
+def _load_config_file(filename: str) -> dict[str, Any]:
+    ext = os.path.splitext(filename)[1].lower()
+
+    if ext == ".toml":
+        with open(filename, "rb") as src:
+            return toml.load(src)  # pyright: ignore[reportUnknownVariableType, reportOptionalMemberAccess]
+
+    if ext in [".yaml", ".yml"]:
+        with open(filename, "rb") as src:
+            return yaml.full_load(src)  # pyright: ignore[reportOptionalMemberAccess]
+
+    if ext == ".json":
+        with open(filename, "rb") as src:
+            return json.load(src)
+
+    raise TypeError(filename)
