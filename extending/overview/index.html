@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://datashades.github.io/file-keeper/adapters/filebin/">
+        <link rel="canonical" href="https://datashades.github.io/file-keeper/extending/overview/">
       
       
-        <link rel="prev" href="../azure_blob/">
+        <link rel="prev" href="../../core_concepts/capabilities/">
       
       
-        <link rel="next" href="../gcs/">
+        <link rel="next" href="../adapters/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Filebin Adapter - file-keeper</title>
+        <title>Register file-keeper extension - file-keeper</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#filebin-adapter" class="md-skip">
+        <a href="#register-file-keeper-extension" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Filebin Adapter
+              Register file-keeper extension
             
           </span>
         </div>
@@ -309,14 +309,10 @@
       
   
   
-    
   
   
-  
     
     
-      
-        
       
         
       
@@ -346,11 +342,11 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
@@ -366,7 +362,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Storage adapters
@@ -380,7 +376,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../emulate/" class="md-nav__link">
+      <a href="../../adapters/emulate/" class="md-nav__link">
         
   
   
@@ -403,7 +399,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../libcloud/" class="md-nav__link">
+      <a href="../../adapters/libcloud/" class="md-nav__link">
         
   
   
@@ -426,7 +422,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../opendal/" class="md-nav__link">
+      <a href="../../adapters/opendal/" class="md-nav__link">
         
   
   
@@ -449,7 +445,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../s3/" class="md-nav__link">
+      <a href="../../adapters/s3/" class="md-nav__link">
         
   
   
@@ -472,7 +468,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../azure_blob/" class="md-nav__link">
+      <a href="../../adapters/azure_blob/" class="md-nav__link">
         
   
   
@@ -492,93 +488,10 @@
                 
   
   
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Filebin Adapter
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    Filebin Adapter
-    
-  </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Overview
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#initialization-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Initialization Example
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
   
   
     <li class="md-nav__item">
-      <a href="../gcs/" class="md-nav__link">
+      <a href="../../adapters/gcs/" class="md-nav__link">
         
   
   
@@ -601,7 +514,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fs/" class="md-nav__link">
+      <a href="../../adapters/fs/" class="md-nav__link">
         
   
   
@@ -624,7 +537,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../memory/" class="md-nav__link">
+      <a href="../../adapters/memory/" class="md-nav__link">
         
   
   
@@ -647,7 +560,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../null/" class="md-nav__link">
+      <a href="../../adapters/null/" class="md-nav__link">
         
   
   
@@ -670,7 +583,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../redis/" class="md-nav__link">
+      <a href="../../adapters/redis/" class="md-nav__link">
         
   
   
@@ -693,7 +606,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sqlalchemy/" class="md-nav__link">
+      <a href="../../adapters/sqlalchemy/" class="md-nav__link">
         
   
   
@@ -716,7 +629,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../zip/" class="md-nav__link">
+      <a href="../../adapters/zip/" class="md-nav__link">
         
   
   
@@ -865,33 +778,34 @@
       
   
   
+    
   
   
+  
     
     
       
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-        
-      
-        
-      
-        
-      
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
-        
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../extending/" class="md-nav__link ">
-              
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -900,22 +814,130 @@
   </span>
   
 
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
+            <span class="md-nav__icon md-icon"></span>
+          </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Extending file-keeper
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Register file-keeper extension
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Register file-keeper extension
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-extension-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available extension points
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available extension points">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-registering-a-custom-storage-adapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: registering a custom storage adapter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-registering-a-custom-location-transformer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: registering a custom location transformer
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manual extension
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
               
             
               
@@ -925,7 +947,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extending/adapters/" class="md-nav__link">
+      <a href="../adapters/" class="md-nav__link">
         
   
   
@@ -948,12 +970,35 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extending/location_transformers/" class="md-nav__link">
+      <a href="../location_transformers/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Location transformers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dissection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Dissecting storage adapter
     
   </span>
   
@@ -1073,9 +1118,42 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#initialization-example" class="md-nav__link">
+  <a href="#available-extension-points" class="md-nav__link">
     <span class="md-ellipsis">
-      Initialization Example
+      Available extension points
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available extension points">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-registering-a-custom-storage-adapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: registering a custom storage adapter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-registering-a-custom-location-transformer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: registering a custom location transformer
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manual extension
     </span>
   </a>
   
@@ -1100,28 +1178,177 @@
   
 
 
-<h1 id="filebin-adapter">Filebin Adapter</h1>
-<p>The <code>file_keeper:filebin</code> adapter allows you to use Filebin for storing and retrieving files. Filebin is a simple, self-hosted file storage service. This adapter leverages the <code>filebin</code> Python library.</p>
+<h1 id="register-file-keeper-extension">Register file-keeper extension</h1>
+<p>file-keeper is designed to be highly extensible, allowing you to add new
+storage backends, upload factories, and location transformers without modifying
+the core library. This is achieved through the use of the
+<a href="https://pluggy.readthedocs.io/">Pluggy</a> framework.</p>
 <h2 id="overview">Overview</h2>
-<p>This adapter provides a convenient way to integrate Filebin with file-keeper. You'll need to have the <code>filebin</code> library installed (<code>pip install filebin</code>) and a running Filebin instance.</p>
-<h2 id="initialization-example">Initialization Example</h2>
-<p>Here's an example of how to initialize the Filebin adapter:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_storage</span>
+<p>If you want to make your module that extends of file-keeper externally
+available, register it as a <code>file_keeper_ext</code>
+<a href="https://packaging.python.org/en/latest/specifications/entry-points/">entry-point</a>
+of your distribution.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">pyproject.toml</label><label for="__tabbed_1_2">setup.py</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="p">...</span>
 
-<span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_filebin_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
-    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:filebin&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://your_filebin_instance:8000&quot;</span><span class="p">,</span>  <span class="c1"># Replace with your Filebin instance URL</span>
-    <span class="s2">&quot;api_key&quot;</span><span class="p">:</span> <span class="s2">&quot;YOUR_API_KEY&quot;</span><span class="p">,</span>  <span class="c1"># Replace with your Filebin API key</span>
-<span class="p">})</span>
-
-<span class="c1"># Now you can use the &#39;storage&#39; object to upload, download, and manage files.</span>
+<span class="k">[project.entry-points.file_keeper_ext]</span>
+<span class="n">my_storage_extension</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my_storage.my_module&quot;</span>
 </code></pre></div>
-<p><strong>Important Notes:</strong></p>
-<ul>
-<li>Replace the placeholder values (url, api_key) with your actual Filebin instance URL and API key.</li>
-<li>Ensure that your Filebin instance is running and accessible.</li>
-<li>Refer to the <a href="https://filebin.readthedocs.io/">Filebin documentation</a> for more information about Filebin.</li>
-</ul>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">setuptools</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup</span>
+
+<span class="n">setup</span><span class="p">(</span>
+    <span class="o">...</span><span class="p">,</span>
+    <span class="n">entry_points</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;file_keeper_ext&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;my_storage_extension = my_storage.my_module&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>file-keeper iterates through all modules that are registered under
+<code>file_keeper_ext</code> entry-point and extract <a href="https://pluggy.readthedocs.io/en/stable/#implementations">pluggy hook
+implementations</a> from
+them. In this way, anyone who've installed your library will have access to
+your customizations.</p>
+<h2 id="available-extension-points">Available extension points</h2>
+<p>The module that contains file-keeper's extension has to define functions that
+register new functionality. These functions must have the same name as one of
+file-keeper's hooks and be decorated with <code>@file_keeper.hookimpl</code> decorator.</p>
+<p>The following hooks are currently available:</p>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>register_adapters</code></td>
+<td>Use this function to register new storage adapters. The <code>registry</code> object allows you to add your <code>Storage</code> class to the list of available storage options.</td>
+</tr>
+<tr>
+<td><code>register_location_transformers</code></td>
+<td>Use this function to register new location transformers. The <code>registry</code> object allows you to add your <code>LocationTransformer</code> function to the list of available location transformers.</td>
+</tr>
+</tbody>
+</table>
+<!-- | `register_upload_factories`      | Use this function to register new upload factories. The `registry` object allows you to add your `UploadFactory` class to the list of available upload factories.                    | -->
+
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p>Register new storage adapter:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@fk</span><span class="o">.</span><span class="n">hookimpl</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">register_adapters</span><span class="p">(</span><span class="n">registry</span><span class="p">):</span>
+    <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;my_custom_adapter&quot;</span><span class="p">,</span> <span class="n">MyStorageClass</span><span class="p">)</span>
+</code></pre></div>
+<p>Register new location transformers:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@fk</span><span class="o">.</span><span class="n">hookimpl</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">register_location_transformers</span><span class="p">(</span><span class="n">registry</span><span class="p">):</span>
+    <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;my_custom_transformer&quot;</span><span class="p">,</span> <span class="n">transformer_func</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<h3 id="example-registering-a-custom-storage-adapter">Example: registering a custom storage adapter</h3>
+<p>Let's say you want to add a new storage adapter that stores files in a local directory.  Here's how you would do it:</p>
+<ol>
+<li>
+<p>Create a new Python package (<code>my_storage_extension</code>)</p>
+</li>
+<li>
+<p>Inside your package, create a module ( <code>my_storage.py</code>) with the following content:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fk</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyLocalStorage</span><span class="p">(</span><span class="n">fk</span><span class="o">.</span><span class="n">Storage</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="nd">@fk</span><span class="o">.</span><span class="n">hookimpl</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">register_adapters</span><span class="p">(</span><span class="n">registry</span><span class="p">):</span>
+    <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;my_local&quot;</span><span class="p">,</span> <span class="n">MyLocalStorage</span><span class="p">)</span>
+</code></pre></div>
+</li>
+<li>
+<p>Add an entry point to your <code>setup.py</code> or <code>pyproject.toml</code> file:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">setup.py</label><label for="__tabbed_2_2">pyproject.toml</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">setuptools</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup</span>
+
+<span class="n">setup</span><span class="p">(</span>
+    <span class="o">...</span><span class="p">,</span>
+    <span class="n">entry_points</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;file_keeper_ext&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;my_storage_extension = my_storage&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="p">...</span>
+
+<span class="k">[project.entry-points.file_keeper_ext]</span>
+<span class="n">my_storage_extension</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my_storage&quot;</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</li>
+</ol>
+<p>Now, when file-keeper discovers your extension, it will register
+<code>MyLocalStorage</code> as a new storage option, accessible by the name "my_local".</p>
+<h3 id="example-registering-a-custom-location-transformer">Example: registering a custom location transformer</h3>
+<p>Let's say you want to add a location transformer that prepends a prefix to all locations.</p>
+<ol>
+<li>
+<p>Create a new Python package</p>
+</li>
+<li>
+<p>Inside your package, create a file  with the following content:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fk</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">my_location_transformer</span><span class="p">(</span><span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">upload</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;prefix_</span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nd">@fk</span><span class="o">.</span><span class="n">hookimpl</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">register_location_transformers</span><span class="p">(</span><span class="n">registry</span><span class="p">:</span> <span class="n">Registry</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">LocationTransformer</span><span class="p">]):</span>
+    <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;my_prefix&quot;</span><span class="p">,</span> <span class="n">my_location_transformer</span><span class="p">)</span>
+</code></pre></div>
+</li>
+<li>
+<p>Add an entry point to your <code>setup.py</code> or <code>pyproject.toml</code> file</p>
+</li>
+</ol>
+<p>Now, when file-keeper discovers your extension, it will register a new location
+transformer, accessible by the name "my_prefix".</p>
+<h2 id="manual-extension">Manual extension</h2>
+<p>Entry-points are good for python packages, but sometimes you need a custom
+storage just for the current script and don't want to mess with packages. In
+this case you can register adapter or location transformer manually, using
+<code>file_keeper.core.storage.adapters</code> and <code>file_keeper.core.storage.location_transformers</code>
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Registry&lt;/code&gt;" href="../../api/#file_keeper.Registry">Registries</a>.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p>Let's say you have <code>MyStorage</code> adapter and <code>my_transformer</code> transformer. In the
+following snippet, they will be available after the <code>register()</code> calls in the
+correspoinding registries.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper.core.storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">location_transformers</span><span class="p">,</span> <span class="n">adapters</span>
+
+<span class="c1"># not available</span>
+
+<span class="n">adapters</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;my_storage&quot;</span><span class="p">,</span> <span class="n">MyStorage</span><span class="p">)</span>
+<span class="n">location_transformers</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;my_transformer&quot;</span><span class="p">,</span> <span class="n">my_transformer</span><span class="p">)</span>
+
+<span class="c1"># available</span>
+
+<span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;my_storage&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;location_transformers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;my_transformer&quot;</span><span class="p">]</span>
+<span class="p">})</span>
+</code></pre></div>
+</div>
 
 
 
@@ -1157,7 +1384,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../azure_blob/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Azure Blob Storage">
+          <a href="../../core_concepts/capabilities/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Capabilities">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1167,20 +1394,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Azure Blob Storage
+                Capabilities
               </div>
             </div>
           </a>
         
         
           
-          <a href="../gcs/" class="md-footer__link md-footer__link--next" aria-label="Next: Google Cloud Storage">
+          <a href="../adapters/" class="md-footer__link md-footer__link--next" aria-label="Next: Storage adapters">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Google Cloud Storage
+                Storage adapters
               </div>
             </div>
             <div class="md-footer__button md-icon">

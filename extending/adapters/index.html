@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://datashades.github.io/file-keeper/extending/adapters/">
       
       
-        <link rel="prev" href="../">
+        <link rel="prev" href="../overview/">
       
       
         <link rel="next" href="../location_transformers/">
@@ -338,8 +338,6 @@
       
         
       
-        
-      
     
     
     
@@ -476,29 +474,6 @@
   
   <span class="md-ellipsis">
     Azure Blob Storage
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../adapters/filebin/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Filebin Adapter
     
   </span>
   
@@ -811,7 +786,7 @@
     
       
         
-          
+      
         
       
         
@@ -829,9 +804,8 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
-              
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -840,14 +814,8 @@
   </span>
   
 
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
+            <span class="md-nav__icon md-icon"></span>
+          </label>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
@@ -856,6 +824,27 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Register file-keeper extension
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -996,6 +985,29 @@
   
   <span class="md-ellipsis">
     Location transformers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dissection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Dissecting storage adapter
     
   </span>
   
@@ -1298,23 +1310,14 @@ files to and from your storage system.</p>
 register it directly using <code>adapters</code> registry:</p>
 <div class="highlight"><pre><span></span><code><span class="n">fk</span><span class="o">.</span><span class="n">adapters</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;local&quot;</span><span class="p">,</span> <span class="n">MyStorage</span><span class="p">)</span>
 </code></pre></div>
-<p>But if you are writing a library that will be used accross multiple project
+<p>If you are writing a library that will be used accross multiple project
 it's better to register storage using entrypoints of the python package.</p>
-<p>First, create a function with name <code>register_adapters</code> and decorate it with
-<code>hookimpl</code> decorator. This function is responsible to register the adapter</p>
+<p>Use the <code>register_adapters</code> hook to register your adapter. This makes it
+available as a <code>type</code> inside <a href="file_keeper.make_storage">make_storage</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@fk</span><span class="o">.</span><span class="n">hookimpl</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">register_adapters</span><span class="p">(</span><span class="n">registry</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Registry</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="n">fk</span><span class="o">.</span><span class="n">Storage</span><span class="p">]]):</span>
     <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;local&quot;</span><span class="p">,</span> <span class="n">MyStorage</span><span class="p">)</span>
 </code></pre></div>
-<p>Next, add an entry-point named <code>file_keeper_ext</code> pointing to the module with
-<code>register_adapters</code> to you package's definition. For example, if you are using
-<code>pyproject.toml</code> add following lines there:</p>
-<div class="highlight"><pre><span></span><code><span class="k">[project.entry-points.</span><span class="s2">&quot;file_keeper_ext&quot;</span><span class="k">]</span>
-<span class="n">my_extension</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my_module.my_storage&quot;</span>
-</code></pre></div>
-<p>Finally, re-install the your package, to refresh entrypoints. From now on your
-custom adapter will be available just as any adapter shipped inside file-keeper
-as soon as you install your library.</p>
 <h3 id="initialize-the-adapter">Initialize the adapter</h3>
 <p>Now you can use your custom adapter:</p>
 <div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;local&quot;</span><span class="p">,</span> <span class="p">{</span>
@@ -1361,7 +1364,7 @@ complex features and integrate with a wider range of storage systems.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Extending file-keeper">
+          <a href="../overview/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Register file-keeper extension">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1371,7 +1374,7 @@ complex features and integrate with a wider range of storage systems.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Extending file-keeper
+                Register file-keeper extension
               </div>
             </div>
           </a>

@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://datashades.github.io/file-keeper/adapters/gcs/">
       
       
-        <link rel="prev" href="../filebin/">
+        <link rel="prev" href="../azure_blob/">
       
       
         <link rel="next" href="../fs/">
@@ -340,8 +340,6 @@
       
         
       
-        
-      
     
     
     
@@ -478,29 +476,6 @@
   
   <span class="md-ellipsis">
     Azure Blob Storage
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../filebin/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Filebin Adapter
     
   </span>
   
@@ -871,7 +846,7 @@
     
       
         
-          
+      
         
       
         
@@ -889,9 +864,8 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <div class="md-nav__link md-nav__container">
-            <a href="../../extending/" class="md-nav__link ">
-              
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -900,14 +874,8 @@
   </span>
   
 
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
+            <span class="md-nav__icon md-icon"></span>
+          </label>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
@@ -916,6 +884,27 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extending/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Register file-keeper extension
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -954,6 +943,29 @@
   
   <span class="md-ellipsis">
     Location transformers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extending/dissection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Dissecting storage adapter
     
   </span>
   
@@ -1101,28 +1113,57 @@
 
 
 <h1 id="google-cloud-storage">Google Cloud Storage</h1>
-<p>The <code>file_keeper:gcs</code> adapter allows you to use Google Cloud Storage for storing and retrieving files. This adapter leverages the <code>google-cloud-storage</code> Python library.</p>
+<p>The <code>file_keeper:gcs</code> adapter allows you to use <a href="https://cloud.google.com/storage?hl=uk">Google Cloud
+Storage</a> for storing and retrieving
+files. This adapter leverages the <code>google-cloud-storage</code> Python library.</p>
 <h2 id="overview">Overview</h2>
-<p>This adapter provides a convenient way to integrate Google Cloud Storage with file-keeper. You'll need to have the <code>google-cloud-storage</code> library installed (<code>pip install google-cloud-storage</code>) and configure it with the appropriate credentials for your Google Cloud project.</p>
+<p>This adapter provides a convenient way to integrate Google Cloud Storage with
+file-keeper. You'll need to have the <code>google-cloud-storage</code> library installed
+and configure it with the appropriate credentials for your Google Cloud
+project.</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;file-keeper[gcs]&#39;</span>
+
+<span class="c1">## or</span>
+
+pip<span class="w"> </span>install<span class="w"> </span>google-cloud-storage
+</code></pre></div>
 <h2 id="initialization-example">Initialization Example</h2>
 <p>Here's an example of how to initialize the Google Cloud Storage adapter:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_storage</span>
-
-<span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_gcs_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Google Cloud Storage</label><label for="__tabbed_1_2">Fake GCS</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_gcs_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:gcs&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;project&quot;</span><span class="p">:</span> <span class="s2">&quot;your-gcp-project-id&quot;</span><span class="p">,</span>  <span class="c1"># Replace with your Google Cloud project ID</span>
-    <span class="s2">&quot;bucket_name&quot;</span><span class="p">:</span> <span class="s2">&quot;your-gcs-bucket-name&quot;</span><span class="p">,</span>  <span class="c1"># Replace with your GCS bucket name</span>
-    <span class="s2">&quot;credentials_path&quot;</span><span class="p">:</span> <span class="s2">&quot;/path/to/your/credentials.json&quot;</span><span class="p">,</span>  <span class="c1"># Replace with the path to your service account key file</span>
+    <span class="s2">&quot;project_id&quot;</span><span class="p">:</span> <span class="s2">&quot;file-keeper&quot;</span><span class="p">,</span>  <span class="c1"># Replace with your Google Cloud project ID</span>
+    <span class="s2">&quot;bucket_name&quot;</span><span class="p">:</span> <span class="s2">&quot;file-keeper&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;initialize&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;credentials_file&quot;</span><span class="p">:</span> <span class="s2">&quot;/path/to/your/credentials.json&quot;</span><span class="p">,</span>  <span class="c1"># Replace with the path to your service account key file</span>
 <span class="p">})</span>
-
-<span class="c1"># Now you can use the &#39;storage&#39; object to upload, download, and manage files.</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_gcs_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:gcs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;project_id&quot;</span><span class="p">:</span> <span class="s2">&quot;file-keeper&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;bucket_name&quot;</span><span class="p">:</span> <span class="s2">&quot;file-keeper&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;initialize&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;client_options&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;api_endpoint&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:4443&quot;</span><span class="p">},</span>
+<span class="p">})</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p><strong>Important Notes:</strong></p>
 <ul>
-<li>Replace the placeholder values (project, bucket_name, credentials_path) with your actual Google Cloud project ID, GCS bucket name, and the path to your service account key file.</li>
-<li>Ensure that you have created a bucket in your Google Cloud Storage account to store the files.</li>
-<li>For enhanced security, it's recommended to use a service account with limited permissions.</li>
-<li>Refer to the <a href="https://cloud.google.com/storage/docs">Google Cloud Storage documentation</a> for more information about Google Cloud Storage.</li>
+<li>Replace the placeholder values with your actual Google Cloud project ID,
+    GCS bucket name, and the path to your service account key file.</li>
+<li>Ensure that you have created a bucket in your Google Cloud Storage account
+    to store the files.</li>
+<li>For enhanced security, it's recommended to use a service account with
+    limited permissions.</li>
+<li>Refer to the <a href="https://cloud.google.com/storage/docs">Google Cloud Storage
+    documentation</a> for more information
+    about Google Cloud Storage.</li>
 </ul>
 
 
@@ -1159,7 +1200,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../filebin/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Filebin Adapter">
+          <a href="../azure_blob/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Azure Blob Storage">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1169,7 +1210,7 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Filebin Adapter
+                Azure Blob Storage
               </div>
             </div>
           </a>

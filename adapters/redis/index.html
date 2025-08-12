@@ -340,8 +340,6 @@
       
         
       
-        
-      
     
     
     
@@ -478,29 +476,6 @@
   
   <span class="md-ellipsis">
     Azure Blob Storage
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../filebin/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Filebin Adapter
     
   </span>
   
@@ -871,7 +846,7 @@
     
       
         
-          
+      
         
       
         
@@ -889,9 +864,8 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <div class="md-nav__link md-nav__container">
-            <a href="../../extending/" class="md-nav__link ">
-              
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -900,14 +874,8 @@
   </span>
   
 
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
+            <span class="md-nav__icon md-icon"></span>
+          </label>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
@@ -916,6 +884,27 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extending/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Register file-keeper extension
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -954,6 +943,29 @@
   
   <span class="md-ellipsis">
     Location transformers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extending/dissection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Dissecting storage adapter
     
   </span>
   
@@ -1101,30 +1113,35 @@
 
 
 <h1 id="redis-adapter">Redis Adapter</h1>
-<p>The <code>file_keeper:redis</code> adapter allows you to use Redis as a storage backend. This adapter stores files as binary data within Redis keys.</p>
+<p>The <code>file_keeper:redis</code> adapter allows you to use Redis as a storage
+backend. This adapter stores files as binary data within Redis HASH.</p>
 <h2 id="overview">Overview</h2>
-<p>This adapter provides a simple way to integrate Redis with file-keeper. You'll need to have a running Redis instance and the <code>redis</code> Python library installed (<code>pip install redis</code>).  This adapter is suitable for smaller files and scenarios where fast access is critical.</p>
+<p>This adapter provides a simple way to integrate Redis with file-keeper. You'll
+need to have a running Redis instance and the <code>redis</code> Python library installed.
+This adapter is suitable for smaller files and scenarios where fast access is
+critical.</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;file-keeper[redis]&#39;</span>
+
+<span class="c1">## or</span>
+
+pip<span class="w"> </span>install<span class="w"> </span>redis
+</code></pre></div>
 <h2 id="initialization-example">Initialization Example</h2>
 <p>Here's an example of how to initialize the Redis adapter:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_storage</span>
-
-<span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_redis_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_redis_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:redis&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>  <span class="c1"># Replace with your Redis host</span>
-    <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">6379</span><span class="p">,</span>          <span class="c1"># Replace with your Redis port</span>
-    <span class="s2">&quot;db&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>               <span class="c1"># Replace with your Redis database number</span>
-    <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>        <span class="c1"># Replace with your Redis password (if any)</span>
-    <span class="s2">&quot;bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;file-keeper&quot;</span><span class="p">,</span>  <span class="c1"># Replace with your desired bucket name</span>
+    <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;redis://localhost:6379/0&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;file-keeper&quot;</span><span class="p">,</span>
 <span class="p">})</span>
-
-<span class="c1"># Now you can use the &#39;storage&#39; object to upload, download, and manage files.</span>
 </code></pre></div>
 <p><strong>Important Notes:</strong></p>
 <ul>
-<li>Replace the placeholder values (host, port, db, password, bucket) with your actual Redis configuration.</li>
+<li>Replace the placeholder values with your actual Redis configuration.</li>
 <li>Ensure that your Redis instance is running and accessible.</li>
-<li>Consider the limitations of storing large files in Redis, as it is an in-memory data store.</li>
-<li>The <code>bucket</code> parameter is used as a prefix for all keys in Redis, helping to organize your files.</li>
+<li>Consider the limitations of storing large files in Redis, as it is an
+    in-memory data store.</li>
+<li>The <code>bucket</code> parameter is used as name of the Redis HASH key under which
+    files will be stored.</li>
 </ul>
 
 

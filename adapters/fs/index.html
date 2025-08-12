@@ -340,8 +340,6 @@
       
         
       
-        
-      
     
     
     
@@ -478,29 +476,6 @@
   
   <span class="md-ellipsis">
     Azure Blob Storage
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../filebin/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Filebin Adapter
     
   </span>
   
@@ -871,7 +846,7 @@
     
       
         
-          
+      
         
       
         
@@ -889,9 +864,8 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <div class="md-nav__link md-nav__container">
-            <a href="../../extending/" class="md-nav__link ">
-              
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -900,14 +874,8 @@
   </span>
   
 
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
+            <span class="md-nav__icon md-icon"></span>
+          </label>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
@@ -916,6 +884,27 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extending/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Register file-keeper extension
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -954,6 +943,29 @@
   
   <span class="md-ellipsis">
     Location transformers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extending/dissection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Dissecting storage adapter
     
   </span>
   
@@ -1101,26 +1113,29 @@
 
 
 <h1 id="local-filesystem-adapter">Local Filesystem Adapter</h1>
-<p>The <code>file_keeper:fs</code> adapter allows you to use your local filesystem for storing and retrieving files. This adapter is useful for testing, development, or scenarios where you need to store files locally.</p>
+<p>The <code>file_keeper:fs</code> adapter allows you to use your local filesystem for
+storing and retrieving files. This adapter is useful for testing, development,
+or scenarios where you need to store files locally.</p>
 <h2 id="overview">Overview</h2>
-<p>This adapter provides a simple way to interact with the local filesystem. You'll need to specify the base path where files will be stored.</p>
+<p>This adapter provides a simple way to interact with the local
+filesystem. You'll need to specify the base path where files will be stored.</p>
 <h2 id="initialization-example">Initialization Example</h2>
 <p>Here's an example of how to initialize the local filesystem adapter:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_storage</span>
-
-<span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_local_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_local_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:fs&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp/file-keeper&quot;</span><span class="p">,</span>  <span class="c1"># Replace with your desired base path</span>
-    <span class="s2">&quot;initialize&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Optional: Create the directory if it doesn&#39;t exist</span>
+    <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp/file-keeper&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;initialize&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">})</span>
-
-<span class="c1"># Now you can use the &#39;storage&#39; object to upload, download, and manage files.</span>
 </code></pre></div>
 <p><strong>Important Notes:</strong></p>
 <ul>
 <li>Replace <code>/tmp/file-keeper</code> with the desired base path on your system.</li>
-<li>The <code>initialize</code> option (defaulting to <code>False</code>) determines whether the adapter should attempt to create the specified directory if it doesn't exist. If <code>initialize</code> is <code>True</code> and the directory cannot be created (e.g., due to permissions issues), an error will be raised.</li>
-<li>Ensure that the process running file-keeper has the necessary permissions to read and write to the specified directory.</li>
+<li>The <code>initialize</code> option (defaulting to <code>False</code>) determines whether the
+    adapter should attempt to create the specified directory if it doesn't
+    exist. If <code>initialize</code> is <code>True</code> and the directory cannot be created (e.g.,
+    due to permissions issues), an error will be raised.</li>
+<li>Ensure that the process running file-keeper has the necessary permissions
+    to read and write to the specified directory.</li>
 </ul>
 
 
