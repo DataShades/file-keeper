@@ -976,6 +976,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#create-the-uploader-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create the uploader service
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-the-reader-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create the reader service
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-the-manager-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create the manager service
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1111,6 +1138,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#create-the-uploader-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create the uploader service
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-the-reader-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create the reader service
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-the-manager-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create the manager service
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1213,15 +1267,411 @@ this line typechecker assumes that storage uses base
   &lt;/span&gt;" href="../../api/#file_keeper.Settings">Settings</a> and complains when custom options are
 accessed.</p>
 <h2 id="define-storage-settings">Define storage settings</h2>
-<p>First, create a dataclass <code>Settings</code> to hold configuration options
-specific to your storage. This class should inherit from
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Settings&lt;/code&gt;
+<p>Create a dataclass <code>Settings</code> to hold configuration options specific to your
+storage. This class should inherit from <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Settings&lt;/code&gt;
 
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
   &lt;/span&gt;" href="../../api/#file_keeper.Settings">Settings</a>.</p>
-<p>...</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">()</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">(</span><span class="n">fk</span><span class="o">.</span><span class="n">Settings</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Settings for FS storage.&quot;&quot;&quot;</span>
+</code></pre></div>
+<p>Filesystem settings do not introduce new options, so there are no attributes
+here. But some other provider would do the following:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">()</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">(</span><span class="n">fk</span><span class="o">.</span><span class="n">Settings</span><span class="p">):</span>
+    <span class="n">bucket</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+</code></pre></div>
+<p>These options must include default values due to dataclass restrictions, even
+if storage will not work with these defaults. E.g., empty password and username
+won't work usually, but you still have to specify them.</p>
+<p>And now happens validation. It's provided by the <code>__post_init__</code> method of
+the dataclass.</p>
+<div class="highlight"><pre><span></span><code>    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialize</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">InvalidStorageConfigurationError</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;path `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">` does not exist&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">PermissionError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">InvalidStorageConfigurationError</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;path `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">` is not writable&quot;</span><span class="p">,</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+</code></pre></div>
+<p>Filesystem adapter relies on two generic options. First is <code>initialize</code>. When
+this flag is enabled, storage checks whether directory for files exists and, if
+it's missing, tries to create this directory. If task fails,
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;              &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;InvalidStorageConfigurationError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;adapter_or_storage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;problem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../../error_handling/#file_keeper.exc.InvalidStorageConfigurationError">InvalidStorageConfigurationError</a>
+is raised. That's how storage reacts on problems with configuration.</p>
+<p>Second option is <code>path</code>. <code>path</code>, usually absolute, defines the location in
+filesystem where files are stored. Other storages may treat it differently:
+cloud storages use <code>path</code> as a prefix of the file name, because cloud storages
+do not support directory hierarchy; SQLAlchemy storage ignores path as it has
+no meaning in DB context.</p>
+<p>Apart from this, storages often initialize and store connections to external
+services as storage attributes. For example, <code>file_keeper:azure_blob</code> has
+<code>container_name</code> string options that holds the name of cloud container where
+files are stored. Inside <code>__post_init__</code> it connects to the container and
+stores the container object itself as <code>container</code> property, so that storage
+doesn't need to constantly re-connect to the containers.</p>
+<h2 id="create-the-uploader-service">Create the uploader service</h2>
+<p>The next target is <code>Uploader</code>. It's a service reesponsible for file creation
+that must extend <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Uploader&lt;/code&gt;" href="../../api/#file_keeper.Uploader">Uploader</a>.</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Uploader</span><span class="p">(</span><span class="n">fk</span><span class="o">.</span><span class="n">Uploader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filesystem uploader.&quot;&quot;&quot;</span>
+</code></pre></div>
+<p>Any service consists of two parts - methods and capabilities. Methods describe
+the logic but are hidden from storage initially. I.e., if you only define
+methods and ignore capabilities, storage will pretend that service cannot
+perform the task.</p>
+<div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Location</span><span class="p">,</span> <span class="n">upload</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Upload</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">:</span>
+        <span class="o">...</span>
+</code></pre></div>
+<p>And capabilities actually tell storage about operations supported by
+storage. Because of this separation, you can pretend that storage cannot
+perform an operation, even when it's supported. In this way you can transform
+filesystem into a read-only storage without code changes and guarantee that
+files won't be accidentally removed from it.</p>
+<div class="highlight"><pre><span></span><code>    <span class="n">capabilities</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">CREATE</span> <span class="o">|</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">MULTIPART</span>
+</code></pre></div>
+<p>As you can see, FS storage supports <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;auto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
+      &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Capability.CREATE">CREATE</a> and
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;MULTIPART&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;auto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
+      &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Capability.MULTIPART">MULTIPART</a>. Capabilities are implemented as
+bit masks and can be combined using <code>|</code> operator.</p>
+<p>Let's look closer at the <code>upload()</code> method.</p>
+<p>It computes full path to the file location in the beginning. <code>full_path()</code> is a
+generic method of the storage that naively combine <code>path</code> option of the storage
+with <code>location</code> of the file. Every storage has <code>path</code> option and every storage
+<em>can</em> use <code>full_path()</code> to attach <code>path</code> as a prefix to the location, if it
+makes any sense.</p>
+<div class="highlight"><pre><span></span><code>        <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+</code></pre></div>
+<p>Now storage uses another generic option, <code>override_existing</code>. If it's disabled
+and given location already taken by another file, uploader raises
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;              &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;ExistingFileError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;storage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../../error_handling/#file_keeper.exc.ExistingFileError">ExistingFileError</a>. That's recommended
+reaction in such situation and you'll notice that other storages also follow
+this process.</p>
+<div class="highlight"><pre><span></span><code>        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">override_existing</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">ExistingFileError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="n">location</span><span class="p">)</span>
+</code></pre></div>
+<p>Then storage ensures that all intermediate folders from the final file's
+location are present. If you expect that files are loaded directly into <code>path</code>,
+it may seem redundant. But FS storage does not imply such restrictions and
+there may be nested directories under the <code>path</code>, so verifying that all folders
+are created is a safest option.</p>
+<div class="highlight"><pre><span></span><code>        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">dest</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<p>Then file is actually written to the FS. You an read file content using
+<code>upload.read()</code>, but here we create <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;HashingReader&lt;/code&gt;" href="../../api/#file_keeper.HashingReader">HashingReader</a>
+using <code>hashing_reader()</code> method of the <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Upload&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Upload">Upload</a>. This
+object also has <code>read()</code> method, but in addition it computes the content hash
+of the file while it's consumed. As result we have the hash in the and almost
+for free.</p>
+<div class="highlight"><pre><span></span><code>        <span class="n">reader</span> <span class="o">=</span> <span class="n">upload</span><span class="o">.</span><span class="n">hashing_reader</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+                <span class="n">fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+</code></pre></div>
+<p>Other storages, like AWS S3 or Azure Blob Storage, do not need this step,
+because content hash is computed by cloud provided and returned with the
+metadata of the uploaded object. But if you don't have a cheap way to obtain
+the hash, using <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;HashingReader&lt;/code&gt;" href="../../api/#file_keeper.HashingReader">HashingReader</a> is the recommended
+option.</p>
+<p>In the end, <code>upload()</code> method of the service builds
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> with details of the uploaded file and returns
+it to the caller.</p>
+<div class="highlight"><pre><span></span><code>        <span class="k">return</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">(</span>
+            <span class="n">location</span><span class="p">,</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">dest</span><span class="p">),</span>
+            <span class="n">upload</span><span class="o">.</span><span class="n">content_type</span><span class="p">,</span>
+            <span class="n">reader</span><span class="o">.</span><span class="n">get_hash</span><span class="p">(),</span>
+        <span class="p">)</span>
+</code></pre></div>
+<h2 id="create-the-reader-service">Create the reader service</h2>
+<p><code>Reader</code> service is much simpler than <code>Uploader</code>. It exposes
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;STREAM&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;auto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
+      &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.Capability.STREAM">STREAM</a> capability to notify the storage, that
+files can be read from the storage. And it implements <code>stream()</code> method, that
+explains how exactly bytes of content are obtained.</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Reader</span><span class="p">(</span><span class="n">fk</span><span class="o">.</span><span class="n">Reader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filesystem reader.&quot;&quot;&quot;</span>
+
+    <span class="n">storage</span><span class="p">:</span> <span class="n">FsStorage</span>
+    <span class="n">capabilities</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">STREAM</span>
+
+    <span class="nd">@override</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">IO</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return file open in binary-read mode.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            MissingFileError: file does not exist</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            File content iterator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">MissingFileError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>  <span class="c1"># noqa: SIM115</span>
+</code></pre></div>
+<p>Note how it computes the path to the file using <code>full_path()</code>, just as
+<code>Uploader</code> did. Basically, every method that access the file should use
+<code>full_path()</code>.</p>
+<p>Also, pay attention to <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;              &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;MissingFileError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;storage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../../error_handling/#file_keeper.exc.MissingFileError">MissingFileError</a>
+raised if file does not exist. That's the recommended way to handle missing
+files.</p>
+<p>Finally, look at return result. The <code>stream()</code> method must return
+<code>Iterable[bytes]</code>, but not just bytes, e.g. <code>return b"hello"</code> is not valid
+output.</p>
+<p>Anything that can be used in a for-loop and produce <code>bytes</code> is a valid output
+of the <code>steam()</code> method. Few examples:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">List of byte strings</label><label for="__tabbed_1_2">Generator of bytes</label><label for="__tabbed_1_3">io.BytesIO</label><label for="__tabbed_1_4">Descriptor of the file opened in <code>rb</code> mode</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+<span class="k">return</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;world&quot;</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+<span class="k">yield</span> <span class="sa">b</span><span class="s2">&quot;hello&quot;</span>
+<span class="k">yield</span> <span class="sa">b</span><span class="s2">&quot; &quot;</span>
+<span class="k">yield</span> <span class="sa">b</span><span class="s2">&quot;world&quot;</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+<span class="k">return</span> <span class="n">BytesIO</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;hello world&quot;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+<span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="create-the-manager-service">Create the manager service</h2>
+<p><code>Manager</code> service contains a lot of methods and capabilities, but all of them
+are pretty straight forward.</p>
+<p>Remember, that capabilities tell the storage "what" service can do, while
+method implementations explain "how" it's done. Usually, capability and method
+come in pair, unless you are certain that you need to separate them.</p>
+<div class="highlight"><pre><span></span><code>    <span class="n">capabilities</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">REMOVE</span>
+        <span class="o">|</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">SCAN</span>
+        <span class="o">|</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">EXISTS</span>
+        <span class="o">|</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">ANALYZE</span>
+        <span class="o">|</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">COPY</span>
+        <span class="o">|</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">MOVE</span>
+        <span class="o">|</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">COMPOSE</span>
+        <span class="o">|</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">APPEND</span>
+    <span class="p">)</span>
+</code></pre></div>
+<p><code>remove()</code> method removes the object. If it's removed, the result is <code>True</code>. If
+it's not removed(because it does not exists), the result is <code>False</code>.</p>
+<div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the file.&quot;&quot;&quot;</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+</code></pre></div>
+<p><code>scan()</code> returns an iterable of strings with names of all files available in
+the storage.</p>
+<div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Discover filenames under storage path.&quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">path</span>
+        <span class="n">search_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;**&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">search_path</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">entry</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">yield</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+</code></pre></div>
+<p><code>exists()</code> returns <code>True</code> if file exists, and <code>False</code> if file is missing.</p>
+<div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if file exists.&quot;&quot;&quot;</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+</code></pre></div>
+<p><code>analyze()</code> returns the same <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> as one, produced
+during <code>upload()</code>.</p>
+<div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Location</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return all details about location.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            MissingFileError: file does not exist</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">MissingFileError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="n">location</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">src</span><span class="p">:</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">HashingReader</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+            <span class="n">content_type</span> <span class="o">=</span> <span class="n">magic</span><span class="o">.</span><span class="n">from_buffer</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">reader</span><span class="o">.</span><span class="n">exhaust</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">(</span>
+            <span class="n">location</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="n">reader</span><span class="o">.</span><span class="n">position</span><span class="p">,</span>
+            <span class="n">content_type</span><span class="o">=</span><span class="n">content_type</span><span class="p">,</span>
+            <span class="nb">hash</span><span class="o">=</span><span class="n">reader</span><span class="o">.</span><span class="n">get_hash</span><span class="p">(),</span>
+        <span class="p">)</span>
+</code></pre></div>
+<p><code>copy()</code> creates a copy of the file, raising
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;              &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;MissingFileError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;storage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../../error_handling/#file_keeper.exc.MissingFileError">MissingFileError</a> if source file is missing
+and <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;              &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;ExistingFileError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;storage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../../error_handling/#file_keeper.exc.ExistingFileError">ExistingFileError</a> if destination file
+already exist and <code>override_existing</code> is disabled.</p>
+<div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Location</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Copy file inside the storage.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ExistingFileError: file exists and overrides are not allowed</span>
+<span class="sd">            MissingFileError: source file does not exist</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+        <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">MissingFileError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">override_existing</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">ExistingFileError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="n">location</span><span class="p">)</span>
+
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="o">.</span><span class="n">from_object</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="n">location</span><span class="p">)</span>
+</code></pre></div>
+<p><code>move()</code> behaves exactly like <code>copy()</code>. In addition, the original file is not
+available after the move. Basically, <code>move()</code> does "rename" if possible, and
+"copy" + "remove" if not.</p>
+<div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Location</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move file to a different location inside the storage.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ExistingFileError: file exists and overrides are not allowed</span>
+<span class="sd">            MissingFileError: source file does not exist</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+        <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">MissingFileError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dest</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">override_existing</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">ExistingFileError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="n">location</span><span class="p">)</span>
+
+        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="o">.</span><span class="n">from_object</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="n">location</span><span class="p">)</span>
+</code></pre></div>
+<p><code>compose()</code> is the most challenging method of the <code>Manager</code>. It takes few
+existing files and combines them into a new one, similar to the <code>cat</code> utility.</p>
+<div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Location</span><span class="p">,</span> <span class="n">datas</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">],</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Combine multipe files inside the storage into a new one.</span>
+
+<span class="sd">        If final content type is not supported by the storage, the file is</span>
+<span class="sd">        removed.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ExistingFileError: file exists and overrides are not allowed</span>
+<span class="sd">            MissingFileError: source file does not exist</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">override_existing</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">ExistingFileError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="n">location</span><span class="p">)</span>
+
+        <span class="n">sources</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">datas</span><span class="p">:</span>
+            <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">MissingFileError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+
+            <span class="n">sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">to_fd</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">src</span> <span class="ow">in</span> <span class="n">sources</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">from_fd</span><span class="p">:</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">from_fd</span><span class="p">,</span> <span class="n">to_fd</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">extras</span><span class="p">)</span>
+</code></pre></div>
+<p><code>append()</code> takes content of the existing file and adds it in the end of another
+file.</p>
+<div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">,</span> <span class="n">upload</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Upload</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append content to existing file.</span>
+
+<span class="sd">        If final content type is not supported by the storage, original file is</span>
+<span class="sd">        removed.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            MissingFileError: file does not exist</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dest</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">MissingFileError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="s2">&quot;ab&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+            <span class="n">fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">upload</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="n">extras</span><span class="p">)</span>
+</code></pre></div>
 
 
 

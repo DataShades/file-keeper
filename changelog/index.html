@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#unreleased" class="md-skip">
+        <a href="#v010a1-2025-08-12" class="md-skip">
           Skip to content
         </a>
       
@@ -1016,13 +1016,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#unreleased" class="md-nav__link">
+  <a href="#v010a1-2025-08-12" class="md-nav__link">
     <span class="md-ellipsis">
-      [unreleased]
+      v0.1.0a1 - 2025-08-12
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="[unreleased]">
+    <nav class="md-nav" aria-label="v0.1.0a1 - 2025-08-12">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1047,6 +1047,15 @@
   <a href="#refactor" class="md-nav__link">
     <span class="md-ellipsis">
       🚜 Refactor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removal" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ Removal
     </span>
   </a>
   
@@ -1095,7 +1104,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#removal" class="md-nav__link">
+  <a href="#removal_1" class="md-nav__link">
     <span class="md-ellipsis">
       ❌ Removal
     </span>
@@ -1269,7 +1278,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#removal_1" class="md-nav__link">
+  <a href="#removal_2" class="md-nav__link">
     <span class="md-ellipsis">
       ❌ Removal
     </span>
@@ -1375,13 +1384,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#unreleased" class="md-nav__link">
+  <a href="#v010a1-2025-08-12" class="md-nav__link">
     <span class="md-ellipsis">
-      [unreleased]
+      v0.1.0a1 - 2025-08-12
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="[unreleased]">
+    <nav class="md-nav" aria-label="v0.1.0a1 - 2025-08-12">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1406,6 +1415,15 @@
   <a href="#refactor" class="md-nav__link">
     <span class="md-ellipsis">
       🚜 Refactor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removal" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ Removal
     </span>
   </a>
   
@@ -1454,7 +1472,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#removal" class="md-nav__link">
+  <a href="#removal_1" class="md-nav__link">
     <span class="md-ellipsis">
       ❌ Removal
     </span>
@@ -1628,7 +1646,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#removal_1" class="md-nav__link">
+  <a href="#removal_2" class="md-nav__link">
     <span class="md-ellipsis">
       ❌ Removal
     </span>
@@ -1722,11 +1740,12 @@
 
   <h1>Changelog</h1>
 
-<h2 id="unreleased">[unreleased]</h2>
-<p><a href="https://github.com/DataShades/file-keeper/compare/v0.0.10..HEAD">Compare with v0.0.10</a></p>
+<h2 id="v010a1-2025-08-12"><a href="https://github.com/DataShades/file-keeper/releases/tag/v0.1.0a1">v0.1.0a1</a> - 2025-08-12</h2>
+<p><a href="https://github.com/DataShades/file-keeper/compare/v0.0.10..v0.1.0a1">Compare with v0.0.10</a></p>
 <h3 id="features">🚀 Features</h3>
 <ul>
 <li>[<strong>breaking</strong>] frozen FileData and MultipartData (<a href="https://github.com/DataShades/file-keeper/commit/cb9dbf8ddf7516d461d0a295f69d41090b706195">cb9dbf8</a>)</li>
+<li>global storage configuration via file-keeper.json (<a href="https://github.com/DataShades/file-keeper/commit/58939eb2f27075d201e9bcbfb2625adb67b68a77">58939eb</a>)</li>
 <li>define <code>RESUMABLE</code> capability (<a href="https://github.com/DataShades/file-keeper/commit/bab84fa419aa6188e9e80a85381bf24d9dc50747">bab84fa</a>)</li>
 <li>complete GCS adapter (<a href="https://github.com/DataShades/file-keeper/commit/db97e201532627d65265d0bf81bdc581ad19309d">db97e20</a>)</li>
 <li>Azure Blob storage adapter (<a href="https://github.com/DataShades/file-keeper/commit/fb491b2b22681aaf8e66589166baa848d4c40a18">fb491b2</a>)</li>
@@ -1762,6 +1781,10 @@
 <li>remove pytz dependency (<a href="https://github.com/DataShades/file-keeper/commit/43079ead8b75af52ddefc75374d36ca857996197">43079ea</a>)</li>
 <li>rename redis_url to url in redis settings (<a href="https://github.com/DataShades/file-keeper/commit/2c998f4fe8876ce8ad44e24dea06e1ab0ac292bc">2c998f4</a>)</li>
 </ul>
+<h3 id="removal">❌ Removal</h3>
+<ul>
+<li>[<strong>breaking</strong>] drop python v3.9 support (<a href="https://github.com/DataShades/file-keeper/commit/d499876db6d185c7dcad9f67d93a7c7bb2c419a5">d499876</a>)</li>
+</ul>
 <h3 id="documentation">📚 Documentation</h3>
 <ul>
 <li>Add overview page (<a href="https://github.com/DataShades/file-keeper/commit/6ad5c893e4e7079f732630a4049071ea2b765f72">6ad5c89</a>)</li>
@@ -1778,7 +1801,7 @@
 <ul>
 <li>fix_extension transformer raises an error when upload is missing (<a href="https://github.com/DataShades/file-keeper/commit/a827df57168dab6e6d05e82bf9e6d680e25faed3">a827df5</a>)</li>
 </ul>
-<h3 id="removal">❌ Removal</h3>
+<h3 id="removal_1">❌ Removal</h3>
 <ul>
 <li>delete Storage.public_link (<a href="https://github.com/DataShades/file-keeper/commit/da08744021d56ea090cc522b82be70a4d5334771">da08744</a>)</li>
 </ul>
@@ -1835,7 +1858,7 @@
 <li>remove type and size validation from append and compose (<a href="https://github.com/DataShades/file-keeper/commit/890c89a8109c64f2a783c6b8dcd0c59d4c94cd89">890c89a</a>)</li>
 <li>remove public link method and capability (<a href="https://github.com/DataShades/file-keeper/commit/cb39151fb7e09cfdf3b9cdf0d3e2d98ba519edbe">cb39151</a>)</li>
 </ul>
-<h3 id="removal_1">❌ Removal</h3>
+<h3 id="removal_2">❌ Removal</h3>
 <ul>
 <li>drop link storage (<a href="https://github.com/DataShades/file-keeper/commit/3328eb20a581efc58eef6eb232ada1f9c13753af">3328eb2</a>)</li>
 </ul>
