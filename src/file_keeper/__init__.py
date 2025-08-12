@@ -25,7 +25,6 @@ from .core.utils import (
     humanize_filesize,
     parse_filesize,
 )
-from .ext import hookimpl  # must be the last line to avoid circular imports
 
 __all__ = [
     "BaseData",
@@ -52,3 +51,5 @@ __all__ = [
     "parse_filesize",
     "types",
 ]
+
+from .ext import hookimpl  # must be the last line to avoid circular imports

@@ -91,13 +91,6 @@ In addition to the common settings, adapters have their own specific settings:
 | `path`           | str                                                                | `""`                                             | Prefix for the file location.                 |
 | `initialize`     | bool                                                               | `False`                                          | Create `container_name` if it does not exist. |
 
-### `file_keeper:filebin`
-
-| Setting   | Type | Default | Description                 |
-|-----------|------|---------|-----------------------------|
-| `bin`     | str  | `""`    | The name of the bin.        |
-| `timeout` | int  | `10`    | Request timeout in seconds. |
-
 ### `file_keeper:fs`
 
 | Setting      | Type | Default | Description                                |

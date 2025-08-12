@@ -34,6 +34,7 @@ Here's an example of how to initialize the Libcloud adapter:
         "key": "***",
         "secret": "***",
         "container_name": "file-keeper",
+        "initialize": True,
     })
 
     ```
@@ -48,6 +49,7 @@ Here's an example of how to initialize the Libcloud adapter:
         "key": "minioadmin",
         "secret": "minioadmin",
         "container_name": "file-keeper",
+        "initialize": True,
         "params": {
             "host": "127.0.0.1",
             "port": 9000,
@@ -66,6 +68,7 @@ Here's an example of how to initialize the Libcloud adapter:
         "key": "devstoreaccount1",
         "secret": "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==",
         "container_name": "file-keeper",
+        "initialize": True,
         "params": {
             "host": "127.0.0.1",
             "port": 10000,

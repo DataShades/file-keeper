@@ -105,6 +105,7 @@ class Uploader(fk.Uploader):
 
     @override
     def upload(self, location: fk.types.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
+        """Upload a file to GCS."""
         filepath = self.storage.full_path(location)
 
         client = self.storage.settings.client
@@ -125,6 +126,7 @@ class Uploader(fk.Uploader):
 
     @override
     def multipart_start(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        """Start a multipart upload session."""
         filepath = self.storage.full_path(data.location)
 
         client = self.storage.settings.client
@@ -150,6 +152,7 @@ class Uploader(fk.Uploader):
 
     @override
     def multipart_update(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        """Update a multipart upload session."""
         if "upload" in extras:
             upload = fk.make_upload(extras["upload"])
 
@@ -205,6 +208,7 @@ class Uploader(fk.Uploader):
 
     @override
     def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        """Refresh a multipart upload session."""
         if "session_url" not in data.storage_data:
             raise fk.exc.MissingFileError(self.storage, data.location)
 
@@ -255,6 +259,7 @@ class Uploader(fk.Uploader):
 
     @override
     def multipart_complete(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        """Complete a multipart upload session."""
         data = self.multipart_refresh(data, extras)
         if data.storage_data["uploaded"] != data.size:
             raise fk.exc.UploadSizeMismatchError(
@@ -287,10 +292,12 @@ class Reader(fk.Reader):
     """GCS Reader."""
 
     storage: GoogleCloudStorage
+
     capabilities = fk.Capability.STREAM
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
+        """Stream a file from GCS."""
         name = self.storage.full_path(data.location)
         client = self.storage.settings.client
         bucket = client.bucket(self.storage.settings.bucket_name)
@@ -319,6 +326,7 @@ class Manager(fk.Manager):
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
+        """Scan the storage for files."""
         bucket = self.storage.settings.client.bucket(self.storage.settings.bucket_name)
 
         for blob in cast(Iterable[Blob], bucket.list_blobs()):
@@ -327,6 +335,7 @@ class Manager(fk.Manager):
 
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        """Check if a file exists in GCS."""
         filepath = self.storage.full_path(data.location)
         bucket = self.storage.settings.client.bucket(self.storage.settings.bucket_name)
         blob = bucket.blob(filepath)
@@ -334,6 +343,7 @@ class Manager(fk.Manager):
 
     @override
     def move(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        """Move a file in GCS."""
         src_filepath = self.storage.full_path(data.location)
         dest_filepath = self.storage.full_path(location)
 
@@ -351,6 +361,7 @@ class Manager(fk.Manager):
 
     @override
     def copy(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        """Copy a file in GCS."""
         src_filepath = self.storage.full_path(data.location)
         dest_filepath = self.storage.full_path(location)
 
