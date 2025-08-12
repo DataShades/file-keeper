@@ -36,7 +36,7 @@ plugins:
               # show_root_toc_entry: true
               show_symbol_type_heading: true
               show_symbol_type_toc: true
-              # show_source: false
+              show_source: false
               # parameter_headings: True
               docstring_section_style: spacy
 
@@ -104,9 +104,11 @@ nav:
     - core_concepts/uploads.md
     - core_concepts/capabilities.md
   - Extending file-keeper:
-      - extending/index.md
+      - extending/overview.md
       - extending/adapters.md
       - extending/location_transformers.md
+      - extending/dissection.md
+
   - error_handling.md
   - api.md
   - changelog.md

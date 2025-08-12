@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import abc
 import enum
+import functools
 import hashlib
 import io
 import itertools
@@ -50,6 +51,22 @@ UNITS = {
     "tib": 2**40,
     "pib": 2**50,
 }
+
+
+def ensure_setup(func: Any):
+    """Initialize file-keeper if required."""
+
+    @functools.wraps(func)
+    def wrapper(*args: Any, **kwargs: Any):
+        from file_keeper.core import storage, upload  # noqa: PLC0415
+        from file_keeper.ext import setup  # noqa: PLC0415
+
+        if not storage.location_transformers or not storage.adapters or not upload.upload_factories:
+            setup()
+
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 class HashingReader:

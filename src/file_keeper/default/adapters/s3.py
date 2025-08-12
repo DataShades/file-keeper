@@ -178,7 +178,7 @@ class Uploader(fk.Uploader):
                 Key=filepath,
                 UploadId=data.storage_data["upload_id"],
                 PartNumber=data.storage_data["part_number"],
-                Body=upload.stream,  # pyright: ignore[reportArgumentType]
+                Body=upload.stream,
             )
 
             etag = resp["ETag"].strip('"')

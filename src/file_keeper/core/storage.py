@@ -519,6 +519,7 @@ class Storage(ABC):  # noqa: B024
     def __str__(self) -> str:
         return self.settings.name
 
+    @utils.ensure_setup
     def __init__(self, settings: Mapping[str, Any] | Settings, /):
         self.settings = self.configure(settings)
         self.uploader = self.make_uploader()
@@ -1000,6 +1001,7 @@ class Storage(ABC):  # noqa: B024
             return self.reader.permanent_link(data, kwargs)
 
 
+@utils.ensure_setup
 def make_storage(name: str, settings: dict[str, Any]) -> Storage:
     """Initialize storage instance with specified settings.
 

@@ -5,6 +5,7 @@
 ### 🚀 Features
 
 - [**breaking**] frozen FileData and MultipartData ([cb9dbf8](https://github.com/DataShades/file-keeper/commit/cb9dbf8ddf7516d461d0a295f69d41090b706195))
+- global storage configuration via file-keeper.json ([58939eb](https://github.com/DataShades/file-keeper/commit/58939eb2f27075d201e9bcbfb2625adb67b68a77))
 - define `RESUMABLE` capability ([bab84fa](https://github.com/DataShades/file-keeper/commit/bab84fa419aa6188e9e80a85381bf24d9dc50747))
 - complete GCS adapter ([db97e20](https://github.com/DataShades/file-keeper/commit/db97e201532627d65265d0bf81bdc581ad19309d))
 - Azure Blob storage adapter ([fb491b2](https://github.com/DataShades/file-keeper/commit/fb491b2b22681aaf8e66589166baa848d4c40a18))
@@ -39,6 +40,10 @@
 - redis uses `bucket` option instead of `path` ([966241f](https://github.com/DataShades/file-keeper/commit/966241ff1627135cedea0de690fa95a314428f33))
 - remove pytz dependency ([43079ea](https://github.com/DataShades/file-keeper/commit/43079ead8b75af52ddefc75374d36ca857996197))
 - rename redis_url to url in redis settings ([2c998f4](https://github.com/DataShades/file-keeper/commit/2c998f4fe8876ce8ad44e24dea06e1ab0ac292bc))
+
+### ❌ Removal
+
+- [**breaking**] drop python v3.9 support ([d499876](https://github.com/DataShades/file-keeper/commit/d499876db6d185c7dcad9f67d93a7c7bb2c419a5))
 
 ### 📚 Documentation
 

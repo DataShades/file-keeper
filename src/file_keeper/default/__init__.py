@@ -177,10 +177,12 @@ def textiowrapper_into_upload(value: io.TextIOWrapper):
     return cast(io.BufferedReader, value.buffer)
 
 
+# --8<-- [start:register]
 @ext.hookimpl
 def register_adapters(registry: Registry[type[Storage]]):
     """Built-in storage adapters."""
     registry.register("file_keeper:fs", adapters.FsStorage)
+    # --8<-- [end:register]
     registry.register("file_keeper:null", adapters.NullStorage)
     registry.register("file_keeper:memory", adapters.MemoryStorage)
     registry.register("file_keeper:zip", adapters.ZipStorage)

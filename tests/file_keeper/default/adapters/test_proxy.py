@@ -27,7 +27,8 @@ class TestSettings:
 
 class TestStorage:
     def test_basic(self, storage: fk.Storage, faker: Faker):
-        assert isinstance(storage.proxy_settings.storage, fk.adapters["file_keeper:memory"])  # pyright: ignore[reportAttributeAccessIssue]
+        adapter = type(fk.make_storage("memory", {"type": "file_keeper:memory"}))  # pyright: ignore[reportUnknownVariableType]
+        assert isinstance(storage.proxy_settings.storage, adapter)  # pyright: ignore[reportAttributeAccessIssue]
 
         assert storage.settings is storage.proxy_settings.storage.settings  # pyright: ignore[reportAttributeAccessIssue]
 

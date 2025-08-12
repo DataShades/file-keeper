@@ -38,5 +38,5 @@ def register(reset: bool = False):
     plugin.hook.register_adapters(registry=storage.adapters)
 
 
-if not os.getenv("FILE_KEEPER_NO_SETUP"):
+if os.getenv("FILE_KEEPER_AUTO_SETUP"):
     setup()

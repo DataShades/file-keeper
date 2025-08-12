@@ -19,12 +19,15 @@ import file_keeper as fk
 log = logging.getLogger(__name__)
 
 
+# --8<-- [start:storage_cfg]
 @dataclasses.dataclass()
 class Settings(fk.Settings):
     """Settings for FS storage."""
 
+    # --8<-- [end:storage_cfg]
     _required_options: ClassVar[list[str]] = ["path"]
 
+    # --8<-- [start:storage_cfg_post_init]
     def __post_init__(self, **kwargs: Any):
         super().__post_init__(**kwargs)
 
@@ -43,15 +46,24 @@ class Settings(fk.Settings):
                     f"path `{self.path}` is not writable",
                 ) from err
 
+    # --8<-- [end:storage_cfg_post_init]
 
+
+# --8<-- [start:uploader_def]
 class Uploader(fk.Uploader):
     """Filesystem uploader."""
 
+    # --8<-- [end:uploader_def]
     storage: FsStorage
-    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
 
+    # --8<-- [start:uploader_capability]
+    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
+    # --8<-- [end:uploader_capability]
+
+    # --8<-- [start:uploader_method]
     @override
     def upload(self, location: fk.types.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
+        # --8<-- [end:uploader_method]
         """Upload file to computed location.
 
         File location is relative the configured `path`. The location is not
@@ -68,24 +80,35 @@ class Uploader(fk.Uploader):
             New file data
 
         """
+        # --8<-- [start:uploader_impl_path]
         dest = self.storage.full_path(location)
+        # --8<-- [end:uploader_impl_path]
 
+        # --8<-- [start:uploader_impl_check]
         if os.path.exists(dest) and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
+        # --8<-- [end:uploader_impl_check]
 
+        # --8<-- [start:uploader_impl_makedirs]
         os.makedirs(os.path.dirname(dest), exist_ok=True)
+        # --8<-- [end:uploader_impl_makedirs]
 
+        # --8<-- [start:uploader_impl_write]
         reader = upload.hashing_reader()
         with open(dest, "wb") as fd:
             for chunk in reader:
                 fd.write(chunk)
+        # --8<-- [end:uploader_impl_write]
 
+        # --8<-- [start:uploader_impl_result]
         return fk.FileData(
             location,
             os.path.getsize(dest),
             upload.content_type,
             reader.get_hash(),
         )
+
+    # --8<-- [end:uploader_impl_result]
 
     @override
     def multipart_start(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
@@ -232,6 +255,7 @@ class Uploader(fk.Uploader):
         return fk.FileData(data.location, size, content_type, reader.get_hash())
 
 
+# --8<-- [start:reader_impl]
 class Reader(fk.Reader):
     """Filesystem reader."""
 
@@ -255,10 +279,14 @@ class Reader(fk.Reader):
         return open(filepath, "rb")  # noqa: SIM115
 
 
+# --8<-- [end:reader_impl]
+
+
 class Manager(fk.Manager):
     """Filesystem manager."""
 
     storage: FsStorage
+    # --8<-- [start:manager_capabilities]
     capabilities: fk.Capability = (
         fk.Capability.REMOVE
         | fk.Capability.SCAN
@@ -269,7 +297,9 @@ class Manager(fk.Manager):
         | fk.Capability.COMPOSE
         | fk.Capability.APPEND
     )
+    # --8<-- [end:manager_capabilities]
 
+    # --8<-- [start:manager_compose]
     @override
     def compose(self, location: fk.types.Location, datas: Iterable[fk.FileData], extras: dict[str, Any]) -> fk.FileData:
         """Combine multipe files inside the storage into a new one.
@@ -302,6 +332,9 @@ class Manager(fk.Manager):
 
         return self.analyze(location, extras)
 
+    # --8<-- [end:manager_compose]
+
+    # --8<-- [start:manager_append]
     @override
     def append(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         """Append content to existing file.
@@ -321,6 +354,9 @@ class Manager(fk.Manager):
 
         return self.analyze(data.location, extras)
 
+    # --8<-- [end:manager_append]
+
+    # --8<-- [start:manager_copy]
     @override
     def copy(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         """Copy file inside the storage.
@@ -341,6 +377,9 @@ class Manager(fk.Manager):
         shutil.copy(src, dest)
         return fk.FileData.from_object(data, location=location)
 
+    # --8<-- [end:manager_copy]
+
+    # --8<-- [start:manager_move]
     @override
     def move(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         """Move file to a different location inside the storage.
@@ -364,12 +403,18 @@ class Manager(fk.Manager):
         shutil.move(src, dest)
         return fk.FileData.from_object(data, location=location)
 
+    # --8<-- [end:manager_move]
+
+    # --8<-- [start:manager_exists]
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         """Check if file exists."""
         filepath = self.storage.full_path(data.location)
         return os.path.exists(filepath)
 
+    # --8<-- [end:manager_exists]
+
+    # --8<-- [start:manager_remove]
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         """Remove the file."""
@@ -380,6 +425,9 @@ class Manager(fk.Manager):
         os.remove(filepath)
         return True
 
+    # --8<-- [end:manager_remove]
+
+    # --8<-- [start:manager_scan]
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         """Discover filenames under storage path."""
@@ -391,6 +439,9 @@ class Manager(fk.Manager):
                 continue
             yield os.path.relpath(entry, path)
 
+    # --8<-- [end:manager_scan]
+
+    # --8<-- [start:manager_analyze]
     @override
     def analyze(self, location: fk.types.Location, extras: dict[str, Any]) -> fk.FileData:
         """Return all details about location.
@@ -415,6 +466,10 @@ class Manager(fk.Manager):
         )
 
 
+# --8<-- [end:manager_analyze]
+
+
+# --8<-- [start:storage]
 class FsStorage(fk.Storage):
     """Store files in local filesystem."""
 
@@ -424,3 +479,6 @@ class FsStorage(fk.Storage):
     UploaderFactory = Uploader
     ReaderFactory = Reader
     ManagerFactory = Manager
+
+
+# --8<-- [end:storage]

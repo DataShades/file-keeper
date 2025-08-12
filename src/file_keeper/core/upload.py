@@ -87,6 +87,7 @@ class Upload:
         return utils.HashingReader(self.stream, **kwargs)
 
 
+@utils.ensure_setup
 def make_upload(value: Any) -> Upload:
     """Convert value into [Upload][file_keeper.Upload] object.
 
@@ -116,6 +117,7 @@ def make_upload(value: Any) -> Upload:
     initial_type: type = type(value)  # pyright: ignore[reportUnknownVariableType]
 
     fallback_factory = None
+
     for t in upload_factories:
         if initial_type is t:
             transformed_value = upload_factories[t](value)

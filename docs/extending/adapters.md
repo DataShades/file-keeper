@@ -102,31 +102,18 @@ register it directly using `adapters` registry:
 fk.adapters.register("local", MyStorage)
 ```
 
-But if you are writing a library that will be used accross multiple project
+If you are writing a library that will be used accross multiple project
 it's better to register storage using entrypoints of the python package.
 
-First, create a function with name `register_adapters` and decorate it with
-`hookimpl` decorator. This function is responsible to register the adapter
+Use the `register_adapters` hook to register your adapter. This makes it
+available as a `type` inside [make_storage](file_keeper.make_storage).
+
 
 ```py
 @fk.hookimpl
 def register_adapters(registry: fk.Registry[type[fk.Storage]]):
     registry.register("local", MyStorage)
 ```
-
-Next, add an entry-point named `file_keeper_ext` pointing to the module with
-`register_adapters` to you package's definition. For example, if you are using
-`pyproject.toml` add following lines there:
-
-```toml
-[project.entry-points."file_keeper_ext"]
-my_extension = "my_module.my_storage"
-
-```
-
-Finally, re-install the your package, to refresh entrypoints. From now on your
-custom adapter will be available just as any adapter shipped inside file-keeper
-as soon as you install your library.
 
 ### Initialize the adapter
 
