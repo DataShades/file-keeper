@@ -83,6 +83,7 @@ class Uploader(fk.Uploader):
         upload: fk.Upload,
         extras: dict[str, Any],
     ) -> fk.FileData:
+        """Upload a file to Azure Blob Storage."""
         filepath = self.storage.full_path(location)
         blob = self.storage.settings.container.get_blob_client(filepath)
 
@@ -136,7 +137,9 @@ class Manager(fk.Manager):
 
     @override
     def copy(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        """Copy a file to a new location."""
         src_filepath = self.storage.full_path(data.location)
+
         blob = self.storage.settings.container.get_blob_client(src_filepath)
         if not blob.exists():
             raise fk.exc.MissingFileError(self.storage, data.location)

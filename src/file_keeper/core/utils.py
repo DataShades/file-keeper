@@ -19,11 +19,12 @@ import re
 from collections.abc import Callable, Iterable, Iterator
 from typing import Any, Generic
 
-from typing_extensions import TypeVar, override
+from typing_extensions import ParamSpec, TypeVar, override
 
 from . import types
 
 T = TypeVar("T")
+P = ParamSpec("P")
 
 log = logging.getLogger(__name__)
 
@@ -53,16 +54,37 @@ UNITS = {
 }
 
 
+class run_once(Generic[P, T]):  # noqa: N801
+    """Decorator that runs function only once and caches the result."""
+
+    EMPTY = object()
+
+    result: T
+    func: Callable[P, T]
+
+    def __init__(self, func: Callable[P, T]):
+        self.func = func
+        self.result = self.EMPTY  # pyright: ignore[reportAttributeAccessIssue]
+
+    def __call__(self, *args: P.args, **kwargs: P.kwargs) -> T:
+        """Run function and cache the result."""
+        if self.result is self.EMPTY:
+            self.result = self.func(*args, **kwargs)
+        return self.result
+
+    def reset(self):
+        """Reset cached result to run function again on next call."""
+        self.result = self.EMPTY  # pyright: ignore[reportAttributeAccessIssue]
+
+
 def ensure_setup(func: Any):
     """Initialize file-keeper if required."""
 
     @functools.wraps(func)
     def wrapper(*args: Any, **kwargs: Any):
-        from file_keeper.core import storage, upload  # noqa: PLC0415
         from file_keeper.ext import setup  # noqa: PLC0415
 
-        if not storage.location_transformers or not storage.adapters or not upload.upload_factories:
-            setup()
+        setup()
 
         return func(*args, **kwargs)
 

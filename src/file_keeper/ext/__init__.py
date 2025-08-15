@@ -6,7 +6,7 @@ import os
 
 from pluggy import HookimplMarker, PluginManager
 
-from file_keeper.core import storage, upload
+from file_keeper.core import storage, upload, utils
 
 from . import spec
 
@@ -15,10 +15,10 @@ plugin = PluginManager(spec.name)
 plugin.add_hookspecs(spec)
 
 
+@utils.run_once
 def setup():
     """Discover and register file-keeper extensions."""
     plugin.load_setuptools_entrypoints(spec.name)
-
     for name in os.getenv("FILE_KEEPER_DISABLED_EXTENSIONS", "").split():
         undesired = plugin.get_plugin(name)
         if plugin.is_registered(undesired):
