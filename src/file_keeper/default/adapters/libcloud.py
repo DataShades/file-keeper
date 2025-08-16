@@ -53,6 +53,8 @@ class Settings(fk.Settings):
     ):
         super().__post_init__(**kwargs)
 
+        self.path = self.path.lstrip("/")
+
         if self.driver is None:  # pyright: ignore[reportUnnecessaryComparison]
             try:
                 make_driver = get_driver(DriverType.STORAGE, self.provider)
@@ -174,8 +176,10 @@ class Manager(fk.Manager):
 
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        location = self.storage.full_path(data.location)
+
         try:
-            self.storage.settings.container.get_object(data.location)
+            self.storage.settings.container.get_object(location)
         except ObjectDoesNotExistError:
             return False
 
@@ -183,13 +187,16 @@ class Manager(fk.Manager):
 
     @override
     def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+        fullpath = self.storage.full_path(location)
+
         try:
-            obj = self.storage.settings.container.get_object(location)
+            obj = self.storage.settings.container.get_object(fullpath)
         except ObjectDoesNotExistError as err:
             raise fk.exc.MissingFileError(self.storage, location) from err
 
-        # TODO: identify content type
-        return fk.FileData(location, obj.size, hash=obj.hash)
+        content_type: str = obj.extra.get("content_type", fk.FileData.content_type)  # pyright: ignore[reportUnknownVariableType]
+        hash = obj.hash.strip('"')
+        return fk.FileData(location, obj.size, content_type, hash)
 
 
 class LibCloudStorage(fk.Storage):

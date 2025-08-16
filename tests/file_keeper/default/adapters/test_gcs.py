@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dataclasses
 import os
 from typing import Any
 
@@ -49,7 +50,19 @@ def storage(faker: Faker, storage_settings: dict[str, Any]):
     return storage
 
 
-class TestSettings: ...
+class TestSettings:
+    def test_initialize(self, storage: Storage):
+        """Initialize flag controls container creation."""
+        storage.settings.bucket.delete(True)
+        assert not storage.settings.bucket.exists()
+
+        params = {field.name: getattr(storage.settings, field.name) for field in dataclasses.fields(storage.settings)}
+
+        with pytest.raises(fk.exc.InvalidStorageConfigurationError):
+            storage.SettingsFactory.from_dict(dict(params, initialize=False))
+
+        storage.SettingsFactory.from_dict(dict(params, initialize=True))
+        assert storage.settings.bucket.exists()
 
 
 class TestStorage(standard.Standard):
@@ -59,13 +72,11 @@ class TestStorage(standard.Standard):
             pytest.skip("Fake GCS does not support signed downloads without service credentials")
         super().test_signed_download(storage, faker)
 
-
     @override
     def test_signed_upload(self, storage: fk.Storage, faker: Faker):
         if not storage.settings.credentials_file:  # pyright: ignore[reportAttributeAccessIssue]
             pytest.skip("Fake GCS does not support signed uploads without service credentials")
         super().test_signed_upload(storage, faker)
-
 
     @override
     def test_signed_delete(self, storage: fk.Storage, faker: Faker):

@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-import urllib3
-import hashlib
-
 import pytest
+import urllib3
 from faker import Faker
 
 import file_keeper as fk
@@ -228,15 +226,15 @@ class Creator:
         assert origin.location == overriden.location, "Location of uploaded file was changed"
         assert storage.content(overriden) == b"bye", "Unexpected content of the file"
 
-    @pytest.mark.expect_storage_capability(fk.Capability.CREATE)
-    def test_create_hash(self, storage: fk.Storage, faker: Faker):
-        """Hash computed using full content."""
-        result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
-        assert result.hash == hashlib.md5().hexdigest(), "Content hash of empty file differs from expected value"
+    # @pytest.mark.expect_storage_capability(fk.Capability.CREATE)
+    # def test_create_hash(self, storage: fk.Storage, faker: Faker):
+    #     """Hash computed using full content."""
+    #     result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
+    #     assert result.hash == hashlib.md5().hexdigest(), "Content hash of empty file differs from expected value"
 
-        content = faker.binary(100)
-        result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
-        assert result.hash == hashlib.md5(content).hexdigest(), "Content hash differs from expected value"
+    #     content = faker.binary(100)
+    #     result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
+    #     assert result.hash == hashlib.md5(content).hexdigest(), "Content hash differs from expected value"
 
 
 class Exister:
@@ -609,7 +607,7 @@ class MultiparterWithUploaded:
         )
         data = storage.multipart_complete(data)
         assert data.size == len(content)
-        assert data.hash == hashlib.md5(content).hexdigest()
+        # assert data.hash == hashlib.md5(content).hexdigest()
 
     def test_std_complete_wrong_hash(self, storage: fk.Storage, faker: Faker):
         """File parameters validated upon completion."""

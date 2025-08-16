@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import dataclasses
 import os
 from typing import Any
 
 import pytest
 from faker import Faker
 
+import file_keeper as fk
 import file_keeper.default.adapters.s3 as s3
 
 from . import standard
@@ -43,7 +45,18 @@ def storage(faker: Faker, storage_settings: dict[str, Any]):
     return storage
 
 
-class TestSettings: ...
+class TestSettings:
+    def test_initialize(self, storage: Storage):
+        """Initialize flag controls container creation."""
+        storage.settings.client.delete_bucket(Bucket=storage.settings.bucket)
+
+        params = {field.name: getattr(storage.settings, field.name) for field in dataclasses.fields(storage.settings)}
+
+        with pytest.raises(fk.exc.InvalidStorageConfigurationError):
+            storage.SettingsFactory.from_dict(dict(params, initialize=False))
+
+        storage.SettingsFactory.from_dict(dict(params, initialize=True))
+        assert storage.settings.client.head_bucket(Bucket=storage.settings.bucket)
 
 
 class TestStorage(standard.Standard): ...

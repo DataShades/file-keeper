@@ -48,12 +48,12 @@ class TestSettings:
         storage.settings.container.delete_container()
         assert not storage.settings.container.exists()
 
-        params = dataclasses.asdict(storage.settings)
+        params = {field.name: getattr(storage.settings, field.name) for field in dataclasses.fields(storage.settings)}
 
         with pytest.raises(fk.exc.InvalidStorageConfigurationError):
             storage.SettingsFactory.from_dict(dict(params, initialize=False))
 
-        storage.SettingsFactory.from_dict(params)
+        storage.SettingsFactory.from_dict(dict(params, initialize=True))
         assert storage.settings.container.exists()
 
 

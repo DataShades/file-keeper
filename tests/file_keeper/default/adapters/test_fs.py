@@ -25,25 +25,19 @@ def storage(tmp_path: Path, storage_settings: dict[str, Any]):
 
 
 class TestSettings:
-    def test_creation(self, tmp_path: Path):
-        """Test how settings initialized with and without required option."""
-        with pytest.raises(fk.exc.MissingStorageConfigurationError):
-            Settings()
-
-        Settings(path=str(tmp_path))
-
-    def test_missing_path(self, tmp_path: Path, faker: Faker):
-        path = faker.file_path(absolute=False, extension="")
-
-        with pytest.raises(fk.exc.InvalidStorageConfigurationError):
-            Settings(path=os.path.join(tmp_path, path))
-
-    def test_missing_path_created(self, tmp_path: Path, faker: Faker):
+    def test_initialize(self, storage: Storage, tmp_path: Path, faker: Faker):
+        """Initialize flag controls path creation."""
         subpath = faker.file_path(absolute=False, extension="")
         path = os.path.join(tmp_path, subpath)
 
-        Settings(path=path, initialize=True)
+        with pytest.raises(fk.exc.InvalidStorageConfigurationError):
+            storage.SettingsFactory(path=path)
+
+        storage.SettingsFactory(path=path, initialize=True)
         assert os.path.exists(path)
+
+        # if path exists, settings do not require `initialize` flag
+        storage.SettingsFactory(path=path)
 
 
 class TestUploaderMultipart(standard.MultiparterWithUploaded):
