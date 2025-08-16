@@ -111,4 +111,5 @@ nav:
 
   - error_handling.md
   - api.md
+  - testing.md
   - changelog.md

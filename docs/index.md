@@ -13,7 +13,7 @@ You can install file-keeper using pip:
 pip install file-keeper
 ```
 
-/// note
+/// details | Additional dependencies
 
 To use specific storage adapters, you may need to install extra
 dependencies. Most standard adapters do *not* require extras, but some – like

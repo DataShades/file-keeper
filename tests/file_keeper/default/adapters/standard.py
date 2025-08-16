@@ -359,7 +359,7 @@ class Remover:
         )
 
     @pytest.mark.expect_storage_capability(fk.Capability.REMOVE, fk.Capability.CREATE, fk.Capability.EXISTS)
-    def test_remove_existing(self, storage: fk.Storage, faker: Faker):
+    def test_remove_real(self, storage: fk.Storage, faker: Faker):
         """Removed file is identified as non-existing."""
         if not storage.supports(fk.Capability.EXISTS):
             pytest.skip("Cannot test removal without EXIST capability")
@@ -412,7 +412,7 @@ class Streamer:
         assert storage.supports(fk.Capability.STREAM), "Does not support STREAM"
 
     @pytest.mark.expect_storage_capability(fk.Capability.STREAM)
-    def test_stream_existing(self, storage: fk.Storage, faker: Faker):
+    def test_stream_real(self, storage: fk.Storage, faker: Faker):
         """Content of uploaded file can be received."""
         content = faker.binary(100)
         result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
