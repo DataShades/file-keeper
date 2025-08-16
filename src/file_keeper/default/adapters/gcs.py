@@ -12,7 +12,7 @@ from typing import Any, cast
 
 import requests
 from google.api_core.exceptions import Forbidden
-from google.auth.credentials import AnonymousCredentials, Credentials
+from google.auth.credentials import Credentials
 from google.cloud.storage import Blob, Bucket, Client
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 from typing_extensions import override
@@ -41,7 +41,7 @@ class Settings(fk.Settings):
 
     credentials_file: str = ""
     """Path to the JSON with cloud credentials."""
-    credentials: Credentials = None  # pyright: ignore[reportAssignmentType]
+    credentials: Credentials | None = None
     """Existing cloud credentials."""
     project_id: str = ""
     """The project which the client acts on behalf of."""
@@ -60,19 +60,16 @@ class Settings(fk.Settings):
         self.path = self.path.lstrip("/")
 
         if not self.client:
-            if not self.credentials:
-                if self.credentials_file:
-                    try:
-                        self.credentials = ServiceAccountCredentials.from_service_account_file(self.credentials_file)
-                    except OSError as err:
-                        raise fk.exc.InvalidStorageConfigurationError(
-                            self.name,
-                            f"file `{self.credentials_file}` does not exist",
-                        ) from err
-                    if not self.project_id:
-                        self.project_id = self.credentials.project_id or ""
-                else:
-                    self.credentials = AnonymousCredentials()
+            if not self.credentials and self.credentials_file:
+                try:
+                    self.credentials = ServiceAccountCredentials.from_service_account_file(self.credentials_file)
+                except OSError as err:
+                    raise fk.exc.InvalidStorageConfigurationError(
+                        self.name,
+                        f"file `{self.credentials_file}` does not exist",
+                    ) from err
+                if not self.project_id:
+                    self.project_id = self.credentials.project_id or ""
 
             if not self.project_id:
                 raise fk.exc.MissingStorageConfigurationError(self.name, "project_id")
@@ -410,7 +407,11 @@ class Manager(fk.Manager):
 
         method = {"download": "GET", "upload": "PUT", "delete": "DELETE"}[action]
 
-        return blob.generate_signed_url(version="v4", expiration=timedelta(seconds=duration), method=method)
+        return blob.generate_signed_url(
+            version="v4",
+            expiration=timedelta(seconds=duration),
+            method=method,
+        )
 
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:

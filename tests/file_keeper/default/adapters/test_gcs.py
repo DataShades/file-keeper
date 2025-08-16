@@ -6,7 +6,9 @@ from typing import Any
 import pytest
 from faker import Faker
 from google.auth.credentials import AnonymousCredentials
+from typing_extensions import override
 
+import file_keeper as fk
 import file_keeper.default.adapters.gcs as gcs
 
 from . import standard
@@ -50,4 +52,23 @@ def storage(faker: Faker, storage_settings: dict[str, Any]):
 class TestSettings: ...
 
 
-class TestStorage(standard.Standard): ...
+class TestStorage(standard.Standard):
+    @override
+    def test_signed_download(self, storage: fk.Storage, faker: Faker):
+        if not storage.settings.credentials_file:  # pyright: ignore[reportAttributeAccessIssue]
+            pytest.skip("Fake GCS does not support signed downloads without service credentials")
+        super().test_signed_download(storage, faker)
+
+
+    @override
+    def test_signed_upload(self, storage: fk.Storage, faker: Faker):
+        if not storage.settings.credentials_file:  # pyright: ignore[reportAttributeAccessIssue]
+            pytest.skip("Fake GCS does not support signed uploads without service credentials")
+        super().test_signed_upload(storage, faker)
+
+
+    @override
+    def test_signed_delete(self, storage: fk.Storage, faker: Faker):
+        if not storage.settings.credentials_file:  # pyright: ignore[reportAttributeAccessIssue]
+            pytest.skip("Fake GCS does not support signed removals without service credentials")
+        super().test_signed_delete(storage, faker)

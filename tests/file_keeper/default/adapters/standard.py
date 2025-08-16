@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import urllib3
 import hashlib
 
 import pytest
@@ -401,6 +402,47 @@ class Signer:
     def test_signed_capabilities(self, storage: fk.Storage):
         """Reader supports STREAM capability."""
         assert storage.supports(fk.Capability.SIGNED), "Does not support SIGNED"
+
+    @pytest.mark.expect_storage_capability(fk.Capability.SIGNED, fk.Capability.CREATE)
+    def test_signed_download(self, storage: fk.Storage, faker: Faker):
+        data = faker.binary(100)
+        location = fk.Location(faker.file_name())
+        storage.upload(location, fk.make_upload(data))
+
+        url = storage.signed("download", 24 * 3600, location)
+        resp = urllib3.request("GET", url)
+
+        assert resp.data == data, "Signed download does not match content"
+
+    @pytest.mark.expect_storage_capability(fk.Capability.SIGNED, fk.Capability.STREAM)
+    def test_signed_upload(self, storage: fk.Storage, faker: Faker):
+        data = faker.binary(100)
+        location = fk.Location(faker.file_name())
+
+        url = storage.signed("upload", 24 * 3600, location)
+
+        urllib3.request(
+            "PUT",
+            url,
+            body=data,
+            headers={
+                "x-ms-blob-type": "BlockBlob",
+            },
+        )
+        assert storage.content(fk.FileData(location)) == data, "Signed upload does not match content"
+
+    @pytest.mark.expect_storage_capability(fk.Capability.SIGNED, fk.Capability.EXISTS, fk.Capability.CREATE)
+    def test_signed_delete(self, storage: fk.Storage, faker: Faker):
+        data = faker.binary(100)
+        location = fk.Location(faker.file_name())
+        storage.upload(location, fk.make_upload(data))
+        url = storage.signed("delete", 24 * 3600, location)
+
+        urllib3.request(
+            "DELETE",
+            url,
+        )
+        assert not storage.exists(fk.FileData(location)), "Signed delete did not removed file"
 
 
 class Streamer:

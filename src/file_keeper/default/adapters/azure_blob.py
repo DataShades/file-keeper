@@ -42,6 +42,10 @@ class Settings(fk.Settings):
     """Existing container client."""
 
     def __post_init__(self, **kwargs: Any):
+        super().__post_init__(**kwargs)
+
+        self.path = self.path.lstrip("/")
+
         self.account_url = self.account_url.format(account_name=self.account_name)
 
         if not self.client:
@@ -66,8 +70,6 @@ class Settings(fk.Settings):
                     self.name,
                     f"container `{self.container_name}` does not exist",
                 )
-
-        return super().__post_init__(**kwargs)
 
 
 class Uploader(fk.Uploader):
@@ -206,14 +208,14 @@ class Manager(fk.Manager):
 
     @override
     def signed(self, action: fk.types.SignedAction, duration: int, location: fk.Location, extras: dict[str, Any]):
-        perms = BlobSasPermissions()
+        perms = {}
         if action == "download":
-            perms.read = True
+            perms["read"] = True
         elif action == "upload":
-            perms.write = True
-            perms.create = True
+            perms["write"] = True
+            perms["create"] = True
         elif action == "delete":
-            perms.delete = True
+            perms["delete"] = True
 
         client = self.storage.settings.client
         container = self.storage.settings.container
@@ -223,10 +225,11 @@ class Manager(fk.Manager):
             account_key=self.storage.settings.account_key,
             container_name=container.container_name,
             blob_name=filepath,
-            permission=perms,
+            permission=BlobSasPermissions(**perms),
             expiry=datetime.now(timezone.utc) + timedelta(seconds=duration),
         )
         account_url = self.storage.settings.account_url
+
         return f"{account_url}/{container.container_name}/{filepath}?{sas}"
 
 
