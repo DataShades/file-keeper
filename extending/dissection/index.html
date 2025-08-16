@@ -1070,6 +1070,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Testing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../changelog/" class="md-nav__link">
         
   
@@ -1198,7 +1220,7 @@ python module that contains <a href="https://pluggy.readthedocs.io/en/stable/#im
 hooks</a> that extends
 file-keeper.</p>
 <div class="highlight"><pre><span></span><code><span class="k">[project.entry-points.file_keeper_ext]</span>
-<span class="n">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;file_keeper.default&quot;</span>
+<span class="n">file_keeper</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;file_keeper.default&quot;</span>
 </code></pre></div>
 <p>file-keeper expects to find a function decorated with <code>@file_keeper.hookimpl</code>
 and named <code>register_adapters</code> inside the module. This function registers all

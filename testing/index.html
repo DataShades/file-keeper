@@ -8,28 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://datashades.github.io/file-keeper/adapters/zip/">
+        <link rel="canonical" href="https://datashades.github.io/file-keeper/testing/">
       
       
-        <link rel="prev" href="../sqlalchemy/">
+        <link rel="prev" href="../api/">
       
       
-        <link rel="next" href="../../core_concepts/data_model/">
+        <link rel="next" href="../changelog/">
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
     
     
       
-        <title>ZIP Archive Adapter - file-keeper</title>
+        <title>Testing - file-keeper</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2afb09e1.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,9 +48,9 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#zip-archive-adapter" class="md-skip">
+        <a href="#testing" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +92,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="file-keeper" class="md-header__button md-logo" aria-label="file-keeper" data-md-component="logo">
+    <a href=".." title="file-keeper" class="md-header__button md-logo" aria-label="file-keeper" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ZIP Archive Adapter
+              Testing
             
           </span>
         </div>
@@ -238,7 +238,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="file-keeper" class="md-nav__button md-logo" aria-label="file-keeper" data-md-component="logo">
+    <a href=".." title="file-keeper" class="md-nav__button md-logo" aria-label="file-keeper" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -268,7 +268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -290,7 +290,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../configuration/" class="md-nav__link">
+      <a href="../configuration/" class="md-nav__link">
         
   
   
@@ -309,10 +309,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -344,11 +342,11 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
@@ -364,7 +362,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Storage adapters
@@ -378,7 +376,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../emulate/" class="md-nav__link">
+      <a href="../adapters/emulate/" class="md-nav__link">
         
   
   
@@ -401,7 +399,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../libcloud/" class="md-nav__link">
+      <a href="../adapters/libcloud/" class="md-nav__link">
         
   
   
@@ -424,7 +422,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../opendal/" class="md-nav__link">
+      <a href="../adapters/opendal/" class="md-nav__link">
         
   
   
@@ -447,7 +445,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../s3/" class="md-nav__link">
+      <a href="../adapters/s3/" class="md-nav__link">
         
   
   
@@ -470,7 +468,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../azure_blob/" class="md-nav__link">
+      <a href="../adapters/azure_blob/" class="md-nav__link">
         
   
   
@@ -493,7 +491,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../gcs/" class="md-nav__link">
+      <a href="../adapters/gcs/" class="md-nav__link">
         
   
   
@@ -516,7 +514,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fs/" class="md-nav__link">
+      <a href="../adapters/fs/" class="md-nav__link">
         
   
   
@@ -539,7 +537,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../memory/" class="md-nav__link">
+      <a href="../adapters/memory/" class="md-nav__link">
         
   
   
@@ -562,7 +560,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../null/" class="md-nav__link">
+      <a href="../adapters/null/" class="md-nav__link">
         
   
   
@@ -585,7 +583,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../redis/" class="md-nav__link">
+      <a href="../adapters/redis/" class="md-nav__link">
         
   
   
@@ -608,7 +606,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sqlalchemy/" class="md-nav__link">
+      <a href="../adapters/sqlalchemy/" class="md-nav__link">
         
   
   
@@ -628,32 +626,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    ZIP Archive Adapter
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../adapters/zip/" class="md-nav__link">
         
   
   
@@ -664,44 +640,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Overview
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#initialization-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Initialization Example
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -767,7 +705,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../core_concepts/data_model/" class="md-nav__link">
+      <a href="../core_concepts/data_model/" class="md-nav__link">
         
   
   
@@ -790,7 +728,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../core_concepts/uploads/" class="md-nav__link">
+      <a href="../core_concepts/uploads/" class="md-nav__link">
         
   
   
@@ -813,7 +751,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../core_concepts/capabilities/" class="md-nav__link">
+      <a href="../core_concepts/capabilities/" class="md-nav__link">
         
   
   
@@ -891,7 +829,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extending/overview/" class="md-nav__link">
+      <a href="../extending/overview/" class="md-nav__link">
         
   
   
@@ -914,7 +852,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extending/adapters/" class="md-nav__link">
+      <a href="../extending/adapters/" class="md-nav__link">
         
   
   
@@ -937,7 +875,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extending/location_transformers/" class="md-nav__link">
+      <a href="../extending/location_transformers/" class="md-nav__link">
         
   
   
@@ -960,7 +898,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extending/dissection/" class="md-nav__link">
+      <a href="../extending/dissection/" class="md-nav__link">
         
   
   
@@ -990,7 +928,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../error_handling/" class="md-nav__link">
+      <a href="../error_handling/" class="md-nav__link">
         
   
   
@@ -1012,7 +950,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
+      <a href="../api/" class="md-nav__link">
         
   
   
@@ -1031,10 +969,32 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../testing/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Testing
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1045,6 +1005,86 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#core-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      Core Principles
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-standard-class-and-inheritance" class="md-nav__link">
+    <span class="md-ellipsis">
+      The Standard Class and Inheritance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writing-new-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Writing New Tests
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Writing New Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-a-test-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a Test Class
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#override-existing-tests-if-necessary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Override Existing Tests (if necessary)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-new-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add New Tests
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1056,7 +1096,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../changelog/" class="md-nav__link">
+      <a href="../changelog/" class="md-nav__link">
         
   
   
@@ -1098,20 +1138,62 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#core-principles" class="md-nav__link">
     <span class="md-ellipsis">
-      Overview
+      Core Principles
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#initialization-example" class="md-nav__link">
+  <a href="#the-standard-class-and-inheritance" class="md-nav__link">
     <span class="md-ellipsis">
-      Initialization Example
+      The Standard Class and Inheritance
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writing-new-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Writing New Tests
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Writing New Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-a-test-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a Test Class
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#override-existing-tests-if-necessary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Override Existing Tests (if necessary)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-new-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add New Tests
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1134,27 +1216,88 @@
   
 
 
-<h1 id="zip-archive-adapter">ZIP Archive Adapter</h1>
-<p>The <code>file_keeper:zip</code> adapter allows you to use a ZIP archive as a storage
-backend. This adapter is useful for packaging and distributing files in a
-single archive.</p>
-<h2 id="overview">Overview</h2>
-<p>This adapter stores files within a ZIP archive. You'll need to provide the path
-to the ZIP archive.  The adapter can create the ZIP archive if it doesn't
-exist.</p>
-<h2 id="initialization-example">Initialization Example</h2>
-<p>Here's an example of how to initialize the ZIP archive adapter:</p>
-<div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_zip_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
-    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:zip&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp/my_archive.zip&quot;</span><span class="p">,</span>
-<span class="p">})</span>
-</code></pre></div>
-<p><strong>Important Notes:</strong></p>
+<h1 id="testing">Testing</h1>
+<p>This document outlines the recommended approach for writing tests for new
+storage adapters within the <code>file_keeper</code> project.  The goal is to ensure
+consistent behavior and adherence to the defined capabilities.</p>
+<h2 id="core-principles">Core Principles</h2>
+<p>Tests should primarily focus on verifying that an adapter correctly implements
+the capabilities. Validate the <em>behavior</em> of the adapter, not necessarily the
+internal implementation details. User has certain expectations depending on the
+storage capabilities and assumes that two different storage adapters with same
+capabilities behave identically in similar conditions. That's why testing
+publicly exposed interface is the highest priority.</p>
+<h2 id="the-standard-class-and-inheritance">The <code>Standard</code> Class and Inheritance</h2>
+<p>The <code>tests/file_keeper/default/adapters/standard.py</code> file provides a <code>Standard</code>
+class that serves as a foundation for testing adapters. This class encapsulates
+a comprehensive suite of tests covering various storage capabilities.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>When creating tests for a new adapter, <strong>inherit from the <code>Standard</code>
+class</strong>. This automatically provides a significant amount of pre-built test
+coverage.  You only need to override or add tests to address specific adapter
+behavior or unique capabilities.</p>
+</div>
+<p>The <code>Standard</code> class defines a series of test methods (e.g.,
+<code>test_append_content</code>, <code>test_remove_real</code>, <code>test_move_missing</code>). Each test
+specifies capabilities required for verification and is automatically skipped
+if given capabilities are not suppored by the storage.</p>
+<p>If all the required capabilities are supported, test verifies that
+implementation of capability is predictable. For example:</p>
 <ul>
-<li>Replace <code>/tmp/my_archive.zip</code> with the desired path to your ZIP archive.</li>
-<li>This adapter is suitable for smaller files, as ZIP archives can become slow
-    to process with a large number of files.</li>
+<li>REMOVE: returns <code>True</code> when removing real file and <code>False</code> if file does not exists</li>
+<li>CREATE: raises <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;              &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;ExistingFileError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;storage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../error_handling/#file_keeper.exc.ExistingFileError">ExistingFileError</a> if file
+  already exists at the given location and
+  <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;override_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
+      &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../api/#file_keeper.Settings.override_existing">override_existing</a> option is not
+  enabled</li>
+<li>STREAM: output of <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-method&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../api/#file_keeper.Storage.stream">stream()</a> and
+  <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-method&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../api/#file_keeper.Storage.content">content()</a> is the same</li>
+<li>ANALYZE: content hash of the file is the same as one, computed during the upload</li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>Standard</code> class covers only adapter-agnostic functionality and it does not
+verify interal processes of the storage.</p>
+<p>Testing that filesystem storage actually writes data into the configured
+directory and cloud storage communicates with the cloud provider is still
+required. But these tests must be implemented individually for each provider
+and they are not included into generic <code>Standard</code> class.</p>
+</div>
+<h2 id="writing-new-tests">Writing New Tests</h2>
+<h3 id="create-a-test-class">Create a Test Class</h3>
+<p>Create a new test class that inherits from <code>Standard</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">tests.file_keeper.default.adapters.standard</span><span class="w"> </span><span class="kn">import</span> <span class="n">Standard</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyStorageAdapterTests</span><span class="p">(</span><span class="n">Standard</span><span class="p">):</span>
+    <span class="c1"># Your tests here</span>
+    <span class="k">pass</span>
+</code></pre></div>
+<h3 id="override-existing-tests-if-necessary">Override Existing Tests (if necessary)</h3>
+<p>If your adapter has specific behavior in addition to the default
+implementation, override the corresponding test method in the <code>Standard</code> class.
+Be sure to call <code>super()</code> to execute the original test logic first, and then
+add your custom assertions.</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MyStorageAdapterTests</span><span class="p">(</span><span class="n">Standard</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_create_content_non_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Storage</span><span class="p">,</span> <span class="n">faker</span><span class="p">:</span> <span class="n">Faker</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">test_create_content_non_modified</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="n">faker</span><span class="p">)</span>
+        <span class="c1"># Add custom assertions specific to your adapter</span>
+        <span class="k">assert</span> <span class="s2">&quot;some_adapter_specific_check&quot;</span> <span class="ow">in</span> <span class="n">storage</span><span class="o">.</span><span class="n">content</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="add-new-tests">Add New Tests</h3>
+<p>If your adapter supports new capabilities or has unique behavior that is not
+covered by the <code>Standard</code> class, add new test methods to your test class.</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MyStorageAdapterTests</span><span class="p">(</span><span class="n">Standard</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_my_custom_behavior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Storage</span><span class="p">,</span> <span class="n">faker</span><span class="p">:</span> <span class="n">Faker</span><span class="p">):</span>
+        <span class="c1"># Your test logic here</span>
+        <span class="k">assert</span> <span class="kc">True</span>
+</code></pre></div>
 
 
 
@@ -1190,7 +1333,7 @@ exist.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../sqlalchemy/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SQLAlchemy Adapter">
+          <a href="../api/" class="md-footer__link md-footer__link--prev" aria-label="Previous: API Reference">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1200,20 +1343,20 @@ exist.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                SQLAlchemy Adapter
+                API Reference
               </div>
             </div>
           </a>
         
         
           
-          <a href="../../core_concepts/data_model/" class="md-footer__link md-footer__link--next" aria-label="Next: Data model">
+          <a href="../changelog/" class="md-footer__link md-footer__link--next" aria-label="Next: Changelog">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Data model
+                Changelog
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1251,10 +1394,10 @@ exist.</p>
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.top", "navigation.footer", "navigation.indexes", "content.code.copy", "content.code.select", "content.code.annotate", "content.tooltips", "content.footnote.tooltips"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.top", "navigation.footer", "navigation.indexes", "content.code.copy", "content.code.select", "content.code.annotate", "content.tooltips", "content.footnote.tooltips"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
       
     
   </body>

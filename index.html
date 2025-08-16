@@ -1030,6 +1030,28 @@
   
   
     <li class="md-nav__item">
+      <a href="testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Testing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="changelog/" class="md-nav__link">
         
   
@@ -1117,8 +1139,8 @@ regardless of the underlying storage.</p>
 <p>You can install file-keeper using pip:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>file-keeper
 </code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<details>
+<summary>Additional dependencies</summary>
 <p>To use specific storage adapters, you may need to install extra
 dependencies. Most standard adapters do <em>not</em> require extras, but some – like
 those interfacing with external cloud providers – do. Here's a table of
@@ -1180,7 +1202,7 @@ available extras:</p>
 <p>For example, to install file-keeper with S3 support:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;file-keeper[s3]&#39;</span>
 </code></pre></div>
-</div>
+</details>
 <h2 id="basic-configuration-and-usage-fs-adapter">Basic configuration and usage (FS adapter)</h2>
 <p>Let's start with a simple example using the local filesystem (FS) adapter.</p>
 <div class="admonition example">
