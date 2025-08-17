@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#v010a1-2025-08-12" class="md-skip">
+        <a href="#v010a2-2025-08-17" class="md-skip">
           Skip to content
         </a>
       
@@ -1038,13 +1038,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#v010a1-2025-08-12" class="md-nav__link">
+  <a href="#v010a2-2025-08-17" class="md-nav__link">
     <span class="md-ellipsis">
-      v0.1.0a1 - 2025-08-12
+      v0.1.0a2 - 2025-08-17
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="v0.1.0a1 - 2025-08-12">
+    <nav class="md-nav" aria-label="v0.1.0a2 - 2025-08-17">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1406,13 +1406,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#v010a1-2025-08-12" class="md-nav__link">
+  <a href="#v010a2-2025-08-17" class="md-nav__link">
     <span class="md-ellipsis">
-      v0.1.0a1 - 2025-08-12
+      v0.1.0a2 - 2025-08-17
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="v0.1.0a1 - 2025-08-12">
+    <nav class="md-nav" aria-label="v0.1.0a2 - 2025-08-17">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1762,8 +1762,8 @@
 
   <h1>Changelog</h1>
 
-<h2 id="v010a1-2025-08-12"><a href="https://github.com/DataShades/file-keeper/releases/tag/v0.1.0a1">v0.1.0a1</a> - 2025-08-12</h2>
-<p><a href="https://github.com/DataShades/file-keeper/compare/v0.0.10..v0.1.0a1">Compare with v0.0.10</a></p>
+<h2 id="v010a2-2025-08-17"><a href="https://github.com/DataShades/file-keeper/releases/tag/v0.1.0a2">v0.1.0a2</a> - 2025-08-17</h2>
+<p><a href="https://github.com/DataShades/file-keeper/compare/v0.0.10..v0.1.0a2">Compare with v0.0.10</a></p>
 <h3 id="features">🚀 Features</h3>
 <ul>
 <li>[<strong>breaking</strong>] frozen FileData and MultipartData (<a href="https://github.com/DataShades/file-keeper/commit/cb9dbf8ddf7516d461d0a295f69d41090b706195">cb9dbf8</a>)</li>
@@ -1792,6 +1792,7 @@
 </ul>
 <h3 id="refactor">🚜 Refactor</h3>
 <ul>
+<li>[<strong>breaking</strong>] disable MULTIPART capabilities on s3, fs and memory storages (<a href="https://github.com/DataShades/file-keeper/commit/50afc5284e521ffe27af635b98a8a58cf1621f99">50afc52</a>)</li>
 <li>[<strong>breaking</strong>] remove <code>location</code> from arguments of <code>multipart_start</code> (<a href="https://github.com/DataShades/file-keeper/commit/876ce467995139c4a8790f912b850415e9501b1f">876ce46</a>)</li>
 <li>[<strong>breaking</strong>] drop <code>MultipartData</code> and use <code>FileData</code> instead everywhere (<a href="https://github.com/DataShades/file-keeper/commit/c1c01c3ba4af087b29970cd84ecc743819e33675">c1c01c3</a>)</li>
 <li>[<strong>breaking</strong>] <code>Storage.remove</code> does not accept <code>MultipartData</code>. Use <code>Storage.multipart_remove</code> instead (<a href="https://github.com/DataShades/file-keeper/commit/ce3e522667126d2738d6c100db20dd88b60a41de">ce3e522</a>)</li>
@@ -1799,6 +1800,9 @@
 <li>[<strong>breaking</strong>] Storage.temporal_link requires <code>duration</code> parameter (<a href="https://github.com/DataShades/file-keeper/commit/0d92777e5a56b77c1b34cc0abdbffec3e7218eb6">0d92777</a>)</li>
 <li>[<strong>breaking</strong>] Storage.stream_as_upload renamed to file_as_upload (<a href="https://github.com/DataShades/file-keeper/commit/29ec68bae9325502f46e87c7813e4d7844b1e5c6">29ec68b</a>)</li>
 <li>[<strong>breaking</strong>] fs and opendal settings no longer have recursive flag (<a href="https://github.com/DataShades/file-keeper/commit/3f6e29b30d3cc552691c58c93d930e682841af17">3f6e29b</a>)</li>
+<li>add LINK_PERMANENT to s3 (<a href="https://github.com/DataShades/file-keeper/commit/d64e8be6ea926d8107a61b5aefaa515b17035ebd">d64e8be</a>)</li>
+<li>add LINK_PERMANENT to gcs (<a href="https://github.com/DataShades/file-keeper/commit/66cbcf39344b7210b82a1aca2fc574b5bdf24a86">66cbcf3</a>)</li>
+<li>location transformers and <code>Storage.prepare_location</code> do not accept FileData anymore` (<a href="https://github.com/DataShades/file-keeper/commit/60fc015305f45a9990a65c24a1f89ec7272996c4">60fc015</a>)</li>
 <li>redis uses <code>bucket</code> option instead of <code>path</code> (<a href="https://github.com/DataShades/file-keeper/commit/966241ff1627135cedea0de690fa95a314428f33">966241f</a>)</li>
 <li>remove pytz dependency (<a href="https://github.com/DataShades/file-keeper/commit/43079ead8b75af52ddefc75374d36ca857996197">43079ea</a>)</li>
 <li>rename redis_url to url in redis settings (<a href="https://github.com/DataShades/file-keeper/commit/2c998f4fe8876ce8ad44e24dea06e1ab0ac292bc">2c998f4</a>)</li>
