@@ -248,13 +248,3 @@ class AzureBlobStorage(fk.Storage):
     UploaderFactory = Uploader
     ManagerFactory = Manager
     ReaderFactory = Reader
-
-    @override
-    def compute_capabilities(self) -> fk.Capability:
-        cluster = super().compute_capabilities()
-
-        policy = self.settings.container.get_container_access_policy()
-        if policy["public_access"] != "blob":
-            cluster = cluster.exclude(fk.Capability.LINK_PERMANENT)
-
-        return cluster
