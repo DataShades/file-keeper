@@ -33,6 +33,8 @@ content-type = "text/markdown"
 
 [project.urls]
 Homepage = "https://github.com/DataShades/file-keeper"
+Documentation = "https://datashades.github.io/file-keeper/"
+Changelog = "https://datashades.github.io/file-keeper/changelog/"
 
 [project.optional-dependencies]
 test = [ "pytest-cov", "pytest-faker", "responses", "werkzeug", "faker" ]
