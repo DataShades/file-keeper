@@ -40,6 +40,7 @@ class TestSettings:
         storage.SettingsFactory(path=path)
 
 
+@pytest.mark.xfail
 class TestUploaderMultipart(standard.MultiparterWithUploaded):
     def test_refresh(self, faker: Faker, storage: fs.FsStorage):
         """`multipart_refresh` synchronized filesize."""

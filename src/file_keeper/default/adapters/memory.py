@@ -28,7 +28,7 @@ class Uploader(fk.Uploader):
     """Memory uploader."""
 
     storage: MemoryStorage
-    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
+    capabilities: fk.Capability = fk.Capability.CREATE
 
     @override
     def upload(self, location: fk.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:

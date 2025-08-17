@@ -57,7 +57,7 @@ class Uploader(fk.Uploader):
     storage: FsStorage
 
     # --8<-- [start:uploader_capability]
-    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
+    capabilities: fk.Capability = fk.Capability.CREATE
     # --8<-- [end:uploader_capability]
 
     # --8<-- [start:uploader_method]

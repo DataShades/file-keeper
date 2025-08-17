@@ -22,6 +22,7 @@ def storage(storage_settings: dict[str, Any]):
     return Storage(settings)
 
 
+@pytest.mark.xfail
 class TestUploaderMultipart(standard.MultiparterWithUploaded):
     def test_refresh(self, faker: Faker, storage: memory.MemoryStorage):
         """`multipart_refresh` synchronized filesize."""

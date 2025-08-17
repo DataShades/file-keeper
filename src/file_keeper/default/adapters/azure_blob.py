@@ -110,7 +110,7 @@ class Reader(fk.Reader):
     """Azure Blob Storage reader."""
 
     storage: AzureBlobStorage
-    capabilities = fk.Capability.STREAM
+    capabilities = fk.Capability.STREAM | fk.Capability.LINK_PERMANENT
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
@@ -121,6 +121,14 @@ class Reader(fk.Reader):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
         return blob.download_blob().chunks()
+
+    @override
+    def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
+        account_url = self.storage.settings.account_url
+        container = self.storage.settings.container
+        filepath = self.storage.full_path(data.location)
+
+        return f"{account_url}/{container.container_name}/{filepath}"
 
 
 class Manager(fk.Manager):
@@ -240,3 +248,13 @@ class AzureBlobStorage(fk.Storage):
     UploaderFactory = Uploader
     ManagerFactory = Manager
     ReaderFactory = Reader
+
+    @override
+    def compute_capabilities(self) -> fk.Capability:
+        cluster = super().compute_capabilities()
+
+        policy = self.settings.container.get_container_access_policy()
+        if policy["public_access"] != "blob":
+            cluster = cluster.exclude(fk.Capability.LINK_PERMANENT)
+
+        return cluster

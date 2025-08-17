@@ -98,15 +98,14 @@ class Uploader(fk.Uploader):
 
     storage: GoogleCloudStorage
 
-    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
+    capabilities: fk.Capability = fk.Capability.CREATE
 
     @override
     def upload(self, location: fk.types.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         """Upload a file to GCS."""
         filepath = self.storage.full_path(location)
-
-        client = self.storage.settings.client
-        blob = client.bucket(self.storage.settings.bucket_name).blob(filepath)
+        bucket = self.storage.settings.bucket
+        blob = bucket.blob(filepath)
 
         if not self.storage.settings.override_existing and blob.exists():
             raise fk.exc.ExistingFileError(self.storage, location)
@@ -125,9 +124,8 @@ class Uploader(fk.Uploader):
     def multipart_start(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         """Start a multipart upload session."""
         filepath = self.storage.full_path(data.location)
-
-        client = self.storage.settings.client
-        blob = client.bucket(self.storage.settings.bucket_name).blob(filepath)
+        bucket = self.storage.settings.bucket
+        blob = bucket.blob(filepath)
 
         url = cast(
             str,
@@ -296,8 +294,7 @@ class Reader(fk.Reader):
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
         """Stream a file from GCS."""
         name = self.storage.full_path(data.location)
-        client = self.storage.settings.client
-        bucket = client.bucket(self.storage.settings.bucket_name)
+        bucket = self.storage.settings.bucket
         blob = bucket.blob(name)
 
         if not blob.exists():
@@ -324,7 +321,7 @@ class Manager(fk.Manager):
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         """Scan the storage for files."""
-        bucket = self.storage.settings.client.bucket(self.storage.settings.bucket_name)
+        bucket = self.storage.settings.bucket
 
         for blob in cast(Iterable[Blob], bucket.list_blobs()):
             name: str = cast(str, blob.name)
@@ -334,7 +331,7 @@ class Manager(fk.Manager):
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         """Check if a file exists in GCS."""
         filepath = self.storage.full_path(data.location)
-        bucket = self.storage.settings.client.bucket(self.storage.settings.bucket_name)
+        bucket = self.storage.settings.bucket
         blob = bucket.blob(filepath)
         return blob.exists()
 
@@ -344,7 +341,7 @@ class Manager(fk.Manager):
         src_filepath = self.storage.full_path(data.location)
         dest_filepath = self.storage.full_path(location)
 
-        bucket = self.storage.settings.client.bucket(self.storage.settings.bucket_name)
+        bucket = self.storage.settings.bucket
         src_blob = bucket.blob(src_filepath)
         if not src_blob.exists():
             raise fk.exc.MissingFileError(self.storage, data.location)
@@ -362,7 +359,7 @@ class Manager(fk.Manager):
         src_filepath = self.storage.full_path(data.location)
         dest_filepath = self.storage.full_path(location)
 
-        bucket = self.storage.settings.client.bucket(self.storage.settings.bucket_name)
+        bucket = self.storage.settings.bucket
         src_blob = bucket.blob(src_filepath)
         if not src_blob.exists():
             raise fk.exc.MissingFileError(self.storage, data.location)
@@ -377,7 +374,7 @@ class Manager(fk.Manager):
     @override
     def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
         filepath = self.storage.full_path(location)
-        bucket = self.storage.settings.client.bucket(self.storage.settings.bucket_name)
+        bucket = self.storage.settings.bucket
         blob = bucket.blob(filepath)
 
         if not blob.exists():
@@ -401,8 +398,7 @@ class Manager(fk.Manager):
     ) -> str:
         name = self.storage.full_path(location)
 
-        client = self.storage.settings.client
-        bucket = client.bucket(self.storage.settings.bucket_name)
+        bucket = self.storage.settings.bucket
         blob = bucket.blob(name)
 
         method = {"download": "GET", "upload": "PUT", "delete": "DELETE"}[action]
@@ -416,8 +412,9 @@ class Manager(fk.Manager):
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         filepath = self.storage.full_path(data.location)
-        client: Client = self.storage.settings.client
-        blob = client.bucket(self.storage.settings.bucket_name).blob(filepath)
+        bucket = self.storage.settings.bucket
+
+        blob = bucket.blob(filepath)
 
         try:
             exists = blob.exists()

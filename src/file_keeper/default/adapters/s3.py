@@ -95,7 +95,7 @@ class Uploader(fk.Uploader):
 
     storage: S3Storage
 
-    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
+    capabilities: fk.Capability = fk.Capability.CREATE
 
     @override
     def upload(self, location: fk.types.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
