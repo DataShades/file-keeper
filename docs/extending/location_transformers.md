@@ -10,10 +10,9 @@ unique identifiers.
 
 A location transformer is a callable (usually a function) that takes the
 original [Location][file_keeper.Location] string, optional
-[Upload][file_keeper.Upload] or [FileData][file_keeper.FileData] object, and
-any extra data as input, and returns a modified
-[Location][file_keeper.Location] string. They provide a flexible way to
-customize how locations are handled by file-keeper.
+[Upload][file_keeper.Upload], and any extra data as input, and returns a
+modified [Location][file_keeper.Location] string. They provide a flexible way
+to customize how locations are handled by file-keeper.
 
 Location transformers are set per-storage via
 [location_transformers][file_keeper.Settings.location_transformers] option. To
@@ -44,11 +43,12 @@ storage.upload(safe_location, ...)
 
 ### Define your transformer
 
-Create a function that accepts the [Location][file_keeper.Location], optional [Upload][file_keeper.Upload] or [FileData][file_keeper.FileData], and
-`extras` as input and returns the transformed [Location][file_keeper.Location].
+Create a function that accepts the [Location][file_keeper.Location], optional
+[Upload][file_keeper.Upload], and `extras` as input and returns the transformed
+[Location][file_keeper.Location].
 
 ```python
-def my_location_transformer(location, data, extras):
+def my_location_transformer(location, upload_or_none, extras):
     # Perform custom transformation here
     return "prefix_" + location
 ```

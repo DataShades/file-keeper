@@ -6,12 +6,11 @@ from collections.abc import Callable, Iterator
 from typing import TYPE_CHECKING, Any, Literal, NewType, Protocol, TypeAlias
 
 if TYPE_CHECKING:
-    from .data import BaseData
     from .upload import Upload
 
 Location = NewType("Location", str)
 
-LocationTransformer: TypeAlias = Callable[[str, "Upload | BaseData | None", "dict[str, Any]"], str]
+LocationTransformer: TypeAlias = Callable[[str, "Upload | None", "dict[str, Any]"], str]
 
 SignedAction = Literal["upload", "download", "delete"]
 

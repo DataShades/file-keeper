@@ -605,13 +605,12 @@ class Storage(ABC):  # noqa: B024
         """
         return os.path.join(self.settings.path, location)
 
-    def prepare_location(
-        self, location: str, upload_or_data: data.BaseData | Upload | None = None, /, **kwargs: Any
-    ) -> types.Location:
+    def prepare_location(self, location: str, sample: Upload | None = None, /, **kwargs: Any) -> types.Location:
         """Transform and sanitize location using configured functions."""
         for name in self.settings.location_transformers:
             if transformer := location_transformers.get(name):
-                location = transformer(location, upload_or_data, kwargs)
+                location = transformer(location, sample, kwargs)
+
             else:
                 raise exceptions.LocationTransformerError(name)
 

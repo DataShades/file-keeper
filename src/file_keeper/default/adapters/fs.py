@@ -85,7 +85,7 @@ class Uploader(fk.Uploader):
         # --8<-- [end:uploader_impl_path]
 
         # --8<-- [start:uploader_impl_check]
-        if os.path.exists(dest) and not self.storage.settings.override_existing:
+        if not self.storage.settings.override_existing and os.path.exists(dest):
             raise fk.exc.ExistingFileError(self.storage, location)
         # --8<-- [end:uploader_impl_check]
 
