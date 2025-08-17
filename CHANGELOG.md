@@ -1,6 +1,6 @@
 
-## [v0.1.0a1](https://github.com/DataShades/file-keeper/releases/tag/v0.1.0a1) - 2025-08-12
-[Compare with v0.0.10](https://github.com/DataShades/file-keeper/compare/v0.0.10..v0.1.0a1)
+## [v0.1.0a2](https://github.com/DataShades/file-keeper/releases/tag/v0.1.0a2) - 2025-08-17
+[Compare with v0.0.10](https://github.com/DataShades/file-keeper/compare/v0.0.10..v0.1.0a2)
 
 ### 🚀 Features
 
@@ -30,6 +30,7 @@
 
 ### 🚜 Refactor
 
+- [**breaking**] disable MULTIPART capabilities on s3, fs and memory storages ([50afc52](https://github.com/DataShades/file-keeper/commit/50afc5284e521ffe27af635b98a8a58cf1621f99))
 - [**breaking**] remove `location` from arguments of `multipart_start` ([876ce46](https://github.com/DataShades/file-keeper/commit/876ce467995139c4a8790f912b850415e9501b1f))
 - [**breaking**] drop `MultipartData` and use `FileData` instead everywhere ([c1c01c3](https://github.com/DataShades/file-keeper/commit/c1c01c3ba4af087b29970cd84ecc743819e33675))
 - [**breaking**] `Storage.remove` does not accept `MultipartData`. Use `Storage.multipart_remove` instead ([ce3e522](https://github.com/DataShades/file-keeper/commit/ce3e522667126d2738d6c100db20dd88b60a41de))
@@ -37,6 +38,9 @@
 - [**breaking**] Storage.temporal_link requires `duration` parameter ([0d92777](https://github.com/DataShades/file-keeper/commit/0d92777e5a56b77c1b34cc0abdbffec3e7218eb6))
 - [**breaking**] Storage.stream_as_upload renamed to file_as_upload ([29ec68b](https://github.com/DataShades/file-keeper/commit/29ec68bae9325502f46e87c7813e4d7844b1e5c6))
 - [**breaking**] fs and opendal settings no longer have recursive flag ([3f6e29b](https://github.com/DataShades/file-keeper/commit/3f6e29b30d3cc552691c58c93d930e682841af17))
+- add LINK_PERMANENT to s3 ([d64e8be](https://github.com/DataShades/file-keeper/commit/d64e8be6ea926d8107a61b5aefaa515b17035ebd))
+- add LINK_PERMANENT to gcs ([66cbcf3](https://github.com/DataShades/file-keeper/commit/66cbcf39344b7210b82a1aca2fc574b5bdf24a86))
+- location transformers and `Storage.prepare_location` do not accept FileData anymore` ([60fc015](https://github.com/DataShades/file-keeper/commit/60fc015305f45a9990a65c24a1f89ec7272996c4))
 - redis uses `bucket` option instead of `path` ([966241f](https://github.com/DataShades/file-keeper/commit/966241ff1627135cedea0de690fa95a314428f33))
 - remove pytz dependency ([43079ea](https://github.com/DataShades/file-keeper/commit/43079ead8b75af52ddefc75374d36ca857996197))
 - rename redis_url to url in redis settings ([2c998f4](https://github.com/DataShades/file-keeper/commit/2c998f4fe8876ce8ad44e24dea06e1ab0ac292bc))

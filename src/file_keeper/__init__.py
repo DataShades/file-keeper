@@ -1,6 +1,6 @@
 """Main entrypoint of the file-keeper."""
 
-__version__ = "0.1.0a1"
+__version__ = "0.1.0a2"
 
 from .core import exceptions as exc
 from .core import types
