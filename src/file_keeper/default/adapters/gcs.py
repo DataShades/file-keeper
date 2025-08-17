@@ -288,7 +288,7 @@ class Reader(fk.Reader):
 
     storage: GoogleCloudStorage
 
-    capabilities = fk.Capability.STREAM
+    capabilities = fk.Capability.STREAM | fk.Capability.LINK_PERMANENT
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
@@ -302,6 +302,16 @@ class Reader(fk.Reader):
 
         with blob.open("rb") as stream:
             yield from cast(Iterable[bytes], stream)
+
+    @override
+    def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
+        name = self.storage.full_path(data.location)
+        bucket = self.storage.settings.bucket
+        blob = bucket.blob(name)
+
+        if not blob.exists():
+            raise fk.exc.MissingFileError(self.storage, data.location)
+        return blob.public_url
 
 
 class Manager(fk.Manager):
