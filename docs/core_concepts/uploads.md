@@ -25,60 +25,63 @@ You can create an [Upload][file_keeper.Upload] object in several ways,
 depending on the source of your data. The recommended way is using
 [make_upload][file_keeper.make_upload] helper:
 
-=== "File-like object"
+/// tab | File-like object
 
-    If you have an open file, you can directly
-    pass it to the [make_upload][file_keeper.make_upload] function. file-keeper will
-    handle reading the data from the file.
+If you have an open file, you can directly pass it to the
+[make_upload][file_keeper.make_upload] function. file-keeper will handle
+reading the data from the file.
 
-    ```python
-    src = open("my_image.jpg", "rb")
-    upload = make_upload(src)
-    ```
+```python
+src = open("my_image.jpg", "rb")
+upload = make_upload(src)
+```
+///
 
-=== "Byte string"
+/// tab | Byte string
 
-    If your data is already in memory as a byte string,
-    you can pass it directly.
+If your data is already in memory as a byte string, you can pass it directly.
 
-    ```python
-    data = b"This is the content of my file."
-    upload = make_upload(data)
-    ```
+```python
+data = b"This is the content of my file."
+upload = make_upload(data)
+```
+///
 
-=== "Werkzeug's FileStorage"
+/// tab | Werkzeug's FileStorage
 
-    When writing an application using werkzeug-based
-    framework you can handle uploaded files in this way.
+When writing an application using werkzeug-based framework you can handle
+uploaded files in this way.
 
-    ```python
-    from werkzeug.datastructures import FileStorage
+```python
+from werkzeug.datastructures import FileStorage
 
-    data = FileStorage(..., "my_data.txt")
-    upload = make_upload(data)
-    ```
+data = FileStorage(..., "my_data.txt")
+upload = make_upload(data)
+```
 
-=== "Manually"
+///
 
-    This is useful for large files that
-    don't fit in memory. You need to provide an object that has methods `read`
-    and `__iter__` producing byte string as a first argument to
-    [Upload][file_keeper.Upload] class. If you have a generator that yields
-    data, wrap it into [IterableBytesReader][file_keeper.IterableBytesReader]
-    instead of manually implementing class with required methods:
+/// tab | Manually
 
-    ```python
-    from file_keeper import Upload, IterableBytesReader
+This is useful for large files that don't fit in memory. You need to provide an
+object that has methods `read` and `__iter__` producing byte string as a first
+argument to [Upload][file_keeper.Upload] class. If you have a generator that
+yields data, wrap it into
+[IterableBytesReader][file_keeper.IterableBytesReader] instead of manually
+implementing class with required methods:
 
-    def data_generator():
-        yield b"hello"
-        yield b" "
-        yield b"world"
+```python
+from file_keeper import Upload, IterableBytesReader
 
-    stream = IterableBytesReader(data_generator())
-    upload = Upload(stream, "my_file.txt", 11, "text/plain")
-    ```
+def data_generator():
+    yield b"hello"
+    yield b" "
+    yield b"world"
 
+stream = IterableBytesReader(data_generator())
+upload = Upload(stream, "my_file.txt", 11, "text/plain")
+```
+///
 
 The [make_upload][file_keeper.make_upload] function automatically determines
 the file size and content type for supported source types.

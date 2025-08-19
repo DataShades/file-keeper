@@ -12,28 +12,31 @@ available, register it as a `file_keeper_ext`
 [entry-point](https://packaging.python.org/en/latest/specifications/entry-points/)
 of your distribution.
 
-=== "pyproject.toml"
+/// tab | pyproject.toml
 
-    ```toml
-    ...
+```toml
+...
 
-    [project.entry-points.file_keeper_ext]
-    my_storage_extension = "my_storage.my_module"
-    ```
+[project.entry-points.file_keeper_ext]
+my_storage_extension = "my_storage.my_module"
+```
 
-=== "setup.py"
+///
 
-     ```python
-     from setuptools import setup
+/// tab | setup.py
 
-     setup(
-         ...,
-         entry_points={
-             "file_keeper_ext": ["my_storage_extension = my_storage.my_module"],
-         },
-     )
-     ```
+```python
+from setuptools import setup
 
+setup(
+    ...,
+    entry_points={
+        "file_keeper_ext": ["my_storage_extension = my_storage.my_module"],
+    },
+)
+```
+
+///
 
 file-keeper iterates through all modules that are registered under
 `file_keeper_ext` entry-point and extract [pluggy hook
@@ -102,27 +105,29 @@ Let's say you want to add a new storage adapter that stores files in a local dir
 
 3. Add an entry point to your `setup.py` or `pyproject.toml` file:
 
-    === "setup.py"
+    /// tab | setup.py
 
-         ```python
-         from setuptools import setup
+    ```python
+    from setuptools import setup
 
-         setup(
-             ...,
-             entry_points={
-                 "file_keeper_ext": ["my_storage_extension = my_storage"],
-             },
-         )
-         ```
+    setup(
+        ...,
+        entry_points={
+            "file_keeper_ext": ["my_storage_extension = my_storage"],
+        },
+    )
+    ```
+    ///
 
-    === "pyproject.toml"
+    /// tab | pyproject.toml
 
-        ```toml
-        ...
+   ```toml
+   ...
 
-        [project.entry-points.file_keeper_ext]
-        my_storage_extension = "my_storage"
-        ```
+   [project.entry-points.file_keeper_ext]
+   my_storage_extension = "my_storage"
+   ```
+   ///
 
 Now, when file-keeper discovers your extension, it will register
 `MyLocalStorage` as a new storage option, accessible by the name "my\_local".

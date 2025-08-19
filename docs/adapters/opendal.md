@@ -24,53 +24,60 @@ pip install opendal
 
 Here's an example of how to initialize the OpenDAL adapter:
 
-=== "MinIO"
 
-    ```py
-    storage = make_storage("my_opendal_storage", {
-         "type": "file_keeper:opendal",
-         "scheme": "s3",
-         "params": {
-             "bucket": "file-keeper",
-             "access_key_id": "minioadmin",
-             "secret_access_key": "minioadmin",
-             "endpoint": "http://127.0.0.1:9000",
-             "region": "auto"
-         },
-     })
-    ```
+/// tab | MinIO
 
-=== "Azurite"
+```py
+storage = make_storage("my_opendal_storage", {
+     "type": "file_keeper:opendal",
+     "scheme": "s3",
+     "params": {
+         "bucket": "file-keeper",
+         "access_key_id": "minioadmin",
+         "secret_access_key": "minioadmin",
+         "endpoint": "http://127.0.0.1:9000",
+         "region": "auto"
+     },
+ })
+```
 
-    ```python
+///
 
-    storage = make_storage("my_opendal_storage", {
-         "type": "file_keeper:opendal",
-         "scheme": "azblob",
-         "params": {
-             "container": "file-keeper",
-             "account_name": "devstoreaccount1",
-             "account_key": "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==",
-             "endpoint": "http://127.0.0.1:10000/devstoreaccount1",
-         },
-     })
+/// tab | Azurite
 
-    ```
+```python
 
-=== "Fake GCS"
+storage = make_storage("my_opendal_storage", {
+     "type": "file_keeper:opendal",
+     "scheme": "azblob",
+     "params": {
+         "container": "file-keeper",
+         "account_name": "devstoreaccount1",
+         "account_key": "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==",
+         "endpoint": "http://127.0.0.1:10000/devstoreaccount1",
+     },
+ })
 
-    ```python
+```
 
-    storage = make_storage("my_opendal_storage", {
-         "type": "file_keeper:opendal",
-         "scheme": "gcs",
-         "params": {
-             "bucket": "file-keeper",
-             "endpoint": "http://127.0.0.1:4443",
-         },
-     })
+///
 
-    ```
+/// tab | Fake GCS
+
+```python
+
+storage = make_storage("my_opendal_storage", {
+     "type": "file_keeper:opendal",
+     "scheme": "gcs",
+     "params": {
+         "bucket": "file-keeper",
+         "endpoint": "http://127.0.0.1:4443",
+     },
+ })
+
+```
+
+///
 
 
 **Important Notes:**

@@ -25,57 +25,63 @@ pip install apache-libcloud
 
 Here's an example of how to initialize the Libcloud adapter:
 
-=== "AWS S3"
 
-    ```py
-    storage = make_storage("my_libcloud_storage", {
-        "type": "file_keeper:libcloud",
-        "provider": "S3",
-        "key": "***",
-        "secret": "***",
-        "container_name": "file-keeper",
-        "initialize": True,
-    })
+/// tab | AWS S3
 
-    ```
+```py
+storage = make_storage("my_libcloud_storage", {
+    "type": "file_keeper:libcloud",
+    "provider": "S3",
+    "key": "***",
+    "secret": "***",
+    "container_name": "file-keeper",
+    "initialize": True,
+})
 
-=== "MinIO"
+```
 
-    ```python
+///
 
-    storage = make_storage("my_libcloud_storage", {
-        "type": "file_keeper:libcloud",
-        "provider": "MINIO",
-        "key": "minioadmin",
-        "secret": "minioadmin",
-        "container_name": "file-keeper",
-        "initialize": True,
-        "params": {
-            "host": "127.0.0.1",
-            "port": 9000,
-            "secure": False,
-        },
-    })
-    ```
+/// tab | MinIO
 
-=== "Azurite"
+```python
 
-    ```python
+storage = make_storage("my_libcloud_storage", {
+    "type": "file_keeper:libcloud",
+    "provider": "MINIO",
+    "key": "minioadmin",
+    "secret": "minioadmin",
+    "container_name": "file-keeper",
+    "initialize": True,
+    "params": {
+        "host": "127.0.0.1",
+        "port": 9000,
+        "secure": False,
+    },
+})
+```
 
-    storage = make_storage("my_libcloud_storage", {
-        "type": "file_keeper:libcloud",
-        "provider": "AZURE_BLOBS",
-        "key": "devstoreaccount1",
-        "secret": "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==",
-        "container_name": "file-keeper",
-        "initialize": True,
-        "params": {
-            "host": "127.0.0.1",
-            "port": 10000,
-            "secure": False,
-        },
-    })
-    ```
+///
+
+/// tab | Azurite
+
+```python
+
+storage = make_storage("my_libcloud_storage", {
+    "type": "file_keeper:libcloud",
+    "provider": "AZURE_BLOBS",
+    "key": "devstoreaccount1",
+    "secret": "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==",
+    "container_name": "file-keeper",
+    "initialize": True,
+    "params": {
+        "host": "127.0.0.1",
+        "port": 10000,
+        "secure": False,
+    },
+})
+```
+///
 
 
 **Important Notes:**

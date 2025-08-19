@@ -24,30 +24,32 @@ pip install google-cloud-storage
 
 Here's an example of how to initialize the Google Cloud Storage adapter:
 
-=== "Google Cloud Storage"
+/// tab | Google Cloud Storage
 
-    ```python
-    storage = make_storage("my_gcs_storage", {
-        "type": "file_keeper:gcs",
-        "project_id": "file-keeper",  # Replace with your Google Cloud project ID
-        "bucket_name": "file-keeper",
-        "initialize": True,
-        "credentials_file": "/path/to/your/credentials.json",  # Replace with the path to your service account key file
-    })
-    ```
+```python
+storage = make_storage("my_gcs_storage", {
+    "type": "file_keeper:gcs",
+    "project_id": "file-keeper",  # Replace with your Google Cloud project ID
+    "bucket_name": "file-keeper",
+    "initialize": True,
+    "credentials_file": "/path/to/your/credentials.json",  # Replace with the path to your service account key file
+})
+```
 
-=== "Fake GCS"
+///
 
-    ```python
-    storage = make_storage("my_gcs_storage", {
-        "type": "file_keeper:gcs",
-        "project_id": "file-keeper",
-        "bucket_name": "file-keeper",
-        "initialize": True,
-        "client_options": {"api_endpoint": "http://127.0.0.1:4443"},
-    })
-    ```
+/// tab | Fake GCS
 
+```python
+storage = make_storage("my_gcs_storage", {
+    "type": "file_keeper:gcs",
+    "project_id": "file-keeper",
+    "bucket_name": "file-keeper",
+    "initialize": True,
+    "client_options": {"api_endpoint": "http://127.0.0.1:4443"},
+})
+```
+///
 
 
 **Important Notes:**

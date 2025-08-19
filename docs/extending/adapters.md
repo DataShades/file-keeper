@@ -106,7 +106,7 @@ If you are writing a library that will be used accross multiple project
 it's better to register storage using entrypoints of the python package.
 
 Use the `register_adapters` hook to register your adapter. This makes it
-available as a `type` inside [make_storage](file_keeper.make_storage).
+available as a `type` inside [make_storage][file_keeper.make_storage].
 
 
 ```py

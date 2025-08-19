@@ -24,32 +24,38 @@ pip install azure-storage-blob
 
 Here's an example of how to initialize the Azure Blob Storage adapter:
 
-=== "Azure Blob Storage"
 
-    ```python
-    storage = make_storage("my_azure_storage", {
-        "type": "file_keeper:azure_blob",
-        "account_name": "***",
-        "account_key": "***",
-        "container_name": "file-keeper",
-        "initialize": True,
-    })
+/// tab | Azure Blob Storage
 
-    ```
+```py
+storage = make_storage("my_azure_storage", {
+    "type": "file_keeper:azure_blob",
+    "account_name": "***",
+    "account_key": "***",
+    "container_name": "file-keeper",
+    "initialize": True,
+})
 
-=== "Azurite"
+```
 
-    ```python
-    storage = make_storage("my_azure_storage", {
-        "type": "file_keeper:azure_blob",
-        "account_name": "devstoreaccount1",
-        "account_key": "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==",
-        "container_name": "file-keeper",
-        "initialize": True,
-        "account_url": "http://127.0.0.1:10000/{account_name}",
-    })
+///
 
-    ```
+/// tab | Azurite
+
+```python
+storage = make_storage("my_azure_storage", {
+    "type": "file_keeper:azure_blob",
+    "account_name": "devstoreaccount1",
+    "account_key": "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==",
+    "container_name": "file-keeper",
+    "initialize": True,
+    "account_url": "http://127.0.0.1:10000/{account_name}",
+})
+
+```
+
+///
+
 
 
 **Important Notes:**

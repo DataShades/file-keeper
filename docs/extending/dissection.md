@@ -235,36 +235,43 @@ output.
 Anything that can be used in a for-loop and produce `bytes` is a valid output
 of the `steam()` method. Few examples:
 
-=== "List of byte strings"
+/// tab | List of byte strings
 
-    ```py
-    ...
-    return [b"hello", b" ", b"world"]
+```py
+...
+return [b"hello", b" ", b"world"]
 
-    ```
+```
+///
 
-=== "Generator of bytes"
+/// tab | Generator of bytes
 
-    ```py
-    ...
-    yield b"hello"
-    yield b" "
-    yield b"world"
-    ```
+```py
+...
+yield b"hello"
+yield b" "
+yield b"world"
+```
 
-=== "io.BytesIO"
+///
 
-    ```py
-    ...
-    return BytesIO(b"hello world")
-    ```
+/// tab | io.BytesIO
 
-=== "Descriptor of the file opened in `rb` mode"
+```py
+...
+return BytesIO(b"hello world")
+```
 
-    ```py
-    ...
-    return open(path, "rb")
-    ```
+///
+
+/// tab | Descriptor of the file opened in `rb` mode
+
+```py
+...
+return open(path, "rb")
+```
+
+///
 
 
 ## Create the manager service
