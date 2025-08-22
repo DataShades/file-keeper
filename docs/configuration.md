@@ -74,7 +74,7 @@ These settings are available for most storage adapters:
 
 ## Adapter-Specific Settings
 
-In addition to the common settings, adapters have their own specific settings:
+In addition to the common settings, adapters have their own specific settings. Certain options are interchangeable
 
 
 ### `file_keeper:azure_blob`

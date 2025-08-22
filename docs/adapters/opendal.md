@@ -79,6 +79,20 @@ storage = make_storage("my_opendal_storage", {
 
 ///
 
+/// tab | Local FS
+
+```py
+
+storage = make_storage("my_opendal_storage", {
+     "type": "file_keeper:opendal",
+     "scheme": "fs",
+     "params": {
+         "root": "/tmp/file-keeper",
+     },
+ })
+```
+
+///
 
 **Important Notes:**
 

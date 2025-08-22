@@ -3,14 +3,15 @@ site_url: https://datashades.github.io/file-keeper/
 repo_url:  https://github.com/DataShades/file-keeper
 
 markdown_extensions:
-  - pymdownx.snippets
-  - tables
-  - attr_list
   - abbr
+  - attr_list
   - footnotes
-  - md_in_html
+  - tables
+  - pymdownx.snippets
   - pymdownx.blocks.admonition
   - pymdownx.blocks.details
+  - pymdownx.blocks.tab:
+          alternate_style: true
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
@@ -18,12 +19,12 @@ markdown_extensions:
       custom_fences:
         - name: mermaid
           class: mermaid
+          # format: !!python/name:mermaid2.fence_mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
-  - pymdownx.blocks.tab:
-          alternate_style: true
 
 plugins:
   - macros
+  # - mermaid2
   - search:
       separator: '[\s\-\.\_]+'
   - mkdocstrings:
@@ -33,11 +34,9 @@ plugins:
           options:
             show_root_full_path: false
             show_root_heading: true
-            # show_root_toc_entry: true
             show_symbol_type_heading: true
             show_symbol_type_toc: true
             show_source: false
-            # parameter_headings: True
             docstring_section_style: spacy
 
 watch:
@@ -46,7 +45,7 @@ watch:
 
 theme:
   name: material
-  # logo: img/logo.png
+  logo: img/logo.svg
   # favicon: img/favicon.ico
   palette:
     # Palette toggle for light mode

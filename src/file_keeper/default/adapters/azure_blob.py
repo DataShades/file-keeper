@@ -25,12 +25,11 @@ import file_keeper as fk
 class Settings(fk.Settings):
     """Azure Blob Storage settings."""
 
-    account_name: str = ""
+    account_name: str | None = None
     """Name of the account."""
     account_key: str = ""
     """Key for the account."""
-    container_name: str = ""
-    """Name of the storage container."""
+
     account_url: str = "https://{account_name}.blob.core.windows.net"
     """Custom resource URL."""
     ## azurite
@@ -38,6 +37,10 @@ class Settings(fk.Settings):
 
     client: BlobServiceClient = None  # pyright: ignore[reportAssignmentType]
     """Existing storage client."""
+
+    container_name: str = ""
+    """Name of the storage container."""
+
     container: ContainerClient = None  # pyright: ignore[reportAssignmentType]
     """Existing container client."""
 
@@ -46,21 +49,29 @@ class Settings(fk.Settings):
 
         self.path = self.path.lstrip("/")
 
-        self.account_url = self.account_url.format(account_name=self.account_name)
-
         if not self.client:
-            credential = {
-                "account_name": self.account_name,
-                "account_key": self.account_key,
-            }
-            # credential = self.account_key
+            if self.account_name:
+                self.account_url = self.account_url.format(account_name=self.account_name)
+                credential = {
+                    "account_name": self.account_name,
+                    "account_key": self.account_key,
+                }
+            elif self.account_key:
+                credential = self.account_key
+            else:
+                credential = None
+
             self.client = BlobServiceClient(
-                self.account_url.format(account_name=self.account_name),
+                self.account_url,
                 credential,
             )
 
+        self.account_url = self.client.url.rstrip("/")
+        self.account_name = self.client.account_name
+
         if not self.container:
             self.container = self.client.get_container_client(self.container_name)
+        self.container_name = self.container.container_name
 
         if not self.container.exists():
             if self.initialize:
@@ -227,13 +238,17 @@ class Manager(fk.Manager):
         client = self.storage.settings.client
         container = self.storage.settings.container
         filepath = self.storage.full_path(location)
+
+        start_time = datetime.now(timezone.utc)
+        expiry_time = start_time + timedelta(seconds=duration)
+
         sas = generate_blob_sas(
             account_name=client.account_name,  # pyright: ignore[reportArgumentType]
             account_key=self.storage.settings.account_key,
             container_name=container.container_name,
             blob_name=filepath,
             permission=BlobSasPermissions(**perms),
-            expiry=datetime.now(timezone.utc) + timedelta(seconds=duration),
+            expiry=expiry_time,
         )
         account_url = self.storage.settings.account_url
 

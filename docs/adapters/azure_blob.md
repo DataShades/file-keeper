@@ -20,9 +20,60 @@ pip install azure-storage-blob
 ```
 
 
-## Initialization Example
+## Initialization
+
+/// details | Flow
+
+```mermaid
+graph TB
+    subgraph a [Client initialization]
+        direction TB
+        has_client -->|Yes| set_url_and_name
+        has_client -->|No| has_account_name
+        has_account_name -->|Yes| initialize_client
+        has_account_name -->|No| has_account_key
+        has_account_key -->|Yes| initialize_client
+        has_account_key -->|No| initialize_client
+        initialize_client --> set_url_and_name
+    end
+    a --> b
+    subgraph b [Container initialization]
+        direction TB
+
+        has_container -->|Yes| set_container_name
+        has_container -->|No| initialize_container
+        initialize_container --> set_container_name
+    end
+    b --> c
+    subgraph c [Container creation]
+        direction TB
+
+        container_exists -->|Yes| done
+        container_exists -->|No| has_initialize_flag
+        has_initialize_flag -->|Yes| create_container
+        has_initialize_flag -->|No| fail
+        create_container --> done
+    end
+
+    has_client{**client** specified?}
+    has_account_name{**account_name** specified?}
+    has_account_key{**account_key** specified?}
+    set_url_and_name[**account_url** and **account_name** from the **client** object are added to settings]
+    has_container{**container** specified?}
+    has_initialize_flag{**initialize** enabled?}
+    initialize_client[**client** initialized using **account_url** and available credentials]
+    initialize_container[**container** reference created]
+    set_container_name[**container_name** from the **container** is added to settings]
+    create_container[real **contaner** created in cloud]
+    container_exists{real **container** exists in cloud?}
+    done([Storage initialized])
+    fail([Exception raised])
+```
+
+///
 
 Here's an example of how to initialize the Azure Blob Storage adapter:
+
 
 
 /// tab | Azure Blob Storage
@@ -56,9 +107,7 @@ storage = make_storage("my_azure_storage", {
 
 ///
 
-
-
-**Important Notes:**
+## Important Notes
 
 *   Replace the placeholder values with your actual Azure account credentials
     and configuration.
