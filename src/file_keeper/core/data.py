@@ -21,7 +21,7 @@ from typing_extensions import TypeVar
 
 from . import types
 
-TData = TypeVar("TData", bound=types.PData, default=Any)
+T = TypeVar("T")
 
 
 @dataclasses.dataclass(frozen=True)
@@ -68,7 +68,7 @@ class BaseData:
             ],
         )
 
-    def into_object(self, obj: TData):
+    def into_object(self, obj: T) -> T:
         """Copy data attributes into another object."""
         for key in self._plain_keys:
             setattr(obj, key, getattr(self, key))
@@ -77,6 +77,10 @@ class BaseData:
             setattr(obj, key, copy.deepcopy(getattr(self, key)))
 
         return obj
+
+    def as_dict(self):
+        """Return data as dictionary."""
+        return dataclasses.asdict(self)
 
 
 @dataclasses.dataclass(frozen=True)

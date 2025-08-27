@@ -184,7 +184,9 @@ class Manager(fk.Manager):
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
-        yield from self.storage.settings.bucket
+        # create a copy of keys to avoid "dictionary changed size during
+        # iteration" error
+        yield from list(self.storage.settings.bucket)
 
     @override
     def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:

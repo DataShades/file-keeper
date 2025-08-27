@@ -82,7 +82,7 @@ class PermissionError(StorageError):
     """Storage client does not have required permissions."""
 
     def __init__(self, storage: Storage, operation: str, problem: str):
-        msg = f"Storage {storage} is not allowed to" + f" perform {operation} operation: {problem}"
+        msg = f"Storage {storage} is not allowed to perform {operation} operation: {problem}"
         super().__init__(msg)
 
 
@@ -122,7 +122,7 @@ class UploadError(StorageError):
 
 
 class LargeUploadError(UploadError):
-    """Storage cannot be initialized due to missing option."""
+    """Planned upload exceeds allowed size."""
 
     tpl: str = "Upload size {actual_size} surpasses max allowed size {max_size}"
 

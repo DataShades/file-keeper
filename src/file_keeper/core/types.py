@@ -39,18 +39,7 @@ class PSeekableStream(PStream, Protocol):
         ...
 
 
-class PData(Protocol):
-    """Structure of the *Data object."""
-
-    location: Location | str
-    size: int
-    content_type: str
-    hash: str
-    storage_data: dict[str, Any]
-
-
 __all__ = [
-    "PData",
     "PStream",
     "PSeekableStream",
 ]
