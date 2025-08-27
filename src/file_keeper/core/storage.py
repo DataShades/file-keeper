@@ -603,7 +603,11 @@ class Storage(ABC):  # noqa: B024
         Returns:
             full path required to access location
         """
-        return os.path.join(self.settings.path, location)
+        result = os.path.normpath(os.path.join(self.settings.path, location))
+        if not result.startswith(self.settings.path):
+            raise exceptions.LocationError(self, location)
+
+        return result
 
     def prepare_location(self, location: str, sample: Upload | None = None, /, **kwargs: Any) -> types.Location:
         """Transform and sanitize location using configured functions."""
