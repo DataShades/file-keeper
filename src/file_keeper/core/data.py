@@ -15,7 +15,7 @@ import copy
 import dataclasses
 import operator
 from collections.abc import Callable
-from typing import Any, ClassVar, Generic, cast
+from typing import Any, ClassVar, cast
 
 from typing_extensions import TypeVar
 
@@ -25,7 +25,7 @@ TData = TypeVar("TData", bound=types.PData, default=Any)
 
 
 @dataclasses.dataclass(frozen=True)
-class BaseData(Generic[TData]):
+class BaseData:
     """Base class for file details."""
 
     location: types.Location
@@ -43,7 +43,7 @@ class BaseData(Generic[TData]):
         return cls._from(record, operator.getitem, operator.contains, overrides)
 
     @classmethod
-    def from_object(cls, obj: TData, **overrides: Any):
+    def from_object(cls, obj: Any, **overrides: Any):
         """Copy data details from another object."""
         return cls._from(obj, getattr, hasattr, overrides)
 
@@ -80,7 +80,7 @@ class BaseData(Generic[TData]):
 
 
 @dataclasses.dataclass(frozen=True)
-class FileData(BaseData[TData]):
+class FileData(BaseData):
     """Information required by storage to operate the file.
 
     Args:

@@ -42,7 +42,7 @@ class PSeekableStream(PStream, Protocol):
 class PData(Protocol):
     """Structure of the *Data object."""
 
-    location: Location
+    location: Location | str
     size: int
     content_type: str
     hash: str
