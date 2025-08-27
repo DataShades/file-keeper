@@ -1,6 +1,6 @@
 
-## [v0.1.0a2](https://github.com/DataShades/file-keeper/releases/tag/v0.1.0a2) - 2025-08-17
-[Compare with v0.0.10](https://github.com/DataShades/file-keeper/compare/v0.0.10..v0.1.0a2)
+## [v0.1.0a3](https://github.com/DataShades/file-keeper/releases/tag/v0.1.0a3) - 2025-08-27
+[Compare with v0.0.10](https://github.com/DataShades/file-keeper/compare/v0.0.10..v0.1.0a3)
 
 ### 🚀 Features
 
