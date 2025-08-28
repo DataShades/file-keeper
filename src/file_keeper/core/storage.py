@@ -843,7 +843,7 @@ class Storage(ABC):  # noqa: B024
                 else:
                     continue
 
-            yield chunk[: end and None]
+            yield chunk[:end]
             end -= len(chunk)
             if end <= 0:
                 break
