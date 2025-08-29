@@ -94,8 +94,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="file-keeper" class="md-header__button md-logo" aria-label="file-keeper" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../img/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -240,8 +239,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="file-keeper" class="md-nav__button md-logo" aria-label="file-keeper" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../img/logo.svg" alt="logo">
 
     </a>
     file-keeper
@@ -529,9 +527,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#initialization-example" class="md-nav__link">
+  <a href="#initialization" class="md-nav__link">
     <span class="md-ellipsis">
-      Initialization Example
+      Initialization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#important-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Important Notes
     </span>
   </a>
   
@@ -1107,9 +1114,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#initialization-example" class="md-nav__link">
+  <a href="#initialization" class="md-nav__link">
     <span class="md-ellipsis">
-      Initialization Example
+      Initialization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#important-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Important Notes
     </span>
   </a>
   
@@ -1149,7 +1165,53 @@ configure it with the appropriate credentials for your Azure account.</p>
 
 pip<span class="w"> </span>install<span class="w"> </span>azure-storage-blob
 </code></pre></div>
-<h2 id="initialization-example">Initialization Example</h2>
+<h2 id="initialization">Initialization</h2>
+<details>
+<summary>Flow</summary>
+<pre class="mermaid"><code>graph TB
+    subgraph a [Client initialization]
+        direction TB
+        has_client --&gt;|Yes| set_url_and_name
+        has_client --&gt;|No| has_account_name
+        has_account_name --&gt;|Yes| initialize_client
+        has_account_name --&gt;|No| has_account_key
+        has_account_key --&gt;|Yes| initialize_client
+        has_account_key --&gt;|No| initialize_client
+        initialize_client --&gt; set_url_and_name
+    end
+    a --&gt; b
+    subgraph b [Container initialization]
+        direction TB
+
+        has_container --&gt;|Yes| set_container_name
+        has_container --&gt;|No| initialize_container
+        initialize_container --&gt; set_container_name
+    end
+    b --&gt; c
+    subgraph c [Container creation]
+        direction TB
+
+        container_exists --&gt;|Yes| done
+        container_exists --&gt;|No| has_initialize_flag
+        has_initialize_flag --&gt;|Yes| create_container
+        has_initialize_flag --&gt;|No| fail
+        create_container --&gt; done
+    end
+
+    has_client{**client** specified?}
+    has_account_name{**account_name** specified?}
+    has_account_key{**account_key** specified?}
+    set_url_and_name[**account_url** and **account_name** from the **client** object are added to settings]
+    has_container{**container** specified?}
+    has_initialize_flag{**initialize** enabled?}
+    initialize_client[**client** initialized using **account_url** and available credentials]
+    initialize_container[**container** reference created]
+    set_container_name[**container_name** from the **container** is added to settings]
+    create_container[real **contaner** created in cloud]
+    container_exists{real **container** exists in cloud?}
+    done([Storage initialized])
+    fail([Exception raised])</code></pre>
+</details>
 <p>Here's an example of how to initialize the Azure Blob Storage adapter:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Azure Blob Storage</label><label for="__tabbed_1_2">Azurite</label></div>
 <div class="tabbed-content">
@@ -1176,7 +1238,7 @@ pip<span class="w"> </span>install<span class="w"> </span>azure-storage-blob
 </div>
 </div>
 </div>
-<p><strong>Important Notes:</strong></p>
+<h2 id="important-notes">Important Notes</h2>
 <ul>
 <li>Replace the placeholder values with your actual Azure account credentials
     and configuration.</li>

@@ -94,8 +94,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="file-keeper" class="md-header__button md-logo" aria-label="file-keeper" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../img/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -240,8 +239,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="file-keeper" class="md-nav__button md-logo" aria-label="file-keeper" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../img/logo.svg" alt="logo">
 
     </a>
     file-keeper
@@ -1151,7 +1149,7 @@ pip<span class="w"> </span>install<span class="w"> </span>opendal
 </code></pre></div>
 <h2 id="initialization-example">Initialization Example</h2>
 <p>Here's an example of how to initialize the OpenDAL adapter:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">MinIO</label><label for="__tabbed_1_2">Azurite</label><label for="__tabbed_1_3">Fake GCS</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">MinIO</label><label for="__tabbed_1_2">Azurite</label><label for="__tabbed_1_3">Fake GCS</label><label for="__tabbed_1_4">Local FS</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_opendal_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
@@ -1187,6 +1185,16 @@ pip<span class="w"> </span>install<span class="w"> </span>opendal
      <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
          <span class="s2">&quot;bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;file-keeper&quot;</span><span class="p">,</span>
          <span class="s2">&quot;endpoint&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:4443&quot;</span><span class="p">,</span>
+     <span class="p">},</span>
+ <span class="p">})</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_opendal_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:opendal&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;scheme&quot;</span><span class="p">:</span> <span class="s2">&quot;fs&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="s2">&quot;root&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp/file-keeper&quot;</span><span class="p">,</span>
      <span class="p">},</span>
  <span class="p">})</span>
 </code></pre></div>

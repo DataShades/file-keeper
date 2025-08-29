@@ -94,8 +94,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="file-keeper" class="md-header__button md-logo" aria-label="file-keeper" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../img/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -240,8 +239,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="file-keeper" class="md-nav__button md-logo" aria-label="file-keeper" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../img/logo.svg" alt="logo">
 
     </a>
     file-keeper
@@ -1228,23 +1226,22 @@ depending on the source of your data. The recommended way is using
 <div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">File-like object</label><label for="__tabbed_1_2">Byte string</label><label for="__tabbed_1_3">Werkzeug's FileStorage</label><label for="__tabbed_1_4">Manually</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<p>If you have an open file, you can directly
-pass it to the <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-function&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;make_upload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../../api/#file_keeper.make_upload">make_upload</a> function. file-keeper will
-handle reading the data from the file.</p>
+<p>If you have an open file, you can directly pass it to the
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-function&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;make_upload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../../api/#file_keeper.make_upload">make_upload</a> function. file-keeper will handle
+reading the data from the file.</p>
 <div class="highlight"><pre><span></span><code><span class="n">src</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;my_image.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
 <span class="n">upload</span> <span class="o">=</span> <span class="n">make_upload</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<p>If your data is already in memory as a byte string,
-you can pass it directly.</p>
+<p>If your data is already in memory as a byte string, you can pass it directly.</p>
 <div class="highlight"><pre><span></span><code><span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;This is the content of my file.&quot;</span>
 <span class="n">upload</span> <span class="o">=</span> <span class="n">make_upload</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<p>When writing an application using werkzeug-based
-framework you can handle uploaded files in this way.</p>
+<p>When writing an application using werkzeug-based framework you can handle
+uploaded files in this way.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">werkzeug.datastructures</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileStorage</span>
 
 <span class="n">data</span> <span class="o">=</span> <span class="n">FileStorage</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="s2">&quot;my_data.txt&quot;</span><span class="p">)</span>
@@ -1252,17 +1249,17 @@ framework you can handle uploaded files in this way.</p>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<p>This is useful for large files that
-don't fit in memory. You need to provide an object that has methods <code>read</code>
-and <code>__iter__</code> producing byte string as a first argument to
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Upload&lt;/code&gt;
+<p>This is useful for large files that don't fit in memory. You need to provide an
+object that has methods <code>read</code> and <code>__iter__</code> producing byte string as a first
+argument to <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Upload&lt;/code&gt;
 
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Upload">Upload</a> class. If you have a generator that yields
-data, wrap it into <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;IterableBytesReader&lt;/code&gt;" href="../../api/#file_keeper.IterableBytesReader">IterableBytesReader</a>
-instead of manually implementing class with required methods:</p>
+  &lt;/span&gt;" href="../../api/#file_keeper.Upload">Upload</a> class. If you have a generator that
+yields data, wrap it into
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;IterableBytesReader&lt;/code&gt;" href="../../api/#file_keeper.IterableBytesReader">IterableBytesReader</a> instead of manually
+implementing class with required methods:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">Upload</span><span class="p">,</span> <span class="n">IterableBytesReader</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">data_generator</span><span class="p">():</span>

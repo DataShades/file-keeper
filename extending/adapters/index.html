@@ -94,8 +94,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="file-keeper" class="md-header__button md-logo" aria-label="file-keeper" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../img/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -240,8 +239,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="file-keeper" class="md-nav__button md-logo" aria-label="file-keeper" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../img/logo.svg" alt="logo">
 
     </a>
     file-keeper
@@ -1335,7 +1333,7 @@ register it directly using <code>adapters</code> registry:</p>
 <p>If you are writing a library that will be used accross multiple project
 it's better to register storage using entrypoints of the python package.</p>
 <p>Use the <code>register_adapters</code> hook to register your adapter. This makes it
-available as a <code>type</code> inside <a href="file_keeper.make_storage">make_storage</a>.</p>
+available as a <code>type</code> inside <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-function&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;make_storage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../../api/#file_keeper.make_storage">make_storage</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@fk</span><span class="o">.</span><span class="n">hookimpl</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">register_adapters</span><span class="p">(</span><span class="n">registry</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Registry</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="n">fk</span><span class="o">.</span><span class="n">Storage</span><span class="p">]]):</span>
     <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;local&quot;</span><span class="p">,</span> <span class="n">MyStorage</span><span class="p">)</span>
