@@ -10,7 +10,7 @@ from collections.abc import Iterable
 from datetime import timedelta
 from typing import Any, cast
 
-import requests
+import urllib3
 from google.api_core.exceptions import Forbidden
 from google.auth.credentials import Credentials
 from google.cloud.storage import Blob, Bucket, Client
@@ -98,7 +98,7 @@ class Uploader(fk.Uploader):
 
     storage: GoogleCloudStorage
 
-    capabilities: fk.Capability = fk.Capability.CREATE
+    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.RESUMABLE
 
     @override
     def upload(self, location: fk.types.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
@@ -121,29 +121,102 @@ class Uploader(fk.Uploader):
         )
 
     @override
-    def multipart_start(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Start a multipart upload session."""
-        filepath = self.storage.full_path(data.location)
+    def resumable_start(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+        """Start a resumable upload session.
+
+        Accepts additional extras:
+
+        * origin: If set, the upload can only be completed by a user-agent that
+            uploads from the given origin. This can be useful when passing the
+            session to a web client.
+
+        """
+        filepath = self.storage.full_path(location)
         bucket = self.storage.settings.bucket
         blob = bucket.blob(filepath)
 
+        params = {}
+        if "size" in extras:
+            params["size"] = extras["size"]
+
+        if "content_type" in extras:
+            params["content_type"] = extras["content_type"]
+
+        if "origin" in extras:
+            params["origin"] = extras["origin"]
+
         url = cast(
-            str,
-            blob.create_resumable_upload_session(size=data.size),
+            "str | None",
+            blob.create_resumable_upload_session(**params),
         )
 
         if not url:
             msg = "Cannot initialize session URL"
-            raise fk.exc.UploadError(msg)
+            raise fk.exc.ResumableUploadError(msg)
 
-        result = fk.FileData.from_object(data)
-        result.storage_data.update(
-            {
-                "session_url": url,
-                "uploaded": 0,
-            }
+        return fk.FileData.from_dict(
+            extras,
+            location=location,
+            storage_data={
+                "gcs": {
+                    "session_url": url,
+                    "uploaded": 0,
+                },
+                "resumable": True,
+            },
         )
-        return result
+
+    @override
+    def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        """Refresh a multipart upload session."""
+        if "session_url" not in data.storage_data:
+            raise fk.exc.MissingFileError(self.storage, data.location)
+
+        try:
+            resp = requests.put(
+                data.storage_data["session_url"],
+                headers={
+                    "content-range": f"bytes */{data.size}",
+                    "content-length": "0",
+                },
+                timeout=10,
+            )
+        except requests.exceptions.RequestException as e:
+            msg = f"Failed to refresh upload: {e}"
+            raise fk.exc.UploadError(msg) from e
+
+        if not resp.ok:
+            raise fk.exc.ExtrasError({"session_url": [resp.text]})
+
+        if resp.status_code == HTTP_RESUME:
+            if "range" in resp.headers:
+                range_match = RE_RANGE.match(resp.headers["range"])
+                if not range_match:
+                    raise fk.exc.ExtrasError(
+                        {
+                            "session_url": [
+                                "Invalid response from Google Cloud:" + " missing range header",
+                            ],
+                        },
+                    )
+                data.storage_data["uploaded"] = int(range_match.group("last_byte")) + 1
+            else:
+                data.storage_data["uploaded"] = 0
+
+        elif resp.status_code in [200, 201]:
+            data.storage_data["uploaded"] = data.size
+            data.storage_data["result"] = resp.json()
+
+        else:
+            raise fk.exc.ExtrasError(
+                {
+                    "session_url": [
+                        "Invalid response from Google Cloud: unexpected status {resp.status_code}",
+                    ],
+                },
+            )
+
+        return data
 
     @override
     def multipart_update(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
@@ -197,57 +270,6 @@ class Uploader(fk.Uploader):
         else:
             raise fk.exc.ExtrasError(
                 {"upload": ["Either upload or uploaded must be specified"]},
-            )
-
-        return data
-
-    @override
-    def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Refresh a multipart upload session."""
-        if "session_url" not in data.storage_data:
-            raise fk.exc.MissingFileError(self.storage, data.location)
-
-        try:
-            resp = requests.put(
-                data.storage_data["session_url"],
-                headers={
-                    "content-range": f"bytes */{data.size}",
-                    "content-length": "0",
-                },
-                timeout=10,
-            )
-        except requests.exceptions.RequestException as e:
-            msg = f"Failed to refresh upload: {e}"
-            raise fk.exc.UploadError(msg) from e
-
-        if not resp.ok:
-            raise fk.exc.ExtrasError({"session_url": [resp.text]})
-
-        if resp.status_code == HTTP_RESUME:
-            if "range" in resp.headers:
-                range_match = RE_RANGE.match(resp.headers["range"])
-                if not range_match:
-                    raise fk.exc.ExtrasError(
-                        {
-                            "session_url": [
-                                "Invalid response from Google Cloud:" + " missing range header",
-                            ],
-                        },
-                    )
-                data.storage_data["uploaded"] = int(range_match.group("last_byte")) + 1
-            else:
-                data.storage_data["uploaded"] = 0
-        elif resp.status_code in [200, 201]:
-            data.storage_data["uploaded"] = data.size
-            data.storage_data["result"] = resp.json()
-
-        else:
-            raise fk.exc.ExtrasError(
-                {
-                    "session_url": [
-                        "Invalid response from Google Cloud:" + f" unexpected status {resp.status_code}",
-                    ],
-                },
             )
 
         return data

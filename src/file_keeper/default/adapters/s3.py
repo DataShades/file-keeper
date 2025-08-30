@@ -16,7 +16,7 @@ import file_keeper as fk
 
 if TYPE_CHECKING:
     from mypy_boto3_s3 import S3Client
-
+    from mypy_boto3_s3.type_defs import CreateMultipartUploadRequestTypeDef
 
 RE_RANGE = re.compile(r"bytes=(?P<first_byte>\d+)-(?P<last_byte>\d+)")
 HTTP_RESUME = 308
@@ -133,27 +133,30 @@ class Uploader(fk.Uploader):
         )
 
     @override
-    def multipart_start(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        filepath = self.storage.full_path(data.location)
+    def multipart_start(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+        filepath = self.storage.full_path(location)
         client = self.storage.settings.client
-        obj = client.create_multipart_upload(
-            Bucket=self.storage.settings.bucket,
-            Key=filepath,
-            ContentType=data.content_type,
-        )
 
-        result = fk.FileData.from_object(data)
+        params: CreateMultipartUploadRequestTypeDef = {
+            "Bucket": self.storage.settings.bucket,
+            "Key": filepath,
+        }
+        if content_type := extras.get("content_type"):
+            params["ContentType"] = content_type
 
-        result.storage_data.update(
-            {
+        obj = client.create_multipart_upload(**params)
+
+        return fk.FileData.from_dict(
+            extras,
+            location=location,
+            storage_data={
                 "upload_id": obj["UploadId"],
                 "uploaded": 0,
                 "part_number": 1,
                 "upload_url": self._presigned_part(filepath, obj["UploadId"], 1),
                 "etags": {},
-            }
+            },
         )
-        return result
 
     def _presigned_part(self, key: str, upload_id: str, part_number: int):
         return self.storage.settings.client.generate_presigned_url(
@@ -267,6 +270,12 @@ class Manager(fk.Manager):
 
     @override
     def signed(self, action: fk.types.SignedAction, duration: int, location: fk.Location, extras: dict[str, Any]):
+        """Generate a signed URL for the given action and duration.
+
+        This method uses `generate_presigned_url` internally, which does not
+        support content restrictions. If you need to enforce content
+        type/size/hash validation, consider `generate_presigned_post`.
+        """
         client = self.storage.settings.client
         method = {
             "download": "get_object",

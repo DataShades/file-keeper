@@ -43,12 +43,12 @@ dev = [ "pytest-cov", "pytest-faker", "responses", "mkdocs", "mkdocs-material", 
 
 user_config = ["platformdirs"]
 
-azure = ["azure-storage-blob",]
-gcs = [ "google-cloud-storage",]
-libcloud = [ "apache-libcloud", "cryptography",]
+azure = ["azure-storage-blob", "urllib3"]
+gcs = [ "google-cloud-storage", "urllib3"]
+libcloud = [ "apache-libcloud", "cryptography"]
 opendal = [ "opendal",]
 redis = [ "redis",]
-s3 = [ "boto3", "boto3-stubs[essential]"]
+s3 = [ "boto3", "boto3-stubs[essential]", "urllib3"]
 sqlalchemy = ["sqlalchemy"]
 
 # --8<-- [start:entrypoint]

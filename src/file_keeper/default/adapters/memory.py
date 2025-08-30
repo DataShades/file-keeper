@@ -41,10 +41,10 @@ class Uploader(fk.Uploader):
         return fk.FileData(location, upload.size, upload.content_type, hash=reader.get_hash())
 
     @override
-    def multipart_start(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        self.storage.settings.bucket[data.location] = b""
+    def multipart_start(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+        self.storage.settings.bucket[location] = b""
 
-        result = fk.FileData.from_object(data)
+        result = fk.FileData.from_dict(extras, location=location)
         result.storage_data["uploaded"] = 0
         return result
 

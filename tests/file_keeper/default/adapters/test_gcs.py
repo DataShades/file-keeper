@@ -39,6 +39,7 @@ def storage(faker: Faker, storage_settings: dict[str, Any]):
         settings["credentials"] = AnonymousCredentials()
 
     settings.update(storage_settings)
+
     storage = Storage(settings)
 
     client = storage.settings.client

@@ -31,8 +31,8 @@ class Uploader(fk.Uploader):
         return fk.FileData(location, hash=reader.get_hash())
 
     @override
-    def multipart_start(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        return fk.FileData.from_object(data)
+    def multipart_start(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+        return fk.FileData.from_dict(extras, location=location)
 
     @override
     def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
@@ -51,20 +51,20 @@ class Uploader(fk.Uploader):
         return False
 
     @override
-    def resumable_start(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        return super().resumable_start(data, extras)
+    def resumable_start(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+        return fk.FileData.from_dict(extras, location=location)
 
     @override
     def resumable_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        return super().resumable_refresh(data, extras)
+        return data
 
     @override
     def resumable_resume(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        return super().resumable_resume(data, extras)
+        return data
 
     @override
     def resumable_remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        return super().resumable_remove(data, extras)
+        return False
 
 
 class Manager(fk.Manager):

@@ -226,6 +226,10 @@ class Manager(fk.Manager):
 
     @override
     def signed(self, action: fk.types.SignedAction, duration: int, location: fk.Location, extras: dict[str, Any]):
+        """Generate a signed URL for a file.
+
+        Upload requires `x-ms-blob-type: BlockBlob` header.
+        """
         perms = {}
         if action == "download":
             perms["read"] = True

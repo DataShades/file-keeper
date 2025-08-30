@@ -142,11 +142,11 @@ class Uploader(StorageService):
         """
         raise NotImplementedError
 
-    def resumable_start(self, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
+    def resumable_start(self, location: types.Location, extras: dict[str, Any]) -> data.FileData:
         """Prepare everything for resumable upload.
 
         Args:
-            data: The FileData object containing the upload metadata.
+            location: The destination location for the upload.
             extras: Additional metadata for the upload.
         """
         raise NotImplementedError
@@ -178,11 +178,11 @@ class Uploader(StorageService):
         """
         raise NotImplementedError
 
-    def multipart_start(self, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
+    def multipart_start(self, location: types.Location, extras: dict[str, Any]) -> data.FileData:
         """Prepare everything for multipart(resumable) upload.
 
         Args:
-            data: The FileData object containing the upload metadata.
+            location: The destination location for the upload.
             extras: Additional metadata for the upload.
         """
         raise NotImplementedError
@@ -649,14 +649,14 @@ class Storage(ABC):  # noqa: B024
         return self.uploader.upload(location, upload, kwargs)
 
     @requires_capability(Capability.RESUMABLE)
-    def resumable_start(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
+    def resumable_start(self, location: types.Location, /, **kwargs: Any) -> data.FileData:
         """Prepare everything for resumable upload.
 
         Args:
-            data: The FileData object containing the upload metadata.
+            location: The destination location for the upload.
             **kwargs: Additional metadata for the upload.
         """
-        return self.uploader.resumable_start(data, kwargs)
+        return self.uploader.resumable_start(location, kwargs)
 
     @requires_capability(Capability.RESUMABLE)
     def resumable_refresh(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
@@ -689,14 +689,14 @@ class Storage(ABC):  # noqa: B024
         return self.uploader.resumable_remove(data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_start(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
+    def multipart_start(self, location: types.Location, /, **kwargs: Any) -> data.FileData:
         """Prepare everything for multipart upload.
 
         Args:
-            data: The FileData object containing the upload metadata.
+            location: The destination location for the upload.
             **kwargs: Additional metadata for the upload.
         """
-        return self.uploader.multipart_start(data, kwargs)
+        return self.uploader.multipart_start(location, kwargs)
 
     @requires_capability(Capability.MULTIPART)
     def multipart_refresh(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:

@@ -290,7 +290,7 @@ def humanize_filesize(value: int | float, base: int = SI_BASE) -> str:
         size = humanize_filesize(10_737_418_240, base=1024)
         assert size == "10GiB"
         size = humanize_filesize(10_418_240, base=1024)
-        assert size == "9.9MiB"
+        assert size == "9.93MiB"
         ```
 
     """

@@ -27,7 +27,7 @@ def storage(faker: Faker, storage_settings: dict[str, Any], request: pytest.Fixt
 
             parsed_endpoint = urlparse(endpoint)
 
-            settings = {
+            settings: dict[str, Any] = {
                 "name": "test",
                 "provider": "MINIO",
                 "key": os.getenv("FILE_KEEPER_TEST_MINIO_KEY"),

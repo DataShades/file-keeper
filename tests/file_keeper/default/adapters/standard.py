@@ -370,9 +370,22 @@ class Remover:
 
 class Resumer:
     @pytest.mark.expect_storage_capability(fk.Capability.RESUMABLE)
-    def test_resume_capabilities(self, storage: fk.Storage):
+    def test_resumable_capabilities(self, storage: fk.Storage):
         """Analyzer supports ANALYZE capability."""
         assert storage.supports(fk.Capability.RESUMABLE), "Does not support RESUMABLE"
+
+    @pytest.mark.expect_storage_capability(fk.Capability.RESUMABLE)
+    def test_resumable_start(self, storage: fk.Storage, faker: Faker):
+        size = faker.pyint(0)
+        content_type = faker.mime_type()
+        hash = faker.md5()
+        location = fk.Location(faker.file_name())
+
+        result = storage.resumable_start(location, size=size, content_type=content_type, hash=hash)
+        assert result.size == size
+        assert result.content_type == content_type
+        assert result.hash == hash
+        assert result.storage_data["resumable"]
 
 
 class Scanner:
@@ -424,6 +437,7 @@ class Signer:
             url,
             body=data,
             headers={
+                # azure requirements
                 "x-ms-blob-type": "BlockBlob",
             },
         )
@@ -525,9 +539,7 @@ class MultiparterWithUploaded:
     def test_std_initialization(self, storage: fk.Storage, faker: Faker):
         """`multipart_start` creates an empty file."""
         size = faker.pyint()
-        data = storage.multipart_start(
-            fk.FileData(fk.Location(faker.file_name()), size=size),
-        )
+        data = storage.multipart_start(fk.Location(faker.file_name()), size=size)
         assert data.size == size
         assert data.storage_data["uploaded"] == 0
         assert storage.content(fk.FileData(fk.Location(data.location))) == b""
@@ -538,9 +550,7 @@ class MultiparterWithUploaded:
         step = size // 10
 
         content = faker.binary(size)
-        data = storage.multipart_start(
-            fk.FileData(fk.Location(faker.file_name()), size=size),
-        )
+        data = storage.multipart_start(fk.Location(faker.file_name()), size=size)
 
         for pos in range(0, size, step):
             data = storage.multipart_update(
@@ -556,9 +566,7 @@ class MultiparterWithUploaded:
         step = size // 10
 
         content = faker.binary(size)
-        data = storage.multipart_start(
-            fk.FileData(fk.Location(faker.file_name()), size=size),
-        )
+        data = storage.multipart_start(fk.Location(faker.file_name()), size=size)
 
         for pos in range(0, size, step):
             data = storage.multipart_update(
@@ -569,7 +577,7 @@ class MultiparterWithUploaded:
             assert data.storage_data.pop("uploaded") == min(size, pos + step)
 
     def test_std_update_without_upload_field(self, storage: fk.Storage, faker: Faker):
-        data = storage.multipart_start(fk.FileData(fk.Location(faker.file_name()), size=10))
+        data = storage.multipart_start(fk.Location(faker.file_name()), size=10)
 
         with pytest.raises(fk.exc.MissingExtrasError):
             storage.multipart_update(data)
@@ -578,7 +586,8 @@ class MultiparterWithUploaded:
         """`multipart_update` controls size of the upload."""
         content = b"hello world"
         data = storage.multipart_start(
-            fk.FileData(fk.Location(faker.file_name()), size=len(content) // 2),
+            fk.Location(faker.file_name()),
+            size=len(content) // 2,
         )
 
         with pytest.raises(fk.exc.UploadOutOfBoundError):
@@ -594,9 +603,7 @@ class MultiparterWithUploaded:
     def test_std_complete(self, storage: fk.Storage, faker: Faker):
         """File parameters validated upon completion."""
         content = b"hello world"
-        data = storage.multipart_start(
-            fk.FileData(fk.Location(faker.file_name()), content_type="text/plain", size=len(content)),
-        )
+        data = storage.multipart_start(fk.Location(faker.file_name()), content_type="text/plain", size=len(content))
 
         with pytest.raises(fk.exc.UploadSizeMismatchError):
             storage.multipart_complete(data)
@@ -613,12 +620,10 @@ class MultiparterWithUploaded:
         """File parameters validated upon completion."""
         content = b"hello world"
         data = storage.multipart_start(
-            fk.FileData(
-                fk.Location(faker.file_name()),
-                content_type="text/plain",
-                size=len(content),
-                hash="hello",
-            ),
+            fk.Location(faker.file_name()),
+            content_type="text/plain",
+            size=len(content),
+            hash="hello",
         )
 
         data = storage.multipart_update(data, upload=fk.make_upload(content))
@@ -629,11 +634,9 @@ class MultiparterWithUploaded:
         """File parameters validated upon completion."""
         content = b'{"hello":"world"}'
         data = storage.multipart_start(
-            fk.FileData(
-                fk.Location(faker.file_name()),
-                content_type="text/plain",
-                size=len(content),
-            ),
+            fk.Location(faker.file_name()),
+            content_type="text/plain",
+            size=len(content),
         )
 
         data = storage.multipart_update(data, upload=fk.make_upload(content))

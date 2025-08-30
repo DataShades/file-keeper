@@ -13,14 +13,12 @@ from datetime import datetime, timezone
 from typing import Any, cast
 
 import magic
-from pluggy import HookimplMarker
 
 from file_keeper import BaseData, Registry, Storage, Upload, ext, types
 from file_keeper.core.upload import UploadFactory
 
 from . import adapters
 
-hookimpl = HookimplMarker("file-keeper-ext")
 SAMPLE_SIZE = 1024 * 2
 
 log = logging.getLogger(__name__)

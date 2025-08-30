@@ -26,6 +26,9 @@ Hierarchy:
                     * [UploadTypeMismatchError][file_keeper.exc.UploadTypeMismatchError]
                     * [UploadHashMismatchError][file_keeper.exc.UploadHashMismatchError]
                     * [UploadSizeMismatchError][file_keeper.exc.UploadSizeMismatchError]
+                * [ResumableUploadError][file_keeper.exc.ResumableUploadError]
+                * [MultipartUploadError][file_keeper.exc.MultipartUploadError]
+
 
 """
 
@@ -119,6 +122,14 @@ class ExistingFileError(LocationError):
 
 class UploadError(StorageError):
     """Error related to file upload process."""
+
+
+class MultipartUploadError(UploadError):
+    """Error related to multipart upload process."""
+
+
+class ResumableUploadError(UploadError):
+    """Error related to resumable upload process."""
 
 
 class LargeUploadError(UploadError):

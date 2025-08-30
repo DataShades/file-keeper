@@ -27,9 +27,7 @@ class TestUploaderMultipart(standard.MultiparterWithUploaded):
     def test_refresh(self, faker: Faker, storage: memory.MemoryStorage):
         """`multipart_refresh` synchronized filesize."""
         content = faker.binary(10)
-        data = storage.multipart_start(
-            fk.FileData(fk.Location(faker.file_name()), size=len(content)),
-        )
+        data = storage.multipart_start(fk.Location(faker.file_name()), size=len(content))
 
         storage.settings.bucket[data.location] = content
 

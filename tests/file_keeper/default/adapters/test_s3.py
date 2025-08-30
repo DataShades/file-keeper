@@ -59,4 +59,5 @@ class TestSettings:
         assert storage.settings.client.head_bucket(Bucket=storage.settings.bucket)
 
 
-class TestStorage(standard.Standard): ...
+class TestStorage(standard.Standard):
+    pass
