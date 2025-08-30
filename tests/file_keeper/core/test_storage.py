@@ -51,36 +51,16 @@ class TestUploader:
             uploader.upload(fk.types.Location(faker.file_name()), make_upload(b""), {})
 
         with pytest.raises(NotImplementedError):
-            uploader.multipart_start(
-                FileData(
-                    fk.types.Location(faker.file_name()),
-                ),
-                {},
-            )
+            uploader.multipart_start(fk.types.Location(faker.file_name()), {})
 
         with pytest.raises(NotImplementedError):
-            uploader.multipart_refresh(
-                FileData(
-                    fk.Location(""),
-                ),
-                {},
-            )
+            uploader.multipart_refresh(FileData(fk.Location("")), {})
 
         with pytest.raises(NotImplementedError):
-            uploader.multipart_update(
-                FileData(
-                    fk.Location(""),
-                ),
-                {},
-            )
+            uploader.multipart_update(FileData(fk.Location("")), {})
 
         with pytest.raises(NotImplementedError):
-            uploader.multipart_complete(
-                FileData(
-                    fk.Location(""),
-                ),
-                {},
-            )
+            uploader.multipart_complete(FileData(fk.Location("")), {})
 
 
 class TestManager:

@@ -84,3 +84,18 @@ class TestStorage(standard.Standard):
         if not storage.settings.credentials_file:  # pyright: ignore[reportAttributeAccessIssue]
             pytest.skip("Fake GCS does not support signed removals without service credentials")
         super().test_signed_delete(storage, faker)
+
+    @pytest.mark.expect_storage_capability(fk.Capability.RESUMABLE)
+    def test_resumable_start_gcs_data(self, storage: fk.Storage, faker: Faker):
+        """GCS-specific data is set on resumable start."""
+        result = storage.resumable_start(fk.Location(faker.file_name()), faker.pyint(1))
+
+        assert "gcs_resumable" in result.storage_data
+
+        data = result.storage_data["gcs_resumable"]
+        assert data["uploaded"] == 0
+        assert data["origin"] is None
+
+        origin = faker.url()
+        result = storage.resumable_start(fk.Location(faker.file_name()), faker.pyint(1), origin=origin)
+        assert result.storage_data["gcs_resumable"]["origin"] == origin

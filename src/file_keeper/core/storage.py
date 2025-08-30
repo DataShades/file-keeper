@@ -142,11 +142,12 @@ class Uploader(StorageService):
         """
         raise NotImplementedError
 
-    def resumable_start(self, location: types.Location, extras: dict[str, Any]) -> data.FileData:
+    def resumable_start(self, location: types.Location, size: int, extras: dict[str, Any]) -> data.FileData:
         """Prepare everything for resumable upload.
 
         Args:
             location: The destination location for the upload.
+            size: Expected upload size.
             extras: Additional metadata for the upload.
         """
         raise NotImplementedError
@@ -160,11 +161,12 @@ class Uploader(StorageService):
         """
         raise NotImplementedError
 
-    def resumable_resume(self, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
+    def resumable_resume(self, data: data.FileData, upload: Upload, extras: dict[str, Any]) -> data.FileData:
         """Resume the interrupted resumable upload.
 
         Args:
             data: The FileData object containing the upload metadata.
+            upload: The Upload object containing the content.
             extras: Additional metadata for the upload.
         """
         raise NotImplementedError
@@ -649,14 +651,20 @@ class Storage(ABC):  # noqa: B024
         return self.uploader.upload(location, upload, kwargs)
 
     @requires_capability(Capability.RESUMABLE)
-    def resumable_start(self, location: types.Location, /, **kwargs: Any) -> data.FileData:
+    def resumable_start(self, location: types.Location, size: int, /, **kwargs: Any) -> data.FileData:
         """Prepare everything for resumable upload.
+
+        `content_type` and `hash` are optional. When any of those provided, it
+        will be used to verify the integrity of the upload. If they are
+        missing, the upload will be accepted without verification.
 
         Args:
             location: The destination location for the upload.
+            size: The total size of the upload in bytes.
             **kwargs: Additional metadata for the upload.
+
         """
-        return self.uploader.resumable_start(location, kwargs)
+        return self.uploader.resumable_start(location, size, kwargs)
 
     @requires_capability(Capability.RESUMABLE)
     def resumable_refresh(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
@@ -669,14 +677,15 @@ class Storage(ABC):  # noqa: B024
         return self.uploader.resumable_refresh(data, kwargs)
 
     @requires_capability(Capability.RESUMABLE)
-    def resumable_resume(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
+    def resumable_resume(self, data: data.FileData, upload: Upload, /, **kwargs: Any) -> data.FileData:
         """Resume the interrupted resumable upload.
 
         Args:
             data: The FileData object containing the upload metadata.
+            upload: The Upload object containing the content.
             **kwargs: Additional metadata for the upload.
         """
-        return self.uploader.resumable_resume(data, kwargs)
+        return self.uploader.resumable_resume(data, upload, kwargs)
 
     @requires_capability(Capability.RESUMABLE)
     def resumable_remove(self, data: data.FileData, /, **kwargs: Any) -> bool:
@@ -692,8 +701,15 @@ class Storage(ABC):  # noqa: B024
     def multipart_start(self, location: types.Location, /, **kwargs: Any) -> data.FileData:
         """Prepare everything for multipart upload.
 
+        `size`, `content_type` and `hash` are optional. When any of those provided, it
+        will be used to verify the integrity of the upload. If they are missing,
+        the upload will be accepted without verification.
+
         Args:
             location: The destination location for the upload.
+            size: The total size of the upload in bytes.
+            content_type: The MIME type of the upload.
+            hash: The expected hash of the upload for integrity verification.
             **kwargs: Additional metadata for the upload.
         """
         return self.uploader.multipart_start(location, kwargs)

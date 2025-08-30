@@ -51,15 +51,15 @@ class Uploader(fk.Uploader):
         return False
 
     @override
-    def resumable_start(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
-        return fk.FileData.from_dict(extras, location=location)
+    def resumable_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
+        return fk.FileData.from_dict(extras, location=location, size=size)
 
     @override
     def resumable_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         return data
 
     @override
-    def resumable_resume(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+    def resumable_resume(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         return data
 
     @override

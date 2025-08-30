@@ -12,6 +12,7 @@ Hierarchy:
             * [LocationError][file_keeper.exc.LocationError]
                 * [MissingFileError][file_keeper.exc.MissingFileError]
                 * [ExistingFileError][file_keeper.exc.ExistingFileError]
+            * [StorageDataError][file_keeper.exc.StorageDataError]
             * [ExtrasError][file_keeper.exc.ExtrasError]
                 * [MissingExtrasError][file_keeper.exc.MissingExtrasError]
             * [InvalidStorageConfigurationError][file_keeper.exc.InvalidStorageConfigurationError]
@@ -195,7 +196,7 @@ class LocationTransformerError(UploadError):
 
 
 class ExtrasError(StorageError):
-    """Wrong extras passed during upload."""
+    """Wrong extras passed to storage method."""
 
     tpl: str = "Wrong extras: {problem}"
 
@@ -204,7 +205,7 @@ class ExtrasError(StorageError):
 
 
 class MissingExtrasError(ExtrasError):
-    """Wrong extras passed to storage method."""
+    """Expected extras are missing from the call."""
 
     def __init__(self, key: Any):
         super().__init__(f"key {key} is missing")
@@ -215,3 +216,12 @@ class ContentError(UploadError):
 
     def __init__(self, storage: Storage, msg: str):
         super().__init__(f"{storage} rejected upload: {msg}")
+
+
+class StorageDataError(StorageError):
+    """Wrong [storage_data][file_keeper.FileData.storage_data] used for operation."""
+
+    tpl: str = "Wrong storage data: {problem}"
+
+    def __init__(self, problem: Any):
+        super().__init__(self.tpl.format(problem=problem))

@@ -340,7 +340,7 @@ class Multiparter:
 class Ranger:
     @pytest.mark.expect_storage_capability(fk.Capability.RANGE)
     def test_range_capabilities(self, storage: fk.Storage):
-        """Analyzer supports ANALYZE capability."""
+        """Ranger supports RANGE capability."""
         assert storage.supports(fk.Capability.RANGE), "Does not support RANGE"
 
 
@@ -371,21 +371,56 @@ class Remover:
 class Resumer:
     @pytest.mark.expect_storage_capability(fk.Capability.RESUMABLE)
     def test_resumable_capabilities(self, storage: fk.Storage):
-        """Analyzer supports ANALYZE capability."""
+        """Resumer supports RESUMABLE capability."""
         assert storage.supports(fk.Capability.RESUMABLE), "Does not support RESUMABLE"
 
     @pytest.mark.expect_storage_capability(fk.Capability.RESUMABLE)
-    def test_resumable_start(self, storage: fk.Storage, faker: Faker):
-        size = faker.pyint(0)
+    def test_resumable_start_with_params(self, storage: fk.Storage, faker: Faker):
+        """Resumable upload can be started with given parameters."""
+        size = faker.pyint(1)
         content_type = faker.mime_type()
         hash = faker.md5()
         location = fk.Location(faker.file_name())
 
-        result = storage.resumable_start(location, size=size, content_type=content_type, hash=hash)
-        assert result.size == size
-        assert result.content_type == content_type
-        assert result.hash == hash
-        assert result.storage_data["resumable"]
+        result = storage.resumable_start(location, size, content_type=content_type, hash=hash)
+        assert result.size == size, "Resumable upload has wrong size"
+        assert result.content_type == content_type, "Resumable upload has wrong content type"
+        assert result.hash == hash, "Resumable upload has wrong hash"
+        assert result.storage_data["resumable"], "Resumable upload has no 'resumable' flag in storage_data"
+
+    @pytest.mark.expect_storage_capability(fk.Capability.RESUMABLE)
+    def test_resumable_start_without_params(self, storage: fk.Storage, faker: Faker):
+        """Resumable upload can be started without additional fields."""
+        location = fk.Location(faker.file_name())
+        size = faker.pyint(1)
+
+        result = storage.resumable_start(location, size)
+        assert result.size == size, "Resumable upload has wrong size"
+        assert result.content_type == fk.FileData.content_type, "Resumable upload has wrong content type"
+        assert result.hash == fk.FileData.hash, "Resumable upload has wrong hash"
+        assert result.storage_data["resumable"], "Resumable upload has no 'resumable' flag in storage_data"
+
+    @pytest.mark.expect_storage_capability(fk.Capability.RESUMABLE)
+    def test_resumable_resume_with_whole_file(self, storage: fk.Storage, faker: Faker):
+        """Refreshing resumable upload without progress returns the same data."""
+        location = fk.Location(faker.file_name())
+        size = 1024 * 1024
+        data = storage.resumable_start(location, size)
+
+        content = faker.binary(size)
+        _result = storage.resumable_resume(data, fk.make_upload(content))
+
+    @pytest.mark.expect_storage_capability(fk.Capability.RESUMABLE)
+    @pytest.mark.xfail
+    def test_resumable_refresh_empty_returns_same_data(self, storage: fk.Storage, faker: Faker):
+        """Refreshing resumable upload without progress returns the same data."""
+        location = fk.Location(faker.file_name())
+        initial = storage.resumable_start(location, faker.pyint(1))
+
+        refreshed = storage.resumable_refresh(initial)
+
+        assert refreshed is not initial, "Data was not copied during refresh"
+        assert refreshed == initial, "Data was modified without any progress"
 
 
 class Scanner:
