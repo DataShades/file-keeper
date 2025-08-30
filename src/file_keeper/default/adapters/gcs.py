@@ -121,6 +121,26 @@ class Uploader(fk.Uploader):
             filehash,
         )
 
+    def _resumable_complete(self, data: fk.FileData, info: dict[str, Any]):
+        """Finalize a resumable upload session."""
+        # size is returned as a string
+        size = int(info["size"])
+        if data.size and data.size != size:
+            raise fk.exc.UploadSizeMismatchError(size, data.size)
+
+        filehash = decode(info["md5Hash"])
+        if data.hash and data.hash != filehash:
+            raise fk.exc.UploadHashMismatchError(filehash, data.hash)
+
+        content_type = info["contentType"]
+        if data.content_type and data.content_type != content_type:
+            raise fk.exc.UploadTypeMismatchError(content_type, data.content_type)
+
+        result = fk.FileData.from_object(data, size=size, content_type=content_type, hash=hash)
+        result.storage_data.pop("gcs_resumable")
+        result.storage_data.pop("resumable")
+        return result
+
     @override
     def resumable_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
         """Start a resumable upload session.
@@ -151,6 +171,7 @@ class Uploader(fk.Uploader):
         return fk.FileData.from_dict(
             extras,
             location=location,
+            size=size,
             storage_data={
                 "gcs_resumable": {"session_url": url, "uploaded": 0, "origin": extras.get("origin")},
                 "resumable": True,
@@ -170,7 +191,7 @@ class Uploader(fk.Uploader):
             msg = "`gcs_resumable.session_url` is missing"
             raise fk.exc.StorageDataError(msg)
 
-        timeout = extras.get("timeout", 10)
+        timeout = extras.get("request_timeout", 10)
         resp = urllib3.request(
             "PUT",
             session_url,
@@ -186,28 +207,10 @@ class Uploader(fk.Uploader):
             raise fk.exc.ResumableUploadError(msg, resp)
 
         if resp.status in [HTTPStatus.OK, HTTPStatus.CREATED]:
-            info = resp.json()
-
-            # size is returned as a string
-            size = int(info["size"])
-            if data.size and data.size != size:
-                raise fk.exc.UploadSizeMismatchError(size, data.size)
-
-            filehash = decode(info["md5Hash"])
-            if data.hash and data.hash != filehash:
-                raise fk.exc.UploadHashMismatchError(filehash, data.hash)
-
-            content_type = info["contentType"]
-            if data.content_type and data.content_type != content_type:
-                raise fk.exc.UploadTypeMismatchError(content_type, data.content_type)
-
-            result = fk.FileData.from_object(data, size=size, content_type=content_type, hash=hash)
-            result.storage_data.pop("gcs_resumable")
-            result.storage_data.pop("resumable")
-            return result
+            return self._resumable_complete(data, resp.json())
 
         if resp.status != HTTPStatus.PERMANENT_REDIRECT:
-            msg = f"unexpected status code {resp.status}"
+            msg = f"Unexpected status code {resp.status}"
             raise fk.exc.ResumableUploadError(msg, resp)
 
         result = fk.FileData.from_object(data)
@@ -230,43 +233,53 @@ class Uploader(fk.Uploader):
     @override
     def resumable_resume(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         """Resume a resumable upload session."""
-        upload = fk.make_upload(extras["upload"])
+        gcs_data = data.storage_data["gcs_resumable"]
 
-        first_byte = extras.get("position", data.storage_data["uploaded"])
+        first_byte = gcs_data["uploaded"]
         last_byte = first_byte + upload.size - 1
         size = data.size
 
         if last_byte >= size:
             raise fk.exc.UploadOutOfBoundError(last_byte, size)
 
-        if upload.size < 256 * 1024 and last_byte < size - 1:
-            raise fk.exc.ExtrasError(
-                {"upload": ["Only the final part can be smaller than 256KiB"]},
-            )
+        if last_byte + 1 != size and upload.size < 256 * 1024:
+            msg = "Only the final part can be smaller than 256KiB"
+            raise fk.exc.ResumableUploadError(msg)
 
         resp = urllib3.request(
             "PUT",
-            data.storage_data["session_url"],
+            gcs_data["session_url"],
             body=upload.stream.read(),
             headers={
                 "content-range": f"bytes {first_byte}-{last_byte}/{size}",
             },
-            timeout=10,
+            timeout=extras.get("request_timeout", 10),
         )
 
-        if "range" not in resp.headers:
-            data.storage_data["uploaded"] = data.size
-            data.storage_data["result"] = resp.json()
-            return data
+        if resp.status in [HTTPStatus.OK, HTTPStatus.CREATED]:
+            return self._resumable_complete(data, resp.json())
+
+        if resp.status != HTTPStatus.PERMANENT_REDIRECT:
+            msg = f"Cannot resume upload: {resp.status} {resp.data}"
+            raise fk.exc.ResumableUploadError(msg, resp)
 
         range_match = RE_RANGE.match(resp.headers["range"])
         if not range_match:
-            raise fk.exc.ExtrasError(
-                {"upload": ["Invalid response from Google Cloud"]},
-            )
-        data.storage_data["uploaded"] = int(range_match.group("last_byte")) + 1
+            msg = "Invalid response from Google Cloud"
+            raise fk.exc.ResumableUploadError(msg)
 
-        return data
+        result = fk.FileData.from_object(data)
+        result.storage_data["gcs_resumable"]["uploaded"] = int(range_match.group("last_byte")) + 1
+
+        return result
+
+    @override
+    def resumable_remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        """Cancel a resumable upload session."""
+        gcs_data = data.storage_data["gcs_resumable"]
+        resp = urllib3.request("DELETE", gcs_data["session_url"])
+        cancel_status = 499
+        return resp.status == cancel_status
 
 
 class Reader(fk.Reader):

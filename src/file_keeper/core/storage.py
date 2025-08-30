@@ -180,11 +180,12 @@ class Uploader(StorageService):
         """
         raise NotImplementedError
 
-    def multipart_start(self, location: types.Location, extras: dict[str, Any]) -> data.FileData:
+    def multipart_start(self, location: types.Location, size: int, extras: dict[str, Any]) -> data.FileData:
         """Prepare everything for multipart(resumable) upload.
 
         Args:
             location: The destination location for the upload.
+            size: Expected upload size.
             extras: Additional metadata for the upload.
         """
         raise NotImplementedError
@@ -198,11 +199,15 @@ class Uploader(StorageService):
         """
         raise NotImplementedError
 
-    def multipart_update(self, data: data.FileData, extras: dict[str, Any]) -> data.FileData:
+    def multipart_update(
+        self, data: data.FileData, upload: Upload, position: int, extras: dict[str, Any]
+    ) -> data.FileData:
         """Add data to the incomplete upload.
 
         Args:
             data: The FileData object containing the upload metadata.
+            upload: The Upload object containing the content.
+            position: Position of the given part among other parts, starting with 0.
             extras: Additional metadata for the upload.
         """
         raise NotImplementedError
@@ -698,21 +703,20 @@ class Storage(ABC):  # noqa: B024
         return self.uploader.resumable_remove(data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_start(self, location: types.Location, /, **kwargs: Any) -> data.FileData:
+    def multipart_start(self, location: types.Location, size: int, /, **kwargs: Any) -> data.FileData:
         """Prepare everything for multipart upload.
 
-        `size`, `content_type` and `hash` are optional. When any of those provided, it
-        will be used to verify the integrity of the upload. If they are missing,
-        the upload will be accepted without verification.
+        `content_type` and `hash` are optional. When any of those provided, it
+        will be used to verify the integrity of the upload. If they are
+        missing, the upload will be accepted without verification.
 
         Args:
             location: The destination location for the upload.
             size: The total size of the upload in bytes.
-            content_type: The MIME type of the upload.
-            hash: The expected hash of the upload for integrity verification.
             **kwargs: Additional metadata for the upload.
+
         """
-        return self.uploader.multipart_start(location, kwargs)
+        return self.uploader.multipart_start(location, size, kwargs)
 
     @requires_capability(Capability.MULTIPART)
     def multipart_refresh(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
@@ -725,14 +729,16 @@ class Storage(ABC):  # noqa: B024
         return self.uploader.multipart_refresh(data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_update(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
+    def multipart_update(self, data: data.FileData, upload: Upload, position: int, /, **kwargs: Any) -> data.FileData:
         """Add data to the incomplete upload.
 
         Args:
             data: The FileData object containing the upload metadata.
+            upload: The Upload object containing the content.
+            position: Position of the given part among other parts, starting with 0.
             **kwargs: Additional metadata for the upload.
         """
-        return self.uploader.multipart_update(data, kwargs)
+        return self.uploader.multipart_update(data, upload, position, kwargs)
 
     @requires_capability(Capability.MULTIPART)
     def multipart_complete(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:

@@ -400,27 +400,72 @@ class Resumer:
         assert result.hash == fk.FileData.hash, "Resumable upload has wrong hash"
         assert result.storage_data["resumable"], "Resumable upload has no 'resumable' flag in storage_data"
 
-    @pytest.mark.expect_storage_capability(fk.Capability.RESUMABLE)
+    @pytest.mark.expect_storage_capability(fk.Capability.RESUMABLE, fk.Capability.EXISTS)
     def test_resumable_resume_with_whole_file(self, storage: fk.Storage, faker: Faker):
-        """Refreshing resumable upload without progress returns the same data."""
+        """Resumable upload can be completed in one request."""
         location = fk.Location(faker.file_name())
         size = 1024 * 1024
+
         data = storage.resumable_start(location, size)
 
         content = faker.binary(size)
-        _result = storage.resumable_resume(data, fk.make_upload(content))
+        result = storage.resumable_resume(data, fk.make_upload(content))
 
-    @pytest.mark.expect_storage_capability(fk.Capability.RESUMABLE)
-    @pytest.mark.xfail
-    def test_resumable_refresh_empty_returns_same_data(self, storage: fk.Storage, faker: Faker):
+        assert storage.exists(result), "Resumable upload was not completed"
+        assert result is not data, "Data was not copied during resume"
+        assert "resumable" not in result.storage_data, "Resumable flag was not removed after completion"
+
+        assert storage.content(result) == content, "Content of the resumable upload does not match the original"
+
+    @pytest.mark.expect_storage_capability(fk.Capability.RESUMABLE, fk.Capability.EXISTS)
+    def test_resumable_resume_chunked(self, storage: fk.Storage, faker: Faker):
+        """Resumable upload can be completed in multiple requests"""
+        location = fk.Location(faker.file_name())
+        chunk = 1024 * 256
+
+        data = storage.resumable_start(location, chunk * 4)
+
+        content = faker.binary(chunk * 4)
+
+        tmp_data = data
+        for step in range(4):
+            tmp_data = storage.resumable_resume(tmp_data, fk.make_upload(content[step * chunk : step * chunk + chunk]))
+
+            has_flag = "resumable" in tmp_data.storage_data
+            last_chunk = step == 3
+            assert has_flag is not last_chunk
+
+        result = tmp_data
+
+        assert storage.exists(result), "Resumable upload was not completed"
+        assert result is not data, "Data was not copied during resume"
+        assert "resumable" not in result.storage_data, "Resumable flag was not removed after completion"
+        assert storage.content(result) == content, "Content of the resumable upload does not match the original"
+
+    @pytest.mark.expect_storage_capability(fk.Capability.RESUMABLE, fk.Capability.EXISTS)
+    def test_resumable_refresh_without_changes(self, storage: fk.Storage, faker: Faker):
         """Refreshing resumable upload without progress returns the same data."""
         location = fk.Location(faker.file_name())
-        initial = storage.resumable_start(location, faker.pyint(1))
+        data = storage.resumable_start(location, faker.pyint(1))
+        refreshed = storage.resumable_refresh(data)
 
-        refreshed = storage.resumable_refresh(initial)
+        assert refreshed == data, "Data was modified without any progress"
 
-        assert refreshed is not initial, "Data was not copied during refresh"
-        assert refreshed == initial, "Data was modified without any progress"
+    @pytest.mark.expect_storage_capability(fk.Capability.RESUMABLE, fk.Capability.EXISTS)
+    def test_resumable_refresh(self, storage: fk.Storage, faker: Faker):
+        """Refreshing resumable upload can be used multiple times."""
+        location = fk.Location(faker.file_name())
+        chunk = 1024 * 256
+
+        data = storage.resumable_start(location, chunk * 4)
+
+        content = faker.binary(chunk * 4)
+
+        tmp_data = data
+        for step in range(4):
+            tmp_data = storage.resumable_resume(tmp_data, fk.make_upload(content[step * chunk : step * chunk + chunk]))
+            refreshed_data = storage.resumable_refresh(data)
+            assert refreshed_data == tmp_data, "Data was modified without any progress"
 
 
 class Scanner:

@@ -99,3 +99,13 @@ class TestStorage(standard.Standard):
         origin = faker.url()
         result = storage.resumable_start(fk.Location(faker.file_name()), faker.pyint(1), origin=origin)
         assert result.storage_data["gcs_resumable"]["origin"] == origin
+
+    @override
+    @pytest.mark.xfail
+    def test_resumable_refresh_without_changes(self, storage: fk.Storage, faker: Faker):
+        super().test_resumable_refresh_without_changes(storage, faker)
+
+    @override
+    @pytest.mark.xfail
+    def test_resumable_refresh(self, storage: fk.Storage, faker: Faker):
+        super().test_resumable_refresh(storage, faker)
