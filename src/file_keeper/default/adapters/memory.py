@@ -28,7 +28,7 @@ class Uploader(fk.Uploader):
     """Memory uploader."""
 
     storage: MemoryStorage
-    capabilities: fk.Capability = fk.Capability.CREATE
+    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.RESUMABLE
 
     @override
     def upload(self, location: fk.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
@@ -41,31 +41,39 @@ class Uploader(fk.Uploader):
         return fk.FileData(location, upload.size, upload.content_type, hash=reader.get_hash())
 
     @override
-    def multipart_start(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+    def resumable_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
         self.storage.settings.bucket[location] = b""
 
-        result = fk.FileData.from_dict(extras, location=location)
-        result.storage_data["uploaded"] = 0
+        result = fk.FileData.from_dict(
+            extras, size=size, location=location, storage_data={"resumable": True, "memory": {"uploaded": 0}}
+        )
+
         return result
 
     @override
-    def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+    def resumable_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         bucket = self.storage.settings.bucket
 
         if data.location not in bucket:
             raise fk.exc.MissingFileError(self.storage, data.location)
 
         result = fk.FileData.from_object(data)
-        result.storage_data["uploaded"] = len(bucket[data.location])
+        result.storage_data["memory"]["uploaded"] = len(bucket[data.location])
+
+        if result.size == result.storage_data["memory"]["uploaded"]:
+            reader = fk.HashingReader(BytesIO(bucket[result.location]))
+            reader.exhaust()
+
+            hash = reader.get_hash()
+            result = fk.FileData.from_object(result, hash=hash)
+
+            result.storage_data.pop("memory")
+            result.storage_data.pop("resumable")
+
         return result
 
     @override
-    def multipart_update(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        if "upload" not in extras:
-            raise fk.exc.MissingExtrasError("upload")
-
-        upload = fk.make_upload(extras["upload"])
-
+    def resumable_resume(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         bucket = self.storage.settings.bucket
 
         if data.location not in bucket:
@@ -75,36 +83,23 @@ class Uploader(fk.Uploader):
         if expected_size > data.size:
             raise fk.exc.UploadOutOfBoundError(expected_size, data.size)
 
-        bucket[data.location] += upload.stream.read()
-        data.storage_data["uploaded"] = expected_size
-        return data
+        result = fk.FileData.from_object(data)
 
-    @override
-    def multipart_complete(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        bucket = self.storage.settings.bucket
+        bucket[result.location] += upload.stream.read()
+        result.storage_data["memory"]["uploaded"] = expected_size
 
-        if data.location not in bucket:
-            raise fk.exc.MissingFileError(self.storage, data.location)
+        size = len(bucket[result.location])
+        if result.size == size:
+            reader = fk.HashingReader(BytesIO(bucket[result.location]))
+            reader.exhaust()
 
-        actual_size = len(bucket[data.location])
-        if data.size != actual_size:
-            raise fk.exc.UploadSizeMismatchError(actual_size, data.size)
+            hash = reader.get_hash()
+            result = fk.FileData.from_object(result, hash=hash)
 
-        reader = fk.HashingReader(BytesIO(bucket[data.location]))
-        content_type = magic.from_buffer(next(reader, b""), True)
-        if data.content_type and content_type != data.content_type:
-            raise fk.exc.UploadTypeMismatchError(
-                content_type,
-                data.content_type,
-            )
+            result.storage_data.pop("memory")
+            result.storage_data.pop("resumable")
 
-        reader.exhaust()
-        actual_hash = reader.get_hash()
-
-        if data.hash and data.hash != actual_hash:
-            raise fk.exc.UploadHashMismatchError(actual_hash, data.hash)
-
-        return fk.FileData(data.location, data.size, data.content_type, actual_hash)
+        return result
 
 
 class Manager(fk.Manager):

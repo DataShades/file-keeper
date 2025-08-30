@@ -199,15 +199,13 @@ class Uploader(StorageService):
         """
         raise NotImplementedError
 
-    def multipart_update(
-        self, data: data.FileData, upload: Upload, position: int, extras: dict[str, Any]
-    ) -> data.FileData:
+    def multipart_update(self, data: data.FileData, upload: Upload, part: int, extras: dict[str, Any]) -> data.FileData:
         """Add data to the incomplete upload.
 
         Args:
             data: The FileData object containing the upload metadata.
             upload: The Upload object containing the content.
-            position: Position of the given part among other parts, starting with 0.
+            part: Position of the given part among other parts, starting with 0.
             extras: Additional metadata for the upload.
         """
         raise NotImplementedError
@@ -729,16 +727,16 @@ class Storage(ABC):  # noqa: B024
         return self.uploader.multipart_refresh(data, kwargs)
 
     @requires_capability(Capability.MULTIPART)
-    def multipart_update(self, data: data.FileData, upload: Upload, position: int, /, **kwargs: Any) -> data.FileData:
+    def multipart_update(self, data: data.FileData, upload: Upload, part: int, /, **kwargs: Any) -> data.FileData:
         """Add data to the incomplete upload.
 
         Args:
             data: The FileData object containing the upload metadata.
             upload: The Upload object containing the content.
-            position: Position of the given part among other parts, starting with 0.
+            part: Position of the given part among other parts, starting with 0.
             **kwargs: Additional metadata for the upload.
         """
-        return self.uploader.multipart_update(data, upload, position, kwargs)
+        return self.uploader.multipart_update(data, upload, part, kwargs)
 
     @requires_capability(Capability.MULTIPART)
     def multipart_complete(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:

@@ -31,15 +31,15 @@ class Uploader(fk.Uploader):
         return fk.FileData(location, hash=reader.get_hash())
 
     @override
-    def multipart_start(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
-        return fk.FileData.from_dict(extras, location=location)
+    def multipart_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
+        return fk.FileData.from_dict(extras, size=size, location=location)
 
     @override
     def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         return data
 
     @override
-    def multipart_update(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+    def multipart_update(self, data: fk.FileData, upload: fk.Upload, part: int, extras: dict[str, Any]) -> fk.FileData:
         return data
 
     @override

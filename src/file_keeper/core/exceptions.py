@@ -219,7 +219,7 @@ class ContentError(UploadError):
 
 
 class StorageDataError(StorageError):
-    """Wrong [storage_data][file_keeper.FileData.storage_data] used for operation."""
+    """Wrong [storage_data][file_keeper.FileData] used for operation."""
 
     tpl: str = "Wrong storage data: {problem}"
 
