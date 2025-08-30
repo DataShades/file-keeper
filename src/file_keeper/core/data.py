@@ -55,18 +55,20 @@ class BaseData:
         checker: Callable[[Any, str], bool],
         overrides: dict[str, Any],
     ):
-        return cls(
-            *[
-                overrides[key] if key in overrides else getter(source, key)
-                for key in cls._plain_keys
-                if checker(source, key)
-            ],
-            *[
-                overrides[key] if key in overrides else copy.deepcopy(getter(source, key))
-                for key in cls._complex_keys
-                if checker(source, key)
-            ],
-        )
+        data = {}
+        for key in cls._plain_keys:
+            if key in overrides:
+                data[key] = overrides[key]
+            elif checker(source, key):
+                data[key] = getter(source, key)
+
+        for key in cls._complex_keys:
+            if key in overrides:
+                data[key] = overrides[key]
+            elif checker(source, key):
+                data[key] = copy.deepcopy(getter(source, key))
+
+        return cls(**data)
 
     def into_object(self, obj: T) -> T:
         """Copy data attributes into another object."""
