@@ -101,6 +101,10 @@ class Uploader(fk.Uploader):
 
         return result
 
+    @override
+    def resumable_remove(self, data: fk.FileData, extras: dict[str, Any]):
+        return self.storage.remove(data, **extras)
+
 
 class Manager(fk.Manager):
     """Memory manager."""

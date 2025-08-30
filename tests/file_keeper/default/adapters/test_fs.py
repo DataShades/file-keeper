@@ -40,37 +40,4 @@ class TestSettings:
         storage.SettingsFactory(path=path)
 
 
-@pytest.mark.xfail
-class TestUploaderMultipart(standard.MultiparterWithUploaded):
-    def test_refresh(self, faker: Faker, storage: fs.FsStorage):
-        """`multipart_refresh` synchronized filesize."""
-        content = faker.binary(10)
-        data = storage.multipart_start(fk.types.Location(faker.file_name()), size=len(content))
-        with open(os.path.join(storage.settings.path, data.location), "wb") as dest:
-            dest.write(content)
-
-        data = storage.multipart_refresh(data)
-        assert data.storage_data["uploaded"] == len(content)
-
-    def test_update_with_position(self, storage: fk.Storage, faker: Faker):
-        """`multipart_update` can override existing parts."""
-        content = b"hello world"
-        data = storage.multipart_start(fk.types.Location(faker.file_name()), size=len(content))
-
-        data = storage.multipart_update(
-            data,
-            upload=fk.make_upload(content),
-        )
-
-        data = storage.multipart_update(
-            data,
-            upload=fk.make_upload(b"LLO W"),
-            position=2,
-        )
-        assert data.size == len(content)
-        assert data.storage_data["uploaded"] == len(content)
-
-        assert storage.content(fk.FileData(data.location)) == b"heLLO World"
-
-
 class TestStorage(standard.Standard): ...

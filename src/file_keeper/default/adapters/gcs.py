@@ -203,8 +203,7 @@ class Uploader(fk.Uploader):
         )
 
         if resp.status in [HTTPStatus.GONE, HTTPStatus.NOT_FOUND]:
-            msg = "Resumable upload was canceled"
-            raise fk.exc.ResumableUploadError(msg, resp)
+            raise fk.exc.MissingFileError(self.storage, data.location)
 
         if resp.status in [HTTPStatus.OK, HTTPStatus.CREATED]:
             return self._resumable_complete(data, resp.json())

@@ -105,7 +105,7 @@ class Uploader(fk.Uploader):
 
     storage: S3Storage
 
-    capabilities: fk.Capability = fk.Capability.CREATE
+    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
 
     @override
     def upload(self, location: fk.types.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
@@ -132,8 +132,21 @@ class Uploader(fk.Uploader):
             filehash,
         )
 
+    def _presigned_part(self, key: str, upload_id: str, part: int):
+        """Generate a presigned URL for uploading a part."""
+        return self.storage.settings.client.generate_presigned_url(
+            "upload_part",
+            Params={
+                "Bucket": self.storage.settings.bucket,
+                "Key": key,
+                "UploadId": upload_id,
+                "PartNumber": part,
+            },
+        )
+
     @override
-    def multipart_start(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+    def multipart_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
+        """Initiate a multipart upload session."""
         filepath = self.storage.full_path(location)
         client = self.storage.settings.client
 
@@ -149,67 +162,103 @@ class Uploader(fk.Uploader):
         return fk.FileData.from_dict(
             extras,
             location=location,
+            size=size,
             storage_data={
+                "multipart": True,
                 "upload_id": obj["UploadId"],
                 "uploaded": 0,
-                "part_number": 1,
-                "upload_url": self._presigned_part(filepath, obj["UploadId"], 1),
-                "etags": {},
-            },
-        )
-
-    def _presigned_part(self, key: str, upload_id: str, part_number: int):
-        return self.storage.settings.client.generate_presigned_url(
-            "upload_part",
-            Params={
-                "Bucket": self.storage.settings.bucket,
-                "Key": key,
-                "UploadId": upload_id,
-                "PartNumber": part_number,
+                "parts": {},
             },
         )
 
     @override
-    def multipart_update(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+    def multipart_remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        client = self.storage.settings.client
         filepath = self.storage.full_path(data.location)
-        if "upload" in extras:
-            upload = fk.make_upload(extras["upload"])
 
-            first_byte = data.storage_data["uploaded"]
+        resp = client.list_multipart_uploads(
+            Bucket=self.storage.settings.bucket,
+            Prefix=filepath,
+            MaxUploads=1,
+        )
 
-            last_byte = first_byte + upload.size
-            size = data.size
-
-            if last_byte > size:
-                raise fk.exc.UploadOutOfBoundError(last_byte, size)
-
-            if upload.size < 1024 * 1024 * 5 and last_byte < size:
-                raise fk.exc.ExtrasError({"upload": ["Only the final part can be smaller than 5MiB"]})
-
-            resp = self.storage.settings.client.upload_part(
+        if "Uploads" in resp:
+            client.abort_multipart_upload(
                 Bucket=self.storage.settings.bucket,
                 Key=filepath,
                 UploadId=data.storage_data["upload_id"],
-                PartNumber=data.storage_data["part_number"],
-                Body=upload.stream,
             )
+            return True
 
-            etag = resp["ETag"].strip('"')
-            data.storage_data["uploaded"] = data.storage_data["uploaded"] + upload.size
+        return False
 
-        elif "etag" in extras:
-            etag = extras["etag"].strip('"')
-            data.storage_data["uploaded"] = data.storage_data["uploaded"] + extras.get("uploaded", 0)
+    @override
+    def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        client = self.storage.settings.client
+        filepath = self.storage.full_path(data.location)
 
-        else:
-            raise fk.exc.ExtrasError({"upload": ["Either upload or etag must be specified"]})
+        marker = 0
+        parts = {}
+        uploaded = 0
+        upload_id = data.storage_data.get("upload_id", "")
+        try:
+            while True:
+                resp = client.list_parts(
+                    Bucket=self.storage.settings.bucket,
+                    Key=filepath,
+                    UploadId=upload_id,
+                    PartNumberMarker=marker,
+                )
 
-        data.storage_data["etags"][data.storage_data["part_number"]] = etag
-        data.storage_data["part_number"] = data.storage_data["part_number"] + 1
+                if "Parts" not in resp:
+                    break
 
-        data.storage_data["upload_url"] = self._presigned_part(
-            filepath, data.storage_data["upload_id"], data.storage_data["part_number"]
+                for item in resp["Parts"]:
+                    if "PartNumber" not in item or "ETag" not in item:
+                        continue
+
+                    parts[item["PartNumber"]] = item["ETag"].strip('"')
+                    uploaded += item.get("Size", 0)
+
+                marker = resp["NextPartNumberMarker"]
+                if not marker:
+                    break
+        except client.exceptions.NoSuchUpload as err:
+            raise fk.exc.MissingFileError(self.storage, data.location) from err
+
+        return fk.FileData.from_object(
+            data,
+            storage_data={"multipart": True, "upload_id": upload_id, "uploaded": uploaded, "parts": parts},
         )
+
+    @override
+    def multipart_update(self, data: fk.FileData, upload: fk.Upload, part: int, extras: dict[str, Any]) -> fk.FileData:
+        filepath = self.storage.full_path(data.location)
+
+        first_byte = data.storage_data["uploaded"]
+        last_byte = first_byte + upload.size
+
+        size = data.size
+
+        if last_byte > size:
+            raise fk.exc.UploadOutOfBoundError(last_byte, size)
+
+        if last_byte < size and upload.size < 1024 * 1024 * 5:
+            msg = "Only the final part can be smaller than 5MiB"
+            raise fk.exc.MultipartUploadError(msg)
+
+        resp = self.storage.settings.client.upload_part(
+            Bucket=self.storage.settings.bucket,
+            Key=filepath,
+            UploadId=data.storage_data["upload_id"],
+            PartNumber=part + 1,
+            Body=upload.stream,  # pyright: ignore[reportArgumentType]
+        )
+
+        etag = resp["ETag"].strip('"')
+        data.storage_data["uploaded"] = data.storage_data["uploaded"] + upload.size
+
+        data.storage_data["parts"][part + 1] = etag
 
         return data
 
@@ -217,12 +266,15 @@ class Uploader(fk.Uploader):
     def multipart_complete(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         filepath = self.storage.full_path(data.location)
 
+        if data.size != data.storage_data["uploaded"]:
+            raise fk.exc.UploadSizeMismatchError(data.storage_data["uploaded"], data.size)
+
         result = self.storage.settings.client.complete_multipart_upload(
             Bucket=self.storage.settings.bucket,
             Key=filepath,
             UploadId=data.storage_data["upload_id"],
             MultipartUpload={
-                "Parts": [{"PartNumber": int(num), "ETag": tag} for num, tag in data.storage_data["etags"].items()]
+                "Parts": [{"PartNumber": int(num), "ETag": tag} for num, tag in data.storage_data["parts"].items()]
             },
         )
 
@@ -239,18 +291,6 @@ class Uploader(fk.Uploader):
             obj["ContentType"],
             obj["ETag"].strip('"'),
         )
-
-    @override
-    def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        client = self.storage.settings.client
-        filepath = self.storage.full_path(data.location)
-
-        result = client.list_multipart_uploads(Bucket=self.storage.settings.bucket, Prefix=filepath)
-        if _uploads := result.get("Uploads"):
-            # TODO: compute total uploaded size
-            return data
-
-        raise fk.exc.MissingFileError(self.storage, data.location)
 
 
 class Manager(fk.Manager):

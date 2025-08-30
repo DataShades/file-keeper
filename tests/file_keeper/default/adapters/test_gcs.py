@@ -109,3 +109,8 @@ class TestStorage(standard.Standard):
     @pytest.mark.xfail
     def test_resumable_refresh(self, storage: fk.Storage, faker: Faker):
         super().test_resumable_refresh(storage, faker)
+
+    @override
+    @pytest.mark.xfail
+    def test_resumable_refresh_missing(self, storage: fk.Storage, faker: Faker):
+        super().test_resumable_refresh_missing(storage, faker)

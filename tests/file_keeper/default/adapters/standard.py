@@ -333,8 +333,78 @@ class Multiparter:
 
     @pytest.mark.expect_storage_capability(fk.Capability.MULTIPART)
     def test_multipart_refresh_missing(self, faker: Faker, storage: fk.Storage):
+        """Refreshing missing multipart upload is reported."""
         with pytest.raises(fk.exc.MissingFileError):
             storage.multipart_refresh(fk.FileData(fk.Location(faker.file_name())))
+
+    @pytest.mark.expect_storage_capability(fk.Capability.MULTIPART)
+    def test_multipart_start_minimal(self, storage: fk.Storage, faker: Faker):
+        """Multipart upload can be started with minimal parameters."""
+        location = fk.Location(faker.file_name())
+        data = storage.multipart_start(location, faker.pyint(1))
+        assert data.storage_data["multipart"], "Multipart upload has no 'multipart' flag in storage_data"
+        assert "parts" in data.storage_data, "Multipart upload has no 'parts' list in storage_data"
+
+    @pytest.mark.expect_storage_capability(fk.Capability.MULTIPART)
+    def test_multipart_start_with_params(self, storage: fk.Storage, faker: Faker):
+        """Multipart upload can be started with given parameters."""
+        location = fk.Location(faker.file_name())
+        content_type = faker.mime_type()
+        hash = faker.md5()
+        data = storage.multipart_start(location, faker.pyint(1), content_type=content_type, hash=hash)
+
+        assert data.content_type == content_type, "Multipart upload has wrong content type"
+        assert data.hash == hash, "Multipart upload has wrong hash"
+
+    @pytest.mark.expect_storage_capability(fk.Capability.MULTIPART)
+    def test_multipart_remove(self, storage: fk.Storage, faker: Faker):
+        """Multipart upload can be removed and cannot be removed twice."""
+        location = fk.Location(faker.file_name())
+        data = storage.multipart_start(location, faker.pyint(1))
+
+        assert storage.multipart_remove(data), "Multipart upload was not removed"
+        assert not storage.multipart_remove(data), "Removed multipart upload can be removed again"
+
+    @pytest.mark.expect_storage_capability(fk.Capability.MULTIPART)
+    def test_multipart_update_out_of_bound(self, storage: fk.Storage, faker: Faker):
+        """Uploading out of declared bounds is reported."""
+        location = fk.Location(faker.file_name())
+        data = storage.multipart_start(location, 10)
+
+        content = faker.binary(11)
+        with pytest.raises(fk.exc.UploadOutOfBoundError):
+            storage.multipart_update(data, fk.make_upload(content), 0)
+
+    @pytest.mark.expect_storage_capability(fk.Capability.MULTIPART)
+    def test_multipart_refresh_existing(self, storage: fk.Storage, faker: Faker):
+        """Refreshing multipart upload with progress returns updated data."""
+        location = fk.Location(faker.file_name())
+        content = faker.binary(10)
+        data = storage.multipart_start(location, 10)
+
+        updated = storage.multipart_update(data, fk.make_upload(content), 0)
+        refreshed = storage.multipart_refresh(data)
+
+        assert updated == refreshed
+
+    @pytest.mark.expect_storage_capability(fk.Capability.MULTIPART)
+    def test_multipart_complete_early(self, storage: fk.Storage, faker: Faker):
+        """Completing multipart upload before all data is uploaded is reported."""
+        location = fk.Location(faker.file_name())
+        data = storage.multipart_start(location, 10)
+
+        with pytest.raises(fk.exc.UploadSizeMismatchError):
+            storage.multipart_complete(data)
+
+    @pytest.mark.expect_storage_capability(fk.Capability.MULTIPART)
+    def test_multipart_complete_normally(self, storage: fk.Storage, faker: Faker):
+        location = fk.Location(faker.file_name())
+        data = storage.multipart_start(location, 10)
+        data = storage.multipart_update(data, fk.make_upload(faker.binary(10)), 1)
+        result = storage.multipart_complete(data)
+
+        assert "multipart" not in result.storage_data
+        assert "parts" not in result.storage_data
 
 
 class Ranger:
@@ -466,6 +536,16 @@ class Resumer:
             tmp_data = storage.resumable_resume(tmp_data, fk.make_upload(content[step * chunk : step * chunk + chunk]))
             refreshed_data = storage.resumable_refresh(data)
             assert refreshed_data == tmp_data, "Data was modified without any progress"
+
+    @pytest.mark.expect_storage_capability(fk.Capability.RESUMABLE)
+    def test_resumable_refresh_missing(self, storage: fk.Storage, faker: Faker):
+        """Refreshing missing resumable upload is reported."""
+        location = fk.Location(faker.file_name())
+        data = storage.resumable_start(location, faker.pyint(1))
+        storage.resumable_remove(data)
+
+        with pytest.raises(fk.exc.MissingFileError):
+            storage.resumable_refresh(data)
 
 
 class Scanner:
@@ -611,121 +691,3 @@ class Standard(
     TemporalLinker,
     OneTimeLinker,
 ): ...
-
-
-class MultiparterWithUploaded:
-    """Multipart upload with number of uploaded bytes."""
-
-    def test_std_initialization(self, storage: fk.Storage, faker: Faker):
-        """`multipart_start` creates an empty file."""
-        size = faker.pyint()
-        data = storage.multipart_start(fk.Location(faker.file_name()), size=size)
-        assert data.size == size
-        assert data.storage_data["uploaded"] == 0
-        assert storage.content(fk.FileData(fk.Location(data.location))) == b""
-
-    def test_std_update(self, storage: fk.Storage, faker: Faker):
-        """`multipart_update` appends parts by default."""
-        size = 100
-        step = size // 10
-
-        content = faker.binary(size)
-        data = storage.multipart_start(fk.Location(faker.file_name()), size=size)
-
-        for pos in range(0, size, step):
-            data = storage.multipart_update(
-                data,
-                upload=fk.make_upload(content[pos : pos + step]),
-            )
-            assert data.size == size
-            assert data.storage_data["uploaded"] == min(size, pos + step)
-
-    def test_std_update_wihtout_uploaded(self, storage: fk.Storage, faker: Faker):
-        """`multipart_update` appends parts by default."""
-        size = 100
-        step = size // 10
-
-        content = faker.binary(size)
-        data = storage.multipart_start(fk.Location(faker.file_name()), size=size)
-
-        for pos in range(0, size, step):
-            data = storage.multipart_update(
-                data,
-                upload=fk.make_upload(content[pos : pos + step]),
-            )
-            assert data.size == size
-            assert data.storage_data.pop("uploaded") == min(size, pos + step)
-
-    def test_std_update_without_upload_field(self, storage: fk.Storage, faker: Faker):
-        data = storage.multipart_start(fk.Location(faker.file_name()), size=10)
-
-        with pytest.raises(fk.exc.MissingExtrasError):
-            storage.multipart_update(data)
-
-    def test_std_update_out_of_bound(self, storage: fk.Storage, faker: Faker):
-        """`multipart_update` controls size of the upload."""
-        content = b"hello world"
-        data = storage.multipart_start(
-            fk.Location(faker.file_name()),
-            size=len(content) // 2,
-        )
-
-        with pytest.raises(fk.exc.UploadOutOfBoundError):
-            storage.multipart_update(data, upload=fk.make_upload(content))
-
-    def test_std_update_missing(self, storage: fk.Storage, faker: Faker):
-        with pytest.raises(fk.exc.MissingFileError):
-            storage.multipart_update(
-                fk.FileData(fk.Location(faker.file_path())),
-                upload=fk.make_upload(b""),
-            )
-
-    def test_std_complete(self, storage: fk.Storage, faker: Faker):
-        """File parameters validated upon completion."""
-        content = b"hello world"
-        data = storage.multipart_start(fk.Location(faker.file_name()), content_type="text/plain", size=len(content))
-
-        with pytest.raises(fk.exc.UploadSizeMismatchError):
-            storage.multipart_complete(data)
-
-        data = storage.multipart_update(
-            data,
-            upload=fk.make_upload(content),
-        )
-        data = storage.multipart_complete(data)
-        assert data.size == len(content)
-        # assert data.hash == hashlib.md5(content).hexdigest()
-
-    def test_std_complete_wrong_hash(self, storage: fk.Storage, faker: Faker):
-        """File parameters validated upon completion."""
-        content = b"hello world"
-        data = storage.multipart_start(
-            fk.Location(faker.file_name()),
-            content_type="text/plain",
-            size=len(content),
-            hash="hello",
-        )
-
-        data = storage.multipart_update(data, upload=fk.make_upload(content))
-        with pytest.raises(fk.exc.UploadHashMismatchError):
-            storage.multipart_complete(data)
-
-    def test_std_complete_wrong_type(self, storage: fk.Storage, faker: Faker):
-        """File parameters validated upon completion."""
-        content = b'{"hello":"world"}'
-        data = storage.multipart_start(
-            fk.Location(faker.file_name()),
-            content_type="text/plain",
-            size=len(content),
-        )
-
-        data = storage.multipart_update(data, upload=fk.make_upload(content))
-        with pytest.raises(fk.exc.UploadTypeMismatchError):
-            storage.multipart_complete(data)
-
-    def test_std_complete_missing(self, storage: fk.Storage, faker: Faker):
-        with pytest.raises(fk.exc.MissingFileError):
-            storage.multipart_complete(
-                fk.FileData(fk.Location(faker.file_path())),
-                upload=fk.make_upload(b""),
-            )

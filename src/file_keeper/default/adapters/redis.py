@@ -45,7 +45,7 @@ class Uploader(fk.Uploader):
     """Redis uploader."""
 
     storage: RedisStorage
-    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.MULTIPART
+    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.RESUMABLE
 
     @override
     def upload(self, location: fk.types.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
@@ -75,7 +75,7 @@ class Uploader(fk.Uploader):
         )
 
     @override
-    def multipart_start(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+    def resumable_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
         """Create an empty file using `upload` method.
 
         Put `uploaded=0` into `data.storage_data` and copy the `location` from
@@ -84,19 +84,23 @@ class Uploader(fk.Uploader):
         Returns:
             New file data
         """
-        content_type = extras.get("content_type", fk.FileData.content_type)
         upload = fk.Upload(
             BytesIO(),
             location,
             0,
-            content_type,
+            fk.FileData.content_type,
         )
         tmp_result = self.upload(location, upload, extras)
 
-        return fk.FileData.from_dict(extras, location=tmp_result.location, storage_data={"uploaded": 0})
+        return fk.FileData.from_dict(
+            extras,
+            location=tmp_result.location,
+            size=size,
+            storage_data={"uploaded": 0, "resumable": True},
+        )
 
     @override
-    def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+    def resumable_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         """Synchronize `storage_data["uploaded"]` with actual value.
 
         Raises:
@@ -110,15 +114,21 @@ class Uploader(fk.Uploader):
         if not cfg.redis.hexists(cfg.bucket, data.location):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        data.storage_data["uploaded"] = cfg.redis.hstrlen(cfg.bucket, data.location)
+        result = fk.FileData.from_object(data)
+        result.storage_data["uploaded"] = cfg.redis.hstrlen(cfg.bucket, data.location)
 
-        return data
+        if result.storage_data["uploaded"] == result.size:
+            return self._resumable_complete(result)
+
+        return result
 
     @override
-    def multipart_update(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Add part to existing multipart upload.
+    def resumable_remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        return self.storage.remove(data)
 
-        The content of upload is taken from `extras["upload"]`.
+    @override
+    def resumable_resume(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
+        """Add part to existing multipart upload.
 
         In the end, `storage_data["uploaded"]` is set to the actial space taken
         by the storage in the system after the update.
@@ -136,15 +146,8 @@ class Uploader(fk.Uploader):
         if not cfg.redis.hexists(cfg.bucket, data.location):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        if "upload" not in extras:
-            raise fk.exc.MissingExtrasError("upload")
-        upload = fk.make_upload(extras["upload"])
-
         current: bytes = cfg.redis.hget(cfg.bucket, data.location)  # pyright: ignore[reportAssignmentType]
         size = len(current)
-
-        if "uploaded" not in data.storage_data:
-            data.storage_data["uploaded"] = size
 
         expected_size = size + upload.size
         if expected_size > data.size:
@@ -153,30 +156,18 @@ class Uploader(fk.Uploader):
         new_content: Any = current + upload.stream.read()
         cfg.redis.hset(cfg.bucket, data.location, new_content)
 
-        data.storage_data["uploaded"] = expected_size
-        return data
+        result = fk.FileData.from_object(data)
+        result.storage_data["uploaded"] = expected_size
+        if result.storage_data["uploaded"] == result.size:
+            return self._resumable_complete(result)
 
-    @override
-    def multipart_complete(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Finalize the upload.
+        return result
 
-        Raises:
-            MissingFileError: file does not exist
-            UploadSizeMismatchError: actual and expected sizes are different
-            UploadTypeMismatchError: actual and expected content types are different
-            UploadHashMismatchError: actual and expected content hashes are different
-
-        Returns:
-            File data
-        """
+    def _resumable_complete(self, data: fk.FileData) -> fk.FileData:
         cfg = self.storage.settings
         content = cast("bytes | None", cfg.redis.hget(cfg.bucket, data.location))
         if content is None:
             raise fk.exc.MissingFileError(self.storage, data.location)
-
-        size = len(content)
-        if size != data.size:
-            raise fk.exc.UploadSizeMismatchError(size, data.size)
 
         reader = fk.HashingReader(BytesIO(content))
 
@@ -191,7 +182,10 @@ class Uploader(fk.Uploader):
         if data.hash and data.hash != reader.get_hash():
             raise fk.exc.UploadHashMismatchError(reader.get_hash(), data.hash)
 
-        return fk.FileData(data.location, size, content_type, reader.get_hash())
+        result = fk.FileData.from_object(data, content_type=content_type, hash=reader.get_hash())
+        result.storage_data.pop("uploaded")
+        result.storage_data.pop("resumable")
+        return result
 
 
 class Reader(fk.Reader):

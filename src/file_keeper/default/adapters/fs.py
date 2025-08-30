@@ -57,7 +57,7 @@ class Uploader(fk.Uploader):
     storage: FsStorage
 
     # --8<-- [start:uploader_capability]
-    capabilities: fk.Capability = fk.Capability.CREATE
+    capabilities: fk.Capability = fk.Capability.CREATE | fk.Capability.RESUMABLE
     # --8<-- [end:uploader_capability]
 
     # --8<-- [start:uploader_method]
@@ -111,32 +111,28 @@ class Uploader(fk.Uploader):
     # --8<-- [end:uploader_impl_result]
 
     @override
-    def multipart_start(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+    def resumable_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
         """Create an empty file using `upload` method.
 
-        Put `uploaded=0` into `data.storage_data` and copy the `location` from
+        Put `uploaded=0` into `data.storage_data["fs"]` and copy the `location` from
         the newly created empty file.
 
         Returns:
             New file data
         """
-        upload = fk.Upload(
-            BytesIO(),
-            location,
-            0,
-            fk.FileData.content_type,
-        )
+        upload = fk.Upload(BytesIO(), location, 0, fk.FileData.content_type)
 
         tmp_result = self.upload(location, upload, extras)
 
         return fk.FileData.from_dict(
             extras,
             location=tmp_result.location,
-            storage_data=dict(tmp_result.storage_data, uploaded=0),
+            size=size,
+            storage_data={"resumable": True, "uploaded": 0},
         )
 
     @override
-    def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+    def resumable_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
         """Synchronize `storage_data["uploaded"]` with actual value.
 
         Raises:
@@ -150,19 +146,38 @@ class Uploader(fk.Uploader):
         if not os.path.exists(filepath):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        data.storage_data["uploaded"] = os.path.getsize(filepath)
+        result = fk.FileData.from_object(data)
+        result.storage_data["uploaded"] = os.path.getsize(filepath)
 
-        return data
+        if result.storage_data["uploaded"] == result.size:
+            result = self._resumable_complete(result)
+
+        return result
+
+    def _resumable_complete(self, data: fk.FileData):
+        filepath = self.storage.full_path(data.location)
+
+        with open(filepath, "rb") as src:
+            reader = fk.HashingReader(src)
+            content_type = magic.from_buffer(next(reader, b""), True)
+            if data.content_type and content_type != data.content_type:
+                raise fk.exc.UploadTypeMismatchError(
+                    content_type,
+                    data.content_type,
+                )
+            reader.exhaust()
+
+        if data.hash and data.hash != reader.get_hash():
+            raise fk.exc.UploadHashMismatchError(reader.get_hash(), data.hash)
+
+        result = fk.FileData.from_object(data, hash=reader.get_hash())
+        result.storage_data.pop("uploaded")
+        result.storage_data.pop("resumable")
+        return result
 
     @override
-    def multipart_update(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Add part to existing multipart upload.
-
-        The content of upload is taken from `extras["upload"]`.
-
-        By default, upload continues from the position specified by
-        `storage_data["uploaded"]`. But if `extras["position"]` is set, it is
-        used as starting point instead.
+    def resumable_resume(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
+        """Add part to existing resumable upload.
 
         In the end, `storage_data["uploaded"]` is set to the actial space taken
         by the file in the system after the update.
@@ -180,79 +195,29 @@ class Uploader(fk.Uploader):
         if not os.path.exists(filepath):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        if "uploaded" not in data.storage_data:
-            data.storage_data["uploaded"] = os.path.getsize(filepath)
-
-        # this is the point from which upload continues. It is not used often,
-        # but in specific scenario one can override previously uploaded part
-        # rewinding the `position`.
-        extras.setdefault("position", data.storage_data["uploaded"])
-        extras["position"] = int(extras["position"])
-
-        if "upload" not in extras:
-            raise fk.exc.MissingExtrasError("upload")
-
-        upload = fk.make_upload(extras["upload"])
-
-        # when re-uploading existing parts via explicit `position`, `uploaded`
-        # can be greater than `position` + part size. For example, existing
-        # content is `hello world` with size 11. One can override the first
-        # word by providing content `HELLO` and position 0, resulting in
-        # `position` + part size equal 5, while existing upload size remains
-        # 11.
-        expected_size = max(
-            extras["position"] + upload.size,
-            data.storage_data["uploaded"],
-        )
+        uploaded = data.storage_data["uploaded"]
+        expected_size = uploaded + upload.size
 
         if expected_size > data.size:
             raise fk.exc.UploadOutOfBoundError(expected_size, data.size)
 
         filepath = self.storage.full_path(data.location)
         with open(filepath, "rb+") as dest:
-            dest.seek(extras["position"])
+            dest.seek(uploaded)
             for chunk in upload.stream:
                 dest.write(chunk)
 
-        data.storage_data["uploaded"] = os.path.getsize(filepath)
-        return data
+        result = fk.FileData.from_object(data)
+        result.storage_data["uploaded"] = os.path.getsize(filepath)
+
+        if result.storage_data["uploaded"] == result.size:
+            result = self._resumable_complete(result)
+
+        return result
 
     @override
-    def multipart_complete(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Finalize the upload.
-
-        Raises:
-            MissingFileError: file does not exist
-            UploadSizeMismatchError: actual and expected sizes are different
-            UploadTypeMismatchError: actual and expected content types are different
-            UploadHashMismatchError: actual and expected content hashes are different
-
-        Returns:
-            File data
-        """
-        filepath = self.storage.full_path(data.location)
-
-        if not os.path.exists(filepath):
-            raise fk.exc.MissingFileError(self.storage, data.location)
-
-        size = os.path.getsize(filepath)
-        if size != data.size:
-            raise fk.exc.UploadSizeMismatchError(size, data.size)
-
-        with open(filepath, "rb") as src:
-            reader = fk.HashingReader(src)
-            content_type = magic.from_buffer(next(reader, b""), True)
-            if data.content_type and content_type != data.content_type:
-                raise fk.exc.UploadTypeMismatchError(
-                    content_type,
-                    data.content_type,
-                )
-            reader.exhaust()
-
-        if data.hash and data.hash != reader.get_hash():
-            raise fk.exc.UploadHashMismatchError(reader.get_hash(), data.hash)
-
-        return fk.FileData(data.location, size, content_type, reader.get_hash())
+    def resumable_remove(self, data: fk.FileData, extras: dict[str, Any]):
+        return self.storage.remove(data, **extras)
 
 
 # --8<-- [start:reader_impl]

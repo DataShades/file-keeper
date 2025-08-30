@@ -42,6 +42,15 @@ def storage(faker: Faker, storage_settings: dict[str, Any]):
         keys = [{"Key": obj["Key"]} for obj in items]  # pyright: ignore[reportTypedDictNotRequiredAccess]
         client.delete_objects(Bucket=storage.settings.bucket, Delete={"Objects": keys})  # pyright: ignore[reportArgumentType]
 
+    result = client.list_multipart_uploads(Bucket=storage.settings.bucket)
+    if items := result.get("Uploads"):
+        for upload in items:
+            if "Key" not in upload or "UploadId" not in upload:
+                continue
+            client.abort_multipart_upload(
+                Bucket=storage.settings.bucket, Key=upload["Key"], UploadId=upload["UploadId"]
+            )
+
     return storage
 
 

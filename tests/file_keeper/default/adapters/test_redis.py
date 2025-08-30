@@ -4,10 +4,8 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from faker import Faker
 from redis import Redis
 
-import file_keeper as fk
 import file_keeper.default.adapters.redis as redis
 
 from . import standard
@@ -49,17 +47,6 @@ class TestSettings:
         conn = Redis.from_url(url)
         cfg = Settings(bucket="test", redis=conn)
         assert cfg.redis is conn
-
-
-class TestUploaderMultipart(standard.MultiparterWithUploaded):
-    def test_refresh(self, faker: Faker, storage: Storage):
-        """`multipart_refresh` synchronized filesize."""
-        content: Any = faker.binary(10)
-        data = storage.multipart_start(fk.types.Location(faker.file_name()), size=len(content))
-        storage.settings.redis.hset(storage.settings.bucket, data.location, content)
-
-        data = storage.multipart_refresh(data)
-        assert data.storage_data["uploaded"] == len(content)
 
 
 class TestStorage(standard.Standard): ...
