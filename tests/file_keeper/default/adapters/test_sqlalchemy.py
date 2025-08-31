@@ -25,6 +25,7 @@ def storage(faker: Faker, storage_settings: dict[str, Any]):
         "location_column": "location",
         "content_column": "content",
         "table_name": "file-keeper",
+        "path": faker.file_path(extension=[]),
     }
 
     settings.update(storage_settings)

@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from faker import Faker
 from redis import Redis
 
 import file_keeper.default.adapters.redis as redis
@@ -16,11 +17,12 @@ REDIS_URL = "redis://localhost:6379"
 
 
 @pytest.fixture
-def storage(tmp_path: Path, storage_settings: dict[str, Any]):
+def storage(tmp_path: Path, faker: Faker, storage_settings: dict[str, Any]):
     settings = {
         "name": "test",
         "bucket": str(tmp_path),
         "url": f"{REDIS_URL}/1",
+        "path": faker.file_path(extension=[]),
     }
     settings.update(storage_settings)
 
