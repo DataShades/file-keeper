@@ -49,14 +49,6 @@ class Uploader(fk.Uploader):
 
     @override
     def upload(self, location: fk.types.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
-        """Upload file to into location within storage bucket.
-
-        Raises:
-            ExistingFileError: file exists and overrides are not allowed
-
-        Returns:
-            New file data
-        """
         cfg = self.storage.settings
 
         if not cfg.override_existing and cfg.redis.hexists(cfg.bucket, location):
@@ -76,14 +68,6 @@ class Uploader(fk.Uploader):
 
     @override
     def resumable_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
-        """Create an empty file using `upload` method.
-
-        Put `uploaded=0` into `data.storage_data` and copy the `location` from
-        the newly created empty file.
-
-        Returns:
-            New file data
-        """
         upload = fk.Upload(
             BytesIO(),
             location,
@@ -101,14 +85,6 @@ class Uploader(fk.Uploader):
 
     @override
     def resumable_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Synchronize `storage_data["uploaded"]` with actual value.
-
-        Raises:
-            MissingFileError: location does not exist
-
-        Returns:
-            Updated file data
-        """
         cfg = self.storage.settings
 
         if not cfg.redis.hexists(cfg.bucket, data.location):
@@ -128,19 +104,6 @@ class Uploader(fk.Uploader):
 
     @override
     def resumable_resume(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
-        """Add part to existing multipart upload.
-
-        In the end, `storage_data["uploaded"]` is set to the actial space taken
-        by the storage in the system after the update.
-
-        Raises:
-            MissingFileError: file is missing
-            MissingExtrasError: extra parameters are missing
-            UploadOutOfBoundError: part exceeds allocated file size
-
-        Returns:
-            Updated file data
-        """
         cfg = self.storage.settings
 
         if not cfg.redis.hexists(cfg.bucket, data.location):
@@ -196,20 +159,10 @@ class Reader(fk.Reader):
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> IO[bytes]:
-        """Return file open in binary-read mode.
-
-        Returns:
-            File content iterator
-        """
         return BytesIO(self.content(data, extras))
 
     @override
     def content(self, data: fk.FileData, extras: dict[str, Any]) -> bytes:
-        """Return content of the file.
-
-        Raises:
-            MissingFileError: file does not exist
-        """
         cfg = self.storage.settings
         content = cast("bytes | None", cfg.redis.hget(cfg.bucket, data.location))
         if content is None:
@@ -234,12 +187,6 @@ class Manager(fk.Manager):
 
     @override
     def copy(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Copy file inside the storage.
-
-        Raises:
-            ExistingFileError: file exists and overrides are not allowed
-            MissingFileError: source file does not exist
-        """
         cfg = self.storage.settings
 
         if not cfg.redis.hexists(cfg.bucket, data.location):
@@ -255,12 +202,6 @@ class Manager(fk.Manager):
 
     @override
     def move(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Move file to a different location inside the storage.
-
-        Raises:
-            ExistingFileError: file exists and overrides are not allowed
-            MissingFileError: source file does not exist
-        """
         cfg = self.storage.settings
 
         if not cfg.redis.hexists(cfg.bucket, data.location):
@@ -280,31 +221,23 @@ class Manager(fk.Manager):
 
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        """Check if file exists."""
         cfg = self.storage.settings
         return bool(cfg.redis.hexists(cfg.bucket, data.location))
 
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        """Remove the file."""
         cfg = self.storage.settings
         result = cfg.redis.hdel(cfg.bucket, data.location)
         return bool(result)
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
-        """Discover filenames under storage path."""
         cfg = self.storage.settings
         for key in cast("Iterable[bytes]", cfg.redis.hkeys(cfg.bucket)):
             yield key.decode()
 
     @override
     def analyze(self, location: fk.types.Location, extras: dict[str, Any]) -> fk.FileData:
-        """Return all details about location.
-
-        Raises:
-            MissingFileError: file does not exist
-        """
         cfg = self.storage.settings
         value: Any = cfg.redis.hget(cfg.bucket, location)
         if value is None:

@@ -146,7 +146,6 @@ class Uploader(fk.Uploader):
 
     @override
     def multipart_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
-        """Initiate a multipart upload session."""
         filepath = self.storage.full_path(location)
         client = self.storage.settings.client
 
@@ -310,11 +309,13 @@ class Manager(fk.Manager):
 
     @override
     def signed(self, action: fk.types.SignedAction, duration: int, location: fk.Location, extras: dict[str, Any]):
-        """Generate a signed URL for the given action and duration.
+        """Make an URL for signed action.
 
         This method uses `generate_presigned_url` internally, which does not
         support content restrictions. If you need to enforce content
         type/size/hash validation, consider `generate_presigned_post`.
+
+        @inherit_doc
         """
         client = self.storage.settings.client
         method = {
@@ -409,7 +410,6 @@ class Manager(fk.Manager):
 
     @override
     def analyze(self, location: fk.types.Location, extras: dict[str, Any]) -> fk.FileData:
-        """Return all details about location."""
         filepath = self.storage.full_path(location)
         client = self.storage.settings.client
 

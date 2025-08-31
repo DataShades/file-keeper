@@ -96,13 +96,7 @@ class Uploader(fk.Uploader):
     capabilities = fk.Capability.CREATE | fk.Capability.MULTIPART
 
     @override
-    def upload(
-        self,
-        location: fk.Location,
-        upload: fk.Upload,
-        extras: dict[str, Any],
-    ) -> fk.FileData:
-        """Upload a file to Azure Blob Storage."""
+    def upload(self, location: fk.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         filepath = self.storage.full_path(location)
         blob = self.storage.settings.container.get_blob_client(filepath)
 
@@ -124,7 +118,6 @@ class Uploader(fk.Uploader):
 
     @override
     def multipart_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
-        """Start a multipart upload."""
         return fk.FileData.from_dict(
             extras,
             location=location,
@@ -134,7 +127,6 @@ class Uploader(fk.Uploader):
 
     @override
     def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Refresh the status of an in-progress multipart upload."""
         filepath = self.storage.full_path(data.location)
         blob = self.storage.settings.container.get_blob_client(filepath)
 
@@ -156,7 +148,6 @@ class Uploader(fk.Uploader):
 
     @override
     def multipart_remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        """Remove an in-progress multipart upload."""
         filepath = self.storage.full_path(data.location)
         blob_client = self.storage.settings.container.get_blob_client(filepath)
         try:
@@ -168,7 +159,6 @@ class Uploader(fk.Uploader):
 
     @override
     def multipart_complete(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Complete a multipart upload."""
         filepath = self.storage.full_path(data.location)
         blob = self.storage.settings.container.get_blob_client(filepath)
 
@@ -181,7 +171,6 @@ class Uploader(fk.Uploader):
 
     @override
     def multipart_update(self, data: fk.FileData, upload: fk.Upload, part: int, extras: dict[str, Any]) -> fk.FileData:
-        """Upload a part of a multipart upload."""
         size = data.storage_data["uploaded"] + upload.size
         if size > data.size:
             raise fk.exc.UploadOutOfBoundError(size, data.size)
@@ -242,7 +231,6 @@ class Manager(fk.Manager):
 
     @override
     def copy(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Copy a file to a new location."""
         src_filepath = self.storage.full_path(data.location)
         blob = self.storage.settings.container.get_blob_client(src_filepath)
         if not blob.exists():
@@ -261,14 +249,14 @@ class Manager(fk.Manager):
 
     @override
     def move(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Move a file to a new location."""
+
         self.copy(location, data, extras)
         self.remove(data, extras)
         return self.analyze(location, extras)
 
     @override
     def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
-        """Analyze a file and return its metadata."""
+
         filepath = self.storage.full_path(location)
         blob = self.storage.settings.container.get_blob_client(filepath)
         if not blob.exists():
@@ -285,14 +273,14 @@ class Manager(fk.Manager):
 
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        """Check if a file exists."""
+
         filepath = self.storage.full_path(data.location)
         blob_client = self.storage.settings.container.get_blob_client(filepath)
         return blob_client.exists()
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
-        """Scan and yield all file locations in the storage."""
+
         path = self.storage.settings.path
 
         for name in self.storage.settings.container.list_blob_names():
@@ -300,7 +288,7 @@ class Manager(fk.Manager):
 
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        """Remove a file from the storage."""
+
         filepath = self.storage.full_path(data.location)
         blob_client = self.storage.settings.container.get_blob_client(filepath)
         if not blob_client.exists():

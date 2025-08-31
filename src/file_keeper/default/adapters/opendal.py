@@ -127,14 +127,6 @@ class Reader(fk.Reader):
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
-        """Return file open in binary-read mode.
-
-        Raises:
-            MissingFileError: file does not exist
-
-        Returns:
-            File content iterator
-        """
         location = self.storage.full_path(data.location)
 
         try:
@@ -161,12 +153,6 @@ class Manager(fk.Manager):
 
     @override
     def copy(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Copy file inside the storage.
-
-        Raises:
-            ExistingFileError: file exists and overrides are not allowed
-            MissingFileError: source file does not exist
-        """
         op = self.storage.settings.operator
 
         if not self.exists(data, extras):
@@ -184,12 +170,6 @@ class Manager(fk.Manager):
 
     @override
     def move(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Move file to a different location inside the storage.
-
-        Raises:
-            ExistingFileError: file exists and overrides are not allowed
-            MissingFileError: source file does not exist
-        """
         op = self.storage.settings.operator
 
         if not self.exists(data, extras):
@@ -207,7 +187,6 @@ class Manager(fk.Manager):
 
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        """Check if file exists."""
         location = self.storage.full_path(data.location)
 
         try:
@@ -219,7 +198,6 @@ class Manager(fk.Manager):
 
     @override
     def analyze(self, location: fk.types.Location, extras: dict[str, Any]) -> fk.FileData:
-        """Check if file exists."""
         stream = self.storage.stream(fk.FileData(location))
 
         reader = fk.HashingReader(fk.IterableBytesReader(stream))
@@ -234,12 +212,7 @@ class Manager(fk.Manager):
         )
 
     @override
-    def remove(
-        self,
-        data: fk.FileData,
-        extras: dict[str, Any],
-    ) -> bool:
-        """Remove the file."""
+    def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         op = self.storage.settings.operator
         location = self.storage.full_path(data.location)
 
@@ -253,7 +226,6 @@ class Manager(fk.Manager):
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
-        """Discover filenames in the storage."""
         for entry in self.storage.settings.operator.scan(self.storage.settings.path):
             stat = self.storage.settings.operator.stat(entry.path)
             if opendal.EntryMode.is_file(stat.mode):
@@ -261,14 +233,6 @@ class Manager(fk.Manager):
 
     @override
     def append(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
-        """Append content to existing file.
-
-        If final content type is not supported by the storage, original file is
-        removed.
-
-        Raises:
-            MissingFileError: file does not exist
-        """
         op = self.storage.settings.operator
 
         if not self.exists(data, extras):

@@ -103,7 +103,6 @@ class Uploader(fk.Uploader):
 
     @override
     def upload(self, location: fk.types.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
-        """Upload a file to GCS."""
         filepath = self.storage.full_path(location)
         bucket = self.storage.settings.bucket
         blob = bucket.blob(filepath)
@@ -180,7 +179,6 @@ class Uploader(fk.Uploader):
 
     @override
     def resumable_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:  # noqa: C901
-        """Refresh a resumable upload session."""
         if not data.storage_data.get("resumable"):
             msg = "Not a resumable data"
             raise fk.exc.StorageDataError(msg)
@@ -231,7 +229,6 @@ class Uploader(fk.Uploader):
 
     @override
     def resumable_resume(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
-        """Resume a resumable upload session."""
         gcs_data = data.storage_data["gcs_resumable"]
 
         first_byte = gcs_data["uploaded"]
@@ -274,7 +271,6 @@ class Uploader(fk.Uploader):
 
     @override
     def resumable_remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        """Cancel a resumable upload session."""
         gcs_data = data.storage_data["gcs_resumable"]
         resp = urllib3.request("DELETE", gcs_data["session_url"])
         cancel_status = 499
@@ -290,7 +286,6 @@ class Reader(fk.Reader):
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
-        """Stream a file from GCS."""
         name = self.storage.full_path(data.location)
         bucket = self.storage.settings.bucket
         blob = bucket.blob(name)
@@ -328,7 +323,6 @@ class Manager(fk.Manager):
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
-        """Scan the storage for files."""
         bucket = self.storage.settings.bucket
 
         for blob in cast(Iterable[Blob], bucket.list_blobs()):
@@ -337,7 +331,6 @@ class Manager(fk.Manager):
 
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        """Check if a file exists in GCS."""
         filepath = self.storage.full_path(data.location)
         bucket = self.storage.settings.bucket
         blob = bucket.blob(filepath)
@@ -345,7 +338,6 @@ class Manager(fk.Manager):
 
     @override
     def move(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Move a file in GCS."""
         src_filepath = self.storage.full_path(data.location)
         dest_filepath = self.storage.full_path(location)
 
@@ -363,7 +355,6 @@ class Manager(fk.Manager):
 
     @override
     def copy(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Copy a file in GCS."""
         src_filepath = self.storage.full_path(data.location)
         dest_filepath = self.storage.full_path(location)
 

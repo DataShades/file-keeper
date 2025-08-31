@@ -112,14 +112,6 @@ class Uploader(fk.Uploader):
 
     @override
     def resumable_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
-        """Create an empty file using `upload` method.
-
-        Put `uploaded=0` into `data.storage_data["fs"]` and copy the `location` from
-        the newly created empty file.
-
-        Returns:
-            New file data
-        """
         upload = fk.Upload(BytesIO(), location, 0, fk.FileData.content_type)
 
         tmp_result = self.upload(location, upload, extras)
@@ -133,14 +125,6 @@ class Uploader(fk.Uploader):
 
     @override
     def resumable_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Synchronize `storage_data["uploaded"]` with actual value.
-
-        Raises:
-            MissingFileError: location does not exist
-
-        Returns:
-            Updated file data
-        """
         filepath = self.storage.full_path(data.location)
 
         if not os.path.exists(filepath):
@@ -177,19 +161,6 @@ class Uploader(fk.Uploader):
 
     @override
     def resumable_resume(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
-        """Add part to existing resumable upload.
-
-        In the end, `storage_data["uploaded"]` is set to the actial space taken
-        by the file in the system after the update.
-
-        Raises:
-            UploadOutOfBoundError: part exceeds allocated file size
-            MissingExtrasError: extra parameters are missing
-            MissingFileError: file is missing
-
-        Returns:
-            Updated file data
-        """
         filepath = self.storage.full_path(data.location)
 
         if not os.path.exists(filepath):
@@ -229,14 +200,6 @@ class Reader(fk.Reader):
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> IO[bytes]:
-        """Return file open in binary-read mode.
-
-        Raises:
-            MissingFileError: file does not exist
-
-        Returns:
-            File content iterator
-        """
         filepath = self.storage.full_path(data.location)
         if not os.path.exists(filepath):
             raise fk.exc.MissingFileError(self.storage, data.location)
@@ -267,15 +230,6 @@ class Manager(fk.Manager):
     # --8<-- [start:manager_compose]
     @override
     def compose(self, location: fk.types.Location, datas: Iterable[fk.FileData], extras: dict[str, Any]) -> fk.FileData:
-        """Combine multipe files inside the storage into a new one.
-
-        If final content type is not supported by the storage, the file is
-        removed.
-
-        Raises:
-            ExistingFileError: file exists and overrides are not allowed
-            MissingFileError: source file does not exist
-        """
         dest = self.storage.full_path(location)
 
         if os.path.exists(dest) and not self.storage.settings.override_existing:
@@ -302,14 +256,6 @@ class Manager(fk.Manager):
     # --8<-- [start:manager_append]
     @override
     def append(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
-        """Append content to existing file.
-
-        If final content type is not supported by the storage, original file is
-        removed.
-
-        Raises:
-            MissingFileError: file does not exist
-        """
         dest = self.storage.full_path(data.location)
         if not os.path.exists(dest):
             raise fk.exc.MissingFileError(self.storage, data.location)
@@ -324,12 +270,6 @@ class Manager(fk.Manager):
     # --8<-- [start:manager_copy]
     @override
     def copy(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Copy file inside the storage.
-
-        Raises:
-            ExistingFileError: file exists and overrides are not allowed
-            MissingFileError: source file does not exist
-        """
         src = self.storage.full_path(data.location)
         dest = self.storage.full_path(location)
 
@@ -347,12 +287,6 @@ class Manager(fk.Manager):
     # --8<-- [start:manager_move]
     @override
     def move(self, location: fk.types.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        """Move file to a different location inside the storage.
-
-        Raises:
-            ExistingFileError: file exists and overrides are not allowed
-            MissingFileError: source file does not exist
-        """
         src = self.storage.full_path(data.location)
         dest = self.storage.full_path(location)
 
@@ -373,7 +307,6 @@ class Manager(fk.Manager):
     # --8<-- [start:manager_exists]
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        """Check if file exists."""
         filepath = self.storage.full_path(data.location)
         return os.path.exists(filepath)
 
@@ -382,7 +315,6 @@ class Manager(fk.Manager):
     # --8<-- [start:manager_remove]
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-        """Remove the file."""
         filepath = self.storage.full_path(data.location)
         if not os.path.exists(filepath):
             return False
@@ -395,7 +327,6 @@ class Manager(fk.Manager):
     # --8<-- [start:manager_scan]
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
-        """Discover filenames under storage path."""
         path = self.storage.settings.path
         search_path = os.path.join(path, "**")
 
@@ -409,11 +340,6 @@ class Manager(fk.Manager):
     # --8<-- [start:manager_analyze]
     @override
     def analyze(self, location: fk.types.Location, extras: dict[str, Any]) -> fk.FileData:
-        """Return all details about location.
-
-        Raises:
-            MissingFileError: file does not exist
-        """
         filepath = self.storage.full_path(location)
         if not os.path.exists(filepath):
             raise fk.exc.MissingFileError(self.storage, location)
