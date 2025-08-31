@@ -58,7 +58,7 @@ class Settings(fk.Settings):
 
         # GCS ignores first slash and keeping it complicates work for
         # os.path.relpath
-        self.path = self.path.lstrip("/")
+        self.path = self.path.strip("/")
 
         if not self.client:
             if not self.credentials and self.credentials_file:
@@ -323,11 +323,17 @@ class Manager(fk.Manager):
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
+        path = self.storage.settings.path
+        # do not add slash when path empty, because it will change it from
+        # "current directory" to the "root directory"
+        if path:
+            path = path.rstrip("/") + "/"
+
         bucket = self.storage.settings.bucket
 
-        for blob in cast(Iterable[Blob], bucket.list_blobs()):
+        for blob in cast(Iterable[Blob], bucket.list_blobs(prefix=path)):
             name: str = cast(str, blob.name)
-            yield os.path.relpath(name, self.storage.settings.path)
+            yield os.path.relpath(name, path)
 
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:

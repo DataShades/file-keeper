@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from faker import Faker
 
 import file_keeper as fk
 import file_keeper.default.adapters.zip as zip
@@ -15,8 +16,8 @@ Storage = zip.ZipStorage
 
 
 @pytest.fixture
-def storage(tmp_path: Path, storage_settings: dict[str, Any]):
-    settings = {"name": "test", "path": f"{tmp_path}/test.zip"}
+def storage(faker: Faker, tmp_path: Path, storage_settings: dict[str, Any]):
+    settings = {"name": "test", "zip_path": f"{tmp_path}/test.zip", "path": faker.file_path(extension=[])}
     settings.update(storage_settings)
 
     return Storage(settings)
@@ -28,7 +29,7 @@ class TestSettings:
         with pytest.raises(fk.exc.MissingStorageConfigurationError):
             Settings()
 
-        Settings(path=str(tmp_path))
+        Settings(zip_path=str(tmp_path))
 
 
 class TestStorage(standard.Standard): ...

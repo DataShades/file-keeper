@@ -244,6 +244,11 @@ class Manager(fk.Manager):
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         stmt = sa.select(self.storage.settings.location).select_from(self.storage.settings.table)
         path = self.storage.settings.path
+        # do not add slash when path empty, because it will change it from
+        # "current directory" to the "root directory"
+        if path:
+            path = path.rstrip("/") + "/"
+
         with self.storage.settings.engine.connect() as conn:
             for row in conn.execute(stmt):
                 if row[0].startswith(path):

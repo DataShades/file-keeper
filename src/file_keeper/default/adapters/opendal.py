@@ -45,6 +45,10 @@ class Settings(fk.Settings):
     def __post_init__(self, **kwargs: Any):
         super().__post_init__(**kwargs)
 
+        # operator has separate parameter for the root and `path` must be
+        # relative to it
+        self.path = self.path.lstrip("/")
+
         if self.operator is None:  # pyright: ignore[reportUnnecessaryComparison]
             if not self.scheme:
                 raise fk.exc.MissingStorageConfigurationError(self.name, "scheme")
@@ -226,10 +230,17 @@ class Manager(fk.Manager):
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
-        for entry in self.storage.settings.operator.scan(self.storage.settings.path):
+        path = self.storage.settings.path
+        # do not add slash when path empty, because it will change it from
+        # "current directory" to the "root directory"
+        if path:
+            path = path.rstrip("/") + "/"
+
+        for entry in self.storage.settings.operator.scan(path):
             stat = self.storage.settings.operator.stat(entry.path)
+
             if opendal.EntryMode.is_file(stat.mode):
-                yield entry.path
+                yield os.path.relpath(entry.path, path)
 
     @override
     def append(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:

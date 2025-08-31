@@ -734,6 +734,8 @@ class Storage(ABC):  # noqa: B024
     def upload(self, location: types.Location, upload: Upload, /, **kwargs: Any) -> data.FileData:
         """Upload file using single stream.
 
+        Requires [CREATE][file_keeper.Capability.CREATE] capability.
+
         This is the simplest way to upload file into the storage. It uses
         single stream to transfer the whole file. If upload fails, no file is
         created in the storage.
@@ -764,24 +766,23 @@ class Storage(ABC):  # noqa: B024
             FileData object with details about the uploaded file.
 
         Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                CREATE operation
             exceptions.ExistingFileError: when file already exists and
                 [override_existing][file_keeper.Settings.override_existing] is False
             exceptions.LocationError: when location is outside of the storage's path
-
-            exceptions.UploadError: when upload fails
-            exceptions.UploadHashMismatchError: when hash of the uploaded file
-                does not match the expected hash
-            exceptions.UploadTypeMismatchError: when content type of the
-                uploaded file does not match the expected content type
-            exceptions.UnsupportedOperationError: when storage does not support
-                CREATE operation
-
         """
         return self.uploader.upload(location, upload, kwargs)
 
     @requires_capability(Capability.RESUMABLE)
     def resumable_start(self, location: types.Location, size: int, /, **kwargs: Any) -> data.FileData:
         """Prepare everything for resumable upload.
+
+        /// warning
+        This operation is not stabilized yet.
+        ///
+
+        Requires [RESUMABLE][file_keeper.Capability.RESUMABLE] capability.
 
         `content_type` and `hash` are optional. When any of those provided, it
         will be used to verify the integrity of the upload. If they are
@@ -799,6 +800,12 @@ class Storage(ABC):  # noqa: B024
     def resumable_refresh(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
         """Show details of the incomplete resumable upload.
 
+        /// warning
+        This operation is not stabilized yet.
+        ///
+
+        Requires [RESUMABLE][file_keeper.Capability.RESUMABLE] capability.
+
         Args:
             data: The FileData object containing the upload metadata.
             **kwargs: Additional metadata for the upload.
@@ -808,6 +815,12 @@ class Storage(ABC):  # noqa: B024
     @requires_capability(Capability.RESUMABLE)
     def resumable_resume(self, data: data.FileData, upload: Upload, /, **kwargs: Any) -> data.FileData:
         """Resume the interrupted resumable upload.
+
+        /// warning
+        This operation is not stabilized yet.
+        ///
+
+        Requires [RESUMABLE][file_keeper.Capability.RESUMABLE] capability.
 
         Args:
             data: The FileData object containing the upload metadata.
@@ -820,6 +833,12 @@ class Storage(ABC):  # noqa: B024
     def resumable_remove(self, data: data.FileData, /, **kwargs: Any) -> bool:
         """Remove incomplete resumable upload.
 
+        /// warning
+        This operation is not stabilized yet.
+        ///
+
+        Requires [RESUMABLE][file_keeper.Capability.RESUMABLE] capability.
+
         Args:
             data: The FileData object containing the upload metadata.
             **kwargs: Additional metadata for the upload.
@@ -829,6 +848,12 @@ class Storage(ABC):  # noqa: B024
     @requires_capability(Capability.MULTIPART)
     def multipart_start(self, location: types.Location, size: int, /, **kwargs: Any) -> data.FileData:
         """Prepare everything for multipart upload.
+
+        /// warning
+        This operation is not stabilized yet.
+        ///
+
+        Requires [MULTIPART][file_keeper.Capability.MULTIPART] capability.
 
         `content_type` and `hash` are optional. When any of those provided, it
         will be used to verify the integrity of the upload. If they are
@@ -846,6 +871,12 @@ class Storage(ABC):  # noqa: B024
     def multipart_refresh(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
         """Show details of the incomplete upload.
 
+        /// warning
+        This operation is not stabilized yet.
+        ///
+
+        Requires [MULTIPART][file_keeper.Capability.MULTIPART] capability.
+
         Args:
             data: The FileData object containing the upload metadata.
             **kwargs: Additional metadata for the upload.
@@ -855,6 +886,12 @@ class Storage(ABC):  # noqa: B024
     @requires_capability(Capability.MULTIPART)
     def multipart_update(self, data: data.FileData, upload: Upload, part: int, /, **kwargs: Any) -> data.FileData:
         """Add data to the incomplete upload.
+
+        /// warning
+        This operation is not stabilized yet.
+        ///
+
+        Requires [MULTIPART][file_keeper.Capability.MULTIPART] capability.
 
         Args:
             data: The FileData object containing the upload metadata.
@@ -868,6 +905,12 @@ class Storage(ABC):  # noqa: B024
     def multipart_complete(self, data: data.FileData, /, **kwargs: Any) -> data.FileData:
         """Verify file integrity and finalize incomplete upload.
 
+        /// warning
+        This operation is not stabilized yet.
+        ///
+
+        Requires [MULTIPART][file_keeper.Capability.MULTIPART] capability.
+
         Args:
             data: The FileData object containing the upload metadata.
             **kwargs: Additional metadata for the upload.
@@ -877,6 +920,12 @@ class Storage(ABC):  # noqa: B024
     @requires_capability(Capability.MULTIPART)
     def multipart_remove(self, data: data.FileData, /, **kwargs: Any) -> bool:
         """Interrupt and remove incomplete upload.
+
+        /// warning
+        This operation is not stabilized yet.
+        ///
+
+        Requires [MULTIPART][file_keeper.Capability.MULTIPART] capability.
 
         Args:
             data: The FileData object containing the upload metadata.
@@ -888,9 +937,14 @@ class Storage(ABC):  # noqa: B024
     def exists(self, data: data.FileData, /, **kwargs: Any) -> bool:
         """Check if file exists in the storage.
 
+        Requires [EXISTS][file_keeper.Capability.EXISTS] capability.
+
         Args:
             data: The FileData object representing the file to check.
             **kwargs: Additional metadata for the operation.
+
+        Returns:
+            True if file exists, False otherwise.
         """
         return self.manager.exists(data, kwargs)
 
@@ -898,9 +952,14 @@ class Storage(ABC):  # noqa: B024
     def remove(self, data: data.FileData, /, **kwargs: Any) -> bool:
         """Remove file from the storage.
 
+        Requires [REMOVE][file_keeper.Capability.REMOVE] capability.
+
         Args:
             data: The FileData object representing the file to remove.
             **kwargs: Additional metadata for the operation.
+
+        Returns:
+            True if file was removed, False otherwise.
         """
         return self.manager.remove(data, kwargs)
 
@@ -908,8 +967,14 @@ class Storage(ABC):  # noqa: B024
     def scan(self, **kwargs: Any) -> Iterable[str]:
         """List all locations(filenames) in storage.
 
+        Requires [SCAN][file_keeper.Capability.SCAN] capability.
+
+        This operation lists all locations (filenames) in the storage if they
+        start with the configured [path][file_keeper.Settings.path].
+
         Args:
             **kwargs: Additional metadata for the operation.
+
         """
         return self.manager.scan(kwargs)
 

@@ -50,7 +50,7 @@ class Settings(fk.Settings):
     def __post_init__(self, **kwargs: Any):
         super().__post_init__(**kwargs)
 
-        self.path = self.path.lstrip("/")
+        self.path = self.path.strip("/")
 
         if not self.client:
             if self.account_name:
@@ -249,14 +249,12 @@ class Manager(fk.Manager):
 
     @override
     def move(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-
         self.copy(location, data, extras)
         self.remove(data, extras)
         return self.analyze(location, extras)
 
     @override
     def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
-
         filepath = self.storage.full_path(location)
         blob = self.storage.settings.container.get_blob_client(filepath)
         if not blob.exists():
@@ -273,22 +271,23 @@ class Manager(fk.Manager):
 
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-
         filepath = self.storage.full_path(data.location)
         blob_client = self.storage.settings.container.get_blob_client(filepath)
         return blob_client.exists()
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
-
         path = self.storage.settings.path
+        # do not add slash when path empty, because it will change it from
+        # "current directory" to the "root directory"
+        if path:
+            path = path.rstrip("/") + "/"
 
-        for name in self.storage.settings.container.list_blob_names():
+        for name in self.storage.settings.container.list_blob_names(name_starts_with=path):
             yield os.path.relpath(name, path)
 
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
-
         filepath = self.storage.full_path(data.location)
         blob_client = self.storage.settings.container.get_blob_client(filepath)
         if not blob_client.exists():

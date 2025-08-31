@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import pytest
 import urllib3
 from faker import Faker
@@ -209,6 +210,16 @@ class Creator:
         with pytest.raises(fk.exc.ExistingFileError):
             storage.upload(result.location, fk.make_upload(b""))
 
+    @pytest.mark.expect_storage_capability(fk.Capability.CREATE, fk.Capability.STREAM)
+    @pytest.mark.fk_storage_option("override_existing", True)
+    def test_create_replace_existing(self, storage: fk.Storage, faker: Faker):
+        """Overrides can be explicitly enabled."""
+        origin = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b"hello world"))
+        overriden = storage.upload(origin.location, fk.make_upload(b"bye"))
+
+        assert origin.location == overriden.location, "Location of uploaded file was changed"
+        assert storage.content(overriden) == b"bye", "Unexpected content of the file"
+
     @pytest.mark.expect_storage_capability(fk.Capability.CREATE)
     def test_create_directory_allowed(self, storage: fk.Storage, faker: Faker):
         """Can upload into nested dirs."""
@@ -224,30 +235,9 @@ class Creator:
             storage.upload(fk.Location(path), fk.make_upload(b""))
 
 
-    @pytest.mark.expect_storage_capability(fk.Capability.CREATE, fk.Capability.STREAM)
-    @pytest.mark.fk_storage_option("override_existing", True)
-    def test_create_replace_existing(self, storage: fk.Storage, faker: Faker):
-        """Overrides can be explicitly enabled."""
-        origin = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b"hello world"))
-        overriden = storage.upload(origin.location, fk.make_upload(b"bye"))
-
-        assert origin.location == overriden.location, "Location of uploaded file was changed"
-        assert storage.content(overriden) == b"bye", "Unexpected content of the file"
-
-    # @pytest.mark.expect_storage_capability(fk.Capability.CREATE)
-    # def test_create_hash(self, storage: fk.Storage, faker: Faker):
-    #     """Hash computed using full content."""
-    #     result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
-    #     assert result.hash == hashlib.md5().hexdigest(), "Content hash of empty file differs from expected value"
-
-    #     content = faker.binary(100)
-    #     result = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
-    #     assert result.hash == hashlib.md5(content).hexdigest(), "Content hash differs from expected value"
-
-
 class Exister:
     @pytest.mark.expect_storage_capability(fk.Capability.EXISTS)
-    def test_exist_capabilities(self, storage: fk.Storage):
+    def test_exists_capabilities(self, storage: fk.Storage):
         """Existence supports EXISTS capability."""
         assert storage.supports(fk.Capability.EXISTS), "Does not support EXISTS"
 
@@ -564,6 +554,7 @@ class Scanner:
 
     @pytest.mark.expect_storage_capability(fk.Capability.SCAN)
     def test_scan_normal(self, storage: fk.Storage, faker: Faker):
+        """Existing files are discovered during the scan."""
         first = faker.file_name()
         second = faker.file_name()
         third = faker.file_path(absolute=False)
@@ -574,6 +565,41 @@ class Scanner:
         discovered = set(storage.scan())
 
         assert discovered == {first, second, third}
+
+    @pytest.mark.expect_storage_capability(fk.Capability.SCAN)
+    def test_scan_with_different_path(self, storage: fk.Storage, faker: Faker):
+        """When path is set, only files under that path are discovered."""
+        first = faker.file_name()
+        second = faker.file_name()
+        third = faker.file_path(absolute=False)
+
+        storage.upload(fk.Location(first), fk.make_upload(b""))
+        storage.upload(fk.Location(second), fk.make_upload(b""))
+        storage.upload(fk.Location(third), fk.make_upload(b""))
+
+        patch = os.path.dirname(third)
+        storage.settings.path = os.path.join(storage.settings.path, patch)
+
+        discovered = set(storage.scan())
+
+        assert discovered == {os.path.basename(third)}
+
+    @pytest.mark.expect_storage_capability(fk.Capability.SCAN)
+    def test_scan_with_path_matching_part_of_filename(self, storage: fk.Storage, faker: Faker):
+        """When path is set to a value that matches part of filename, only files under that path are discovered."""
+        subpath = faker.file_path(extension=[], absolute=False)
+
+        normal = os.path.join(subpath, faker.file_name())
+        edge = subpath + faker.file_name()
+
+        storage.upload(fk.Location(normal), fk.make_upload(b""))
+        storage.upload(fk.Location(edge), fk.make_upload(b""))
+
+        storage.settings.path = os.path.join(storage.settings.path, subpath)
+
+        discovered = set(storage.scan())
+
+        assert discovered == {os.path.basename(normal)}
 
 
 class Signer:

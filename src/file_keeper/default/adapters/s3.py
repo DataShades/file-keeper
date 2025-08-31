@@ -47,7 +47,11 @@ class Settings(fk.Settings):
     ):
         super().__post_init__(**kwargs)
 
-        self.path = self.path.lstrip("/")
+        # leading slash generally does not break anything, but SCAN relies on
+        # method that does not work with leading slash. That's why it's
+        # stripped, which shouldn't be a problem as boto3 automatically strips
+        # it in majority of operations anyway.
+        self.path = self.path.strip("/")
 
         if self.client is None:  # pyright: ignore[reportUnnecessaryComparison]
             self.client = boto3.client(
@@ -361,12 +365,18 @@ class Manager(fk.Manager):
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         client = self.storage.settings.client
         path = self.storage.settings.path
+        # do not add slash when path empty, because it will change it from
+        # "current directory" to the "root directory"
+        if path:
+            path = path.rstrip("/") + "/"
 
         marker = ""
+
         while True:
             resp = client.list_objects(
                 Bucket=self.storage.settings.bucket,
                 Marker=marker,
+                Prefix=path,
             )
             if "Contents" not in resp:
                 break

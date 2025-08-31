@@ -186,6 +186,6 @@ No specific settings
 
 ### `file_keeper:zip`
 
-| Setting | Type | Default | Description                                   |
-|---------|------|---------|-----------------------------------------------|
-| `path`  | str  | `""`    | Path of the ZIP archive for uploaded objects. |
+| Setting    | Type | Default | Description                                   |
+|------------|------|---------|-----------------------------------------------|
+| `zip_path` | str  | `""`    | Path of the ZIP archive for uploaded objects. |

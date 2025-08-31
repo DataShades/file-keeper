@@ -6,7 +6,7 @@ single archive.
 
 ## Overview
 
-This adapter stores files within a ZIP archive. You'll need to provide the path
+This adapter stores files within a ZIP archive. You'll need to provide the `zip_path`
 to the ZIP archive.  The adapter can create the ZIP archive if it doesn't
 exist.
 
@@ -17,7 +17,7 @@ Here's an example of how to initialize the ZIP archive adapter:
 ```python
 storage = make_storage("my_zip_storage", {
     "type": "file_keeper:zip",
-    "path": "/tmp/my_archive.zip",
+    "zip_path": "/tmp/my_archive.zip",
 })
 ```
 

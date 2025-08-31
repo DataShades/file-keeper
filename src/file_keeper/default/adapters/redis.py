@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import dataclasses
+import os
 from collections.abc import Iterable
 from io import BytesIO
 from typing import IO, Any, ClassVar, cast
@@ -251,9 +252,17 @@ class Manager(fk.Manager):
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
+        path = self.storage.settings.path
+        # do not add slash when path empty, because it will change it from
+        # "current directory" to the "root directory"
+        if path:
+            path = path.rstrip("/") + "/"
+
         cfg = self.storage.settings
         for key in cast("Iterable[bytes]", cfg.redis.hkeys(cfg.bucket)):
-            yield key.decode()
+            decoded = key.decode()
+            if decoded.startswith(path):
+                yield os.path.relpath(key.decode(), path)
 
     @override
     def analyze(self, location: fk.types.Location, extras: dict[str, Any]) -> fk.FileData:

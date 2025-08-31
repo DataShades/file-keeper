@@ -6,7 +6,7 @@ import dataclasses
 import os
 import zipfile
 from collections.abc import Iterable
-from typing import Any
+from typing import Any, Literal
 
 import magic
 from typing_extensions import override
@@ -17,19 +17,29 @@ REMOVE_MARKER = b"FILE_KEEPER REMOVED"
 
 
 def _exists(info: zipfile.ZipInfo):
+    """Check if a file exists (i.e., is not marked as removed)."""
     return info.comment != REMOVE_MARKER
+
+
+def _open(settings: Settings, mode: Literal["a", "r"]):
+    """Open the ZIP file."""
+    return zipfile.ZipFile(settings.zip_path, "a")
 
 
 @dataclasses.dataclass()
 class Settings(fk.Settings):
     """Settings for a ZIP storage."""
 
-    _required_options = ["path"]
+    zip_path: str = ""
+    """Path to the ZIP file used for storage."""
+
+    _required_options = ["zip_path"]
 
 
 class Uploader(fk.Uploader):
     """Service responsible for writing data into a zip storage."""
 
+    storage: ZipStorage
     capabilities = fk.Capability.CREATE
 
     @override
@@ -37,7 +47,7 @@ class Uploader(fk.Uploader):
         filepath = self.storage.full_path(location)
 
         reader = fk.HashingReader(upload.stream)
-        with zipfile.ZipFile(self.storage.settings.path, "a") as z:
+        with _open(self.storage.settings, "a") as z:
             try:
                 info = z.getinfo(filepath)
             except KeyError:
@@ -59,6 +69,7 @@ class Uploader(fk.Uploader):
 class Reader(fk.Reader):
     """Service responsible for reading data from the zip storage."""
 
+    storage: ZipStorage
     capabilities = fk.Capability.STREAM
 
     @override
@@ -68,7 +79,7 @@ class Reader(fk.Reader):
         extras: dict[str, Any],
     ):
         filepath = self.storage.full_path(data.location)
-        with zipfile.ZipFile(self.storage.settings.path, "r") as z:
+        with _open(self.storage.settings, "r") as z:
             try:
                 info = z.getinfo(filepath)
             except KeyError as err:
@@ -83,12 +94,13 @@ class Reader(fk.Reader):
 class Manager(fk.Manager):
     """Service responsible for managing data in the zip storage."""
 
+    storage: ZipStorage
     capabilities = fk.Capability.REMOVE | fk.Capability.SCAN | fk.Capability.EXISTS | fk.Capability.ANALYZE
 
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]):
         filepath = self.storage.full_path(data.location)
-        with zipfile.ZipFile(self.storage.settings.path, "a") as z:
+        with _open(self.storage.settings, "a") as z:
             try:
                 info = z.getinfo(filepath)
             except KeyError:
@@ -105,7 +117,7 @@ class Manager(fk.Manager):
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
         filepath = self.storage.full_path(data.location)
-        with zipfile.ZipFile(self.storage.settings.path, "a") as z:
+        with _open(self.storage.settings, "a") as z:
             try:
                 return _exists(z.getinfo(filepath))
             except KeyError:
@@ -114,15 +126,20 @@ class Manager(fk.Manager):
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         path = self.storage.settings.path
-        with zipfile.ZipFile(self.storage.settings.path, "a") as z:
+        # do not add slash when path empty, because it will change it from
+        # "current directory" to the "root directory"
+        if path:
+            path = path.rstrip("/") + "/"
+
+        with _open(self.storage.settings, "a") as z:
             for info in z.infolist():
                 if info.filename.startswith(path) and _exists(info):
-                    yield os.path.relpath(info.filename)
+                    yield os.path.relpath(info.filename, path)
 
     @override
     def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
         filepath = self.storage.full_path(location)
-        with zipfile.ZipFile(self.storage.settings.path, "a") as z:
+        with _open(self.storage.settings, "a") as z:
             try:
                 info = z.getinfo(filepath)
             except KeyError as err:
@@ -171,6 +188,7 @@ class ZipStorage(fk.Storage):
       physically deleted.
     """
 
+    settings: Settings
     SettingsFactory = Settings
     UploaderFactory = Uploader
     ManagerFactory = Manager

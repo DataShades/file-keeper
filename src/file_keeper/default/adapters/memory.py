@@ -197,6 +197,10 @@ class Manager(fk.Manager):
         # iteration" error
         keys = list(self.storage.settings.bucket)
         path = self.storage.settings.path
+        # do not add slash when path empty, because it will change it from
+        # "current directory" to the "root directory"
+        if path:
+            path = path.rstrip("/") + "/"
         for key in keys:
             if key.startswith(path):
                 yield os.path.relpath(key, path)
