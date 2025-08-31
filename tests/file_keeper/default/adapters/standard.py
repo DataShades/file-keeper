@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+
 import pytest
 import urllib3
 from faker import Faker
@@ -411,6 +412,32 @@ class Ranger:
     def test_range_capabilities(self, storage: fk.Storage):
         """Ranger supports RANGE capability."""
         assert storage.supports(fk.Capability.RANGE), "Does not support RANGE"
+
+    @pytest.mark.expect_storage_capability(fk.Capability.RANGE)
+    def test_range_full_slice(self, storage: fk.Storage, faker: Faker):
+        """Content of uploaded file can be received in full slice."""
+        content = faker.binary(100)
+        data = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
+
+        full_range = b"".join(storage.range(data))
+        assert full_range == content
+
+    @pytest.mark.expect_storage_capability(fk.Capability.RANGE)
+    def test_range_parts(self, storage: fk.Storage, faker: Faker):
+        """Content of uploaded file can be received in parts."""
+        content = faker.binary(100)
+        data = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
+
+        step = 10
+        for pos in range(0, len(content), step):
+            part = b"".join(storage.range(data, pos, pos + step))
+            assert part == content[pos : pos + step]
+
+    @pytest.mark.expect_storage_capability(fk.Capability.RANGE)
+    def test_range_missing(self, storage: fk.Storage, faker: Faker):
+        """Missing files cannot be read."""
+        with pytest.raises(fk.exc.MissingFileError):
+            next(iter(storage.range(fk.FileData(fk.Location(faker.file_name())))))
 
 
 class Remover:

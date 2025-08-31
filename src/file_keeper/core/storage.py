@@ -793,6 +793,12 @@ class Storage(ABC):  # noqa: B024
             size: The total size of the upload in bytes.
             **kwargs: Additional metadata for the upload.
 
+        Returns:
+            details about the upload.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                RESUMABLE operation
         """
         return self.uploader.resumable_start(location, size, kwargs)
 
@@ -809,6 +815,13 @@ class Storage(ABC):  # noqa: B024
         Args:
             data: The FileData object containing the upload metadata.
             **kwargs: Additional metadata for the upload.
+
+        Returns:
+            details about the upload.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                RESUMABLE operation
         """
         return self.uploader.resumable_refresh(data, kwargs)
 
@@ -826,6 +839,13 @@ class Storage(ABC):  # noqa: B024
             data: The FileData object containing the upload metadata.
             upload: The Upload object containing the content.
             **kwargs: Additional metadata for the upload.
+
+        Returns:
+            details about the upload.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                RESUMABLE operation
         """
         return self.uploader.resumable_resume(data, upload, kwargs)
 
@@ -842,6 +862,13 @@ class Storage(ABC):  # noqa: B024
         Args:
             data: The FileData object containing the upload metadata.
             **kwargs: Additional metadata for the upload.
+
+        Returns:
+            True if upload was removed, False otherwise.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                RESUMABLE operation
         """
         return self.uploader.resumable_remove(data, kwargs)
 
@@ -864,6 +891,13 @@ class Storage(ABC):  # noqa: B024
             size: The total size of the upload in bytes.
             **kwargs: Additional metadata for the upload.
 
+        Returns:
+            details about the upload.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                MULTIPART operation
+
         """
         return self.uploader.multipart_start(location, size, kwargs)
 
@@ -880,6 +914,14 @@ class Storage(ABC):  # noqa: B024
         Args:
             data: The FileData object containing the upload metadata.
             **kwargs: Additional metadata for the upload.
+
+        Returns:
+            details about the upload.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                MULTIPART operation
+
         """
         return self.uploader.multipart_refresh(data, kwargs)
 
@@ -898,6 +940,14 @@ class Storage(ABC):  # noqa: B024
             upload: The Upload object containing the content.
             part: Position of the given part among other parts, starting with 0.
             **kwargs: Additional metadata for the upload.
+
+        Returns:
+            details about the upload.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                MULTIPART operation
+
         """
         return self.uploader.multipart_update(data, upload, part, kwargs)
 
@@ -914,6 +964,14 @@ class Storage(ABC):  # noqa: B024
         Args:
             data: The FileData object containing the upload metadata.
             **kwargs: Additional metadata for the upload.
+
+        Returns:
+            details about the upload.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                MULTIPART operation
+
         """
         return self.uploader.multipart_complete(data, kwargs)
 
@@ -930,6 +988,14 @@ class Storage(ABC):  # noqa: B024
         Args:
             data: The FileData object containing the upload metadata.
             **kwargs: Additional metadata for the upload.
+
+        Returns:
+            True if upload was removed, False otherwise.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                MULTIPART operation
+
         """
         return self.uploader.multipart_remove(data, kwargs)
 
@@ -945,6 +1011,10 @@ class Storage(ABC):  # noqa: B024
 
         Returns:
             True if file exists, False otherwise.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                EXISTS operation
         """
         return self.manager.exists(data, kwargs)
 
@@ -960,6 +1030,10 @@ class Storage(ABC):  # noqa: B024
 
         Returns:
             True if file was removed, False otherwise.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                REMOVE operation
         """
         return self.manager.remove(data, kwargs)
 
@@ -970,11 +1044,20 @@ class Storage(ABC):  # noqa: B024
         Requires [SCAN][file_keeper.Capability.SCAN] capability.
 
         This operation lists all locations (filenames) in the storage if they
-        start with the configured [path][file_keeper.Settings.path].
+        start with the configured [path][file_keeper.Settings.path]. If path is
+        empty, all locations are listed. Locations that match path
+        partially(e.g. location `nested_dir` overlaps with path `nested`) are
+        not listed.
 
         Args:
             **kwargs: Additional metadata for the operation.
 
+        Returns:
+            An iterable of location strings.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                SCAN operation
         """
         return self.manager.scan(kwargs)
 
@@ -982,18 +1065,27 @@ class Storage(ABC):  # noqa: B024
     def analyze(self, location: types.Location, /, **kwargs: Any) -> data.FileData:
         """Return file details.
 
+        Requires [ANALYZE][file_keeper.Capability.ANALYZE] capability.
+
         [FileData][file_keeper.FileData] produced by this operation is the same
         as data produced by the [upload()][file_keeper.Storage.upload].
 
-        Attempt to analyze non-existing location leads to [MissingFileError][file_keeper.exc.MissingFileError]
+        Attempt to analyze non-existing location leads to
+        [MissingFileError][file_keeper.exc.MissingFileError]
 
         Args:
             location: The location of the file to analyze.
             **kwargs: Additional metadata for the operation.
 
-        Raises:
-            MissingFileError: when location does not exist
+        Returns:
+            details about the file.
 
+        Raises:
+            exceptions.MissingFileError: when location does not exist
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                ANALYZE operation
         """
         return self.manager.analyze(location, kwargs)
 
@@ -1007,11 +1099,42 @@ class Storage(ABC):  # noqa: B024
     ) -> str:
         """Make an URL for signed action.
 
+        /// warning
+        This operation is not stabilized yet.
+        ///
+
+        Requires [SIGNED][file_keeper.Capability.SIGNED] capability.
+
+        This operation creates a signed URL that allows performing the
+        specified action (e.g., "upload", "download") on the given location for
+        a limited duration. The signed URL is typically used to grant temporary
+        access to a file without requiring authentication. The URL includes a
+        signature that verifies its authenticity and validity.
+
+        Depending on the action, user is expected to use the URL in
+        different ways:
+
+        * upload - use HTTP PUT request to send the file content to the URL.
+        * download - use HTTP GET request to retrieve the file content from
+            the URL.
+        * delete - use HTTP DELETE request to remove the file at the URL.
+
+        Check adapter specific implementation for details. Some actions may not
+        be supported or require additional information. For example, upload
+        with Azure Blob Storage requires header `x-ms-blob-type: BlockBlob`.
+
         Args:
-            action: The action to sign (e.g., "upload", "download").
+            action: The action to sign (upload, download, delete).
             duration: The duration for which the signed URL is valid.
             location: The location of the file to sign.
             **kwargs: Additional metadata for the operation.
+
+        Returns:
+            A signed URL as a string.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                SIGNED operation
         """
         return self.manager.signed(action, duration, location, kwargs)
 
@@ -1019,9 +1142,24 @@ class Storage(ABC):  # noqa: B024
     def stream(self, data: data.FileData, /, **kwargs: Any) -> Iterable[bytes]:
         """Return byte-stream of the file content.
 
+        Requires [STREAM][file_keeper.Capability.STREAM] capability.
+
+        Returns iterable that yields chunks of bytes from the file. The size of
+        each chunk depends on the storage implementation. The iterable can be
+        used in a for loop or converted to a list to get all chunks at once.
+
         Args:
             data: The FileData object representing the file to stream.
             **kwargs: Additional metadata for the operation.
+
+        Returns:
+            An iterable yielding chunks of bytes from the file.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                STREAM operation
+            exceptions.MissingFileError: when file does not exist
+
         """
         return self.reader.stream(data, kwargs)
 
@@ -1029,11 +1167,32 @@ class Storage(ABC):  # noqa: B024
     def range(self, data: data.FileData, start: int = 0, end: int | None = None, /, **kwargs: Any) -> Iterable[bytes]:
         """Return slice of the file content.
 
+        Requires [RANGE][file_keeper.Capability.RANGE] capability.
+
+        This operation slices the file content from the specified start byte
+        offset to the end byte offset (exclusive). If `end` is None, the slice
+        extends to the end of the file. The operation returns an iterable that
+        yields chunks of bytes from the specified range. The size of each chunk
+        depends on the storage implementation. The iterable can be used in a for
+        loop or converted to a list to get all chunks at once.
+
+        Unlike python slices, this operation does not expect negative indexes,
+        but certain adapters may support it.
+
+        Attempt to get a range from non-existing file leads to
+        [MissingFileError][file_keeper.exc.MissingFileError].
+
         Args:
             data: The FileData object representing the file to read.
             start: The starting byte offset.
             end: The ending byte offset (inclusive).
             **kwargs: Additional metadata for the operation.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                RANGE operation
+            exceptions.MissingFileError: when file does not exist
+
         """
         return self.reader.range(data, start, end, kwargs)
 
@@ -1042,11 +1201,20 @@ class Storage(ABC):  # noqa: B024
     ) -> Iterable[bytes]:
         """Generic implementation of range operation that relies on [STREAM][file_keeper.Capability.STREAM].
 
+        This method provides a generic implementation of the range operation
+        using the STREAM capability. It reads the file in chunks and yields only
+        the specified range of bytes.
+
         Args:
             data: The FileData object representing the file to read.
             start: The starting byte offset.
             end: The ending byte offset (inclusive).
             **kwargs: Additional metadata for the operation.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                STREAM operation
+            exceptions.MissingFileError: when file does not exist
         """
         if end is None:
             end = cast(int, float("inf"))
@@ -1072,9 +1240,24 @@ class Storage(ABC):  # noqa: B024
     def content(self, data: data.FileData, /, **kwargs: Any) -> bytes:
         """Return file content as a single byte object.
 
+        Requires [STREAM][file_keeper.Capability.STREAM] capability.
+
+        Returns complete file content as a single bytes object. This method
+        internally uses [stream()][file_keeper.Storage.stream] method to read
+        the file content in chunks and then combines those chunks into a single
+        bytes object.
+
         Args:
             data: The FileData object representing the file to read.
             **kwargs: Additional metadata for the operation.
+
+        Returns:
+            The complete file content as a single bytes object.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                STREAM operation
+            exceptions.MissingFileError: when file does not exist
         """
         return self.reader.content(data, kwargs)
 
@@ -1082,10 +1265,21 @@ class Storage(ABC):  # noqa: B024
     def append(self, data: data.FileData, upload: Upload, /, **kwargs: Any) -> data.FileData:
         """Append content to existing file.
 
+        Requires [APPEND][file_keeper.Capability.APPEND] capability.
+
         Args:
             data: The FileData object representing the file to append to.
             upload: The Upload object containing the content to append.
             **kwargs: Additional metadata for the operation.
+
+        Returns:
+            Updated FileData object with details about the file after appending.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                APPEND operation
+            exceptions.MissingFileError: when file does not exist
+
         """
         return self.manager.append(data, upload, kwargs)
 
@@ -1093,10 +1287,32 @@ class Storage(ABC):  # noqa: B024
     def copy(self, location: types.Location, data: data.FileData, /, **kwargs: Any) -> data.FileData:
         """Copy file inside the storage.
 
+        Requires [COPY][file_keeper.Capability.COPY] capability.
+
+        This operation creates a duplicate of the specified file at a new
+        location within the same storage. The copied file retains the same
+        content and metadata as the original file.
+
+        If file already exists at the destination location, behavior depends on
+        [override_existing][file_keeper.Settings.override_existing] setting. If
+        it is False, [ExistingFileError][file_keeper.exc.ExistingFileError] is
+        raised. If it is True, existing file is replaced with the copied file. In
+        this case, it is possible to lose existing file if copy fails.
+
         Args:
             location: The destination location for the copied file.
             data: The FileData object representing the file to copy.
             **kwargs: Additional metadata for the operation.
+
+        Returns:
+            FileData object with details about the copied file.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                COPY operation
+            exceptions.MissingFileError: when source file does not exist
+            exceptions.ExistingFileError: when destination file already exists and
+                [override_existing][file_keeper.Settings.override_existing] is False
         """
         return self.manager.copy(location, data, kwargs)
 
@@ -1105,11 +1321,24 @@ class Storage(ABC):  # noqa: B024
     ) -> data.FileData:
         """Generic implementation of the copy operation that relies on [CREATE][file_keeper.Capability.CREATE].
 
+        This method provides a generic implementation of the copy operation
+        using the CREATE capability of the destination storage and the STREAM
+        capability of the source storage. It reads the file content from the
+        source storage and uploads it to the destination storage.
+
         Args:
             location: The destination location for the copied file.
             data: The FileData object representing the file to copy.
             dest_storage: The destination storage
             **kwargs: Additional metadata for the operation.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                CREATE operation
+            exceptions.MissingFileError: when source file does not exist
+            exceptions.ExistingFileError: when destination file already exists and
+                [override_existing][file_keeper.Settings.override_existing] is False
+
         """
         return dest_storage.upload(
             location,
@@ -1121,10 +1350,27 @@ class Storage(ABC):  # noqa: B024
     def move(self, location: types.Location, data: data.FileData, /, **kwargs: Any) -> data.FileData:
         """Move file to a different location inside the storage.
 
+        Requires [MOVE][file_keeper.Capability.MOVE] capability.
+
+        This operation relocates the specified file to a new location within
+        the same storage. After the move operation, the file will no longer
+        exist at its original location.
+
         Args:
             location: The destination location for the moved file.
             data: The FileData object representing the file to move.
             **kwargs: Additional metadata for the operation.
+
+        Returns:
+            FileData object with details about the moved file.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                MOVE operation
+            exceptions.MissingFileError: when source file does not exist
+            exceptions.ExistingFileError: when destination file already exists and
+                [override_existing][file_keeper.Settings.override_existing] is False
+
         """
         return self.manager.move(location, data, kwargs)
 
@@ -1142,6 +1388,16 @@ class Storage(ABC):  # noqa: B024
             dest_storage: The destination storage
             **kwargs: Additional metadata for the operation.
 
+        Returns:
+            FileData object with details about the moved file.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                CREATE or REMOVE operation
+            exceptions.MissingFileError: when source file does not exist
+            exceptions.ExistingFileError: when destination file already exists and
+                [override_existing][file_keeper.Settings.override_existing] is False
+
         """
         result = dest_storage.upload(location, self.file_as_upload(data, **kwargs), **kwargs)
         self.remove(data)
@@ -1151,10 +1407,26 @@ class Storage(ABC):  # noqa: B024
     def compose(self, location: types.Location, /, *files: data.FileData, **kwargs: Any) -> data.FileData:
         """Combine multiple files into a new file.
 
+        Requires [COMPOSE][file_keeper.Capability.COMPOSE] capability.
+
+        This operation combines multiple source files into a single destination
+        file. The content of the source files is concatenated in the order they
+        are provided to form the content of the new file.
+
         Args:
             location: The destination location for the composed file.
             *files: FileData objects representing the files to combine.
             **kwargs: Additional metadata for the operation.
+
+        Returns:
+            FileData object with details about the composed file.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                COMPOSE operation
+            exceptions.MissingFileError: when any of source files do not exist
+            exceptions.ExistingFileError: when destination file already exists and
+                [override_existing][file_keeper.Settings.override_existing] is False
         """
         return self.manager.compose(location, files, kwargs)
 
@@ -1163,11 +1435,25 @@ class Storage(ABC):  # noqa: B024
     ) -> data.FileData:
         """Generic composition that relies on [APPEND][file_keeper.Capability.APPEND].
 
+        This method provides a generic implementation of the compose operation
+        using the APPEND capability of the destination storage. It creates an
+        empty file at the destination location and then appends the content of
+        each source file to it in sequence.
+
         Args:
             location: The destination location for the composed file.
             dest_storage: The destination storage
             *files: FileData objects representing the files to combine.
             **kwargs: Additional metadata for the operation.
+
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                APPEND operation
+            exceptions.MissingFileError: when any of source files do not exist
+            exceptions.ExistingFileError: when destination file already exists and
+                [override_existing][file_keeper.Settings.override_existing] is False
+
         """
         result = dest_storage.upload(location, make_upload(b""), **kwargs)
 
@@ -1195,9 +1481,14 @@ class Storage(ABC):  # noqa: B024
     def one_time_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
         """Return one-time download link.
 
+        Requires [LINK_ONE_TIME][file_keeper.Capability.LINK_ONE_TIME] capability.
+
         Args:
             data: The FileData object representing the file.
             **kwargs: Additional metadata for the operation.
+
+        Returns:
+            A one-time download link as a string, or None if not supported.
         """
         if self.supports(Capability.LINK_ONE_TIME):
             return self.reader.one_time_link(data, kwargs)
@@ -1205,10 +1496,15 @@ class Storage(ABC):  # noqa: B024
     def temporal_link(self, data: data.FileData, duration: int, /, **kwargs: Any) -> str | None:
         """Return temporal download link.
 
+        Requires [LINK_TEMPORAL][file_keeper.Capability.LINK_TEMPORAL] capability.
+
         Args:
             data: The FileData object representing the file.
             duration: The duration for which the link is valid.
             **kwargs: Additional metadata for the operation.
+
+        Returns:
+            A temporal download link as a string, or None if not supported.
         """
         if self.supports(Capability.LINK_TEMPORAL):
             return self.reader.temporal_link(data, duration, kwargs)
@@ -1216,9 +1512,14 @@ class Storage(ABC):  # noqa: B024
     def permanent_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
         """Return permanent download link.
 
+        Requires [LINK_PERMANENT][file_keeper.Capability.LINK_PERMANENT] capability.
+
         Args:
             data: The FileData object representing the file.
             **kwargs: Additional metadata for the operation.
+
+        Returns:
+            A permanent download link as a string, or None if not supported.
         """
         if self.supports(Capability.LINK_PERMANENT):
             return self.reader.permanent_link(data, kwargs)
