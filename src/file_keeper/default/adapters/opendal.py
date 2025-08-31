@@ -282,7 +282,46 @@ class Manager(fk.Manager):
 
 
 class OpenDalStorage(fk.Storage):
-    """OpenDAL adapter."""
+    """OpenDAL storage.
+
+    OpenDAL (https://opendal.apache.org/) is a multi-protocol data access library
+    with unified API. It supports a variety of backends, including local filesystem,
+    S3-compatible object storage, Azure Blob Storage, Google Cloud Storage, HDFS,
+    and many others.
+
+    To configure OpenDAL storage, you need to specify the `scheme` and any
+    necessary `params` for the chosen backend. Alternatively, you can provide an
+    existing `operator` instance.
+
+    Supported schemes and their parameters can be found in the
+    [OpenDAL documentation](https://opendal.apache.org/core/#services).
+
+    Example configuration:
+
+    ```py
+    import file_keeper as fk
+
+    settings = {
+        "type": "file_keeper:opendal",
+        "scheme": "s3",
+        "params": {
+            "bucket": "file-keeper",
+            "access_key_id": "minioadmin",
+            "secret_access_key": "minioadmin",
+            "endpoint": "http://127.0.0.1:9000",
+            "region": "auto",
+        },
+        "path": "uploads/",
+        "override_existing": False,
+    }
+
+    storage = fk.make_storage("opendal", settings)
+    ```
+
+    Note:
+    * The `path` parameter is used as a prefix for all file operations.
+    * Ensure that the OpenDAL library is installed in your environment.
+    """
 
     settings: Settings
     SettingsFactory = Settings

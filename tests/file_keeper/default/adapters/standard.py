@@ -360,7 +360,8 @@ class Multiparter:
     def test_multipart_remove(self, storage: fk.Storage, faker: Faker):
         """Multipart upload can be removed and cannot be removed twice."""
         location = fk.Location(faker.file_name())
-        data = storage.multipart_start(location, faker.pyint(1))
+        data = storage.multipart_start(location, 10)
+        data = storage.multipart_update(data, fk.make_upload(faker.binary(10)), 0)
 
         assert storage.multipart_remove(data), "Multipart upload was not removed"
         assert not storage.multipart_remove(data), "Removed multipart upload can be removed again"
@@ -423,9 +424,8 @@ class Remover:
     @pytest.mark.expect_storage_capability(fk.Capability.REMOVE)
     def test_remove_missing(self, storage: fk.Storage, faker: Faker):
         """Removal of the missing file must return `False`."""
-        assert not storage.remove(fk.FileData(fk.Location(faker.file_name()))), (
-            "Storage pretends that non-existing file was removed."
-        )
+        data = fk.FileData(fk.Location(faker.file_name()))
+        assert not storage.remove(data), "Storage pretends that non-existing file was removed."
 
     @pytest.mark.expect_storage_capability(fk.Capability.REMOVE, fk.Capability.CREATE, fk.Capability.EXISTS)
     def test_remove_real(self, storage: fk.Storage, faker: Faker):

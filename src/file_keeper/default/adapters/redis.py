@@ -323,7 +323,33 @@ class Manager(fk.Manager):
 
 
 class RedisStorage(fk.Storage):
-    """Redis adapter."""
+    """Redis storage adapter.
+
+    This adapter uses a Redis HASH to store files. Each file is stored as a field
+    in the HASH, where the field name is the file location and the field value is
+    the file content.
+
+    Example configuration:
+
+    ```py
+    import file_keeper as fk
+
+    settings = {
+        "type": "file_keeper:redis",
+        "bucket": "my_bucket",
+        "url": "redis://localhost:6379/0",
+        "override_existing": False,
+    }
+
+    storage = fk.make_storage("redis", settings)
+    ```
+
+    Note:
+    * The `bucket` setting is required and specifies the key of the Redis HASH.
+    * The `url` setting is optional. If not provided, it defaults to `redis://localhost:6379/0`.
+    * The `override_existing` setting controls whether existing files can be overwritten.
+
+    """
 
     settings: Settings
     SettingsFactory = Settings

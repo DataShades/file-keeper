@@ -200,7 +200,42 @@ class Manager(fk.Manager):
 
 
 class LibCloudStorage(fk.Storage):
-    """Apache Libcloud adapter."""
+    """Libcloud storage adapter.
+
+    This adapter uses [Apache Libcloud](https://libcloud.apache.org/) to connect to
+    various cloud storage providers. It supports any provider implemented in Libcloud,
+    such as Amazon S3, Google Cloud Storage, Azure Blob Storage, and many others.
+
+    Example configuration:
+
+    ```py
+    import file_keeper as fk
+
+    settings = {
+        "type": "file_keeper:libcloud",
+        "name": "my_libcloud_storage",
+        "provider": "S3",  # or "GOOGLE_STORAGE", "AZURE_BLOBS", etc.
+        "key": "<access key>",
+        "secret": "<secret key>",
+        "container_name": "file-keeper",
+        "params": {
+            "region": "us-west-1",  # provider-specific parameters
+        },
+        "public_prefix": "https://my-bucket.s3.amazonaws.com/",  # optional, if provider supports public links
+        "path": "uploads/",
+        "override_existing": False,
+        "initialize": True,
+    }
+
+    storage = fk.make_storage("libcloud", settings)
+    ```
+
+    Note:
+    * Ensure that the `provider` field matches one of the supported Libcloud storage providers.
+    * The `params` field can include any additional parameters required by the specific provider.
+    * If `public_prefix` is not set, permanent links will not be available.
+    * The `initialize` flag allows automatic creation of the container if it does not exist.
+    """
 
     settings: Settings
     SettingsFactory = Settings

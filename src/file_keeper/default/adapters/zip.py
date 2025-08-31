@@ -111,7 +111,32 @@ class Manager(fk.Manager):
 
 
 class ZipStorage(fk.Storage):
-    """Storage implementation using a ZIP file."""
+    """Storage implementation using a ZIP file.
+
+    This storage uses a ZIP file to store files. It supports uploading, reading,
+    removing, and scanning files within the ZIP archive.
+
+    Example configuration:
+
+    ```py
+    import file_keeper as fk
+
+    settings = {
+        "type": "file_keeper:zip",
+        "path": "/path/to/storage.zip",
+        "override_existing": False,  # Optional, defaults to False
+    }
+
+    storage = fk.make_storage("zip", settings)
+    ```
+
+    Note:
+    * The `path` setting specifies the location of the ZIP file.
+    * The `override_existing` setting determines whether existing files should be
+      overridden during upload. Defaults to `False`.
+    * Removed files are truncated and marked within the ZIP archive, and are not
+      physically deleted.
+    """
 
     SettingsFactory = Settings
     UploaderFactory = Uploader

@@ -138,7 +138,28 @@ class Reader(fk.Reader):
 
 
 class NullStorage(fk.Storage):
-    """Immitate storage behavior but do not store anything."""
+    """Null storage adapter.
+
+    Does not store any files, all operations are no-ops. Useful for testing or
+    as a placeholder.
+
+    ```python
+    import file_keeper as fk
+
+    settings = {
+        "type": "file_keeper:null",
+    }
+
+    storage = make_storage("null", settings)
+    ```
+
+    Note:
+    * Uploading a file will return a `FileData` with the correct hash, but the file
+      will not be stored.
+    * All manager operations will return default values (e.g., `exists` will always
+        return `False`).
+    * All reader operations will return empty content or the location as the link.
+    """
 
     settings: Settings
 

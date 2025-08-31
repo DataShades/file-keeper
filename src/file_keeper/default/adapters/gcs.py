@@ -447,7 +447,32 @@ class Manager(fk.Manager):
 
 
 class GoogleCloudStorage(fk.Storage):
-    """Google Cloud Storage adapter."""
+    """Google Cloud Storage adapter.
+
+    Example configuration:
+    ```py
+    import file_keeper as fk
+
+    settings = {
+        "type": "file_keeper:gcs",
+        "bucket_name": "my-bucket",
+        "path": "uploads",
+        "credentials_file": "/path/to/credentials.json",
+        "project_id": "my-project-id",
+        "override_existing": False,
+        "initialize": True,
+    }
+
+    storage = fk.make_storage("gcss", settings)
+    ```
+
+    Note:
+    * `credentials_file` or `credentials` along with `project_id` are required
+      to initialize the storage client.
+    * If `initialize` is set to `True`, the bucket will be created if it
+        does not exist.
+
+    """
 
     settings: Settings
     SettingsFactory = Settings

@@ -5,11 +5,14 @@ from __future__ import annotations
 import codecs
 import dataclasses
 import os
+import uuid
 from collections.abc import Iterable
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
+from azure.core.exceptions import ResourceNotFoundError
 from azure.storage.blob import (
+    BlobBlock,
     BlobSasPermissions,
     BlobServiceClient,
     ContainerClient,
@@ -84,10 +87,13 @@ class Settings(fk.Settings):
 
 
 class Uploader(fk.Uploader):
-    """Azure Blob Storage uploader."""
+    """Azure Blob Storage uploader.
+
+    Supports single-part and multipart uploads.
+    """
 
     storage: AzureBlobStorage
-    capabilities = fk.Capability.CREATE
+    capabilities = fk.Capability.CREATE | fk.Capability.MULTIPART
 
     @override
     def upload(
@@ -116,9 +122,87 @@ class Uploader(fk.Uploader):
             codecs.encode(result["content_md5"], "hex").decode(),
         )
 
+    @override
+    def multipart_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
+        """Start a multipart upload."""
+        return fk.FileData.from_dict(
+            extras,
+            location=location,
+            size=size,
+            storage_data={"multipart": True, "parts": {}, "uploaded": 0},
+        )
+
+    @override
+    def multipart_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        """Refresh the status of an in-progress multipart upload."""
+        filepath = self.storage.full_path(data.location)
+        blob = self.storage.settings.container.get_blob_client(filepath)
+
+        try:
+            blocks = blob.get_block_list("uncommitted")[1]
+        except ResourceNotFoundError as err:
+            raise fk.exc.MissingFileError(self.storage, data.location) from err
+
+        storage_data = {}
+        if blocks:
+            parts = {}
+            uploaded = 0
+            for idx, block in enumerate(blocks):
+                parts[idx] = block["id"]
+                uploaded += block["size"]
+
+            storage_data.update(multipart=True, parts=parts, uploaded=uploaded)
+        return fk.FileData.from_object(data, storage_data=storage_data)
+
+    @override
+    def multipart_remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        """Remove an in-progress multipart upload."""
+        filepath = self.storage.full_path(data.location)
+        blob_client = self.storage.settings.container.get_blob_client(filepath)
+        try:
+            blob_client.delete_blob()
+        except ResourceNotFoundError:
+            return False
+
+        return True
+
+    @override
+    def multipart_complete(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        """Complete a multipart upload."""
+        filepath = self.storage.full_path(data.location)
+        blob = self.storage.settings.container.get_blob_client(filepath)
+
+        if data.size != data.storage_data["uploaded"]:
+            raise fk.exc.UploadSizeMismatchError(data.storage_data["uploaded"], data.size)
+
+        blob.commit_block_list([BlobBlock(item[1]) for item in sorted(data.storage_data["parts"].items())])
+
+        return fk.FileData.from_object(data, storage_data={})
+
+    @override
+    def multipart_update(self, data: fk.FileData, upload: fk.Upload, part: int, extras: dict[str, Any]) -> fk.FileData:
+        """Upload a part of a multipart upload."""
+        size = data.storage_data["uploaded"] + upload.size
+        if size > data.size:
+            raise fk.exc.UploadOutOfBoundError(size, data.size)
+
+        filepath = self.storage.full_path(data.location)
+        blob = self.storage.settings.container.get_blob_client(filepath)
+
+        block_id = uuid.uuid4().hex
+        blob.stage_block(block_id, upload.stream)
+
+        result = fk.FileData.from_object(data)
+        result.storage_data["parts"][part] = block_id
+        result.storage_data["uploaded"] = size
+        return result
+
 
 class Reader(fk.Reader):
-    """Azure Blob Storage reader."""
+    """Azure Blob Storage reader.
+
+    Supports streaming and permanent links.
+    """
 
     storage: AzureBlobStorage
     capabilities = fk.Capability.STREAM | fk.Capability.LINK_PERMANENT
@@ -177,12 +261,14 @@ class Manager(fk.Manager):
 
     @override
     def move(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        """Move a file to a new location."""
         self.copy(location, data, extras)
         self.remove(data, extras)
         return self.analyze(location, extras)
 
     @override
     def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+        """Analyze a file and return its metadata."""
         filepath = self.storage.full_path(location)
         blob = self.storage.settings.container.get_blob_client(filepath)
         if not blob.exists():
@@ -199,23 +285,22 @@ class Manager(fk.Manager):
 
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        """Check if a file exists."""
         filepath = self.storage.full_path(data.location)
         blob_client = self.storage.settings.container.get_blob_client(filepath)
         return blob_client.exists()
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
+        """Scan and yield all file locations in the storage."""
         path = self.storage.settings.path
 
         for name in self.storage.settings.container.list_blob_names():
             yield os.path.relpath(name, path)
 
     @override
-    def remove(
-        self,
-        data: fk.FileData,
-        extras: dict[str, Any],
-    ) -> bool:
+    def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        """Remove a file from the storage."""
         filepath = self.storage.full_path(data.location)
         blob_client = self.storage.settings.container.get_blob_client(filepath)
         if not blob_client.exists():
@@ -260,7 +345,39 @@ class Manager(fk.Manager):
 
 
 class AzureBlobStorage(fk.Storage):
-    """Azure Blob Storage adapter."""
+    """Azure Blob Storage adapter.
+
+    Uses `azure-storage-blob <https://pypi.org/project/azure-storage-blob/>`_
+    package. Make sure to install it first.
+
+    Example configuration:
+
+    ```py
+    import file_keeper as fk
+
+    settings = {
+        "type": "file_keeper:azure_blob",
+        "account_name": "<account_name>",
+        "account_key": "<account_key>",
+        "container_name": "<container_name>",
+        "path": "optional/path/prefix",
+        "initialize": True,  # create container if it does not exist
+        ## uncomment following line to use azurite running on 10000 port
+        "account_url": "http://127.0.0.1:10000/{account_name}",
+    }
+    storage = fk.make_storage("azure", settings)
+    ```
+
+    Note:
+    * `account_name` and `account_key` are required unless you provide an existing
+      `client` instance.
+    * `container_name` is required.
+    * `account_url` is optional and defaults to Azure public cloud. You can use it
+      to point to a different cloud or a local emulator like azurite.
+    * `path` is optional and can be used to prefix all file locations.
+    * `initialize` controls whether the container should be created if it does not
+      exist. Defaults to `False`.
+    """
 
     settings: Settings
     SettingsFactory = Settings

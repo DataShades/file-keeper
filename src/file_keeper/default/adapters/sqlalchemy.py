@@ -250,7 +250,38 @@ class Manager(fk.Manager):
 
 
 class SqlAlchemyStorage(fk.Storage):
-    """SQLAlchemy adapter."""
+    """SQLAlchemy storage.
+
+    This storage uses a SQL database to store files as BLOBs. It requires SQLAlchemy
+    to be installed.
+
+    Example configuration:
+
+    ```py
+    import file_keeper as fk
+
+    settings = {
+        "type": "file_keeper:sqlalchemy",
+        "db_url": "sqlite:///file_keeper.db",
+        "table_name": "files",
+        "location_column": "location",
+        "content_column": "content",
+        "override_existing": True,
+        "initialize": True,
+    }
+
+    storage = fk.make_storage("sqlalchemy", settings)
+    ```
+
+    Note:
+    * The `db_url` setting specifies the database connection URL.
+    * The `table_name`, `location_column`, and `content_column` settings specify
+      the table and column names to use for storing files.
+    * If the specified table does not exist and `initialize` is set to `True`,
+        it will be created automatically.
+    * If `override_existing` is set to `True`, existing files will be overwritten
+        during upload, copy, or move operations.
+    """
 
     settings: Settings
     SettingsFactory = Settings

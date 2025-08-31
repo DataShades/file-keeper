@@ -427,7 +427,35 @@ class Manager(fk.Manager):
 
 
 class S3Storage(fk.Storage):
-    """AWS S3 adapter."""
+    """AWS S3 storage adapter.
+
+    Example configuration:
+
+    ```py
+    import file_keeper as fk
+
+    settings = {
+        "type": "file_keeper:s3",
+        "bucket": "my-bucket,
+        "key": "<access key>",
+        "secret": "<secret key>",
+        "initialize": True,
+        ## uncomment following line to use MinIO on port 9000
+        # "endpoint": "http://127.0.0.1:9000/",
+    }
+    storage = fk.make_storage("s3", settings)
+    ```
+
+    Note:
+    * The `bucket` option is required.
+    * If `initialize` is set to `True`, the bucket will be created if it does not exist.
+    * If `key` and `secret` are not provided, the default AWS credentials chain
+      will be used.
+    * The `path` option can be used to set a prefix within the bucket.
+    * The `region` option can be used to set the AWS region for the bucket.
+    * The `endpoint` option can be used to set a custom endpoint, e.g. for MinIO.
+    * The `override_existing` option controls whether existing files can be overwritten.
+    """
 
     settings: Settings
     SettingsFactory = Settings

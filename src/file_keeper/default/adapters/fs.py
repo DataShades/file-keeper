@@ -436,7 +436,38 @@ class Manager(fk.Manager):
 
 # --8<-- [start:storage]
 class FsStorage(fk.Storage):
-    """Store files in local filesystem."""
+    """Filesystem storage adapter.
+
+    Stores files on the local filesystem. The `path` setting must be
+    configured to point to the base directory where files are stored.
+
+    Example configuration:
+
+    ```py
+    import file_keeper as fk
+
+    settings = {
+        "type": "file_keeper:fs",
+        "path": "/path/to/storage",
+        "initialize": True,
+        "override_existing": False,
+    }
+    storage = fk.make_storage("fs", settings)
+    ```
+
+    Note:
+    * The `path` must be an absolute path.
+    * The `path` directory must be writable by the application.
+    * The `location` used in file operations is relative to the `path`.
+    * The `location` is not sanitized and can lead outside the configured
+      `path`. Consider using combination of `storage.prepare_location` with
+      `settings.location_transformers` that sanitizes the path, like
+      `safe_relative_path`.
+    * If `initialize` is `True`, the storage will attempt to create the
+      directory if it does not exist.
+    * If `override_existing` is `False`, operations that would overwrite an
+      existing file will raise an `ExistingFileError`.
+    """
 
     settings: Settings
 

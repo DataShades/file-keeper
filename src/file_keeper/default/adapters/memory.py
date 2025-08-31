@@ -44,11 +44,9 @@ class Uploader(fk.Uploader):
     def resumable_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
         self.storage.settings.bucket[location] = b""
 
-        result = fk.FileData.from_dict(
+        return fk.FileData.from_dict(
             extras, size=size, location=location, storage_data={"resumable": True, "memory": {"uploaded": 0}}
         )
-
-        return result
 
     @override
     def resumable_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
@@ -222,7 +220,34 @@ class Reader(fk.Reader):
 
 
 class MemoryStorage(fk.Storage):
-    """Storage files in-memory."""
+    """Storage files in-memory.
+
+    This storage adapter keeps files in memory using a dictionary. It is
+    mainly useful for testing purposes. It is not recommended to use it in
+    production as all files will be lost when the application stops.
+
+    Example configuration:
+
+    ```py
+    import file_keeper as fk
+
+    settings = {
+        "type": "file_keeper:memory",
+        "override_existing": False,
+    }
+    storage = fk.make_storage("memory", settings)
+    ```
+
+    Note:
+    * The `override_existing` setting controls whether existing files can be
+      overridden. If set to `False`, attempting to upload a file to a location
+      that already exists will raise an `ExistingFileError`.
+    * The `bucket` setting is a dictionary that holds the uploaded files in
+        memory. It is automatically initialized as an empty dictionary if not
+        provided.
+    * This storage adapter does not support persistence. All files are lost
+      when the application stops.
+    """
 
     settings: Settings
 

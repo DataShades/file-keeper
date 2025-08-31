@@ -26,7 +26,7 @@ Here's an example of how to initialize the Redis adapter:
 ```python
 storage = make_storage("my_redis_storage", {
     "type": "file_keeper:redis",
-    "host": "redis://localhost:6379/0",
+    "url": "redis://localhost:6379/0",
     "bucket": "file-keeper",
 })
 ```

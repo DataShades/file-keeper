@@ -76,9 +76,7 @@ select = [
        "N",  # naming conventions
        "I",  # isort
        "ICN", # import conventions
-       "D1",  # require doc
-       "D2",  # doc formatting
-       "D4",  # doc convention
+       "D",  # require doc
        "PL",  # pylint
        "PERF", # performance anti-patterns
        "PT",  # pytest style
