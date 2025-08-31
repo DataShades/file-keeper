@@ -1137,14 +1137,14 @@
 backend. This adapter is useful for packaging and distributing files in a
 single archive.</p>
 <h2 id="overview">Overview</h2>
-<p>This adapter stores files within a ZIP archive. You'll need to provide the path
+<p>This adapter stores files within a ZIP archive. You'll need to provide the <code>zip_path</code>
 to the ZIP archive.  The adapter can create the ZIP archive if it doesn't
 exist.</p>
 <h2 id="initialization-example">Initialization Example</h2>
 <p>Here's an example of how to initialize the ZIP archive adapter:</p>
 <div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_zip_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:zip&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp/my_archive.zip&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;zip_path&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp/my_archive.zip&quot;</span><span class="p">,</span>
 <span class="p">})</span>
 </code></pre></div>
 <p><strong>Important Notes:</strong></p>

@@ -1259,7 +1259,38 @@ override <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-s
       &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
   &lt;/span&gt;" href="../../api/#file_keeper.Storage.ReaderFactory">ReaderFactory</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">FsStorage</span><span class="p">(</span><span class="n">fk</span><span class="o">.</span><span class="n">Storage</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Store files in local filesystem.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filesystem storage adapter.</span>
+
+<span class="sd">    Stores files on the local filesystem. The `path` setting must be</span>
+<span class="sd">    configured to point to the base directory where files are stored.</span>
+
+<span class="sd">    Example configuration:</span>
+
+<span class="sd">    ```py</span>
+<span class="sd">    import file_keeper as fk</span>
+
+<span class="sd">    settings = {</span>
+<span class="sd">        &quot;type&quot;: &quot;file_keeper:fs&quot;,</span>
+<span class="sd">        &quot;path&quot;: &quot;/path/to/storage&quot;,</span>
+<span class="sd">        &quot;initialize&quot;: True,</span>
+<span class="sd">        &quot;override_existing&quot;: False,</span>
+<span class="sd">    }</span>
+<span class="sd">    storage = fk.make_storage(&quot;fs&quot;, settings)</span>
+<span class="sd">    ```</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">    * The `path` must be an absolute path.</span>
+<span class="sd">    * The `path` directory must be writable by the application.</span>
+<span class="sd">    * The `location` used in file operations is relative to the `path`.</span>
+<span class="sd">    * The `location` is not sanitized and can lead outside the configured</span>
+<span class="sd">      `path`. Consider using combination of `storage.prepare_location` with</span>
+<span class="sd">      `settings.location_transformers` that sanitizes the path, like</span>
+<span class="sd">      `safe_relative_path`.</span>
+<span class="sd">    * If `initialize` is `True`, the storage will attempt to create the</span>
+<span class="sd">      directory if it does not exist.</span>
+<span class="sd">    * If `override_existing` is `False`, operations that would overwrite an</span>
+<span class="sd">      existing file will raise an `ExistingFileError`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">settings</span><span class="p">:</span> <span class="n">Settings</span>
 
@@ -1365,7 +1396,7 @@ storage. Because of this separation, you can pretend that storage cannot
 perform an operation, even when it's supported. In this way you can transform
 filesystem into a read-only storage without code changes and guarantee that
 files won't be accidentally removed from it.</p>
-<div class="highlight"><pre><span></span><code>    <span class="n">capabilities</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">CREATE</span>
+<div class="highlight"><pre><span></span><code>    <span class="n">capabilities</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">CREATE</span> <span class="o">|</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">RESUMABLE</span>
 </code></pre></div>
 <p>As you can see, FS storage supports <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;auto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;
 
@@ -1457,14 +1488,6 @@ explains how exactly bytes of content are obtained.</p>
 
     <span class="nd">@override</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">IO</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return file open in binary-read mode.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            MissingFileError: file does not exist</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            File content iterator</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">MissingFileError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
@@ -1529,7 +1552,6 @@ come in pair, unless you are certain that you need to separate them.</p>
 it's not removed(because it does not exists), the result is <code>False</code>.</p>
 <div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the file.&quot;&quot;&quot;</span>
         <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -1541,7 +1563,6 @@ it's not removed(because it does not exists), the result is <code>False</code>.<
 the storage.</p>
 <div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">scan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Discover filenames under storage path.&quot;&quot;&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">path</span>
         <span class="n">search_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;**&quot;</span><span class="p">)</span>
 
@@ -1553,7 +1574,6 @@ the storage.</p>
 <p><code>exists()</code> returns <code>True</code> if file exists, and <code>False</code> if file is missing.</p>
 <div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if file exists.&quot;&quot;&quot;</span>
         <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
 </code></pre></div>
@@ -1566,11 +1586,6 @@ the storage.</p>
 during <code>upload()</code>.</p>
 <div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Location</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return all details about location.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            MissingFileError: file does not exist</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">MissingFileError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="n">location</span><span class="p">)</span>
@@ -1593,12 +1608,6 @@ and <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol
 already exist and <code>override_existing</code> is disabled.</p>
 <div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Location</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Copy file inside the storage.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            ExistingFileError: file exists and overrides are not allowed</span>
-<span class="sd">            MissingFileError: source file does not exist</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
         <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
 
@@ -1616,12 +1625,6 @@ available after the move. Basically, <code>move()</code> does "rename" if possib
 "copy" + "remove" if not.</p>
 <div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Location</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move file to a different location inside the storage.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            ExistingFileError: file exists and overrides are not allowed</span>
-<span class="sd">            MissingFileError: source file does not exist</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
         <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
 
@@ -1641,15 +1644,6 @@ available after the move. Basically, <code>move()</code> does "rename" if possib
 existing files and combines them into a new one, similar to the <code>cat</code> utility.</p>
 <div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">compose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Location</span><span class="p">,</span> <span class="n">datas</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">],</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Combine multipe files inside the storage into a new one.</span>
-
-<span class="sd">        If final content type is not supported by the storage, the file is</span>
-<span class="sd">        removed.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            ExistingFileError: file exists and overrides are not allowed</span>
-<span class="sd">            MissingFileError: source file does not exist</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">override_existing</span><span class="p">:</span>
@@ -1675,14 +1669,6 @@ existing files and combines them into a new one, similar to the <code>cat</code>
 file.</p>
 <div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">,</span> <span class="n">upload</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Upload</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append content to existing file.</span>
-
-<span class="sd">        If final content type is not supported by the storage, original file is</span>
-<span class="sd">        removed.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            MissingFileError: file does not exist</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dest</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">MissingFileError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
