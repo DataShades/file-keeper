@@ -494,6 +494,7 @@ class Storage(ABC):  # noqa: B024
         settings: storage configuration
 
     Example:
+        Extend base class to implement custom storage.
         ```py
         class MyStorage(Storage):
             SettingsFactory = MySettings
@@ -501,15 +502,11 @@ class Storage(ABC):  # noqa: B024
             ManagerFactory = MyManager
             ReaderFactory = MyReader
         ```
+        then initialize it using required settings
+        ```pycon
+        >>> my_storage = MyStorage({"option": "value"})
+        ```
     """
-
-    # do not show storage adapter
-    hidden: bool = False
-    """Flag that marks unsafe/experimental storages."""
-
-    capabilities: Capability = Capability.NONE
-    """Operations supported by storage. Computed from capabilities of
-    services during storage initialization."""
 
     SettingsFactory: ClassVar[type[Settings]] = Settings
     """Factory class for storage settings."""
@@ -519,6 +516,12 @@ class Storage(ABC):  # noqa: B024
     """Factory class for manager service."""
     ReaderFactory: ClassVar[type[Reader]] = Reader
     """Factory class for reader service."""
+
+    capabilities: Capability = Capability.NONE
+    """Operations supported by storage. Computed from capabilities of
+    services during storage initialization."""
+    hidden: bool = False
+    """Flag that marks unsafe/experimental storages."""
 
     @override
     def __str__(self) -> str:
@@ -557,14 +560,23 @@ class Storage(ABC):  # noqa: B024
         Args:
             settings: mapping with storage configuration
 
+        Returns:
+            initialized settings object
         """
         if isinstance(settings, Settings):
             return settings
 
         return cls.SettingsFactory.from_dict(settings)
 
-    def compute_capabilities(self) -> Capability:
-        """Computes the capabilities of the storage based on its services."""
+    def compute_capabilities(self) -> utils.Capability:
+        """Computes the capabilities of the storage based on its services.
+
+        Combines the capabilities of the uploader, manager, and reader services,
+        then excludes any capabilities that are listed in the storage settings as disabled.
+
+        Returns:
+            The combined capabilities of the storage.
+        """
         result = self.uploader.capabilities | self.manager.capabilities | self.reader.capabilities
 
         for name in self.settings.disabled_capabilities:
@@ -572,12 +584,47 @@ class Storage(ABC):  # noqa: B024
 
         return result
 
-    def supports(self, operation: Capability) -> bool:
-        """Check whether the storage supports operation."""
+    def supports(self, operation: utils.Capability) -> bool:
+        """Check whether the storage supports operation.
+
+        Args:
+            operation: capability to check
+
+        Returns:
+            True if operation is supported, False otherwise
+        """
         return self.capabilities.can(operation)
 
-    def supports_synthetic(self, operation: Capability, dest: Storage) -> bool:
-        """Check if the storage can emulate operation using other operations."""
+    def supports_synthetic(self, operation: utils.Capability, dest: Storage) -> bool:
+        """Check if the storage can emulate operation using other operations.
+
+        This method checks if the storage can perform the specified operation
+        using a combination of other supported operations, often in conjunction
+        with a destination storage.
+
+        Synthetic operations are not stable and may change in future. They are
+        not considered when computing capabilities of the storage. There are
+        two main reasons to use them:
+
+        * required operation involves two storage. For example, moving or
+          copying file from one storage to another.
+        * operation is not natively supported by the storage, but can be
+          emulated using other operations. For example,
+          [RANGE][file_keeper.Capability.RANGE] capability means that storage
+          can return specified slice of the file. When this capability is not
+          natively supported, storage can use
+          [STREAM][file_keeper.Capability.STREAM] capability to read the whole
+          file, returning only specified fragment. This is not efficient but
+          still can solve certain problems.
+
+        Args:
+            operation: capability to check
+            dest: destination storage for operations that require it
+
+        Returns:
+            True if operation is supported, False otherwise
+
+        """
         if operation is Capability.RANGE:
             return self.supports(Capability.STREAM)
 
@@ -601,12 +648,26 @@ class Storage(ABC):  # noqa: B024
     def full_path(self, location: types.Location, /, **kwargs: Any) -> str:
         """Compute path to the file from the storage's root.
 
+        This method works as a shortcut for enabling `path` option. Whenever
+        your custom storage works with location provided by user, wrap this
+        location into this method to get full path:
+
+        ```py
+        class MyCustomReader:
+            def stream(self, data: FileData, extras):
+                real_location = self.storage.full_path(data_location)
+                ...
+        ```
+
         Args:
             location: location of the file object
             **kwargs: exra parameters for custom storages
 
         Returns:
             full path required to access location
+
+        Raises:
+            exceptions.LocationError: when location is outside of the storage's path
         """
         result = os.path.normpath(os.path.join(self.settings.path, location))
         if not result.startswith(self.settings.path):
@@ -615,7 +676,31 @@ class Storage(ABC):  # noqa: B024
         return result
 
     def prepare_location(self, location: str, sample: Upload | None = None, /, **kwargs: Any) -> types.Location:
-        """Transform and sanitize location using configured functions."""
+        """Transform and sanitize location using configured functions.
+
+        This method applies all transformations configured in
+        [location_transformers][file_keeper.Settings.location_transformers]
+        setting to the provided location. Each transformer is called in the
+        order they are listed in the setting. The output of the previous
+        transformer is passed as an input to the next one.
+
+        Example:
+            ```py
+            location = storage.prepare_location(untrusted_location)
+            ```
+
+        Args:
+            location: initial location provided by user
+            sample: optional Upload object that can be used by transformers.
+            **kwargs: additional parameters for transformers
+
+        Returns:
+            transformed location
+
+        Raises:
+            exceptions.LocationTransformerError: when transformer is not found
+
+        """
         for name in self.settings.location_transformers:
             if transformer := location_transformers.get(name):
                 location = transformer(location, sample, kwargs)
@@ -631,6 +716,9 @@ class Storage(ABC):  # noqa: B024
         Args:
             data: The FileData object to wrap into Upload
             **kwargs: Additional metadata for the upload.
+
+        Returns:
+            Upload object with file content
         """
         stream = self.stream(data, **kwargs)
         stream = cast(types.PStream, stream) if hasattr(stream, "read") else utils.IterableBytesReader(stream)
@@ -646,10 +734,48 @@ class Storage(ABC):  # noqa: B024
     def upload(self, location: types.Location, upload: Upload, /, **kwargs: Any) -> data.FileData:
         """Upload file using single stream.
 
+        This is the simplest way to upload file into the storage. It uses
+        single stream to transfer the whole file. If upload fails, no file is
+        created in the storage.
+
+        Content is not modified during upload, it is written as-is. And content
+        can be of size 0, which results in empty file in the storage.
+
+        When file already exists, behavior depends on
+        [override_existing][file_keeper.Settings.override_existing] setting. If
+        it is False, [ExistingFileError][file_keeper.exc.ExistingFileError] is
+        raised. If it is True, existing file is replaced with new content. In
+        this case, it is possible to lose existing file if upload fails. When
+        adapter does not support removal, but supports overrides, this can be
+        used to wipe the content of the file.
+
+        Location can contain nested path as long as it does not go outside of
+        the [path][file_keeper.Settings.path] from settings. For example, if
+        `path` is set to `/data`, location can be `file.txt` or `2024/file.txt`
+        but not `../file.txt` or `/etc/passwd`. Violating this rule leads to
+        [LocationError][file_keeper.exc.LocationError].
+
         Args:
             location: The destination location for the upload.
             upload: The Upload object containing the file data.
             **kwargs: Additional metadata for the upload.
+
+        Returns:
+            FileData object with details about the uploaded file.
+
+        Raises:
+            exceptions.ExistingFileError: when file already exists and
+                [override_existing][file_keeper.Settings.override_existing] is False
+            exceptions.LocationError: when location is outside of the storage's path
+
+            exceptions.UploadError: when upload fails
+            exceptions.UploadHashMismatchError: when hash of the uploaded file
+                does not match the expected hash
+            exceptions.UploadTypeMismatchError: when content type of the
+                uploaded file does not match the expected content type
+            exceptions.UnsupportedOperationError: when storage does not support
+                CREATE operation
+
         """
         return self.uploader.upload(location, upload, kwargs)
 
@@ -791,9 +917,18 @@ class Storage(ABC):  # noqa: B024
     def analyze(self, location: types.Location, /, **kwargs: Any) -> data.FileData:
         """Return file details.
 
+        [FileData][file_keeper.FileData] produced by this operation is the same
+        as data produced by the [upload()][file_keeper.Storage.upload].
+
+        Attempt to analyze non-existing location leads to [MissingFileError][file_keeper.exc.MissingFileError]
+
         Args:
             location: The location of the file to analyze.
             **kwargs: Additional metadata for the operation.
+
+        Raises:
+            MissingFileError: when location does not exist
+
         """
         return self.manager.analyze(location, kwargs)
 
@@ -1031,6 +1166,11 @@ def make_storage(name: str, settings: dict[str, Any]) -> Storage:
     Storage adapter is defined by `type` key of the settings. The rest of
     settings depends on the specific adapter.
 
+    Example:
+        ```py
+        storage = make_storage("memo", {"type": "file_keeper:memory"})
+        ```
+
     Args:
         name: name of the storage
         settings: configuration for the storage
@@ -1041,10 +1181,6 @@ def make_storage(name: str, settings: dict[str, Any]) -> Storage:
     Raises:
         exceptions.UnknownAdapterError: storage adapter is not registered
 
-    Example:
-        ```
-        storage = make_storage("memo", {"type": "files:redis"})
-        ```
 
     """
     adapter_type = settings.pop("type", None)
@@ -1067,12 +1203,11 @@ def get_storage(name: str, settings: dict[str, Any] | None = None) -> Storage:
     Settings are required only for initialization, so you can omit them if you
     are sure that storage exists. Additionally, if `settins` are not specified
     but storage is missing from the pool, file-keeper makes an attempt to
-    initialize storage usign global configuration. Global configuration can be
+    initialize storage using global configuration. Global configuration can be
     provided as:
 
     * `FILE_KEEPER_CONFIG` environment variable that points to a file with configuration
     * `.file-keeper.json` in the current directory hierarchy
-
     * `file-keeper/file-keeper.json` in the user's config directory(usually,
       `~/.config/`) when [platformdirs](https://pypi.org/project/platformdirs/)
       installed in the environment, for example via `pip install
@@ -1080,17 +1215,18 @@ def get_storage(name: str, settings: dict[str, Any] | None = None) -> Storage:
 
     File must contain storage configuration provided in format
 
-    ```json
+    ```json5
     {
         "storages": {
-            # storage name
-            "my_storage": {
-                # storage options
-                "type": "file_keeper:memory"
+            "my_storage": {  # (1)!
+                "type": "file_keeper:memory"  # (2)!
             }
         }
     }
     ```
+
+    1. Name of the storage
+    2. Options for the storage
 
     JSON configuration is used by default, because python has built-in JSON
     support. Additional file extensions are checked if environment contains
@@ -1104,6 +1240,39 @@ def get_storage(name: str, settings: dict[str, Any] | None = None) -> Storage:
 
     Extensions are checked in order `.toml`, `.yaml`, `.yml`, `.json`.
 
+    Example:
+        If storage accessed for the first time, settings are required
+
+        ```pycon
+        >>> storage = get_storage("memory", {"type": "file_keeper:memory"})
+        ```
+
+        and the same storage is returned every time in subsequent calls
+
+        ```pycon
+        >>> cached = get_storage("memory")
+        >>> storage is cached
+        True
+        ```
+
+        but if storage does not exist and settings are omitted, exception is raised
+
+        ```pycon
+        >>> get_storage("new-memory")
+        Traceback (most recent call last):
+          ...
+        file_keeper.core.exceptions.UnknownStorageError: Storage new-memory is not configured
+        ```
+
+    Args:
+        name: name of the storage
+        settings: configuration for the storage
+
+    Returns:
+        storage instance
+
+    Raises:
+        exceptions.UnknownStorageError: storage with the given name is not configured
     """
     if name not in storages:
         if settings is None:

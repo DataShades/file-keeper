@@ -9,6 +9,7 @@ Utilities available for import directly from the `file_keeper` module.
 ::: file_keeper.Storage
     options:
         show_bases: false
+        members_order: source
 
 ::: file_keeper.Capability
 

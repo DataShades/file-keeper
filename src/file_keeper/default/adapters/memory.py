@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import dataclasses
 import logging
+import os
 from collections.abc import Iterable, MutableMapping
 from io import BytesIO
 from typing import Any, cast
@@ -32,17 +33,19 @@ class Uploader(fk.Uploader):
 
     @override
     def upload(self, location: fk.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
+        filepath = self.storage.full_path(location)
         reader = upload.hashing_reader()
-        if location in self.storage.settings.bucket and not self.storage.settings.override_existing:
+        if filepath in self.storage.settings.bucket and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
 
-        self.storage.settings.bucket[location] = reader.read()
+        self.storage.settings.bucket[filepath] = reader.read()
 
         return fk.FileData(location, upload.size, upload.content_type, hash=reader.get_hash())
 
     @override
     def resumable_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
-        self.storage.settings.bucket[location] = b""
+        filepath = self.storage.full_path(location)
+        self.storage.settings.bucket[filepath] = b""
 
         return fk.FileData.from_dict(
             extras, size=size, location=location, storage_data={"resumable": True, "memory": {"uploaded": 0}}
@@ -50,16 +53,17 @@ class Uploader(fk.Uploader):
 
     @override
     def resumable_refresh(self, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        filepath = self.storage.full_path(data.location)
         bucket = self.storage.settings.bucket
 
-        if data.location not in bucket:
+        if filepath not in bucket:
             raise fk.exc.MissingFileError(self.storage, data.location)
 
         result = fk.FileData.from_object(data)
-        result.storage_data["memory"]["uploaded"] = len(bucket[data.location])
+        result.storage_data["memory"]["uploaded"] = len(bucket[filepath])
 
         if result.size == result.storage_data["memory"]["uploaded"]:
-            reader = fk.HashingReader(BytesIO(bucket[result.location]))
+            reader = fk.HashingReader(BytesIO(bucket[filepath]))
             reader.exhaust()
 
             hash = reader.get_hash()
@@ -72,23 +76,25 @@ class Uploader(fk.Uploader):
 
     @override
     def resumable_resume(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
+        filepath = self.storage.full_path(data.location)
+
         bucket = self.storage.settings.bucket
 
-        if data.location not in bucket:
+        if filepath not in bucket:
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        expected_size = upload.size + len(bucket[data.location])
+        expected_size = upload.size + len(bucket[filepath])
         if expected_size > data.size:
             raise fk.exc.UploadOutOfBoundError(expected_size, data.size)
 
         result = fk.FileData.from_object(data)
 
-        bucket[result.location] += upload.stream.read()
+        bucket[filepath] += upload.stream.read()
         result.storage_data["memory"]["uploaded"] = expected_size
 
-        size = len(bucket[result.location])
+        size = len(bucket[filepath])
         if result.size == size:
-            reader = fk.HashingReader(BytesIO(bucket[result.location]))
+            reader = fk.HashingReader(BytesIO(bucket[filepath]))
             reader.exhaust()
 
             hash = reader.get_hash()
@@ -121,74 +127,86 @@ class Manager(fk.Manager):
 
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        filepath = self.storage.full_path(data.location)
+
         bucket = self.storage.settings.bucket
-        result = bucket.pop(data.location, None)
+        result = bucket.pop(filepath, None)
         return result is not None
 
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        filepath = self.storage.full_path(data.location)
+
         bucket = self.storage.settings.bucket
-        return data.location in bucket
+        return filepath in bucket
 
     @override
     def compose(self, location: fk.Location, datas: Iterable[fk.FileData], extras: dict[str, Any]) -> fk.FileData:
+        filepath = self.storage.full_path(location)
+
         bucket = self.storage.settings.bucket
-        if location in bucket and not self.storage.settings.override_existing:
+        if filepath in bucket and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
 
         result = b""
         for data in datas:
-            if data.location not in bucket:
+            part_path = self.storage.full_path(data.location)
+            if part_path not in bucket:
                 raise fk.exc.MissingFileError(self.storage, data.location)
-            result += bucket[data.location]
+            result += bucket[part_path]
 
-        bucket[location] = result
+        bucket[filepath] = result
 
         return self.analyze(location, extras)
 
     @override
     def append(self, data: fk.FileData, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
+        filepath = self.storage.full_path(data.location)
+
         bucket = self.storage.settings.bucket
-        if data.location not in bucket:
+        if filepath not in bucket:
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        bucket[data.location] += upload.stream.read()
+        bucket[filepath] += upload.stream.read()
         return self.analyze(data.location, extras)
 
     @override
     def copy(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
+        filepath = self.storage.full_path(location)
+
         bucket = self.storage.settings.bucket
-        if location in bucket and not self.storage.settings.override_existing:
+        if filepath in bucket and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
 
-        if data.location not in bucket:
+        sourcepath = self.storage.full_path(data.location)
+        if sourcepath not in bucket:
             raise fk.exc.MissingFileError(self.storage, location)
 
-        bucket[location] = bucket[data.location]
+        bucket[filepath] = bucket[sourcepath]
         return self.analyze(location, extras)
 
     @override
     def move(self, location: fk.Location, data: fk.FileData, extras: dict[str, Any]) -> fk.FileData:
-        bucket = self.storage.settings.bucket
-        if location in bucket and not self.storage.settings.override_existing:
-            raise fk.exc.ExistingFileError(self.storage, location)
-
-        if data.location not in bucket:
-            raise fk.exc.MissingFileError(self.storage, location)
-
-        bucket[location] = bucket.pop(data.location)
-        return fk.FileData.from_object(data, location=location)
+        result = self.copy(location, data, extras)
+        self.remove(data, extras)
+        return result
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         # create a copy of keys to avoid "dictionary changed size during
         # iteration" error
-        yield from list(self.storage.settings.bucket)
+        keys = list(self.storage.settings.bucket)
+        path = self.storage.settings.path
+        for key in keys:
+            if key.startswith(path):
+                yield os.path.relpath(key, path)
 
     @override
     def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+        filepath = self.storage.full_path(location)
+
         try:
-            content = self.storage.settings.bucket[location]
+            content = self.storage.settings.bucket[filepath]
         except KeyError as err:
             raise fk.exc.MissingFileError(self.storage, location) from err
 
@@ -206,15 +224,18 @@ class Reader(fk.Reader):
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
+        filepath = self.storage.full_path(data.location)
+
         try:
-            return [self.storage.settings.bucket[data.location]]
+            return [self.storage.settings.bucket[filepath]]
         except KeyError as err:
             raise fk.exc.MissingFileError(self.storage, data.location) from err
 
     @override
     def range(self, data: fk.FileData, start: int, end: int | None, extras: dict[str, Any]) -> Iterable[bytes]:
+        filepath = self.storage.full_path(data.location)
         try:
-            return [self.storage.settings.bucket[data.location][start:end]]
+            return [self.storage.settings.bucket[filepath][start:end]]
         except KeyError as err:
             raise fk.exc.MissingFileError(self.storage, data.location) from err
 

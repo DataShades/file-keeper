@@ -216,6 +216,14 @@ class Creator:
         result = storage.upload(fk.Location(path), fk.make_upload(b""))
         assert result.location == path
 
+    @pytest.mark.expect_storage_capability(fk.Capability.CREATE)
+    def test_create_root_is_not_allowed(self, storage: fk.Storage, faker: Faker):
+        """Can upload into nested dirs."""
+        path = faker.file_path(absolute=True)
+        with pytest.raises(fk.exc.LocationError):
+            storage.upload(fk.Location(path), fk.make_upload(b""))
+
+
     @pytest.mark.expect_storage_capability(fk.Capability.CREATE, fk.Capability.STREAM)
     @pytest.mark.fk_storage_option("override_existing", True)
     def test_create_replace_existing(self, storage: fk.Storage, faker: Faker):

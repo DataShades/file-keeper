@@ -7,6 +7,7 @@ import zipfile
 from collections.abc import Iterable
 from typing import Any
 
+import magic
 from typing_extensions import override
 
 import file_keeper as fk
@@ -78,7 +79,7 @@ class Reader(fk.Reader):
 class Manager(fk.Manager):
     """Service responsible for managing data in the zip storage."""
 
-    capabilities = fk.Capability.REMOVE | fk.Capability.SCAN | fk.Capability.EXISTS
+    capabilities = fk.Capability.REMOVE | fk.Capability.SCAN | fk.Capability.EXISTS | fk.Capability.ANALYZE
 
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]):
@@ -108,6 +109,28 @@ class Manager(fk.Manager):
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         with zipfile.ZipFile(self.storage.settings.path, "a") as z:
             yield from (info.filename for info in z.infolist() if _exists(info))
+
+    @override
+    def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+        with zipfile.ZipFile(self.storage.settings.path, "a") as z:
+            try:
+                info = z.getinfo(location)
+            except KeyError as err:
+                raise fk.exc.MissingFileError(self.storage, location) from err
+
+            if not _exists(info):
+                raise fk.exc.MissingFileError(self.storage, location)
+
+            reader = fk.HashingReader(z.open(info))
+            content_type = magic.from_buffer(next(reader, b""), True)
+            reader.exhaust()
+
+            return fk.FileData(
+                location,
+                size=reader.position,
+                content_type=content_type,
+                hash=reader.get_hash(),
+            )
 
 
 class ZipStorage(fk.Storage):

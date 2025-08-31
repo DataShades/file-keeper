@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
+from faker import Faker
 
 import file_keeper.default.adapters.memory as memory
 
@@ -13,8 +14,11 @@ Storage = memory.MemoryStorage
 
 
 @pytest.fixture
-def storage(storage_settings: dict[str, Any]):
-    settings = {"name": "test"}
+def storage(faker: Faker, storage_settings: dict[str, Any]):
+    settings = {
+        "name": "test",
+        "path": faker.file_path(extension=[]),
+    }
     settings.update(storage_settings)
 
     return Storage(settings)

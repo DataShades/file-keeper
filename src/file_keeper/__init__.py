@@ -1,7 +1,5 @@
 """Main entrypoint of the file-keeper."""
 
-__version__ = "0.1.0a3"
-
 from .core import exceptions as exc
 from .core import types
 from .core.data import BaseData, FileData
@@ -50,6 +48,7 @@ __all__ = [
     "make_upload",
     "parse_filesize",
     "types",
+    "ext",
 ]
 
 from .ext import hookimpl  # must be the last line to avoid circular imports

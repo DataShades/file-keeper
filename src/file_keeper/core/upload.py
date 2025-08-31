@@ -59,7 +59,7 @@ class Upload:
         cursor to the beginning of the file after reading something.
 
         Example:
-            ```python
+            ```py
             upload = make_upload(...)
             if fd := upload.seekable_stream():
                 # read fragment of the file
@@ -96,19 +96,40 @@ def make_upload(value: Any) -> Upload:
     [Upload][file_keeper.Upload] manually, unless you are 100% sure you can
     provide correct MIMEtype, size and stream.
 
+    Example:
+        Bytes, binary streams, file objects, and a number of other types can be
+        converted into [Upload][file_keeper.Upload] object.
+
+        ```pycon
+        >>> upload = make_upload(b"hello world")
+        ```
+
+        Upload object contains generic information about the file.
+
+        ```pycon
+        >>> print(upload.size)
+        11
+        >>> print(upload.content_type)
+        text/plain
+        ```
+
+        Unsupported types will raise TypeError.
+
+        ```pycon
+        >>> make_upload("unicode string")
+        Traceback (most recent call last):
+          ...
+        TypeError: <class 'str'> cannot be converted into Upload
+        ```
+
     Args:
         value: content of the file
 
     Raises:
-        TypeError: content has unsupported type
+        TypeError: if value cannot be converted into Upload object
 
     Returns:
         upload object with specified content
-
-    Example:
-        ```python
-        upload = storage.upload("file.txt", make_upload(b"hello world"))
-        ```
 
     """
     if isinstance(value, Upload):
@@ -150,4 +171,7 @@ def make_upload(value: Any) -> Upload:
 
         return Upload(value, getattr(value, "name", ""), size, mime)
 
-    raise TypeError(type(value))
+
+    source_type = type(value)  # pyright: ignore[reportUnknownVariableType]
+    msg = f"{source_type} cannot be converted into Upload"
+    raise TypeError(msg)

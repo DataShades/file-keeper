@@ -5,6 +5,7 @@ from typing import Any
 
 import opendal
 import pytest
+from faker import Faker
 
 import file_keeper as fk
 import file_keeper.default.adapters.opendal as od
@@ -16,10 +17,11 @@ Storage = od.OpenDalStorage
 
 
 @pytest.fixture
-def storage(tmp_path: Path, storage_settings: dict[str, Any]):
+def storage(faker: Faker, tmp_path: Path, storage_settings: dict[str, Any]):
     settings: dict[str, Any] = {
         "name": "test",
         "scheme": "fs",
+        "path": faker.file_path(extension=[]),
         "params": {"root": str(tmp_path)},
     }
     settings.update(storage_settings)
