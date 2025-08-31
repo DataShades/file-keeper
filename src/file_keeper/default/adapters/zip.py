@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import dataclasses
+import os
 import zipfile
 from collections.abc import Iterable
 from typing import Any
@@ -33,17 +34,19 @@ class Uploader(fk.Uploader):
 
     @override
     def upload(self, location: fk.Location, upload: fk.Upload, extras: dict[str, Any]):
+        filepath = self.storage.full_path(location)
+
         reader = fk.HashingReader(upload.stream)
         with zipfile.ZipFile(self.storage.settings.path, "a") as z:
             try:
-                info = z.getinfo(location)
+                info = z.getinfo(filepath)
             except KeyError:
                 pass
             else:
                 if not self.storage.settings.override_existing and _exists(info):
                     raise fk.exc.ExistingFileError(self.storage, location)
 
-            z.writestr(location, reader.read())
+            z.writestr(filepath, reader.read())
 
         return fk.FileData(
             location,
@@ -64,9 +67,10 @@ class Reader(fk.Reader):
         data: fk.FileData,
         extras: dict[str, Any],
     ):
+        filepath = self.storage.full_path(data.location)
         with zipfile.ZipFile(self.storage.settings.path, "r") as z:
             try:
-                info = z.getinfo(data.location)
+                info = z.getinfo(filepath)
             except KeyError as err:
                 raise fk.exc.MissingFileError(self.storage, data.location) from err
 
@@ -83,9 +87,10 @@ class Manager(fk.Manager):
 
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]):
+        filepath = self.storage.full_path(data.location)
         with zipfile.ZipFile(self.storage.settings.path, "a") as z:
             try:
-                info = z.getinfo(data.location)
+                info = z.getinfo(filepath)
             except KeyError:
                 return False
 
@@ -99,22 +104,27 @@ class Manager(fk.Manager):
 
     @override
     def exists(self, data: fk.FileData, extras: dict[str, Any]) -> bool:
+        filepath = self.storage.full_path(data.location)
         with zipfile.ZipFile(self.storage.settings.path, "a") as z:
             try:
-                return _exists(z.getinfo(data.location))
+                return _exists(z.getinfo(filepath))
             except KeyError:
                 return False
 
     @override
     def scan(self, extras: dict[str, Any]) -> Iterable[str]:
+        path = self.storage.settings.path
         with zipfile.ZipFile(self.storage.settings.path, "a") as z:
-            yield from (info.filename for info in z.infolist() if _exists(info))
+            for info in z.infolist():
+                if info.filename.startswith(path) and _exists(info):
+                    yield os.path.relpath(info.filename)
 
     @override
     def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
+        filepath = self.storage.full_path(location)
         with zipfile.ZipFile(self.storage.settings.path, "a") as z:
             try:
-                info = z.getinfo(location)
+                info = z.getinfo(filepath)
             except KeyError as err:
                 raise fk.exc.MissingFileError(self.storage, location) from err
 
