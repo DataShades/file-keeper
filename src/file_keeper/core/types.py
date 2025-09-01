@@ -18,13 +18,20 @@ SignedAction = Literal["upload", "download", "delete"]
 class PReadable(Protocol):
     """Readable object."""
 
-    def read(self, size: Any = ..., /) -> bytes: ...
+    def read(self, size: Any = ..., /) -> bytes:
+        """Read up to `size` bytes. If the argument is negative or omitted, read until EOF.
+
+        Return an empty bytes object on EOF.
+        """
+        ...
 
 
 class PStream(PReadable, Protocol):
     """Readable stream."""
 
-    def __iter__(self) -> Iterator[bytes]: ...
+    def __iter__(self) -> Iterator[bytes]:
+        """Return an iterator over the stream."""
+        ...
 
 
 class PSeekableStream(PStream, Protocol):

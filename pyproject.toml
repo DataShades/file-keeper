@@ -229,6 +229,7 @@ reportUnannotatedClassAttribute = false
 [tool.coverage.run]
 branch = true
 omit = ["tests/*"]
+include = ["src/*"]
 
 [tool.tox]
 requires = ["tox>=4"]
