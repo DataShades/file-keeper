@@ -28,13 +28,25 @@ class Upload:
         size: size of the file in bytes
         content_type: MIMEtype of the file
 
-    Examples:
-        >>> Upload(
-        >>>     BytesIO(b"hello world"),
-        >>>     "file.txt",
-        >>>     11,
-        >>>     "text/plain",
-        >>> )
+    Example:
+        ```pycon
+        >>> upload = Upload(
+        ...     BytesIO(b"hello world"),
+        ...     "file.txt",
+        ...     11,
+        ...     "text/plain",
+        ... )
+        >>>
+        >>> upload.size
+        11
+        >>> upload.filename
+        'file.txt'
+        >>> upload.content_type
+        'text/plain'
+        >>> upload.stream.read()
+        b'hello world'
+
+        ```
     """
 
     stream: types.PStream
@@ -102,15 +114,17 @@ def make_upload(value: Any) -> Upload:
 
         ```pycon
         >>> upload = make_upload(b"hello world")
+
         ```
 
         Upload object contains generic information about the file.
 
         ```pycon
-        >>> print(upload.size)
+        >>> upload.size
         11
-        >>> print(upload.content_type)
-        text/plain
+        >>> upload.content_type
+        'text/plain'
+
         ```
 
         Unsupported types will raise TypeError.
@@ -120,6 +134,7 @@ def make_upload(value: Any) -> Upload:
         Traceback (most recent call last):
           ...
         TypeError: <class 'str'> cannot be converted into Upload
+
         ```
 
     Args:

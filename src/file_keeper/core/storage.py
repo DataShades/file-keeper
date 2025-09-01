@@ -93,9 +93,11 @@ class StorageService:
     StorageService.capabilities reflect all operations provided by the
     service.
 
-    Examples:
-        >>> class Uploader(StorageService):
-        >>>     capabilities = Capability.CREATE
+    Example:
+        ```py
+        class Uploader(StorageService):
+            capabilities = Capability.CREATE
+        ```
     """
 
     capabilities: Capability = Capability.NONE
@@ -494,17 +496,17 @@ class Storage(ABC):  # noqa: B024
         settings: storage configuration
 
     Example:
-        Extend base class to implement custom storage.
+        Extend base class to implement custom storage
         ```py
         class MyStorage(Storage):
-            SettingsFactory = MySettings
-            UploaderFactory = MyUploader
-            ManagerFactory = MyManager
-            ReaderFactory = MyReader
+            SettingsFactory = Settings
+            UploaderFactory = Uploader
+            ManagerFactory = Manager
+            ReaderFactory = Reader
         ```
         then initialize it using required settings
-        ```pycon
-        >>> my_storage = MyStorage({"option": "value"})
+        ```py
+        my_storage = MyStorage({"option": "value"})
         ```
     """
 
@@ -1611,6 +1613,9 @@ def get_storage(name: str, settings: dict[str, Any] | None = None) -> Storage:
 
         ```pycon
         >>> storage = get_storage("memory", {"type": "file_keeper:memory"})
+        >>> storage
+        <file_keeper.default.adapters.memory.MemoryStorage object at 0x...>
+
         ```
 
         and the same storage is returned every time in subsequent calls
@@ -1619,6 +1624,7 @@ def get_storage(name: str, settings: dict[str, Any] | None = None) -> Storage:
         >>> cached = get_storage("memory")
         >>> storage is cached
         True
+
         ```
 
         but if storage does not exist and settings are omitted, exception is raised
@@ -1626,8 +1632,9 @@ def get_storage(name: str, settings: dict[str, Any] | None = None) -> Storage:
         ```pycon
         >>> get_storage("new-memory")
         Traceback (most recent call last):
-          ...
+            ...
         file_keeper.core.exceptions.UnknownStorageError: Storage new-memory is not configured
+
         ```
 
     Args:

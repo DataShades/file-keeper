@@ -38,6 +38,13 @@ For example, to install file-keeper with S3 support:
 ```bash
 pip install 'file-keeper[s3]'
 ```
+
+And if you are not sure which storage backend you will use, you can install all
+extras:
+```bash
+pip install 'file-keeper[all]'
+```
+
 ///
 
 ## Basic configuration and usage (FS adapter)

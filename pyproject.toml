@@ -35,19 +35,42 @@ Documentation = "https://datashades.github.io/file-keeper/"
 Changelog = "https://datashades.github.io/file-keeper/changelog/"
 
 [project.optional-dependencies]
-test = [ "pytest-cov", "pytest-faker", "responses", "werkzeug", "faker" ]
-docs = [ "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]",  ]
-dev = [ "pytest-cov", "pytest-faker", "responses", "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]",]
+test = [
+     "pytest-cov", "pytest-faker", "faker", "werkzeug", "urllib3",
+]
+docs = [
+     "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]",
+]
+dev = [
+    "pytest-cov", "pytest-faker",  "faker", "werkzeug", "urllib3",
+    "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]",
+]
 
 user_config = ["platformdirs"]
 
-azure = ["azure-storage-blob", "urllib3"]
+azure = ["azure-storage-blob"]
 gcs = [ "google-cloud-storage", "urllib3"]
+s3 = [ "boto3", "boto3-stubs[essential]"]
+cloud = [
+      "azure-storage-blob",
+      "google-cloud-storage", "urllib3",
+      "boto3", "boto3-stubs[essential]",
+]
+
 libcloud = [ "apache-libcloud", "cryptography"]
 opendal = [ "opendal",]
 redis = [ "redis",]
-s3 = [ "boto3", "boto3-stubs[essential]", "urllib3"]
 sqlalchemy = ["sqlalchemy"]
+
+all = [
+      "azure-storage-blob",
+      "google-cloud-storage", "urllib3",
+      "boto3", "boto3-stubs[essential]",
+      "apache-libcloud", "cryptography",
+      "opendal",
+      "redis",
+      "sqlalchemy",
+]
 
 # --8<-- [start:entrypoint]
 [project.entry-points.file_keeper_ext]
@@ -116,10 +139,16 @@ section-order = [
 self = ["file_keeper"]
 
 [tool.pytest.ini_options]
-addopts = "-p no:ckan"
+addopts = "-p no:ckan --doctest-modules"
 markers = [
         "fk_storage_option: modify storage configuration",
         "expect_storage_capability: test relies on given capability available in the storage fixture"
+]
+filterwarnings = [
+               "ignore:'cgi' is deprecated",
+               "ignore:.*ckanext:pytest.PytestAssertRewriteWarning",
+               "ignore:distutils Version classes are deprecated.",
+               "ignore:datetime.datetime.utcnow",
 ]
 
 [tool.pyright]
