@@ -2,12 +2,10 @@
 requires = [ "setuptools"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools.dynamic]
-version = "0.1.0a4"
 
 [project]
 name = "file-keeper"
-dynamic = []
+version = "0.1.0a4"
 description = "Abstraction level for object storages."
 classifiers = [
 

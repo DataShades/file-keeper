@@ -1,10 +1,12 @@
 
-## [v0.1.0a3](https://github.com/DataShades/file-keeper/releases/tag/v0.1.0a3) - 2025-08-27
-[Compare with v0.0.10](https://github.com/DataShades/file-keeper/compare/v0.0.10..v0.1.0a3)
+## [v0.1.0a4](https://github.com/DataShades/file-keeper/releases/tag/v0.1.0a4) - 2025-09-01
+[Compare with v0.0.10](https://github.com/DataShades/file-keeper/compare/v0.0.10..v0.1.0a4)
 
 ### 🚀 Features
 
 - [**breaking**] frozen FileData and MultipartData ([cb9dbf8](https://github.com/DataShades/file-keeper/commit/cb9dbf8ddf7516d461d0a295f69d41090b706195))
+- enable multipart for S3 adapter(not stable) ([c8bb37b](https://github.com/DataShades/file-keeper/commit/c8bb37b8ca32279143c831543a7a28e77c81ba76))
+- enable resumable for GCS adapter(not stable) ([d00f9bd](https://github.com/DataShades/file-keeper/commit/d00f9bd8d87eb968812695a84283821ac0e31a07))
 - global storage configuration via file-keeper.json ([58939eb](https://github.com/DataShades/file-keeper/commit/58939eb2f27075d201e9bcbfb2625adb67b68a77))
 - define `RESUMABLE` capability ([bab84fa](https://github.com/DataShades/file-keeper/commit/bab84fa419aa6188e9e80a85381bf24d9dc50747))
 - complete GCS adapter ([db97e20](https://github.com/DataShades/file-keeper/commit/db97e201532627d65265d0bf81bdc581ad19309d))
@@ -24,12 +26,17 @@
 
 ### 🐛 Bug Fixes
 
+- `FileData.from_*` ignore overrides ([60e0564](https://github.com/DataShades/file-keeper/commit/60e05648cd55a46af1515665b81db7527b4895ec))
+- Storage.full_path allows `..` ([3c65a8e](https://github.com/DataShades/file-keeper/commit/3c65a8e6fb0d7181769722d30c007f07715a1efa))
 - s3 unconditionally overrides files ([c059f2b](https://github.com/DataShades/file-keeper/commit/c059f2b67550a2d46f169b890d4705d725b6e11c))
 - storage settings keep a lot of intermediate parameters ([cf69cf2](https://github.com/DataShades/file-keeper/commit/cf69cf26f4d7ad9e2b16204c6a9803ec6c0a2edb))
 - libcloud silently overrides existing objects ([599f099](https://github.com/DataShades/file-keeper/commit/599f09992ed14e926878b9997abd2bca2155326a))
 
 ### 🚜 Refactor
 
+- [**breaking**] multipart_start requires size; multipart_update required upload and part ([02c15cb](https://github.com/DataShades/file-keeper/commit/02c15cb0377b4e3dccfde4244abe8fbadcfdf4fe))
+- [**breaking**] resumable_start requires size; resumable_resume required upload ([3bb15a1](https://github.com/DataShades/file-keeper/commit/3bb15a16733feb679d25baf4555e39426761b247))
+- [**breaking**] multipart_start/resumable_start expect location instead of data ([d169bef](https://github.com/DataShades/file-keeper/commit/d169bef953cac27ac7951542183721f1390cca77))
 - [**breaking**] disable MULTIPART capabilities on s3, fs and memory storages ([50afc52](https://github.com/DataShades/file-keeper/commit/50afc5284e521ffe27af635b98a8a58cf1621f99))
 - [**breaking**] remove `location` from arguments of `multipart_start` ([876ce46](https://github.com/DataShades/file-keeper/commit/876ce467995139c4a8790f912b850415e9501b1f))
 - [**breaking**] drop `MultipartData` and use `FileData` instead everywhere ([c1c01c3](https://github.com/DataShades/file-keeper/commit/c1c01c3ba4af087b29970cd84ecc743819e33675))
