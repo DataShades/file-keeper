@@ -1148,7 +1148,7 @@ pip<span class="w"> </span>install<span class="w"> </span>boto3
 </code></pre></div>
 <h2 id="initialization-example">Initialization Example</h2>
 <p>Here's an example of how to initialize the S3 adapter:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">AWS S3</label><label for="__tabbed_1_2">MinIO</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:5"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><input id="__tabbed_1_5" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">AWS S3</label><label for="__tabbed_1_2">MinIO</label><label for="__tabbed_1_3">Environment variables</label><label for="__tabbed_1_4">AWS config file</label><label for="__tabbed_1_5">Existing S3 client</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_s3_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
@@ -1168,6 +1168,49 @@ pip<span class="w"> </span>install<span class="w"> </span>boto3
     <span class="s2">&quot;bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;file-keeper&quot;</span><span class="p">,</span>
     <span class="s2">&quot;endpoint&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:9000/&quot;</span><span class="p">,</span>
     <span class="s2">&quot;initialize&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">})</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>Set environment variables mentioned in <a href="https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html#using-environment-variables">boto3
+documentations</a>. In this way you don't need to use hardcoded secrets.</p>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_ACCESS_KEY_ID</span><span class="o">=</span>minioadmin
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_SECRET_ACCESS_KEY</span><span class="o">=</span>minioadmin
+<span class="nb">export</span><span class="w"> </span><span class="nv">AWS_ENDPOINT_URL</span><span class="o">=</span>http://127.0.0.1:9000
+</code></pre></div>
+<p>Then storage will automatially pick any missing options from envvars</p>
+<div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_s3_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:s3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;file-keeper&quot;</span><span class="p">,</span>
+<span class="p">})</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>Just like environment variables, you can use <a href="https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html#using-a-configuration-file">configuration file</a>. It will be located at <code>~/.aws/credentials</code> or a different location specified by <code>AWS_CONFIG_FILE</code>.</p>
+<p>Add default profile there</p>
+<div class="highlight"><pre><span></span><code><span class="k">[default]</span>
+<span class="na">aws_access_key_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">minioadmin</span>
+<span class="na">aws_secret_access_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">minioadmin</span>
+<span class="na">endpoint_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">http://127.0.0.1:9000</span>
+</code></pre></div>
+<p>Or, if you want to use different profile name, set <code>AWS_PROFILE</code> with the name
+of prefered credentials profile. And now you can initialize the storage without
+specifying parameters that are set by the profile:</p>
+<div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_s3_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:s3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;file-keeper&quot;</span><span class="p">,</span>
+<span class="p">})</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>If you already have initialized <code>boto3.client("s3")</code>, you can just reuse it
+instead of specifying key and secret:</p>
+<div class="highlight"><pre><span></span><code><span class="n">s3_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">&quot;s3&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span> <span class="c1"># somehow you&#39;ve initialized it</span>
+
+<span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_s3_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:s3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;file-keeper&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;client&quot;</span><span class="p">:</span> <span class="n">s3_client</span>
 <span class="p">})</span>
 </code></pre></div>
 </div>

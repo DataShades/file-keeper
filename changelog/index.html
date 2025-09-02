@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#v010a3-2025-08-27" class="md-skip">
+        <a href="#v010a4-2025-09-01" class="md-skip">
           Skip to content
         </a>
       
@@ -1036,13 +1036,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#v010a3-2025-08-27" class="md-nav__link">
+  <a href="#v010a4-2025-09-01" class="md-nav__link">
     <span class="md-ellipsis">
-      v0.1.0a3 - 2025-08-27
+      v0.1.0a4 - 2025-09-01
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="v0.1.0a3 - 2025-08-27">
+    <nav class="md-nav" aria-label="v0.1.0a4 - 2025-09-01">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1404,13 +1404,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#v010a3-2025-08-27" class="md-nav__link">
+  <a href="#v010a4-2025-09-01" class="md-nav__link">
     <span class="md-ellipsis">
-      v0.1.0a3 - 2025-08-27
+      v0.1.0a4 - 2025-09-01
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="v0.1.0a3 - 2025-08-27">
+    <nav class="md-nav" aria-label="v0.1.0a4 - 2025-09-01">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1760,11 +1760,13 @@
 
   <h1>Changelog</h1>
 
-<h2 id="v010a3-2025-08-27"><a href="https://github.com/DataShades/file-keeper/releases/tag/v0.1.0a3">v0.1.0a3</a> - 2025-08-27</h2>
-<p><a href="https://github.com/DataShades/file-keeper/compare/v0.0.10..v0.1.0a3">Compare with v0.0.10</a></p>
+<h2 id="v010a4-2025-09-01"><a href="https://github.com/DataShades/file-keeper/releases/tag/v0.1.0a4">v0.1.0a4</a> - 2025-09-01</h2>
+<p><a href="https://github.com/DataShades/file-keeper/compare/v0.0.10..v0.1.0a4">Compare with v0.0.10</a></p>
 <h3 id="features">🚀 Features</h3>
 <ul>
 <li>[<strong>breaking</strong>] frozen FileData and MultipartData (<a href="https://github.com/DataShades/file-keeper/commit/cb9dbf8ddf7516d461d0a295f69d41090b706195">cb9dbf8</a>)</li>
+<li>enable multipart for S3 adapter(not stable) (<a href="https://github.com/DataShades/file-keeper/commit/c8bb37b8ca32279143c831543a7a28e77c81ba76">c8bb37b</a>)</li>
+<li>enable resumable for GCS adapter(not stable) (<a href="https://github.com/DataShades/file-keeper/commit/d00f9bd8d87eb968812695a84283821ac0e31a07">d00f9bd</a>)</li>
 <li>global storage configuration via file-keeper.json (<a href="https://github.com/DataShades/file-keeper/commit/58939eb2f27075d201e9bcbfb2625adb67b68a77">58939eb</a>)</li>
 <li>define <code>RESUMABLE</code> capability (<a href="https://github.com/DataShades/file-keeper/commit/bab84fa419aa6188e9e80a85381bf24d9dc50747">bab84fa</a>)</li>
 <li>complete GCS adapter (<a href="https://github.com/DataShades/file-keeper/commit/db97e201532627d65265d0bf81bdc581ad19309d">db97e20</a>)</li>
@@ -1784,12 +1786,17 @@
 </ul>
 <h3 id="bug-fixes">🐛 Bug Fixes</h3>
 <ul>
+<li><code>FileData.from_*</code> ignore overrides (<a href="https://github.com/DataShades/file-keeper/commit/60e05648cd55a46af1515665b81db7527b4895ec">60e0564</a>)</li>
+<li>Storage.full_path allows <code>..</code> (<a href="https://github.com/DataShades/file-keeper/commit/3c65a8e6fb0d7181769722d30c007f07715a1efa">3c65a8e</a>)</li>
 <li>s3 unconditionally overrides files (<a href="https://github.com/DataShades/file-keeper/commit/c059f2b67550a2d46f169b890d4705d725b6e11c">c059f2b</a>)</li>
 <li>storage settings keep a lot of intermediate parameters (<a href="https://github.com/DataShades/file-keeper/commit/cf69cf26f4d7ad9e2b16204c6a9803ec6c0a2edb">cf69cf2</a>)</li>
 <li>libcloud silently overrides existing objects (<a href="https://github.com/DataShades/file-keeper/commit/599f09992ed14e926878b9997abd2bca2155326a">599f099</a>)</li>
 </ul>
 <h3 id="refactor">🚜 Refactor</h3>
 <ul>
+<li>[<strong>breaking</strong>] multipart_start requires size; multipart_update required upload and part (<a href="https://github.com/DataShades/file-keeper/commit/02c15cb0377b4e3dccfde4244abe8fbadcfdf4fe">02c15cb</a>)</li>
+<li>[<strong>breaking</strong>] resumable_start requires size; resumable_resume required upload (<a href="https://github.com/DataShades/file-keeper/commit/3bb15a16733feb679d25baf4555e39426761b247">3bb15a1</a>)</li>
+<li>[<strong>breaking</strong>] multipart_start/resumable_start expect location instead of data (<a href="https://github.com/DataShades/file-keeper/commit/d169bef953cac27ac7951542183721f1390cca77">d169bef</a>)</li>
 <li>[<strong>breaking</strong>] disable MULTIPART capabilities on s3, fs and memory storages (<a href="https://github.com/DataShades/file-keeper/commit/50afc5284e521ffe27af635b98a8a58cf1621f99">50afc52</a>)</li>
 <li>[<strong>breaking</strong>] remove <code>location</code> from arguments of <code>multipart_start</code> (<a href="https://github.com/DataShades/file-keeper/commit/876ce467995139c4a8790f912b850415e9501b1f">876ce46</a>)</li>
 <li>[<strong>breaking</strong>] drop <code>MultipartData</code> and use <code>FileData</code> instead everywhere (<a href="https://github.com/DataShades/file-keeper/commit/c1c01c3ba4af087b29970cd84ecc743819e33675">c1c01c3</a>)</li>

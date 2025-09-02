@@ -3737,6 +3737,8 @@ correspoinding package:</p>
   <summary>Example</summary>
   <p>If storage accessed for the first time, settings are required</p>
 <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span> <span class="o">=</span> <span class="n">get_storage</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:memory&quot;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span>
+<span class="go">&lt;file_keeper.default.adapters.memory.MemoryStorage object at 0x...&gt;</span>
 </code></pre></div>
 <p>and the same storage is returned every time in subsequent calls</p>
 <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">cached</span> <span class="o">=</span> <span class="n">get_storage</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">)</span>
@@ -3746,7 +3748,7 @@ correspoinding package:</p>
 <p>but if storage does not exist and settings are omitted, exception is raised</p>
 <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">get_storage</span><span class="p">(</span><span class="s2">&quot;new-memory&quot;</span><span class="p">)</span>
 <span class="gt">Traceback (most recent call last):</span>
-<span class="w">  </span><span class="c">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">file_keeper.core.exceptions.UnknownStorageError</span>: <span class="n">Storage new-memory is not configured</span>
 </code></pre></div>
 </details>
@@ -3896,10 +3898,10 @@ converted into <a class="autorefs autorefs-internal" title="&lt;code class=&quot
 <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">upload</span> <span class="o">=</span> <span class="n">make_upload</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;hello world&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>Upload object contains generic information about the file.</p>
-<div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">upload</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">upload</span><span class="o">.</span><span class="n">size</span>
 <span class="go">11</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">upload</span><span class="o">.</span><span class="n">content_type</span><span class="p">)</span>
-<span class="go">text/plain</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">upload</span><span class="o">.</span><span class="n">content_type</span>
+<span class="go">&#39;text/plain&#39;</span>
 </code></pre></div>
 <p>Unsupported types will raise TypeError.</p>
 <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">make_upload</span><span class="p">(</span><span class="s2">&quot;unicode string&quot;</span><span class="p">)</span>
@@ -4046,15 +4048,15 @@ converted into <a class="autorefs autorefs-internal" title="&lt;code class=&quot
 
 <details class="example" open>
   <summary>Example</summary>
-  <p>Extend base class to implement custom storage.
+  <p>Extend base class to implement custom storage
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MyStorage</span><span class="p">(</span><span class="n">Storage</span><span class="p">):</span>
-    <span class="n">SettingsFactory</span> <span class="o">=</span> <span class="n">MySettings</span>
-    <span class="n">UploaderFactory</span> <span class="o">=</span> <span class="n">MyUploader</span>
-    <span class="n">ManagerFactory</span> <span class="o">=</span> <span class="n">MyManager</span>
-    <span class="n">ReaderFactory</span> <span class="o">=</span> <span class="n">MyReader</span>
+    <span class="n">SettingsFactory</span> <span class="o">=</span> <span class="n">Settings</span>
+    <span class="n">UploaderFactory</span> <span class="o">=</span> <span class="n">Uploader</span>
+    <span class="n">ManagerFactory</span> <span class="o">=</span> <span class="n">Manager</span>
+    <span class="n">ReaderFactory</span> <span class="o">=</span> <span class="n">Reader</span>
 </code></pre></div>
 then initialize it using required settings
-<div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">my_storage</span> <span class="o">=</span> <span class="n">MyStorage</span><span class="p">({</span><span class="s2">&quot;option&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">})</span>
+<div class="highlight"><pre><span></span><code><span class="n">my_storage</span> <span class="o">=</span> <span class="n">MyStorage</span><span class="p">({</span><span class="s2">&quot;option&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">})</span>
 </code></pre></div></p>
 </details>
 
@@ -12557,15 +12559,25 @@ initialization errors from dataclass constructor.</p>
     </table>
 
 
-<p><span class="doc-section-title">Examples:</span></p>
-    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">Upload</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">BytesIO</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;hello world&quot;</span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;file.txt&quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="mi">11</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;text/plain&quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">upload</span> <span class="o">=</span> <span class="n">Upload</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">BytesIO</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;hello world&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s2">&quot;file.txt&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="mi">11</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">&quot;text/plain&quot;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">upload</span><span class="o">.</span><span class="n">size</span>
+<span class="go">11</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">upload</span><span class="o">.</span><span class="n">filename</span>
+<span class="go">&#39;file.txt&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">upload</span><span class="o">.</span><span class="n">content_type</span>
+<span class="go">&#39;text/plain&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">upload</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="go">b&#39;hello world&#39;</span>
 </code></pre></div>
-
+</details>
 
 
 
