@@ -261,7 +261,7 @@ class Uploader(fk.Uploader):
         etag = resp["ETag"].strip('"')
         data.storage_data["uploaded"] = data.storage_data["uploaded"] + upload.size
 
-        data.storage_data["parts"][part + 1] = etag
+        data.storage_data["parts"][part ] = etag
 
         return data
 
@@ -277,7 +277,7 @@ class Uploader(fk.Uploader):
             Key=filepath,
             UploadId=data.storage_data["upload_id"],
             MultipartUpload={
-                "Parts": [{"PartNumber": int(num), "ETag": tag} for num, tag in data.storage_data["parts"].items()]
+                "Parts": [{"PartNumber": int(num) + 1, "ETag": tag} for num, tag in data.storage_data["parts"].items()]
             },
         )
 
