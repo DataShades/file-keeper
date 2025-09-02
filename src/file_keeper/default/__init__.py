@@ -109,7 +109,7 @@ def register_upload_factories(registry: Registry[UploadFactory, type]):
     registry.register(io.TextIOWrapper, textiowrapper_into_upload)
 
 
-with contextlib.suppress(ImportError):  # pragma: no cover
+with contextlib.suppress(ImportError):
     import cgi
 
     @ext.hookimpl(specname="register_upload_factories")
@@ -138,7 +138,7 @@ with contextlib.suppress(ImportError):  # pragma: no cover
         )
 
 
-with contextlib.suppress(ImportError):  # pragma: no cover
+with contextlib.suppress(ImportError):
     from werkzeug.datastructures import FileStorage
 
     @ext.hookimpl(specname="register_upload_factories")

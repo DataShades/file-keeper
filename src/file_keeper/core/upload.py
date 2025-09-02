@@ -186,7 +186,6 @@ def make_upload(value: Any) -> Upload:
 
         return Upload(value, getattr(value, "name", ""), size, mime)
 
-
     source_type = type(value)  # pyright: ignore[reportUnknownVariableType]
     msg = f"{source_type} cannot be converted into Upload"
     raise TypeError(msg)

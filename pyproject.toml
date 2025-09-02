@@ -57,7 +57,7 @@ cloud = [
       "boto3", "boto3-stubs[essential]",
 ]
 
-libcloud = [ "apache-libcloud", "cryptography"]
+libcloud = [ "apache-libcloud", "cryptography", "requests"]
 opendal = [ "opendal",]
 redis = [ "redis",]
 sqlalchemy = ["sqlalchemy"]
@@ -66,7 +66,7 @@ all = [
       "azure-storage-blob",
       "google-cloud-storage", "urllib3",
       "boto3", "boto3-stubs[essential]",
-      "apache-libcloud", "cryptography",
+      "apache-libcloud", "cryptography", "requests",
       "opendal",
       "redis",
       "sqlalchemy",

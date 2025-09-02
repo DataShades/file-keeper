@@ -1,50 +1,46 @@
 """Built-in storage adapters."""
 
+import contextlib
+
 from .fs import FsStorage
 from .memory import MemoryStorage
 from .null import NullStorage
 from .proxy import ProxyStorage
 from .zip import ZipStorage
 
-try:
+AzureBlobStorage = None
+with contextlib.suppress(ImportError):
     from .azure_blob import AzureBlobStorage
-except ImportError:
-    AzureBlobStorage = None
 
-try:
+FilebinStorage = None
+with contextlib.suppress(ImportError):
     from .filebin import FilebinStorage
-except ImportError:
-    FilebinStorage = None
 
-try:
+
+GoogleCloudStorage = None
+with contextlib.suppress(ImportError):
     from .gcs import GoogleCloudStorage
-except ImportError:
-    GoogleCloudStorage = None
 
-try:
+LibCloudStorage = None
+with contextlib.suppress(ImportError):
     from .libcloud import LibCloudStorage
-except ImportError:
-    LibCloudStorage = None
 
-try:
+OpenDalStorage = None
+with contextlib.suppress(ImportError):
     from .opendal import OpenDalStorage
-except ImportError:
-    OpenDalStorage = None
 
-try:
+RedisStorage = None
+with contextlib.suppress(ImportError):
     from .redis import RedisStorage
-except ImportError:
-    RedisStorage = None
 
-try:
+
+S3Storage = None
+with contextlib.suppress(ImportError):
     from .s3 import S3Storage
-except ImportError:
-    S3Storage = None
 
-try:
+SqlAlchemyStorage = None
+with contextlib.suppress(ImportError):
     from .sqlalchemy import SqlAlchemyStorage
-except ImportError:
-    SqlAlchemyStorage = None
 
 __all__ = [
     "AzureBlobStorage",
