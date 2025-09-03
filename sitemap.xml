@@ -2,102 +2,102 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://datashades.github.io/file-keeper/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/api/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/changelog/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/configuration/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/error_handling/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/testing/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/adapters/azure_blob/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/adapters/emulate/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/adapters/fs/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/adapters/gcs/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/adapters/libcloud/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/adapters/memory/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/adapters/null/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/adapters/opendal/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/adapters/redis/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/adapters/s3/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/adapters/sqlalchemy/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/adapters/zip/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/core_concepts/capabilities/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/core_concepts/data_model/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/core_concepts/uploads/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/extending/adapters/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/extending/dissection/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/extending/location_transformers/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
     <url>
          <loc>https://datashades.github.io/file-keeper/extending/overview/</loc>
-         <lastmod>2025-09-02</lastmod>
+         <lastmod>2025-09-03</lastmod>
     </url>
 </urlset>
