@@ -1434,17 +1434,17 @@ there may be nested directories under the <code>path</code>, so verifying that a
 are created is a safest option.</p>
 <div class="highlight"><pre><span></span><code>        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">dest</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-<p>Then file is actually written to the FS. You an read file content using
-<code>upload.read()</code>, but here we create <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;HashingReader&lt;/code&gt;" href="../../api/#file_keeper.HashingReader">HashingReader</a>
-using <code>hashing_reader()</code> method of the <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Upload&lt;/code&gt;
+<p>Then file is actually written to the FS. You can read file content using
+<code>upload.stream.read()</code>, but here we create
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;HashingReader&lt;/code&gt;" href="../../api/#file_keeper.HashingReader">HashingReader</a> using <code>hashing_reader()</code> method of
+the <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Upload&lt;/code&gt;
 
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Upload">Upload</a>. This
-object also has <code>read()</code> method, but in addition it computes the content hash
-of the file while it's consumed. As result we have the hash in the and almost
-for free.</p>
+  &lt;/span&gt;" href="../../api/#file_keeper.Upload">Upload</a>. This object also has <code>read()</code> method, but in
+addition it computes the content hash of the file while it's consumed. As
+result we have the hash in the end almost for free.</p>
 <div class="highlight"><pre><span></span><code>        <span class="n">reader</span> <span class="o">=</span> <span class="n">upload</span><span class="o">.</span><span class="n">hashing_reader</span><span class="p">()</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
@@ -1505,7 +1505,7 @@ files.</p>
 output.</p>
 <p>Anything that can be used in a for-loop and produce <code>bytes</code> is a valid output
 of the <code>steam()</code> method. Few examples:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">List of byte strings</label><label for="__tabbed_1_2">Generator of bytes</label><label for="__tabbed_1_3">io.BytesIO</label><label for="__tabbed_1_4">Descriptor of the file opened in <code>rb</code> mode</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">List of byte strings</label><label for="__tabbed_1_2">Generator of bytes</label><label for="__tabbed_1_3">io.BytesIO</label><label for="__tabbed_1_4">File object opened in <code>rb</code> mode</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="o">...</span>
@@ -1533,10 +1533,10 @@ of the <code>steam()</code> method. Few examples:</p>
 </div>
 <h2 id="create-the-manager-service">Create the manager service</h2>
 <p><code>Manager</code> service contains a lot of methods and capabilities, but all of them
-are pretty straight forward.</p>
-<p>Remember, that capabilities tell the storage "what" service can do, while
-method implementations explain "how" it's done. Usually, capability and method
-come in pair, unless you are certain that you need to separate them.</p>
+are pretty straightforward.</p>
+<p>Capabilities tell the storage "what" service can do, while method
+implementations explain "how" it's done. Usually, capability and method come in
+pair, unless you are certain that you need to separate them.</p>
 <div class="highlight"><pre><span></span><code>    <span class="n">capabilities</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">REMOVE</span>
         <span class="o">|</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">SCAN</span>
@@ -1560,7 +1560,12 @@ it's not removed(because it does not exists), the result is <code>False</code>.<
         <span class="k">return</span> <span class="kc">True</span>
 </code></pre></div>
 <p><code>scan()</code> returns an iterable of strings with names of all files available in
-the storage.</p>
+the storage. Note, this method yields path relative to the value of <code>path</code>
+option of the storage. In this way, when you iterate through <code>scan()</code> results
+and pass filenames back to storage, it can wrap filenames into
+<code>storage.full_path()</code> and build correct locations.</p>
+<p>If <code>os.path.relname()</code> is not called, when you use items from the <code>ckan()</code>,
+<code>path</code> would be included twice, producing incorrect locations.</p>
 <div class="highlight"><pre><span></span><code>    <span class="nd">@override</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">scan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">path</span>
