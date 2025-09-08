@@ -23,25 +23,25 @@ adjust its behavior to ensure compatibility and optimal performance.
 
 Here's a breakdown of the key capabilities:
 
-| Capability                                              | Description                                                         |
-|---------------------------------------------------------|---------------------------------------------------------------------|
-| [ANALYZE][file_keeper.Capability.ANALYZE]               | Return file details from the storage.                               |
-| [APPEND][file_keeper.Capability.APPEND]                 | Add content to the existing file.                                   |
-| [COMPOSE][file_keeper.Capability.COMPOSE]               | Combine multiple files into a new one in the same storage.          |
-| [COPY][file_keeper.Capability.COPY]                     | Make a copy of the file inside the same storage.                    |
-| [CREATE][file_keeper.Capability.CREATE]                 | Create a file as an atomic object.                                  |
-| [EXISTS][file_keeper.Capability.EXISTS]                 | Check if file exists.                                               |
-| [LINK_PERMANENT][file_keeper.Capability.LINK_PERMANENT] | Make permanent download link.                                       |
-| [LINK_TEMPORAL][file_keeper.Capability.LINK_TEMPORAL]   | Make expiring download link.                                        |
-| [LINK_ONE_TIME][file_keeper.Capability.LINK_ONE_TIME]   | Make one-time download link.                                        |
-| [MOVE][file_keeper.Capability.MOVE]                     | Move file to a different location inside the same storage.          |
-| [MULTIPART][file_keeper.Capability.MULTIPART]           | Create file in 3 stages: initialize, upload(repeatable), complete.  |
-| [RANGE][file_keeper.Capability.RANGE]                   | Return specific range of bytes from the file.                       |
-| [REMOVE][file_keeper.Capability.REMOVE]                 | Remove file from the storage.                                       |
-| [RESUMABLE][file_keeper.Capability.RESUMABLE]           | Perform resumable uploads that can be continued after interruption. |
-| [SCAN][file_keeper.Capability.SCAN]                     | Iterate over all files in the storage.                              |
-| [SIGNED][file_keeper.Capability.SIGNED]                 | Generate signed URL for specific operation.                         |
-| [STREAM][file_keeper.Capability.STREAM]                 | Return file content as stream of bytes.                             |
+| Capability                                              | Description                                                           |
+|---------------------------------------------------------|-----------------------------------------------------------------------|
+| [ANALYZE][file_keeper.Capability.ANALYZE]               | Return file details from the storage.                                 |
+| [APPEND][file_keeper.Capability.APPEND]                 | Add content to the existing file.                                     |
+| [COMPOSE][file_keeper.Capability.COMPOSE]               | Combine multiple files into a new one in the same storage.            |
+| [COPY][file_keeper.Capability.COPY]                     | Make a copy of the file inside the same storage.                      |
+| [CREATE][file_keeper.Capability.CREATE]                 | Create a file as an atomic object.                                    |
+| [EXISTS][file_keeper.Capability.EXISTS]                 | Check if file exists.                                                 |
+| [LINK_PERMANENT][file_keeper.Capability.LINK_PERMANENT] | Make permanent download link.                                         |
+| [LINK_TEMPORAL][file_keeper.Capability.LINK_TEMPORAL]   | Make expiring download link.                                          |
+| [LINK_ONE_TIME][file_keeper.Capability.LINK_ONE_TIME]   | Make one-time download link.                                          |
+| [MOVE][file_keeper.Capability.MOVE]                     | Move file to a different location inside the same storage.            |
+| [MULTIPART][file_keeper.Capability.MULTIPART]           | Upload fragments in parallel and combine them into a file in the end. |
+| [RANGE][file_keeper.Capability.RANGE]                   | Return specific range of bytes from the file.                         |
+| [REMOVE][file_keeper.Capability.REMOVE]                 | Remove file from the storage.                                         |
+| [RESUMABLE][file_keeper.Capability.RESUMABLE]           | Perform resumable uploads that can be continued after interruption.   |
+| [SCAN][file_keeper.Capability.SCAN]                     | Iterate over all files in the storage.                                |
+| [SIGNED][file_keeper.Capability.SIGNED]                 | Generate signed URL for specific operation.                           |
+| [STREAM][file_keeper.Capability.STREAM]                 | Return file content as stream of bytes.                               |
 
 
 ## Checking for Capability Support

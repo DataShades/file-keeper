@@ -148,7 +148,7 @@ files won't be accidentally removed from it.
 ```
 
 As you can see, FS storage supports [CREATE][file_keeper.Capability.CREATE] and
-[MULTIPART][file_keeper.Capability.MULTIPART]. Capabilities are implemented as
+[RESUMABLE][file_keeper.Capability.RESUMABLE]. Capabilities are implemented as
 bit masks and can be combined using `|` operator.
 
 Let's look closer at the `upload()` method.
@@ -183,12 +183,12 @@ are created is a safest option.
 --8<-- "src/file_keeper/default/adapters/fs.py:uploader_impl_makedirs"
 ```
 
-Then file is actually written to the FS. You an read file content using
-`upload.read()`, but here we create [HashingReader][file_keeper.HashingReader]
-using `hashing_reader()` method of the [Upload][file_keeper.Upload]. This
-object also has `read()` method, but in addition it computes the content hash
-of the file while it's consumed. As result we have the hash in the and almost
-for free.
+Then file is actually written to the FS. You can read file content using
+`upload.stream.read()`, but here we create
+[HashingReader][file_keeper.HashingReader] using `hashing_reader()` method of
+the [Upload][file_keeper.Upload]. This object also has `read()` method, but in
+addition it computes the content hash of the file while it's consumed. As
+result we have the hash in the end almost for free.
 
 ```py
 --8<-- "src/file_keeper/default/adapters/fs.py:uploader_impl_write"
@@ -264,7 +264,7 @@ return BytesIO(b"hello world")
 
 ///
 
-/// tab | Descriptor of the file opened in `rb` mode
+/// tab | File object opened in `rb` mode
 
 ```py
 ...
@@ -277,11 +277,11 @@ return open(path, "rb")
 ## Create the manager service
 
 `Manager` service contains a lot of methods and capabilities, but all of them
-are pretty straight forward.
+are pretty straightforward.
 
-Remember, that capabilities tell the storage "what" service can do, while
-method implementations explain "how" it's done. Usually, capability and method
-come in pair, unless you are certain that you need to separate them.
+Capabilities tell the storage "what" service can do, while method
+implementations explain "how" it's done. Usually, capability and method come in
+pair, unless you are certain that you need to separate them.
 
 ```py
 --8<-- "src/file_keeper/default/adapters/fs.py:manager_capabilities"
@@ -295,7 +295,13 @@ it's not removed(because it does not exists), the result is `False`.
 ```
 
 `scan()` returns an iterable of strings with names of all files available in
-the storage.
+the storage. Note, this method yields filename relative to the value of `path`
+option of the storage. In this way, when you iterate through `scan()` results
+and pass filenames back to storage, it can wrap filenames into
+`storage.full_path()` and build correct locations.
+
+If `os.path.relname()` is not called, when you use items from the `ckan()`,
+`path` would be included twice, producing incorrect locations.
 
 ```py
 --8<-- "src/file_keeper/default/adapters/fs.py:manager_scan"
