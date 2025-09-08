@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import os
 
 from pluggy import HookimplMarker, PluginManager
@@ -13,12 +14,21 @@ from . import spec
 hookimpl = HookimplMarker(spec.name)
 plugin = PluginManager(spec.name)
 plugin.add_hookspecs(spec)
+log = logging.getLogger(__name__)
 
 
 @utils.run_once
 def setup():
     """Discover and register file-keeper extensions."""
-    plugin.load_setuptools_entrypoints(spec.name)
+    try:
+        plugin.load_setuptools_entrypoints(spec.name)
+    except ModuleNotFoundError:
+        msg = (
+            "File-keeper extension is missing, try to re-install the problematic package."
+            + " Only default adapters will be loaded"
+        )
+        log.exception(msg)
+        plugin.load_setuptools_entrypoints(spec.name, "default")
     for name in os.getenv("FILE_KEEPER_DISABLED_EXTENSIONS", "").split():
         undesired = plugin.get_plugin(name)
         if plugin.is_registered(undesired):
