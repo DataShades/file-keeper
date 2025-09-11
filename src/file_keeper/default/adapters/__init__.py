@@ -38,6 +38,14 @@ S3Storage = None
 with contextlib.suppress(ImportError):
     from .s3 import S3Storage
 
+FsSpecStorage = None
+with contextlib.suppress(ImportError):
+    from .obstore import FsSpecStorage
+
+ObjectStoreStorage = None
+with contextlib.suppress(ImportError):
+    from .obstore import ObjectStoreStorage
+
 SqlAlchemyStorage = None
 with contextlib.suppress(ImportError):
     from .sqlalchemy import SqlAlchemyStorage
@@ -56,4 +64,6 @@ __all__ = [
     "S3Storage",
     "SqlAlchemyStorage",
     "ZipStorage",
+    "FsSpecStorage",
+    "ObjectStoreStorage",
 ]

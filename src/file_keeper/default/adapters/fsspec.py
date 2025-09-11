@@ -1,0 +1,2 @@
+"""Fsspec adapter."""
+# TODO:

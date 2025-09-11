@@ -59,6 +59,8 @@ cloud = [
 
 libcloud = [ "apache-libcloud", "cryptography", "requests"]
 opendal = [ "opendal",]
+fsspec = [ "fsspec",]
+obstore = [ "obstore",]
 redis = [ "redis",]
 sqlalchemy = ["sqlalchemy"]
 
@@ -68,6 +70,7 @@ all = [
       "boto3", "boto3-stubs[essential]",
       "apache-libcloud", "cryptography", "requests",
       "opendal",
+      "fsspec", "obstore",
       "redis",
       "sqlalchemy",
 ]

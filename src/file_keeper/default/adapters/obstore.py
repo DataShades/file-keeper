@@ -1,0 +1,2 @@
+"""Obstore adapter."""
+# TODO:

@@ -178,7 +178,7 @@ def textiowrapper_into_upload(value: io.TextIOWrapper):
 
 # --8<-- [start:register]
 @ext.hookimpl
-def register_adapters(registry: Registry[type[Storage]]):
+def register_adapters(registry: Registry[type[Storage]]):  # noqa: C901
     """Built-in storage adapters."""
     registry.register("file_keeper:fs", adapters.FsStorage)
     # --8<-- [end:register]
@@ -209,5 +209,11 @@ def register_adapters(registry: Registry[type[Storage]]):
 
     if adapters.AzureBlobStorage:
         registry.register("file_keeper:azure_blob", adapters.AzureBlobStorage)
+
+    if adapters.ObjectStoreStorage:
+        registry.register("file_keeper:object_store", adapters.ObjectStoreStorage)
+
+    if adapters.FsSpecStorage:
+        registry.register("file_keeper:fsspec", adapters.FsSpecStorage)
 
     registry.register("file_keeper:proxy", adapters.ProxyStorage)  # pyright: ignore[reportArgumentType]
