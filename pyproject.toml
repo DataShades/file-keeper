@@ -246,4 +246,4 @@ deps = [
     # "pytest-sugar",
 ]
 commands = [["pytest", { replace = "posargs", default = ["tests"], extend = true }]]
-extras = ["test", "redis", "opendal", "azure", "gcs", "libcloud", "s3", "sqlalchemy"]
+extras = ["test", "redis", "opendal", "azure", "gcs", "libcloud", "s3", "sqlalchemy", "fsspec", "obstore"]

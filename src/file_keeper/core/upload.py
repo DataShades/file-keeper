@@ -58,7 +58,7 @@ class Upload:
 
     @property
     def seekable_stream(self) -> types.PSeekableStream | None:
-        """Return stream that can be rewinded after reading.
+        """Return stream that supports file-like `seek`.
 
         If internal stream does not support file-like `seek`, nothing is
         returned from this property.

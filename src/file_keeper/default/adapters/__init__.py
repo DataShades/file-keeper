@@ -40,7 +40,7 @@ with contextlib.suppress(ImportError):
 
 FsSpecStorage = None
 with contextlib.suppress(ImportError):
-    from .obstore import FsSpecStorage
+    from .fsspec import FsSpecStorage
 
 ObjectStoreStorage = None
 with contextlib.suppress(ImportError):

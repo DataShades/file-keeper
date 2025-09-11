@@ -149,6 +149,15 @@ No specific settings
 
 [opendal operators]: https://opendal.apache.org/docs/python/api/operator/
 
+### `file_keeper:fsspec`
+
+| Setting    | Type                      | Default | Description                                   |
+|------------|---------------------------|---------|-----------------------------------------------|
+| `fs`       | fsspec.AbstractFileSystem | `None`  | Existing fsspec filesystem                    |
+| `protocol` | str                       | `""`    | Name of fsspec operator.                      |
+| `params`   | dict                      | `{}`    | Parameters for fsspec operatorinitialization. |
+
+
 ### `file_keeper:redis`
 
 | Setting  | Type        | Default | Description                                 |

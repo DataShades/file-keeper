@@ -93,6 +93,7 @@ nav:
     - adapters/opendal.md
     - adapters/s3.md
     - adapters/azure_blob.md
+    - adapters/fsspec.md
     - adapters/gcs.md
     - adapters/fs.md
     - adapters/memory.md

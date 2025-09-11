@@ -270,7 +270,7 @@ class Manager(StorageService):
     def compose(
         self, location: types.Location, datas: Iterable[data.FileData], extras: dict[str, Any]
     ) -> data.FileData:
-        """Combine multipe file inside the storage into a new one.
+        """Combine multiple file inside the storage into a new one.
 
         Args:
             location: The destination location for the composed file.
@@ -690,7 +690,7 @@ class Storage(ABC):  # noqa: B024
 
         Args:
             location: location of the file object
-            **kwargs: exra parameters for custom storages
+            **kwargs: extra parameters for custom storages
 
         Returns:
             full path required to access location
@@ -1683,7 +1683,7 @@ def get_storage(name: str, settings: dict[str, Any] | None = None) -> Storage:
 
     JSON configuration is used by default, because python has built-in JSON
     support. Additional file extensions are checked if environment contains
-    correspoinding package:
+    corresponding package:
 
     | Package | Extension |
     |---|---|
