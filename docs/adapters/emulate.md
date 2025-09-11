@@ -50,10 +50,10 @@ docker run -d -p 4443:4443 \
 ```
 
 
-| Attribute | Value                   |
-|-----------|-------------------------|
+| Attribute | Value                 |
+|-----------|-----------------------|
 | Endpoint  | http://127.0.0.1:4443 |
-| Key       | Not requred             |
-| Secret    | Not required            |
+| Key       | Not required          |
+| Secret    | Not required          |
 
 ///

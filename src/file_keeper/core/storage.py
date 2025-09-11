@@ -326,6 +326,33 @@ class Manager(StorageService):
         """
         raise NotImplementedError
 
+    def size(self, location: types.Location, extras: dict[str, Any]) -> int:
+        """Return size of the file in bytes.
+
+        Args:
+            location: The location of the file.
+            extras: Additional metadata for the operation.
+        """
+        return self.analyze(location, extras).size
+
+    def hash(self, location: types.Location, extras: dict[str, Any]) -> str:
+        """Return hash of the file.
+
+        Args:
+            location: The location of the file.
+            extras: Additional metadata for the operation.
+        """
+        return self.analyze(location, extras).hash
+
+    def content_type(self, location: types.Location, extras: dict[str, Any]) -> str:
+        """Return MIME type of the file.
+
+        Args:
+            location: The location of the file.
+            extras: Additional metadata for the operation.
+        """
+        return self.analyze(location, extras).content_type
+
     def signed(
         self, action: types.SignedAction, duration: int, location: types.Location, extras: dict[str, Any]
     ) -> str:
@@ -1084,12 +1111,70 @@ class Storage(ABC):  # noqa: B024
 
         Raises:
             exceptions.MissingFileError: when location does not exist
-
-        Raises:
             exceptions.UnsupportedOperationError: when storage does not support
                 ANALYZE operation
         """
         return self.manager.analyze(location, kwargs)
+
+    @requires_capability(Capability.ANALYZE)
+    def size(self, location: types.Location, /, **kwargs: Any) -> int:
+        """Return the size of the file.
+
+        Requires [ANALYZE][file_keeper.Capability.ANALYZE] capability.
+
+        Args:
+            location: The location of the file to analyze.
+            **kwargs: Additional metadata for the operation.
+
+        Returns:
+            size of the file
+
+        Raises:
+            exceptions.MissingFileError: when location does not exist
+            exceptions.UnsupportedOperationError: when storage does not support
+                ANALYZE operation
+        """
+        return self.manager.size(location, kwargs)
+
+    @requires_capability(Capability.ANALYZE)
+    def hash(self, location: types.Location, /, **kwargs: Any) -> str:
+        """Return the hash of the file.
+
+        Requires [ANALYZE][file_keeper.Capability.ANALYZE] capability.
+
+        Args:
+            location: The location of the file to analyze.
+            **kwargs: Additional metadata for the operation.
+
+        Returns:
+            hash of the file
+
+        Raises:
+            exceptions.MissingFileError: when location does not exist
+            exceptions.UnsupportedOperationError: when storage does not support
+                ANALYZE operation
+        """
+        return self.manager.hash(location, kwargs)
+
+    @requires_capability(Capability.ANALYZE)
+    def content_type(self, location: types.Location, /, **kwargs: Any) -> str:
+        """Return the MIME type of the file.
+
+        Requires [ANALYZE][file_keeper.Capability.ANALYZE] capability.
+
+        Args:
+            location: The location of the file to analyze.
+            **kwargs: Additional metadata for the operation.
+
+        Returns:
+            MIME type of the file
+
+        Raises:
+            exceptions.MissingFileError: when location does not exist
+            exceptions.UnsupportedOperationError: when storage does not support
+                ANALYZE operation
+        """
+        return self.manager.content_type(location, kwargs)
 
     @requires_capability(Capability.SIGNED)
     def signed(

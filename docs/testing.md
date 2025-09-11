@@ -33,7 +33,7 @@ behavior or unique capabilities.
 The `Standard` class defines a series of test methods (e.g.,
 `test_append_content`, `test_remove_real`, `test_move_missing`). Each test
 specifies capabilities required for verification and is automatically skipped
-if given capabilities are not suppored by the storage.
+if given capabilities are not supported by the storage.
 
 If all the required capabilities are supported, test verifies that
 implementation of capability is predictable. For example:
@@ -51,7 +51,7 @@ implementation of capability is predictable. For example:
 /// note
 
 `Standard` class covers only adapter-agnostic functionality and it does not
-verify interal processes of the storage.
+verify internal processes of the storage.
 
 Testing that filesystem storage actually writes data into the configured
 directory and cloud storage communicates with the cloud provider is still

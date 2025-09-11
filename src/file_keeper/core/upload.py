@@ -11,8 +11,6 @@ import magic
 
 from . import registry, types, utils
 
-SAMPLE_SIZE = 1024 * 2
-
 UploadFactory: TypeAlias = Callable[[Any], "Upload | BytesIO | BufferedReader | bytes | bytearray | None"]
 
 upload_factories = registry.Registry[UploadFactory, type]()
@@ -179,7 +177,7 @@ def make_upload(value: Any) -> Upload:
     # transform it into an Upload. Factories will choose this option to avoid
     # repeating mimetype detection logic
     if isinstance(value, BytesIO | BufferedReader):
-        mime = magic.from_buffer(value.read(SAMPLE_SIZE), True)
+        mime = magic.from_buffer(value.read(utils.SAMPLE_SIZE), True)
         _ = value.seek(0, 2)
         size = value.tell()
         _ = value.seek(0)

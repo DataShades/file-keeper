@@ -28,6 +28,15 @@ class Analyzer:
         with pytest.raises(fk.exc.MissingFileError):
             storage.analyze(fk.Location(faker.file_name()))
 
+    @pytest.mark.expect_storage_capability(fk.Capability.ANALYZE)
+    def test_analyze_match_partials(self, storage: fk.Storage, faker: Faker):
+        """Analyzer returns correct size, hash and content type when accessed separately."""
+        data = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b"hello"))
+
+        assert storage.size(data.location) == data.size
+        assert storage.hash(data.location) == data.hash
+        assert storage.content_type(data.location) == data.content_type
+
 
 class Appender:
     @pytest.mark.expect_storage_capability(fk.Capability.APPEND)

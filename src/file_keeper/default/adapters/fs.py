@@ -15,6 +15,7 @@ import magic
 from typing_extensions import override
 
 import file_keeper as fk
+from file_keeper.core.utils import SAMPLE_SIZE
 
 log = logging.getLogger(__name__)
 
@@ -340,24 +341,42 @@ class Manager(fk.Manager):
     # --8<-- [start:manager_analyze]
     @override
     def analyze(self, location: fk.types.Location, extras: dict[str, Any]) -> fk.FileData:
+        return fk.FileData(
+            location,
+            size=self.size(location, extras),
+            content_type=self.content_type(location, extras),
+            hash=self.hash(location, extras),
+        )
+
+    # --8<-- [end:manager_analyze]
+
+    @override
+    def size(self, location: fk.Location, extras: dict[str, Any]) -> int:
+        filepath = self.storage.full_path(location)
+        if not os.path.exists(filepath):
+            raise fk.exc.MissingFileError(self.storage, location)
+
+        return os.path.getsize(filepath)
+
+    @override
+    def hash(self, location: fk.Location, extras: dict[str, Any]) -> str:
         filepath = self.storage.full_path(location)
         if not os.path.exists(filepath):
             raise fk.exc.MissingFileError(self.storage, location)
 
         with open(filepath, "rb") as src:
             reader = fk.HashingReader(src)
-            content_type = magic.from_buffer(next(reader, b""), True)
             reader.exhaust()
+            return reader.get_hash()
 
-        return fk.FileData(
-            location,
-            size=reader.position,
-            content_type=content_type,
-            hash=reader.get_hash(),
-        )
+    @override
+    def content_type(self, location: fk.Location, extras: dict[str, Any]) -> str:
+        filepath = self.storage.full_path(location)
+        if not os.path.exists(filepath):
+            raise fk.exc.MissingFileError(self.storage, location)
 
-
-# --8<-- [end:manager_analyze]
+        with open(filepath, "rb") as src:
+            return magic.from_buffer(src.read(SAMPLE_SIZE), True)
 
 
 # --8<-- [start:storage]

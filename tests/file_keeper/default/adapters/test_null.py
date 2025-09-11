@@ -106,7 +106,7 @@ class TestStorage:
         location = fk.Location(faker.file_name())
         datas = [fk.FileData(fk.Location(faker.file_name())) for _ in range(3)]
 
-        result = storage.compose(location, datas)
+        result = storage.compose(location, *datas)
         assert result.location == location
         assert result.size == 0
         assert result.content_type == "application/octet-stream"

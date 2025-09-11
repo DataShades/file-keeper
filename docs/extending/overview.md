@@ -170,7 +170,7 @@ this case you can register adapter or location transformer manually, using
 
 Let's say you have `MyStorage` adapter and `my_transformer` transformer. In the
 following snippet, they will be available after the `register()` calls in the
-correspoinding registries.
+corresponding registries.
 
 ```py
 

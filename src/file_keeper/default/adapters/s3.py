@@ -220,7 +220,7 @@ class Uploader(fk.Uploader):
                     if "PartNumber" not in item or "ETag" not in item:
                         continue
 
-                    parts[item["PartNumber"]] = item["ETag"].strip('"')
+                    parts[item["PartNumber"] - 1] = item["ETag"].strip('"')
                     uploaded += item.get("Size", 0)
 
                 marker = resp["NextPartNumberMarker"]
@@ -261,7 +261,7 @@ class Uploader(fk.Uploader):
         etag = resp["ETag"].strip('"')
         data.storage_data["uploaded"] = data.storage_data["uploaded"] + upload.size
 
-        data.storage_data["parts"][part ] = etag
+        data.storage_data["parts"][part] = etag
 
         return data
 

@@ -102,7 +102,7 @@ register it directly using `adapters` registry:
 fk.adapters.register("local", MyStorage)
 ```
 
-If you are writing a library that will be used accross multiple project
+If you are writing a library that will be used across multiple project
 it's better to register storage using entrypoints of the python package.
 
 Use the `register_adapters` hook to register your adapter. This makes it

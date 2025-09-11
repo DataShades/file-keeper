@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import dataclasses
 from collections.abc import Mapping
-from typing import Any, ClassVar
+from typing import Any, ClassVar, cast
 
 import file_keeper as fk
 
@@ -13,7 +13,7 @@ import file_keeper as fk
 class Settings(fk.Settings):
     """Proxy settings."""
 
-    options: dict[str, Any] = dataclasses.field(default_factory=dict)
+    options: dict[str, Any] = cast("dict[str, Any]", dataclasses.field(default_factory=dict))
 
     storage: fk.Storage = None  # pyright: ignore[reportAssignmentType]
 

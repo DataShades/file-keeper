@@ -64,7 +64,7 @@ graph TB
     initialize_client[**client** initialized using **account_url** and available credentials]
     initialize_container[**container** reference created]
     set_container_name[**container_name** from the **container** is added to settings]
-    create_container[real **contaner** created in cloud]
+    create_container[real **container** created in cloud]
     container_exists{real **container** exists in cloud?}
     done([Storage initialized])
     fail([Exception raised])

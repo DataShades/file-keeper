@@ -25,6 +25,9 @@ markdown_extensions:
 plugins:
   - macros
   # - mermaid2
+  - spellcheck:
+      backends:
+        - codespell
   - search:
       separator: '[\s\-\.\_]+'
   - mkdocstrings:

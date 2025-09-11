@@ -90,4 +90,4 @@ content: bytes = storage.content(file_data)
 *   `make_upload()`: Creates an `Upload` object from the data you want to store.
 *   `storage.upload()`: Uploads the data to the storage.
 *   `FileData`:  A dataclass that contains metadata about the uploaded file, including its location, size, content type, and hash.
-*   `storage.content()`: Locates file using `FileData` and returs byte string with its content
+*   `storage.content()`: Locates file using `FileData` and returns byte string with its content
