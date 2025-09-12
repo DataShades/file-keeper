@@ -309,10 +309,12 @@ class Manager(StorageService):
         """
         raise NotImplementedError
 
-    def scan(self, extras: dict[str, Any]) -> Iterable[str]:
+    def scan(self, prefix: str, glob: str, extras: dict[str, Any]) -> Iterable[str]:
         """List all locations(filenames) in storage.
 
         Args:
+            prefix: The prefix to filter locations.
+            glob: The glob pattern to filter locations.
             extras: Additional metadata for the operation.
         """
         raise NotImplementedError
@@ -609,7 +611,8 @@ class Storage(ABC):  # noqa: B024
         result = self.uploader.capabilities | self.manager.capabilities | self.reader.capabilities
 
         for name in self.settings.disabled_capabilities:
-            result = result.exclude(Capability[name])
+            cap = name if isinstance(name, Capability) else Capability[name]
+            result = result.exclude(cap)
 
         return result
 
@@ -1067,7 +1070,7 @@ class Storage(ABC):  # noqa: B024
         return self.manager.remove(data, kwargs)
 
     @requires_capability(Capability.SCAN)
-    def scan(self, **kwargs: Any) -> Iterable[str]:
+    def scan(self, /, prefix: str = "", glob: str = "", **kwargs: Any) -> Iterable[str]:
         """List all locations(filenames) in storage.
 
         Requires [SCAN][file_keeper.Capability.SCAN] capability.
@@ -1079,6 +1082,8 @@ class Storage(ABC):  # noqa: B024
         not listed.
 
         Args:
+            prefix: The prefix to filter locations.
+            glob: The glob pattern to filter locations.
             **kwargs: Additional metadata for the operation.
 
         Returns:
@@ -1088,7 +1093,7 @@ class Storage(ABC):  # noqa: B024
             exceptions.UnsupportedOperationError: when storage does not support
                 SCAN operation
         """
-        return self.manager.scan(kwargs)
+        return self.manager.scan(prefix, glob, kwargs)
 
     @requires_capability(Capability.ANALYZE)
     def analyze(self, location: types.Location, /, **kwargs: Any) -> data.FileData:
