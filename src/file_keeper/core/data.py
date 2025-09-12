@@ -38,6 +38,11 @@ class BaseData:
     _complex_keys: ClassVar[list[str]] = ["storage_data"]
 
     @classmethod
+    def from_string(cls, location: str | types.Location):
+        """Create data object from location string."""
+        return cls(types.Location(location))
+
+    @classmethod
     def from_dict(cls, record: dict[str, Any], **overrides: Any):
         """Transform dictionary into data object."""
         return cls._from(record, operator.getitem, operator.contains, overrides)

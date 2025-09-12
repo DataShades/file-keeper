@@ -8,6 +8,7 @@ import sqlalchemy as sa
 from faker import Faker
 
 import file_keeper as fk
+
 try:
     import file_keeper.default.adapters.sqlalchemy as sqlalchemy
 except ImportError:

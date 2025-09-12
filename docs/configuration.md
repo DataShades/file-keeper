@@ -151,11 +151,20 @@ No specific settings
 
 ### `file_keeper:fsspec`
 
-| Setting    | Type                      | Default | Description                                   |
-|------------|---------------------------|---------|-----------------------------------------------|
-| `fs`       | fsspec.AbstractFileSystem | `None`  | Existing fsspec filesystem                    |
-| `protocol` | str                       | `""`    | Name of fsspec operator.                      |
-| `params`   | dict                      | `{}`    | Parameters for fsspec operatorinitialization. |
+| Setting    | Type                      | Default | Description                                      |
+|------------|---------------------------|---------|--------------------------------------------------|
+| `fs`       | fsspec.AbstractFileSystem | `None`  | Existing fsspec filesystem.                      |
+| `protocol` | str                       | `""`    | Name of fsspec operator.                         |
+| `params`   | dict                      | `{}`    | Parameters for fsspec filesystem initialization. |
+
+
+### `file_keeper:obstore`
+
+| Setting  | Type                      | Default | Description                                          |
+|----------|---------------------------|---------|------------------------------------------------------|
+| `store`  | fsspec.AbstractFileSystem | `None`  | Existing obstore store.                              |
+| `url`    | str                       | `""`    | URL of obstore store.                                |
+| `params` | dict                      | `{}`    | Parameters for obstore store operatorinitialization. |
 
 
 ### `file_keeper:redis`

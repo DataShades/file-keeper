@@ -669,6 +669,7 @@ class Scanner:
 
         assert discovered == {matching_1, matching_2}
 
+
 class Signer:
     @pytest.mark.expect_storage_capability(fk.Capability.SIGNED)
     def test_signed_capabilities(self, storage: fk.Storage):
