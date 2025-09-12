@@ -637,6 +637,37 @@ class Scanner:
 
         assert discovered == {os.path.basename(normal)}
 
+    @pytest.mark.expect_storage_capability(fk.Capability.SCAN)
+    def test_scan_filtered_with_prefix(self, storage: fk.Storage, faker: Faker):
+        """When prefix is set, only files with that prefix are discovered."""
+        prefix = faker.word()
+
+        matching_1 = prefix + faker.file_name()
+        matching_2 = prefix + faker.file_name()
+        non_matching = faker.file_name()
+
+        storage.upload(fk.Location(matching_1), fk.make_upload(b""))
+        storage.upload(fk.Location(matching_2), fk.make_upload(b""))
+        storage.upload(fk.Location(non_matching), fk.make_upload(b""))
+
+        discovered = set(storage.filtered_scan(prefix=prefix))
+
+        assert discovered == {matching_1, matching_2}
+
+    @pytest.mark.expect_storage_capability(fk.Capability.SCAN)
+    def test_scan_filtered_with_glob(self, storage: fk.Storage, faker: Faker):
+        """When glob is set, only files matching that glob are discovered."""
+        matching_1 = "match_" + faker.file_name()
+        matching_2 = "match_" + faker.file_name()
+        non_matching = "nonmatch_" + faker.file_name()
+
+        storage.upload(fk.Location(matching_1), fk.make_upload(b""))
+        storage.upload(fk.Location(matching_2), fk.make_upload(b""))
+        storage.upload(fk.Location(non_matching), fk.make_upload(b""))
+
+        discovered = set(storage.filtered_scan(glob="match_*"))
+
+        assert discovered == {matching_1, matching_2}
 
 class Signer:
     @pytest.mark.expect_storage_capability(fk.Capability.SIGNED)

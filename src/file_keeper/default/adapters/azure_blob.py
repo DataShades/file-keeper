@@ -276,7 +276,7 @@ class Manager(fk.Manager):
         return blob_client.exists()
 
     @override
-    def scan(self, prefix: str, glob: str, extras: dict[str, Any]) -> Iterable[str]:
+    def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         path = self.storage.settings.path
         # do not add slash when path empty, because it will change it from
         # "current directory" to the "root directory"
