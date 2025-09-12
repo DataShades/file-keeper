@@ -12,6 +12,7 @@ cycles.
 from __future__ import annotations
 
 import dataclasses
+import fnmatch
 import functools
 import inspect
 import json
@@ -309,15 +310,30 @@ class Manager(StorageService):
         """
         raise NotImplementedError
 
-    def scan(self, prefix: str, glob: str, extras: dict[str, Any]) -> Iterable[str]:
+    def scan(self, extras: dict[str, Any]) -> Iterable[str]:
         """List all locations(filenames) in storage.
+
+        Args:
+            extras: Additional metadata for the operation.
+        """
+        raise NotImplementedError
+
+    def filtered_scan(self, prefix: str, glob: str, extras: dict[str, Any]) -> Iterable[str]:
+        """List all locations(filenames) in storage that match prefix and glob.
 
         Args:
             prefix: The prefix to filter locations.
             glob: The glob pattern to filter locations.
             extras: Additional metadata for the operation.
         """
-        raise NotImplementedError
+        names = self.scan(extras)
+        if glob:
+            names = fnmatch.filter(names, glob)
+
+        if prefix:
+            names = filter(lambda n: n.startswith(prefix), names)
+
+        yield from names
 
     def analyze(self, location: types.Location, extras: dict[str, Any]) -> data.FileData:
         """Return details about location.
@@ -1070,7 +1086,7 @@ class Storage(ABC):  # noqa: B024
         return self.manager.remove(data, kwargs)
 
     @requires_capability(Capability.SCAN)
-    def scan(self, /, prefix: str = "", glob: str = "", **kwargs: Any) -> Iterable[str]:
+    def scan(self, **kwargs: Any) -> Iterable[str]:
         """List all locations(filenames) in storage.
 
         Requires [SCAN][file_keeper.Capability.SCAN] capability.
@@ -1080,6 +1096,40 @@ class Storage(ABC):  # noqa: B024
         empty, all locations are listed. Locations that match path
         partially(e.g. location `nested_dir` overlaps with path `nested`) are
         not listed.
+
+        Args:
+            **kwargs: Additional metadata for the operation.
+
+        Returns:
+            An iterable of location strings.
+
+        Raises:
+            exceptions.UnsupportedOperationError: when storage does not support
+                SCAN operation
+        """
+        return self.manager.scan(kwargs)
+
+    @requires_capability(Capability.SCAN)
+    def filtered_scan(self, /, prefix: str = "", glob: str = "", **kwargs: Any) -> Iterable[str]:
+        """List all locations(filenames) in storage that match prefix and glob.
+
+        Requires [SCAN][file_keeper.Capability.SCAN] capability.
+
+        This operation lists all locations (filenames) in the storage if they
+        start with the specified prefix and match the provided glob pattern. If
+        no prefix is provided, it defaults to an empty string, meaning all
+        locations are considered. If no glob pattern is provided, it defaults to
+        an empty string, which matches all filenames.
+
+        Glob parameter supports standard Unix shell-style wildcards:
+
+        * `*` matches everything
+        * `?` matches any single character
+        * `[seq]` matches any character in seq
+        * `[!seq]` matches any character not in seq
+
+        Adapters may choose to support different set of wildcards. Check
+        adapter specific documentation for details.
 
         Args:
             prefix: The prefix to filter locations.
@@ -1093,7 +1143,7 @@ class Storage(ABC):  # noqa: B024
             exceptions.UnsupportedOperationError: when storage does not support
                 SCAN operation
         """
-        return self.manager.scan(prefix, glob, kwargs)
+        return self.manager.filtered_scan(prefix, glob, kwargs)
 
     @requires_capability(Capability.ANALYZE)
     def analyze(self, location: types.Location, /, **kwargs: Any) -> data.FileData:
