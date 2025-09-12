@@ -23,14 +23,14 @@ class Settings(fk.Settings):
     protocol: str = ""
     """Name of fsspec filesystem protocol."""
     fs: fsspec.AbstractFileSystem = None  # pyright: ignore[reportAssignmentType]
-    """Existing OpenDAL operator."""
+    """Existing fsspec filesystem."""
 
     def __post_init__(self, **kwargs: Any):
         super().__post_init__(**kwargs)
 
         if not self.fs:
             if not self.protocol:
-                raise fk.exc.MissingStorageConfigurationError(self.name, "scheme")
+                raise fk.exc.MissingStorageConfigurationError(self.name, "protocol")
 
             try:
                 self.fs = fsspec.filesystem(self.protocol, **self.params)

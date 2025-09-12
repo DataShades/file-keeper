@@ -7,14 +7,14 @@ import pytest
 from faker import Faker
 
 try:
-    import file_keeper.default.adapters.fsspec as fs
+    import file_keeper.default.adapters.obstore as ob
 except ImportError:
-    pytest.skip("fsspec is not installed", allow_module_level=True)
+    pytest.skip("obstore is not installed", allow_module_level=True)
 
 from . import standard
 
-Settings = fs.Settings
-Storage = fs.FsSpecStorage
+Settings = ob.Settings
+Storage = ob.ObjectStoreStorage
 
 
 @pytest.fixture
@@ -28,29 +28,22 @@ def storage(request: pytest.FixtureRequest, faker: Faker, tmp_path: Path, storag
         case "memory":
             settings.update(
                 {
-                    "protocol": "memory",
+                    "url": "memory:///",
                 }
             )
         case "local":
             settings.update(
                 {
-                    "protocol": "local",
-                    "path": str(tmp_path),
-                    "params": {
-                        "auto_mkdir": True,
-                    },
+                    "url": f"file://{str(tmp_path)}",
                 }
             )
 
         case _:
-            pytest.fail(f"Unexpected protocol {request.param}")
+            pytest.fail(f"Unexpected store {request.param}")
 
     settings.update(storage_settings)
 
-    storage = Storage(settings)
-    if request.param == "memory":
-        storage.settings.fs.rm("/", True)
-    return storage
+    return Storage(settings)
 
 
 class TestSettings:

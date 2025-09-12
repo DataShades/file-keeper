@@ -98,6 +98,7 @@ nav:
     - adapters/fs.md
     - adapters/memory.md
     - adapters/null.md
+    - adapters/obstore.md
     - adapters/redis.md
     - adapters/sqlalchemy.md
     - adapters/zip.md
