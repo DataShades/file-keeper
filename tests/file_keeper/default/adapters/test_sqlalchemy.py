@@ -8,7 +8,11 @@ import sqlalchemy as sa
 from faker import Faker
 
 import file_keeper as fk
-import file_keeper.default.adapters.sqlalchemy as sqlalchemy
+try:
+    import file_keeper.default.adapters.sqlalchemy as sqlalchemy
+except ImportError:
+    pytest.skip("sqlalchemy is not installed", allow_module_level=True)
+
 
 from . import standard
 

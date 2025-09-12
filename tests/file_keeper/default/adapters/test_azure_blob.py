@@ -8,7 +8,12 @@ import pytest
 from faker import Faker
 
 import file_keeper as fk
-import file_keeper.default.adapters.azure_blob as azure
+
+try:
+    import file_keeper.default.adapters.azure_blob as azure
+except ImportError:
+    pytest.skip("azure-storage-blob is not installed", allow_module_level=True)
+
 
 from . import standard
 

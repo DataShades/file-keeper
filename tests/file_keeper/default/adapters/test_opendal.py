@@ -8,7 +8,12 @@ import pytest
 from faker import Faker
 
 import file_keeper as fk
-import file_keeper.default.adapters.opendal as od
+
+try:
+    import file_keeper.default.adapters.opendal as od
+except ImportError:
+    pytest.skip("opendal is not installed", allow_module_level=True)
+
 
 from . import standard
 

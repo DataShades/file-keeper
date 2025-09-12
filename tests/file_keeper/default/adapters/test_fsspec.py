@@ -7,7 +7,10 @@ from typing import Any
 import pytest
 from faker import Faker
 
-import file_keeper.default.adapters.fsspec as fs
+try:
+    import file_keeper.default.adapters.fsspec as fs
+except ImportError:
+    pytest.skip("fsspec is not installed", allow_module_level=True)
 
 from . import standard
 

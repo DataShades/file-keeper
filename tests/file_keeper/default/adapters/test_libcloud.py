@@ -9,7 +9,12 @@ import pytest
 from faker import Faker
 
 import file_keeper as fk
-import file_keeper.default.adapters.libcloud as lc
+
+try:
+    import file_keeper.default.adapters.libcloud as lc
+except ImportError:
+    pytest.skip("apache-libcloud is not installed", allow_module_level=True)
+
 
 from . import standard
 

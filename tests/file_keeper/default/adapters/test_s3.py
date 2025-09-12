@@ -8,7 +8,12 @@ import pytest
 from faker import Faker
 
 import file_keeper as fk
-import file_keeper.default.adapters.s3 as s3
+
+try:
+    import file_keeper.default.adapters.s3 as s3
+except ImportError:
+    pytest.skip("boto3 is not installed", allow_module_level=True)
+
 
 from . import standard
 

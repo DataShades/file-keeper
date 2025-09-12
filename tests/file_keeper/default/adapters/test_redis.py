@@ -7,7 +7,10 @@ import pytest
 from faker import Faker
 from redis import Redis
 
-import file_keeper.default.adapters.redis as redis
+try:
+    import file_keeper.default.adapters.redis as redis
+except ImportError:
+    pytest.skip("redis is not installed", allow_module_level=True)
 
 from . import standard
 

@@ -6,11 +6,21 @@ from typing import Any
 
 import pytest
 from faker import Faker
-from google.auth.credentials import AnonymousCredentials
+
+try:
+    from google.auth.credentials import AnonymousCredentials
+except ImportError:
+    pytest.skip("google-auth is not installed", allow_module_level=True)
+
 from typing_extensions import override
 
 import file_keeper as fk
-import file_keeper.default.adapters.gcs as gcs
+
+try:
+    import file_keeper.default.adapters.gcs as gcs
+except ImportError:
+    pytest.skip("google-cloud-storage is not installed", allow_module_level=True)
+
 
 from . import standard
 
