@@ -44,6 +44,7 @@ docs = [
 dev = [
     "pytest-cov", "pytest-faker",  "faker", "werkzeug", "urllib3",
     "mkdocs", "mkdocs-material", "pymdown-extensions", "mkdocstrings[python]",  "mkdocs-spellcheck[codespell]","mkdocs-macros-plugin",
+    "pre-commit",
 ]
 
 user_config = ["platformdirs"]
