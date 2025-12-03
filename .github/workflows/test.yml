@@ -49,7 +49,7 @@ jobs:
       FILE_KEEPER_TEST_GCS_ENDPOINT: "http://127.0.0.1:4443"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Start GCS
         uses: fsouza/fake-gcs-action@v0.4.1
