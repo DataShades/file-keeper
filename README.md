@@ -18,7 +18,6 @@ user guide.
 - **Type Safety**: Comprehensive type annotations for better development experience
 - **Security**: Built-in protection against directory traversal and other attacks
 - **Extensible**: Plugin architecture for adding custom storage adapters
-- **Async Ready**: Architecture designed to support async operations
 - **Comprehensive Testing**: Extensive test coverage with security-focused tests
 
 ## API Overview
