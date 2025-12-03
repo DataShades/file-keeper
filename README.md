@@ -11,6 +11,58 @@ drivers for storage you are using.
 Read the [documentation](https://datashades.github.io/file-keeper/) for a full
 user guide.
 
+## Features
+
+- **Unified API**: Consistent interface across multiple storage backends
+- **Multiple Storage Backends**: Support for file system, memory, S3, GCS, Azure, Redis, and more
+- **Type Safety**: Comprehensive type annotations for better development experience
+- **Security**: Built-in protection against directory traversal and other attacks
+- **Extensible**: Plugin architecture for adding custom storage adapters
+- **Async Ready**: Architecture designed to support async operations
+- **Comprehensive Testing**: Extensive test coverage with security-focused tests
+
+## API Overview
+
+### Creating Storage
+
+Use `make_storage()` to create storage instances:
+
+```python
+import file_keeper as fk
+
+# Create memory storage for testing
+storage = fk.make_storage("sandbox", {"type": "file_keeper:memory"})
+
+# Create filesystem storage
+storage = fk.make_storage("fs", {
+    "type": "file_keeper:fs",
+    "path": "/path/to/files",
+    "initialize": True
+})
+```
+
+### File Operations
+
+```python
+# Upload a file
+upload = fk.make_upload(b"file content")
+result = storage.upload("filename.txt", upload)
+
+# Read file content
+content = storage.content(result)
+
+# Check if file exists
+exists = storage.exists(result)
+
+# Remove file
+removed = storage.remove(result)
+```
+
+### Key Functions
+
+- `make_storage(name, settings)`: Create a storage instance
+- `make_upload(data)`: Create an upload object from data
+- `get_storage(name, settings=None)`: Get or create a named storage instance from the pool
 
 ## Usage
 
