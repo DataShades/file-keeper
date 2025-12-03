@@ -717,6 +717,10 @@ class Storage(ABC):  # noqa: B024
         Raises:
             exceptions.LocationError: when location is outside of the storage's path
         """
+        # Check for null bytes which could be used for injection
+        if "\x00" in location:
+            raise exceptions.LocationError(self, location)
+
         result = os.path.normpath(os.path.join(self.settings.path, location))
         if not result.startswith(self.settings.path):
             raise exceptions.LocationError(self, location)
@@ -1605,7 +1609,7 @@ class Storage(ABC):  # noqa: B024
         #
         # Expected reasons of failure are:
         #
-        # * one of the source fiels is missing
+        # * one of the source files is missing
         # * file will go over the size limit after the following append
         try:
             for item in files:
@@ -1709,7 +1713,7 @@ def get_storage(name: str, settings: dict[str, Any] | None = None) -> Storage:
     called with the given name.
 
     Settings are required only for initialization, so you can omit them if you
-    are sure that storage exists. Additionally, if `settins` are not specified
+    are sure that storage exists. Additionally, if `settings` are not specified
     but storage is missing from the pool, file-keeper makes an attempt to
     initialize storage using global configuration. Global configuration can be
     provided as:
