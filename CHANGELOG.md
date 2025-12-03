@@ -1,4 +1,14 @@
 
+## [unreleased]
+[Compare with v0.1.0a4](https://github.com/DataShades/file-keeper/compare/v0.1.0a4..HEAD)
+
+### 🚀 Features
+
+- obstore adapter ([ea89faf](https://github.com/DataShades/file-keeper/commit/ea89faf02e336a5ba4a5df6a5ad455ad8b01422f))
+- add filtered_scan operation ([b4f08f6](https://github.com/DataShades/file-keeper/commit/b4f08f6a7f6fee0f7552419adf0355c973e00312))
+- add fsstore adapter ([fd95821](https://github.com/DataShades/file-keeper/commit/fd95821bee2bb9010ccea2a39de19fab2c138b36))
+- analyzer got separate size/content_type/hash methods ([3f8457a](https://github.com/DataShades/file-keeper/commit/3f8457abb1b5d79209dbbb147cbdb68d2d60c51c))
+
 ## [v0.1.0a4](https://github.com/DataShades/file-keeper/releases/tag/v0.1.0a4) - 2025-09-01
 [Compare with v0.0.10](https://github.com/DataShades/file-keeper/compare/v0.0.10..v0.1.0a4)
 
