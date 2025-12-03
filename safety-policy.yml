@@ -1,0 +1,8 @@
+# Safety policy for file-keeper
+security:
+  ignore-vulns:
+    # Add specific vulnerability IDs to ignore here if needed
+    # Example:
+    # "12345": 
+    #   reason: "Not applicable to our use case because..."
+    #   expires: "2024-12-31"
