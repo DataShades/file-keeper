@@ -1,4 +1,10 @@
-"""Main entrypoint of the file-keeper."""
+"""Main entrypoint of the file-keeper.
+
+file-keeper is a Python library that provides a unified interface for
+storing, retrieving, and managing files across different storage backends
+including local filesystem, cloud services (S3, GCS, Azure), and in-memory
+storage.
+"""
 
 from .core import exceptions as exc
 from .core import types
