@@ -88,7 +88,7 @@ def ensure_setup(func: Callable[P, T]) -> Callable[P, T]:
 
         return func(*args, **kwargs)
 
-    return wrapper  # type: ignore[return-value]
+    return wrapper
 
 
 class HashingReader:
@@ -144,11 +144,11 @@ class HashingReader:
         """Read and return all bytes from stream at once."""
         return b"".join(self)
 
-    def get_hash(self):
+    def get_hash(self) -> str:
         """Get current content hash as a string."""
         return self.hashsum.hexdigest()
 
-    def exhaust(self):
+    def exhaust(self) -> None:
         """Exhaust internal stream to compute final version of content hash.
 
         Note, this method does not returns data from the stream. The content
@@ -264,14 +264,19 @@ def parse_filesize(value: str) -> int:
     """
     result = RE_FILESIZE.match(value.strip())
     if not result:
-        raise ValueError(value)
+        msg = f"Cannot parse filesize: '{value}'"
+        raise ValueError(msg)
 
     size, unit = result.groups()
 
     multiplier = UNITS.get(unit.lower())
     if not multiplier:
-        raise ValueError(value)
+        msg = f"Unknown unit '{unit}' in filesize: '{value}'"
+        raise ValueError(msg)
 
+    # using `int` here means that `1.9 bytes` will be truncated to `1 byte`. I
+    # don't know situation where fraction of bytes makes sens and this behavior
+    # seems sensible
     return int(float(size) * multiplier)
 
 
