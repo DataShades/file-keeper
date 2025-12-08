@@ -34,7 +34,7 @@ class TestSettings:
 
             record = caplog.records[0]
 
-            assert record.message == "Storage test received unknow settings: {'hello': 'world'}"
+            assert record.message == "Storage test received unknown settings: {'hello': 'world'}"
             assert record.levelname == "WARNING"
 
             assert settings._extra_settings == {"hello": "world"}  # pyright: ignore[reportPrivateUsage]

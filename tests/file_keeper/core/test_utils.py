@@ -61,14 +61,14 @@ class TestCapabilities:
         assert empty == Capability.REMOVE
 
     def test_can_single_capability(self):
-        """Individual capabilites are identified in cluster."""
+        """Individual capabilities are identified in cluster."""
         cluster = Capability.CREATE | Capability.REMOVE
         assert cluster.can(Capability.CREATE)
         assert cluster.can(Capability.REMOVE)
         assert not cluster.can(Capability.STREAM)
 
     def test_can_cluster_capability(self):
-        """Cluster capabilites are identified in cluster."""
+        """Cluster capabilities are identified in cluster."""
         cluster = Capability.CREATE | Capability.REMOVE | Capability.STREAM
 
         assert cluster.can(Capability.CREATE | Capability.REMOVE)
