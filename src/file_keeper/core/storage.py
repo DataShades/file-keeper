@@ -527,7 +527,7 @@ class Settings:
         cfg = cls(**valid)
         if invalid:
             log.warning(
-                "Storage %s received unknow settings: %s",
+                "Storage %s received unknown settings: %s",
                 cfg.name,
                 invalid,
             )
