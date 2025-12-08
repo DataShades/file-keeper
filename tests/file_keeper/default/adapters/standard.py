@@ -244,6 +244,14 @@ class Creator:
         with pytest.raises(fk.exc.LocationError):
             storage.upload(fk.Location(path), fk.make_upload(b""))
 
+    @pytest.mark.expect_storage_capability(fk.Capability.CREATE)
+    def test_create_special_characters(self, storage: fk.Storage, faker: Faker):
+        """Filenames with special characters are supported."""
+        special_name = "spécîål chåråçtęrs !@#$%^&()[]{};,文件.txt"
+        result = storage.upload(fk.Location(special_name), fk.make_upload(b"hello"))
+        assert result.location == special_name, "Location of the uploaded file was changed"
+        assert storage.content(result) == b"hello", "Content of the uploaded file is incorrect"
+
 
 class Exister:
     @pytest.mark.expect_storage_capability(fk.Capability.EXISTS)
