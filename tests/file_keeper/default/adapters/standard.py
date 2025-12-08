@@ -225,10 +225,10 @@ class Creator:
     def test_create_replace_existing(self, storage: fk.Storage, faker: Faker):
         """Overrides can be explicitly enabled."""
         origin = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b"hello world"))
-        overriden = storage.upload(origin.location, fk.make_upload(b"bye"))
+        overridden = storage.upload(origin.location, fk.make_upload(b"bye"))
 
-        assert origin.location == overriden.location, "Location of uploaded file was changed"
-        assert storage.content(overriden) == b"bye", "Unexpected content of the file"
+        assert origin.location == overridden.location, "Location of uploaded file was changed"
+        assert storage.content(overridden) == b"bye", "Unexpected content of the file"
 
     @pytest.mark.expect_storage_capability(fk.Capability.CREATE)
     def test_create_directory_allowed(self, storage: fk.Storage, faker: Faker):

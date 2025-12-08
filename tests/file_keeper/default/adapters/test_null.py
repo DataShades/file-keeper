@@ -104,9 +104,9 @@ class TestStorage:
     def test_compose_always_returns_location(self, storage: fk.Storage, faker: Faker):
         """Compose always returns FileData with given location."""
         location = fk.Location(faker.file_name())
-        datas = [fk.FileData(fk.Location(faker.file_name())) for _ in range(3)]
+        data = [fk.FileData(fk.Location(faker.file_name())) for _ in range(3)]
 
-        result = storage.compose(location, *datas)
+        result = storage.compose(location, *data)
         assert result.location == location
         assert result.size == 0
         assert result.content_type == "application/octet-stream"
