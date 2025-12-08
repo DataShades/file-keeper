@@ -304,7 +304,8 @@ def humanize_filesize(value: int | float, base: int = SI_BASE) -> str:
     elif base == BINARY_BASE:
         suffixes = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"]
     else:
-        raise ValueError(base)
+        msg = f"Base must be {SI_BASE} (SI) or {BINARY_BASE} (binary), got {base}"
+        raise ValueError(msg)
 
     iteration = 0
 
