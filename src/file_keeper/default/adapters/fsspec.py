@@ -209,10 +209,8 @@ class FsSpecStorage(fk.Storage):
     settings = {
         "type": "file_keeper:fsspec",
         "protocol": "local",
-        "params": {
-            "fo": "/tmp/file_keeper.zip",
-            "mode": "w",
-        },
+        "path": "/tmp/file-keeper",
+        "params": {"auto_mkdir": True},
     }
 
     storage = fk.make_storage("fsspec", settings)
