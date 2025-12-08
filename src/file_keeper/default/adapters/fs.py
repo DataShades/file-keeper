@@ -67,11 +67,15 @@ class Uploader(fk.Uploader):
         # --8<-- [end:uploader_method]
         """Upload file to computed location.
 
-        File location is relative the configured `path`. The location is not
-        sanitized and can lead outside the configured `path`. Consider using
-        combination of `storage.prepare_location` with
-        `settings.location_transformers` that sanitizes the path, like
-        `safe_relative_path`.
+        File location is relative the configured `path`. If `Settings.path` is
+        not empty and location leads to the place outside of this path, the
+        upload will fail with an exception. But if `Settings.path` is empty, no
+        restrictions applied to the final location. Consider using combination
+        of `storage.prepare_location` with `settings.location_transformers` to
+        sanitize the path, like `safe_relative_path`, if you are using
+        filesystem-like storage. For cloud providers or DB storages this should
+        not be a problem, as they allow using any characters for the name of
+        fileobject.
 
         Raises:
             ExistingFileError: file exists and overrides are not allowed
@@ -404,9 +408,10 @@ class FsStorage(fk.Storage):
     * The `path` must be an absolute path.
     * The `path` directory must be writable by the application.
     * The `location` used in file operations is relative to the `path`.
-    * The `location` is not sanitized and can lead outside the configured
-      `path`. Consider using combination of `storage.prepare_location` with
-      `settings.location_transformers` that sanitizes the path, like
+    * If `Storage.path` is not empty, the `location` is validated
+      to prevent directory traversal.
+    * Consider using combination of `storage.prepare_location` with
+      `settings.location_transformers` that further sanitizes the path, like
       `safe_relative_path`.
     * If `initialize` is `True`, the storage will attempt to create the
       directory if it does not exist.
