@@ -72,23 +72,23 @@ class run_once(Generic[P, T]):  # noqa: N801
             self.result = self.func(*args, **kwargs)
         return self.result
 
-    def reset(self):
+    def reset(self) -> None:
         """Reset cached result to run function again on next call."""
         self.result = self.EMPTY  # pyright: ignore[reportAttributeAccessIssue]
 
 
-def ensure_setup(func: Any):
+def ensure_setup(func: Callable[P, T]) -> Callable[P, T]:
     """Initialize file-keeper if required."""
 
     @functools.wraps(func)
-    def wrapper(*args: Any, **kwargs: Any):
+    def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
         from file_keeper.ext import setup  # noqa: PLC0415
 
         setup()
 
         return func(*args, **kwargs)
 
-    return wrapper
+    return wrapper  # type: ignore[return-value]
 
 
 class HashingReader:
@@ -120,10 +120,10 @@ class HashingReader:
         chunk_size: int = CHUNK_SIZE,
         algorithm: str = "md5",
     ):
+        self.hashsum = hashlib.new(algorithm)
         self.stream = stream
         self.chunk_size = chunk_size
         self.algorithm = algorithm
-        self.hashsum = hashlib.new(algorithm)
         self.position = 0
 
     def __iter__(self) -> Iterator[bytes]:
