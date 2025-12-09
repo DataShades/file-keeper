@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "file-keeper"
-version = "0.1.0a4"
+version = "0.1.0a5"
 description = "Abstraction level for object storages."
 classifiers = [
 
