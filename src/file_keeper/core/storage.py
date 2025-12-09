@@ -1363,7 +1363,7 @@ class Storage(ABC):  # noqa: B024
             exceptions.MissingFileError: when file does not exist
         """
         if end is None:
-            end = cast(int, float("inf"))
+            end = data.size + 1
 
         end -= start
         if end <= 0:
