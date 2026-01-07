@@ -149,6 +149,15 @@ class Copier:
         assert original.location != copy.location, "File retains old location after the copy"
         assert original.hash == copy.hash, "Content hash was changed during the copy"
 
+    @pytest.mark.expect_storage_capability(fk.Capability.COPY, fk.Capability.CREATE)
+    def test_copy_in_place(self, storage: fk.Storage, faker: Faker):
+        """Copying file onto itself is a no-op."""
+        content = faker.binary(10)
+        original = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
+
+        copy = storage.copy(original.location, original)
+        assert original == copy, "Data changed during in-place copy"
+
     @pytest.mark.expect_storage_capability(fk.Capability.COPY)
     def test_copy_missing(self, storage: fk.Storage, faker: Faker):
         """Cannot copy non-existing file."""
@@ -323,9 +332,6 @@ class Mover:
     @pytest.mark.fk_storage_option("override_existing", True)
     def test_move_into_existing_can_be_enabled(self, storage: fk.Storage, faker: Faker):
         """When explicitly enabled, moved file can override existing destination."""
-        if not storage.supports(fk.Capability.EXISTS):
-            pytest.skip("Cannot test move with allowed override without EXIST capability")
-
         content = faker.binary(10)
         data = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
         existing = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b""))
@@ -337,6 +343,19 @@ class Mover:
         assert not storage.exists(data), "Moved file is still available under original location"
         assert existing.location == result.location, "Actual move location is different from the expected location"
         assert storage.content(result) == content, "Content of the moved file was changed"
+
+    @pytest.mark.expect_storage_capability(
+        fk.Capability.MOVE, fk.Capability.CREATE, fk.Capability.EXISTS, fk.Capability.STREAM
+    )
+    def test_move_in_place(self, storage: fk.Storage, faker: Faker):
+        """Moving file onto itself is a no-op."""
+        content = faker.binary(10)
+        data = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
+
+        result = storage.move(data.location, data)
+        assert storage.exists(result), "File disappeared after in-place move"
+        assert result == data, "File data changed during in-place move"
+        assert storage.content(result) == content, "Content changed during in-place move"
 
 
 class Multiparter:

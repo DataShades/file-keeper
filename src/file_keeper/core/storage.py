@@ -483,6 +483,12 @@ class Settings:
     initialize: bool = False
     """Prepare storage backend for uploads(create path, bucket, DB)"""
 
+    skip_in_place_move: bool = True
+    """Skip in-place move operations."""
+
+    skip_in_place_copy: bool = True
+    """Skip in-place copy operations."""
+
     _required_options: ClassVar[list[str]] = []
     _extra_settings: dict[str, Any] = cast("dict[str, Any]", dataclasses.field(default_factory=dict))
 
@@ -1460,6 +1466,9 @@ class Storage(ABC):  # noqa: B024
             exceptions.ExistingFileError: when destination file already exists and
                 [override_existing][file_keeper.Settings.override_existing] is False
         """
+        if location == data.location and self.settings.skip_in_place_copy:
+            return data
+
         return self.manager.copy(location, data, kwargs)
 
     def copy_synthetic(
@@ -1518,6 +1527,8 @@ class Storage(ABC):  # noqa: B024
                 [override_existing][file_keeper.Settings.override_existing] is False
 
         """
+        if location == data.location and self.settings.skip_in_place_move:
+            return data
         return self.manager.move(location, data, kwargs)
 
     def move_synthetic(

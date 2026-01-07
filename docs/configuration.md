@@ -60,6 +60,8 @@ These settings are available for most storage adapters:
 | `location_transformers` | list[str] | `[]`        | A list of names of location transformers to apply to file locations. These transformers can be used to sanitize or modify file paths before they are used to store files. See the [Extending file-keeper documentation](extending/location_transformers.md) for details. |
 | `disabled_capabilities` | list[str] | `[]`        | A list of capabilities to disable for the storage adapter. This can be useful for limiting the functionality of an adapter or for testing purposes.                                                                                                                      |
 | `initialize`            | bool      | `False`     | Prepare storage backend for uploads. The exact meaning depends on the adapter. Filesystem adapter created the upload folder if it's missing; cloud adapters create a bucket/container if it does not exists.                                                             |
+| `skip_in_place_copy`    | bool      | `True`      | Skip in-place copy operations.                                                                                                                                                                                                                                           |
+| `skip_in_place_move`    | bool      | `True`      | Skip in-place move operations.                                                                                                                                                                                                                                           |
 
 
 /// warning | Important Considerations
