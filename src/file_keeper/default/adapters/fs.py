@@ -284,6 +284,7 @@ class Manager(fk.Manager):
         if os.path.exists(dest) and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
 
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
         shutil.copy(src, dest)
         return fk.FileData.from_object(data, location=location)
 
@@ -304,6 +305,7 @@ class Manager(fk.Manager):
             else:
                 raise fk.exc.ExistingFileError(self.storage, location)
 
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
         shutil.move(src, dest)
         return fk.FileData.from_object(data, location=location)
 
