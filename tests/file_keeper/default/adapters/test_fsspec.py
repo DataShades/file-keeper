@@ -36,9 +36,6 @@ def storage(request: pytest.FixtureRequest, faker: Faker, tmp_path: Path, storag
                 {
                     "protocol": "local",
                     "path": str(tmp_path),
-                    "params": {
-                        "auto_mkdir": True,
-                    },
                 }
             )
 

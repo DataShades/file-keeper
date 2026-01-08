@@ -150,6 +150,18 @@ class Copier:
         assert original.hash == copy.hash, "Content hash was changed during the copy"
 
     @pytest.mark.expect_storage_capability(fk.Capability.COPY, fk.Capability.CREATE)
+    def test_copy_into_non_existing_folder(self, storage: fk.Storage, faker: Faker):
+        """Copying into non-existing nested folder is allowed."""
+        content = faker.binary(10)
+        original = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
+
+        nested_path = os.path.join(faker.file_path(absolute=False, depth=3), faker.file_name())
+        copy = storage.copy(fk.Location(nested_path), original)
+
+        assert copy.location == nested_path, "Location of the copied file does not match expected value"
+        assert storage.content(copy) == content, "Content of the copied file was changed"
+
+    @pytest.mark.expect_storage_capability(fk.Capability.COPY, fk.Capability.CREATE)
     def test_copy_in_place(self, storage: fk.Storage, faker: Faker):
         """Copying file onto itself is a no-op."""
         content = faker.binary(10)
@@ -312,6 +324,19 @@ class Mover:
                 fk.Location(faker.file_name()),
                 fk.FileData(fk.Location(faker.file_name())),
             )
+
+    @pytest.mark.expect_storage_capability(fk.Capability.COPY, fk.Capability.CREATE)
+    def test_move_into_non_existing_folder(self, storage: fk.Storage, faker: Faker):
+        """Moving into non-existing nested folder is allowed."""
+        content = faker.binary(10)
+        data = storage.upload(fk.Location(faker.file_name()), fk.make_upload(content))
+
+        nested_path = os.path.join(faker.file_path(absolute=False, depth=3), faker.file_name())
+        result = storage.move(fk.Location(nested_path), data)
+
+        assert not storage.exists(data), "Moved file is still available under original location"
+        assert result.location == nested_path, "Location of the moved file does not match expected value"
+        assert storage.content(result) == content, "Content of the moved file was changed"
 
     @pytest.mark.expect_storage_capability(fk.Capability.MOVE, fk.Capability.CREATE)
     def test_move_into_existing_is_not_allowed_by_default(self, storage: fk.Storage, faker: Faker):

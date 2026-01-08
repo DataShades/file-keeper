@@ -60,6 +60,7 @@ class Uploader(fk.Uploader):
         if not self.storage.settings.override_existing and fs.exists(filepath):
             raise fk.exc.ExistingFileError(self.storage, location)
 
+        fs.mkdirs(os.path.dirname(filepath), exist_ok=True)
         with fs.open(filepath, "wb") as fobj:
             reader = upload.hashing_reader()
             for chunk in reader:
@@ -118,6 +119,7 @@ class Manager(fk.Manager):
         src_location = self.storage.full_path(data.location)
         dest_location = self.storage.full_path(location)
 
+        fs.mkdirs(os.path.dirname(dest_location), exist_ok=True)
         fs.cp(src_location, dest_location)
 
         return fk.FileData.from_object(data, location=location)
@@ -135,6 +137,7 @@ class Manager(fk.Manager):
         src_location = self.storage.full_path(data.location)
         dest_location = self.storage.full_path(location)
 
+        fs.mkdirs(os.path.dirname(dest_location), exist_ok=True)
         fs.mv(src_location, dest_location)
 
         return fk.FileData.from_object(data, location=location)
