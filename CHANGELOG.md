@@ -1,9 +1,18 @@
 
-## [unreleased]
-[Compare with v0.1.0a4](https://github.com/DataShades/file-keeper/compare/v0.1.0a4..HEAD)
+## [v0.1.0a7](https://github.com/DataShades/file-keeper/releases/tag/v0.1.0a7) - 2026-01-08
+[Compare with v0.1.0a6](https://github.com/DataShades/file-keeper/compare/v0.1.0a6..v0.1.0a7)
+
+### 🐛 Bug Fixes
+
+- fsspec does not createds intermediate folders ([7b6ebb0](https://github.com/DataShades/file-keeper/commit/7b6ebb0b87200a2d70c8d8fe91bee86372a2d99e))
+- copy and move fail if directory does not exist ([a3da0d1](https://github.com/DataShades/file-keeper/commit/a3da0d1b7a9514e83d0a5c35e1ce8e176e385bc5))
+
+## [v0.1.0a6](https://github.com/DataShades/file-keeper/releases/tag/v0.1.0a6) - 2026-01-07
+[Compare with v0.1.0a4](https://github.com/DataShades/file-keeper/compare/v0.1.0a4..v0.1.0a6)
 
 ### 🚀 Features
 
+- skip_in_place_copy/move ([b1d252a](https://github.com/DataShades/file-keeper/commit/b1d252aa4e66bddc60544528b40cd5f1cd741c00))
 - obstore adapter ([ea89faf](https://github.com/DataShades/file-keeper/commit/ea89faf02e336a5ba4a5df6a5ad455ad8b01422f))
 - add filtered_scan operation ([b4f08f6](https://github.com/DataShades/file-keeper/commit/b4f08f6a7f6fee0f7552419adf0355c973e00312))
 - add fsstore adapter ([fd95821](https://github.com/DataShades/file-keeper/commit/fd95821bee2bb9010ccea2a39de19fab2c138b36))
