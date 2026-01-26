@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://datashades.github.io/file-keeper/adapters/memory/">
+        <link rel="canonical" href="https://datashades.github.io/file-keeper/adapters/obstore/">
       
       
-        <link rel="prev" href="../fs/">
+        <link rel="prev" href="../null/">
       
       
-        <link rel="next" href="../null/">
+        <link rel="next" href="../redis/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>In-Memory Storage Adapter - file-keeper</title>
+        <title>Object Store - file-keeper</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#in-memory-storage-adapter" class="md-skip">
+        <a href="#object-store" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              In-Memory Storage Adapter
+              Object Store
             
           </span>
         </div>
@@ -561,6 +561,52 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    In-Memory Storage Adapter
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../null/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Null Adapter
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -578,7 +624,7 @@
   
   
   <span class="md-ellipsis">
-    In-Memory Storage Adapter
+    Object Store
     
   </span>
   
@@ -591,7 +637,7 @@
   
   
   <span class="md-ellipsis">
-    In-Memory Storage Adapter
+    Object Store
     
   </span>
   
@@ -635,52 +681,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../null/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Null Adapter
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../obstore/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Object Store
-    
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -1182,27 +1182,42 @@
   
 
 
-<h1 id="in-memory-storage-adapter">In-Memory Storage Adapter</h1>
-<p>The <code>file_keeper:memory</code> adapter provides a simple in-memory storage
-solution. This adapter is primarily intended for testing and development
-purposes, as data is not persisted to disk.</p>
+<h1 id="object-store">Object Store</h1>
+<p>The <code>file_keeper:obstore</code> adapter uses the
+<a href="https://developmentseed.org/obstore/latest/">obstore</a> library to provide
+access to various object storage backends. It supports any backend supported by
+obstore, including local filesystem, S3, Google Cloud Storage, Azure Blob
+Storage, and more.</p>
 <h2 id="overview">Overview</h2>
-<p>This adapter stores files entirely in memory, making it very fast but also
-volatile. Data is lost when the application exits. It's a convenient way to
-simulate a storage backend without requiring external dependencies.</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;file-keeper[obstore]&#39;</span>
+
+<span class="c1">## or</span>
+
+pip<span class="w"> </span>install<span class="w"> </span>obstore
+</code></pre></div>
 <h2 id="initialization-example">Initialization Example</h2>
-<p>Here's an example of how to initialize the in-memory storage adapter:</p>
-<div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_memory_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
-    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:memory&quot;</span><span class="p">,</span>
+<p>Here's an example of how to initialize the obstore adapter:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Memory</label><label for="__tabbed_1_2">Local FS</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_fsspec_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:obstore&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;memory:///&quot;</span><span class="p">,</span>
 <span class="p">})</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_fsspec_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:obstore&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;file:///tmp/file-keeper&quot;</span><span class="p">,</span>
+<span class="p">})</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p><strong>Important Notes:</strong></p>
 <ul>
-<li>No configuration options are required for this adapter.</li>
-<li>All data is stored in memory and will be lost when the application
-    terminates.</li>
-<li>This adapter is not suitable for production environments where data
-    persistence is required.</li>
+<li>Replace the params with your actual obstore configuration</li>
 </ul>
 
 
@@ -1239,7 +1254,7 @@ simulate a storage backend without requiring external dependencies.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../fs/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Local Filesystem Adapter">
+          <a href="../null/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Null Adapter">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1249,20 +1264,20 @@ simulate a storage backend without requiring external dependencies.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Local Filesystem Adapter
+                Null Adapter
               </div>
             </div>
           </a>
         
         
           
-          <a href="../null/" class="md-footer__link md-footer__link--next" aria-label="Next: Null Adapter">
+          <a href="../redis/" class="md-footer__link md-footer__link--next" aria-label="Next: Redis Adapter">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Null Adapter
+                Redis Adapter
               </div>
             </div>
             <div class="md-footer__button md-icon">

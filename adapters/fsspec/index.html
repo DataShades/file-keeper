@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://datashades.github.io/file-keeper/adapters/memory/">
+        <link rel="canonical" href="https://datashades.github.io/file-keeper/adapters/fsspec/">
       
       
-        <link rel="prev" href="../fs/">
+        <link rel="prev" href="../azure_blob/">
       
       
-        <link rel="next" href="../null/">
+        <link rel="next" href="../gcs/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>In-Memory Storage Adapter - file-keeper</title>
+        <title>Fsspec - file-keeper</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#in-memory-storage-adapter" class="md-skip">
+        <a href="#fsspec" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              In-Memory Storage Adapter
+              Fsspec
             
           </span>
         </div>
@@ -492,10 +492,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../fsspec/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Fsspec
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -506,6 +528,44 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initialization-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialization Example
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -561,32 +621,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    In-Memory Storage Adapter
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../memory/" class="md-nav__link">
         
   
   
@@ -597,44 +635,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Overview
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#initialization-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Initialization Example
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1182,27 +1182,47 @@
   
 
 
-<h1 id="in-memory-storage-adapter">In-Memory Storage Adapter</h1>
-<p>The <code>file_keeper:memory</code> adapter provides a simple in-memory storage
-solution. This adapter is primarily intended for testing and development
-purposes, as data is not persisted to disk.</p>
+<h1 id="fsspec">Fsspec</h1>
+<p>The <code>file_keeper:fsspec</code> adapter uses the
+<a href="https://filesystem-spec.readthedocs.io/en/latest/index.html">fsspec</a> library
+to provide access to a wide range of storage backends supported by <code>fsspec</code>
+(e.g., local filesystems, cloud storage like S3, GCS, Azure Blob Storage, and
+more). The core idea is to use <code>fsspec</code>'s unified interface to interact with
+these different storage systems.</p>
 <h2 id="overview">Overview</h2>
-<p>This adapter stores files entirely in memory, making it very fast but also
-volatile. Data is lost when the application exits. It's a convenient way to
-simulate a storage backend without requiring external dependencies.</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;file-keeper[fsspec]&#39;</span>
+
+<span class="c1">## or</span>
+
+pip<span class="w"> </span>install<span class="w"> </span>fsspec
+</code></pre></div>
 <h2 id="initialization-example">Initialization Example</h2>
-<p>Here's an example of how to initialize the in-memory storage adapter:</p>
-<div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_memory_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
-    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:memory&quot;</span><span class="p">,</span>
+<p>Here's an example of how to initialize the fsspec adapter:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Memory</label><label for="__tabbed_1_2">Local FS</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_fsspec_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:fsspec&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;memory&quot;</span><span class="p">,</span>
 <span class="p">})</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">storage</span> <span class="o">=</span> <span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_fsspec_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:fsspec&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;local&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp/file-keeper&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;auto_mkdir&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+<span class="p">})</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p><strong>Important Notes:</strong></p>
 <ul>
-<li>No configuration options are required for this adapter.</li>
-<li>All data is stored in memory and will be lost when the application
-    terminates.</li>
-<li>This adapter is not suitable for production environments where data
-    persistence is required.</li>
+<li>Replace the params with your actual fsspec configuration</li>
+<li>Ensure that you have the necessary credentials and permissions to access
+    the specified storage location.</li>
 </ul>
 
 
@@ -1239,7 +1259,7 @@ simulate a storage backend without requiring external dependencies.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../fs/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Local Filesystem Adapter">
+          <a href="../azure_blob/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Azure Blob Storage">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1249,20 +1269,20 @@ simulate a storage backend without requiring external dependencies.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Local Filesystem Adapter
+                Azure Blob Storage
               </div>
             </div>
           </a>
         
         
           
-          <a href="../null/" class="md-footer__link md-footer__link--next" aria-label="Next: Null Adapter">
+          <a href="../gcs/" class="md-footer__link md-footer__link--next" aria-label="Next: Google Cloud Storage">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Null Adapter
+                Google Cloud Storage
               </div>
             </div>
             <div class="md-footer__button md-icon">
