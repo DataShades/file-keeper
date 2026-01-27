@@ -465,6 +465,9 @@ class Reader(StorageService):
 class Settings:
     """Settings for the storage adapter."""
 
+    type: str = ""
+    """Type of the storage adapter."""
+
     name: str = "unknown"
     """Descriptive name of the storage used for debugging."""
 
@@ -1706,7 +1709,7 @@ def make_storage(name: str, settings: dict[str, Any]) -> Storage:
 
 
     """
-    adapter_type = settings.pop("type", None)
+    adapter_type: Any = settings.get("type")
     adapter = adapters.get(adapter_type)
     if not adapter:
         raise exceptions.UnknownAdapterError(adapter_type)
