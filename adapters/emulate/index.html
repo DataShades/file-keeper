@@ -1146,7 +1146,7 @@ your specific setup.</p>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span><span class="m">10000</span>:10000<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--name<span class="w"> </span>azurite-blob<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>mcr.microsoft.com/azure-storage/azurite<span class="w"> </span>azurite-blob<span class="w"> </span>--blobHost<span class="w"> </span><span class="m">0</span>.0.0.0
+<span class="w">    </span>mcr.microsoft.com/azure-storage/azurite<span class="w"> </span>azurite-blob<span class="w"> </span>--blobHost<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--skipApiVersionCheck
 </code></pre></div>
 <table>
 <thead>
