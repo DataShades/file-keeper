@@ -13,7 +13,7 @@ from typing import Any, cast
 
 import urllib3
 from google.api_core.exceptions import Forbidden
-from google.auth.credentials import Credentials
+from google.auth.credentials import AnonymousCredentials, Credentials
 from google.cloud.storage import Blob, Bucket, Client
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 from typing_extensions import override
@@ -61,16 +61,19 @@ class Settings(fk.Settings):
         self.path = self.path.strip("/")
 
         if not self.client:
-            if not self.credentials and self.credentials_file:
-                try:
-                    self.credentials = ServiceAccountCredentials.from_service_account_file(self.credentials_file)
-                except OSError as err:
-                    raise fk.exc.InvalidStorageConfigurationError(
-                        self.name,
-                        f"file `{self.credentials_file}` does not exist",
-                    ) from err
-                if not self.project_id:
-                    self.project_id = self.credentials.project_id or ""
+            if not self.credentials:
+                if self.credentials_file:
+                    try:
+                        self.credentials = ServiceAccountCredentials.from_service_account_file(self.credentials_file)
+                    except OSError as err:
+                        raise fk.exc.InvalidStorageConfigurationError(
+                            self.name,
+                            f"file `{self.credentials_file}` does not exist",
+                        ) from err
+                    if not self.project_id:
+                        self.project_id = self.credentials.project_id or ""
+                else:
+                    self.credentials = AnonymousCredentials()
 
             if not self.project_id:
                 raise fk.exc.MissingStorageConfigurationError(self.name, "project_id")
