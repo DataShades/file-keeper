@@ -29,7 +29,7 @@ docker run -d -p 9000:9000 -p 9001:9001 \
 ```sh
 docker run -d -p 10000:10000 \
     --name azurite-blob \
-    mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0
+    mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0 --skipApiVersionCheck
 ```
 
 | Attribute | Value                                                                                      |
