@@ -1,4 +1,15 @@
 
+## [v0.1.0](https://github.com/DataShades/file-keeper/releases/tag/v0.1.0) - 2026-01-28
+[Compare with v0.1.0a7](https://github.com/DataShades/file-keeper/compare/v0.1.0a7..v0.1.0)
+
+### 🚀 Features
+
+- add type to settings ([40435f6](https://github.com/DataShades/file-keeper/commit/40435f656c79b3f7ee47de6d6782c7c3f9313afc))
+
+### 🚜 Refactor
+
+- gcs users AnonymousCredentials when no alternative provided ([667bc12](https://github.com/DataShades/file-keeper/commit/667bc1238dddd0bb5be3552f5bf710bd6150c308))
+
 ## [v0.1.0a7](https://github.com/DataShades/file-keeper/releases/tag/v0.1.0a7) - 2026-01-08
 [Compare with v0.1.0a6](https://github.com/DataShades/file-keeper/compare/v0.1.0a6..v0.1.0a7)
 
