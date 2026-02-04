@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://datashades.github.io/file-keeper/core_concepts/data_model/">
+        <link rel="canonical" href="https://datashades.github.io/file-keeper/tutorials/getting_started/">
       
       
-        <link rel="prev" href="../">
+        <link rel="prev" href="../..">
       
       
-        <link rel="next" href="../uploads/">
+        <link rel="next" href="../advanced_patterns/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Data model - file-keeper</title>
+        <title>Getting Started - file-keeper</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#data-model" class="md-skip">
+        <a href="#getting-started" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Data model
+              Getting Started
             
           </span>
         </div>
@@ -285,8 +285,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -298,11 +300,11 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
@@ -318,7 +320,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Tutorials
@@ -329,10 +331,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../tutorials/getting_started/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -343,6 +367,122 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-file-system-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using File System Storage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-different-storage-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with Different Storage Types
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Working with Different Storage Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#memory-storage-for-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Memory Storage (for testing)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-system-storage-for-local-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      File System Storage (for local files)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checking-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      Checking Capabilities
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-example-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complete Example Application
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Steps
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -355,7 +495,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/advanced_patterns/" class="md-nav__link">
+      <a href="../advanced_patterns/" class="md-nav__link">
         
   
   
@@ -1011,8 +1151,6 @@
       
   
   
-    
-  
   
   
     
@@ -1032,15 +1170,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../core_concepts/" class="md-nav__link ">
               
   
   
@@ -1059,7 +1197,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             Core concepts
@@ -1072,32 +1210,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Data model
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../core_concepts/data_model/" class="md-nav__link">
         
   
   
@@ -1108,53 +1224,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#storage" class="md-nav__link">
-    <span class="md-ellipsis">
-      Storage
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#filedata" class="md-nav__link">
-    <span class="md-ellipsis">
-      FileData
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#location" class="md-nav__link">
-    <span class="md-ellipsis">
-      Location
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1167,7 +1236,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../uploads/" class="md-nav__link">
+      <a href="../../core_concepts/uploads/" class="md-nav__link">
         
   
   
@@ -1190,7 +1259,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../capabilities/" class="md-nav__link">
+      <a href="../../core_concepts/capabilities/" class="md-nav__link">
         
   
   
@@ -1631,27 +1700,96 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#storage" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
-      Storage
+      Installation
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#filedata" class="md-nav__link">
+  <a href="#basic-setup" class="md-nav__link">
     <span class="md-ellipsis">
-      FileData
+      Basic Setup
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#location" class="md-nav__link">
+  <a href="#using-file-system-storage" class="md-nav__link">
     <span class="md-ellipsis">
-      Location
+      Using File System Storage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-different-storage-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with Different Storage Types
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Working with Different Storage Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#memory-storage-for-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Memory Storage (for testing)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-system-storage-for-local-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      File System Storage (for local files)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checking-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      Checking Capabilities
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-example-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complete Example Application
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Steps
     </span>
   </a>
   
@@ -1676,95 +1814,192 @@
   
 
 
-<h1 id="data-model">Data model</h1>
-<p>This document details the core data models used within the file-keeper system:
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a>, <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+<h1 id="getting-started">Getting Started</h1>
+<p>This tutorial will walk you through the basics of using file-keeper to manage files across different storage backends. By the end of this tutorial, you'll understand how to:</p>
+<ul>
+<li>Install and set up file-keeper</li>
+<li>Configure different storage backends</li>
+<li>Perform basic file operations</li>
+<li>Handle errors gracefully</li>
+<li>Choose the right storage for your needs</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<p>First, install file-keeper using pip:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>file-keeper
+</code></pre></div>
+<p>For specific storage backends, you may need additional dependencies:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># For S3 support</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;file-keeper[s3]&#39;</span>
 
+<span class="c1"># For all optional dependencies</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;file-keeper[all]&#39;</span>
+</code></pre></div>
+<h2 id="basic-setup">Basic Setup</h2>
+<p>Let's start with a simple example using in-memory storage for testing:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fk</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a>, and
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
+<span class="c1"># Create an in-memory storage for testing</span>
+<span class="n">storage</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;test_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:memory&quot;</span>
+<span class="p">})</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a>. It explains the <em>why</em> behind these concepts
-and how they work together to provide a flexible and reliable file storage
-solution.</p>
-<h2 id="storage">Storage</h2>
-<p>The <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> class is the central point of interaction
-with any underlying storage system – whether that's a cloud provider like AWS
-S3 or Google Cloud Storage, a local filesystem, or something else entirely.
-Think of it as an adapter that translates file-keeper's generic requests into
-the specific language of the storage backend.</p>
-<p>Instead of directly dealing with the complexities of each storage system, you
-interact with <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> objects.  file-keeper handles the
-details of connecting, authenticating, and performing operations.  Each
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> instance is equipped with specialized <em>services</em>
-– <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Uploader&lt;/code&gt;" href="../../api/#file_keeper.Uploader">Uploader</a>, <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Reader&lt;/code&gt;" href="../../api/#file_keeper.Reader">Reader</a>, and
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Manager&lt;/code&gt;" href="../../api/#file_keeper.Manager">Manager</a> – to handle different types of tasks.  This
-separation of concerns makes the system more modular and easier to extend.</p>
-<h2 id="filedata">FileData</h2>
-<p><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+<span class="c1"># Create an upload object from data</span>
+<span class="n">upload</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_upload</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;Hello, file-keeper!&quot;</span><span class="p">)</span>
 
+<span class="c1"># Upload the file</span>
+<span class="n">file_info</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="s2">&quot;hello.txt&quot;</span><span class="p">,</span> <span class="n">upload</span><span class="p">)</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> represents a file as <em>known to
-file-keeper</em>. It's a metadata record that contains everything we need to
-identify and manage a file, regardless of where it's physically stored.</p>
-<p>Crucially, <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File uploaded: </span><span class="si">{</span><span class="n">file_info</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File size: </span><span class="si">{</span><span class="n">file_info</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="using-file-system-storage">Using File System Storage</h2>
+<p>For production use, you'll likely want to use file system storage:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fk</span>
 
+<span class="c1"># Create a temporary directory for our example</span>
+<span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
+    <span class="c1"># Create file system storage</span>
+    <span class="n">fs_storage</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;fs_example&quot;</span><span class="p">,</span> <span class="p">{</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:fs&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">tmpdir</span><span class="p">,</span>
+        <span class="s2">&quot;initialize&quot;</span><span class="p">:</span> <span class="kc">True</span>  <span class="c1"># Create directory if it doesn&#39;t exist</span>
+    <span class="p">})</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> is independent of the underlying
-storage. It's a consistent representation that allows file-keeper to work with
-different storage backends seamlessly.  It tracks essential information like
-the file's name, size, content type, and content hash.  It can also store
-additional, storage-specific metadata in the
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+    <span class="c1"># Upload a file</span>
+    <span class="n">upload</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_upload</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;Sample file content&quot;</span><span class="p">)</span>
+    <span class="n">file_info</span> <span class="o">=</span> <span class="n">fs_storage</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="s2">&quot;sample.txt&quot;</span><span class="p">,</span> <span class="n">upload</span><span class="p">)</span>
 
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File saved at: </span><span class="si">{</span><span class="n">fs_storage</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">file_info</span><span class="o">.</span><span class="n">location</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">storage_data</a> field.</p>
-<p><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+    <span class="c1"># Read the file content back</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">fs_storage</span><span class="o">.</span><span class="n">content</span><span class="p">(</span><span class="n">file_info</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Content: </span><span class="si">{</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="working-with-different-storage-types">Working with Different Storage Types</h2>
+<p>file-keeper supports many storage backends. Here are examples of common ones:</p>
+<h3 id="memory-storage-for-testing">Memory Storage (for testing)</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fk</span>
 
+<span class="n">memory_storage</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:memory&quot;</span>
+<span class="p">})</span>
+</code></pre></div>
+<h3 id="file-system-storage-for-local-files">File System Storage (for local files)</h3>
+<div class="highlight"><pre><span></span><code><span class="n">fs_storage</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;local&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:fs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/path/to/storage&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;initialize&quot;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="p">})</span>
+</code></pre></div>
+<h3 id="checking-capabilities">Checking Capabilities</h3>
+<p>Different storage backends support different operations. Always check capabilities before performing operations:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fk</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> is the key to operations like tracking
-progress during uploads, managing file versions, and providing consistent
-access to file information across different storage systems.</p>
-<h2 id="location">Location</h2>
-<p><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
+<span class="n">storage</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;example&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:memory&quot;</span>
+<span class="p">})</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> represents the <em>address</em> of a file within a
-specific storage system.  It's a simple string, but it's given a specific
-meaning within file-keeper.</p>
-<p>Think of it as a path or key that uniquely identifies a file within its storage
-backend.  The format of a <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
+<span class="c1"># Check if storage supports removing files</span>
+<span class="k">if</span> <span class="n">storage</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">REMOVE</span><span class="p">):</span>
+    <span class="c1"># Safe to call remove</span>
+    <span class="n">storage</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_info</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Remove operation not supported by this storage&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="error-handling">Error Handling</h2>
+<p>Always handle potential errors when working with file storage:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fk</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">exc</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> will vary depending
-on the storage system (e.g., an S3 key, a filesystem path).</p>
-<p>file-keeper uses <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
+<span class="n">storage</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;safe_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:memory&quot;</span>
+<span class="p">})</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> objects to tell the
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> adapter <em>where</em> to find a file.  It also
-provides a mechanism for transforming <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">upload</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_upload</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;Test content&quot;</span><span class="p">)</span>
+    <span class="n">file_info</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="s2">&quot;test.txt&quot;</span><span class="p">,</span> <span class="n">upload</span><span class="p">)</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> objects
-to different formats if needed, allowing for flexibility and compatibility with
-different storage systems.</p>
+    <span class="c1"># Try to read the content</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">content</span><span class="p">(</span><span class="n">file_info</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully read: </span><span class="si">{</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="n">exc</span><span class="o">.</span><span class="n">FilesError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File operation failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="complete-example-application">Complete Example Application</h2>
+<p>Here's a complete example of a simple file management application:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fk</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">exc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FileManager</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage_config</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">storage</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;manager&quot;</span><span class="p">,</span> <span class="n">storage_config</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save content to a file.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">upload</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_upload</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">content</span><span class="p">)</span>
+            <span class="n">file_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">upload</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">file_info</span>
+        <span class="k">except</span> <span class="n">exc</span><span class="o">.</span><span class="n">FilesError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to save file </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_info</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load content from a file.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">STREAM</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">content</span><span class="p">(</span><span class="n">file_info</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">exc</span><span class="o">.</span><span class="n">MissingFileError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found: </span><span class="si">{</span><span class="n">file_info</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">except</span> <span class="n">exc</span><span class="o">.</span><span class="n">FilesError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load file </span><span class="si">{</span><span class="n">file_info</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_info</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete a file.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">REMOVE</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_info</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">exc</span><span class="o">.</span><span class="n">FilesError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to delete file </span><span class="si">{</span><span class="n">file_info</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Delete operation not supported&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+<span class="c1"># Example usage</span>
+<span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
+    <span class="c1"># Initialize the file manager with file system storage</span>
+    <span class="n">fm</span> <span class="o">=</span> <span class="n">FileManager</span><span class="p">({</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:fs&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">tmpdir</span><span class="p">,</span>
+        <span class="s2">&quot;initialize&quot;</span><span class="p">:</span> <span class="kc">True</span>
+    <span class="p">})</span>
+
+    <span class="c1"># Save a file</span>
+    <span class="n">file_info</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">save_file</span><span class="p">(</span><span class="s2">&quot;example.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;Hello, file-keeper!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">file_info</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File saved: </span><span class="si">{</span><span class="n">file_info</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Load the file</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="n">file_info</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">content</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File content: </span><span class="si">{</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="next-steps">Next Steps</h2>
+<p>Now that you've learned the basics, you can:</p>
+<ul>
+<li>Learn about advanced features in the <a href="../../core_concepts/">Core Concepts</a> section</li>
+<li>Check out the <a href="../../api/">API Reference</a> for detailed information about all functions</li>
+<li>Look at the <a href="../../configuration/">Configuration</a> guide for advanced setup options</li>
+</ul>
+<p>In the next tutorial, we'll cover more advanced topics like custom adapters and performance optimization.</p>
 
 
 
@@ -1800,7 +2035,7 @@ different storage systems.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Core Concepts">
+          <a href="../.." class="md-footer__link md-footer__link--prev" aria-label="Previous: Welcome to file-keeper">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1810,20 +2045,20 @@ different storage systems.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Core Concepts
+                Welcome to file-keeper
               </div>
             </div>
           </a>
         
         
           
-          <a href="../uploads/" class="md-footer__link md-footer__link--next" aria-label="Next: Upload">
+          <a href="../advanced_patterns/" class="md-footer__link md-footer__link--next" aria-label="Next: Advanced patterns">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Upload
+                Advanced patterns
               </div>
             </div>
             <div class="md-footer__button md-icon">

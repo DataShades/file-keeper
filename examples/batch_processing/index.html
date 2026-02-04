@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://datashades.github.io/file-keeper/core_concepts/data_model/">
+        <link rel="canonical" href="https://datashades.github.io/file-keeper/examples/batch_processing/">
       
       
-        <link rel="prev" href="../">
+        <link rel="prev" href="../file_migration/">
       
       
-        <link rel="next" href="../uploads/">
+        <link rel="next" href="../custom_adapter/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Data model - file-keeper</title>
+        <title>Batch Processing Example - file-keeper</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#data-model" class="md-skip">
+        <a href="#batch-processing-example" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Data model
+              Batch Processing Example
             
           </span>
         </div>
@@ -382,6 +382,8 @@
       
   
   
+    
+  
   
   
     
@@ -403,15 +405,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../examples/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -430,7 +432,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -446,7 +448,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/web_app/" class="md-nav__link">
+      <a href="../web_app/" class="md-nav__link">
         
   
   
@@ -469,7 +471,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/file_migration/" class="md-nav__link">
+      <a href="../file_migration/" class="md-nav__link">
         
   
   
@@ -489,10 +491,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../examples/batch_processing/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Batch Processing Example
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -503,6 +527,206 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-the-basic-batch-processing-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run the basic batch processing example:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features-demonstrated" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Features Demonstrated
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Features Demonstrated">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-basic-batch-upload" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Basic Batch Upload
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-parallel-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Parallel Processing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-batch-downloads" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Batch Downloads
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-batch-deletion" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Batch Deletion
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Optimization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-world-use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real-World Use Cases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real-World Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-bulk-file-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Bulk File Import
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-media-processing-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Media Processing Pipeline
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-data-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Data Migration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -515,7 +739,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/custom_adapter/" class="md-nav__link">
+      <a href="../custom_adapter/" class="md-nav__link">
         
   
   
@@ -1011,8 +1235,6 @@
       
   
   
-    
-  
   
   
     
@@ -1032,15 +1254,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../core_concepts/" class="md-nav__link ">
               
   
   
@@ -1059,7 +1281,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             Core concepts
@@ -1072,32 +1294,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Data model
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../core_concepts/data_model/" class="md-nav__link">
         
   
   
@@ -1108,53 +1308,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#storage" class="md-nav__link">
-    <span class="md-ellipsis">
-      Storage
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#filedata" class="md-nav__link">
-    <span class="md-ellipsis">
-      FileData
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#location" class="md-nav__link">
-    <span class="md-ellipsis">
-      Location
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1167,7 +1320,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../uploads/" class="md-nav__link">
+      <a href="../../core_concepts/uploads/" class="md-nav__link">
         
   
   
@@ -1190,7 +1343,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../capabilities/" class="md-nav__link">
+      <a href="../../core_concepts/capabilities/" class="md-nav__link">
         
   
   
@@ -1631,27 +1784,180 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#storage" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
-      Storage
+      Overview
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#filedata" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      FileData
+      Prerequisites
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#location" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
-      Location
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-the-basic-batch-processing-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run the basic batch processing example:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features-demonstrated" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Features Demonstrated
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Features Demonstrated">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-basic-batch-upload" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Basic Batch Upload
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-parallel-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Parallel Processing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-batch-downloads" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Batch Downloads
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-batch-deletion" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Batch Deletion
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Optimization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-world-use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real-World Use Cases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real-World Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-bulk-file-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Bulk File Import
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-media-processing-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Media Processing Pipeline
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-data-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Data Migration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
     </span>
   </a>
   
@@ -1676,95 +1982,152 @@
   
 
 
-<h1 id="data-model">Data model</h1>
-<p>This document details the core data models used within the file-keeper system:
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a>, <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+<h1 id="batch-processing-example">Batch Processing Example</h1>
+<p>This example demonstrates how to efficiently process multiple files in batch using file-keeper.</p>
+<h2 id="overview">Overview</h2>
+<p>This script shows:</p>
+<ul>
+<li>Batch uploading of multiple files</li>
+<li>Parallel processing of file operations</li>
+<li>Performance comparison between parallel and sequential processing</li>
+<li>Advanced batch operations with filtering and grouping</li>
+<li>Error handling in batch operations</li>
+</ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Python 3.10+</li>
+<li>file-keeper library</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>file-keeper
+</code></pre></div>
+<h2 id="usage">Usage</h2>
+<h3 id="run-the-basic-batch-processing-example">Run the basic batch processing example:</h3>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>batch_example.py
+</code></pre></div>
+<p>This will:</p>
+<ol>
+<li>Create sample files</li>
+<li>Demonstrate batch upload operations</li>
+<li>Show filtering and metadata extraction</li>
+<li>Compare parallel vs sequential processing</li>
+<li>Demonstrate advanced batch operations</li>
+</ol>
+<h2 id="key-features-demonstrated">Key Features Demonstrated</h2>
+<h3 id="1-basic-batch-upload">1. Basic Batch Upload</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">batch_example</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchProcessor</span>
 
+<span class="n">processor</span> <span class="o">=</span> <span class="n">BatchProcessor</span><span class="p">(</span><span class="n">storage</span><span class="p">)</span>
+<span class="n">files_to_upload</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;file1.txt&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;content1&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;file2.txt&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;content2&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;file3.txt&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;content3&quot;</span><span class="p">),</span>
+<span class="p">]</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a>, and
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
+<span class="n">results</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">upload_batch</span><span class="p">(</span><span class="n">files_to_upload</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="2-parallel-processing">2. Parallel Processing</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Process multiple files in parallel</span>
+<span class="n">processor</span> <span class="o">=</span> <span class="n">BatchProcessor</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">process_batch</span><span class="p">(</span><span class="n">my_operation</span><span class="p">,</span> <span class="n">file_locations</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="3-batch-downloads">3. Batch Downloads</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Download multiple files efficiently</span>
+<span class="n">contents</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">download_batch</span><span class="p">(</span><span class="n">locations</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="4-batch-deletion">4. Batch Deletion</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Delete multiple files in batch</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">delete_batch</span><span class="p">(</span><span class="n">locations</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="performance-optimization">Performance Optimization</h2>
+<p>The example demonstrates how parallel processing can significantly improve performance:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Sequential processing</span>
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">location</span> <span class="ow">in</span> <span class="n">locations</span><span class="p">:</span>
+    <span class="n">process_file_sequential</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="n">location</span><span class="p">)</span>
+<span class="n">sequential_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a>. It explains the <em>why</em> behind these concepts
-and how they work together to provide a flexible and reliable file storage
-solution.</p>
-<h2 id="storage">Storage</h2>
-<p>The <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> class is the central point of interaction
-with any underlying storage system – whether that's a cloud provider like AWS
-S3 or Google Cloud Storage, a local filesystem, or something else entirely.
-Think of it as an adapter that translates file-keeper's generic requests into
-the specific language of the storage backend.</p>
-<p>Instead of directly dealing with the complexities of each storage system, you
-interact with <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> objects.  file-keeper handles the
-details of connecting, authenticating, and performing operations.  Each
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> instance is equipped with specialized <em>services</em>
-– <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Uploader&lt;/code&gt;" href="../../api/#file_keeper.Uploader">Uploader</a>, <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Reader&lt;/code&gt;" href="../../api/#file_keeper.Reader">Reader</a>, and
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Manager&lt;/code&gt;" href="../../api/#file_keeper.Manager">Manager</a> – to handle different types of tasks.  This
-separation of concerns makes the system more modular and easier to extend.</p>
-<h2 id="filedata">FileData</h2>
-<p><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+<span class="c1"># Parallel processing</span>
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+    <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">process_file_parallel</span><span class="p">,</span> <span class="n">storage</span><span class="p">,</span> <span class="n">loc</span><span class="p">)</span> <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">locations</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">futures</span><span class="p">:</span>
+        <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+<span class="n">parallel_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
 
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Speedup: </span><span class="si">{</span><span class="n">sequential_time</span><span class="o">/</span><span class="n">parallel_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">x&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="error-handling">Error Handling</h2>
+<p>Batch operations include comprehensive error handling:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">handle_batch_errors</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+    <span class="n">successful</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">success</span><span class="p">]</span>
+    <span class="n">failed</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">success</span><span class="p">]</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> represents a file as <em>known to
-file-keeper</em>. It's a metadata record that contains everything we need to
-identify and manage a file, regardless of where it's physically stored.</p>
-<p>Crucially, <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successful: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">successful</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">failed</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">failed</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error processing </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="real-world-use-cases">Real-World Use Cases</h2>
+<h3 id="1-bulk-file-import">1. Bulk File Import</h3>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">import_bulk_files</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="n">file_paths</span><span class="p">):</span>
+    <span class="n">files_to_upload</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">file_paths</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">files_to_upload</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">content</span><span class="p">))</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> is independent of the underlying
-storage. It's a consistent representation that allows file-keeper to work with
-different storage backends seamlessly.  It tracks essential information like
-the file's name, size, content type, and content hash.  It can also store
-additional, storage-specific metadata in the
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+    <span class="n">processor</span> <span class="o">=</span> <span class="n">BatchProcessor</span><span class="p">(</span><span class="n">storage</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">processor</span><span class="o">.</span><span class="n">upload_batch</span><span class="p">(</span><span class="n">files_to_upload</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="2-media-processing-pipeline">2. Media Processing Pipeline</h3>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">process_media_pipeline</span><span class="p">(</span><span class="n">storage</span><span class="p">):</span>
+    <span class="c1"># Get all image files</span>
+    <span class="n">image_files</span> <span class="o">=</span> <span class="n">filter_files_by_criteria</span><span class="p">(</span>
+        <span class="n">storage</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">info</span><span class="p">:</span> <span class="n">info</span><span class="o">.</span><span class="n">content_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;image/&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
 
+    <span class="c1"># Process images in parallel</span>
+    <span class="n">processor</span> <span class="o">=</span> <span class="n">BatchProcessor</span><span class="p">(</span><span class="n">storage</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">process_batch</span><span class="p">(</span><span class="n">resize_image</span><span class="p">,</span> <span class="n">image_files</span><span class="p">)</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">storage_data</a> field.</p>
-<p><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+    <span class="k">return</span> <span class="n">results</span>
+</code></pre></div>
+<h3 id="3-data-migration">3. Data Migration</h3>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">migrate_data_batch</span><span class="p">(</span><span class="n">source_storage</span><span class="p">,</span> <span class="n">dest_storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">all_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">source_storage</span><span class="o">.</span><span class="n">scan</span><span class="p">())</span>
 
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_files</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">):</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">all_files</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">batch_size</span><span class="p">]</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> is the key to operations like tracking
-progress during uploads, managing file versions, and providing consistent
-access to file information across different storage systems.</p>
-<h2 id="location">Location</h2>
-<p><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
+        <span class="c1"># Process batch</span>
+        <span class="n">processor</span> <span class="o">=</span> <span class="n">BatchProcessor</span><span class="p">(</span><span class="n">source_storage</span><span class="p">)</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">download_batch</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> represents the <em>address</em> of a file within a
-specific storage system.  It's a simple string, but it's given a specific
-meaning within file-keeper.</p>
-<p>Think of it as a path or key that uniquely identifies a file within its storage
-backend.  The format of a <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
+        <span class="c1"># Upload to destination</span>
+        <span class="n">dest_processor</span> <span class="o">=</span> <span class="n">BatchProcessor</span><span class="p">(</span><span class="n">dest_storage</span><span class="p">)</span>
+        <span class="n">upload_batch</span> <span class="o">=</span> <span class="p">[(</span><span class="n">loc</span><span class="p">,</span> <span class="n">contents</span><span class="p">[</span><span class="n">loc</span><span class="p">])</span> <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">batch</span> <span class="k">if</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">contents</span><span class="p">]</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">dest_processor</span><span class="o">.</span><span class="n">upload_batch</span><span class="p">(</span><span class="n">upload_batch</span><span class="p">)</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> will vary depending
-on the storage system (e.g., an S3 key, a filesystem path).</p>
-<p>file-keeper uses <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> objects to tell the
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> adapter <em>where</em> to find a file.  It also
-provides a mechanism for transforming <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> objects
-to different formats if needed, allowing for flexibility and compatibility with
-different storage systems.</p>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processed batch </span><span class="si">{</span><span class="n">i</span><span class="o">//</span><span class="n">batch_size</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_files</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="n">batch_size</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Use appropriate worker counts</strong>: Match the number of workers to your storage backend's capabilities</li>
+<li><strong>Handle errors gracefully</strong>: Always check batch operation results</li>
+<li><strong>Monitor resource usage</strong>: Batch operations can consume significant memory</li>
+<li><strong>Validate results</strong>: Ensure batch operations completed successfully</li>
+<li><strong>Use filters</strong>: Pre-filter files to reduce unnecessary processing</li>
+</ol>
+<h2 id="performance-considerations">Performance Considerations</h2>
+<ul>
+<li>For I/O-bound operations, parallel processing provides significant speedups</li>
+<li>For CPU-bound operations, consider using multiprocessing instead of threading</li>
+<li>Monitor memory usage when processing large batches</li>
+<li>Consider using streaming for very large files to avoid memory issues</li>
+</ul>
 
 
 
@@ -1800,7 +2163,7 @@ different storage systems.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Core Concepts">
+          <a href="../file_migration/" class="md-footer__link md-footer__link--prev" aria-label="Previous: File Migration Example">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1810,20 +2173,20 @@ different storage systems.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Core Concepts
+                File Migration Example
               </div>
             </div>
           </a>
         
         
           
-          <a href="../uploads/" class="md-footer__link md-footer__link--next" aria-label="Next: Upload">
+          <a href="../custom_adapter/" class="md-footer__link md-footer__link--next" aria-label="Next: Custom Adapter Example">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Upload
+                Custom Adapter Example
               </div>
             </div>
             <div class="md-footer__button md-icon">

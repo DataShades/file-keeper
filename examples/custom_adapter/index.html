@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://datashades.github.io/file-keeper/core_concepts/data_model/">
+        <link rel="canonical" href="https://datashades.github.io/file-keeper/examples/custom_adapter/">
       
       
-        <link rel="prev" href="../">
+        <link rel="prev" href="../batch_processing/">
       
       
-        <link rel="next" href="../uploads/">
+        <link rel="next" href="../../configuration/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Data model - file-keeper</title>
+        <title>Custom Adapter Example - file-keeper</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#data-model" class="md-skip">
+        <a href="#custom-adapter-example" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Data model
+              Custom Adapter Example
             
           </span>
         </div>
@@ -382,6 +382,8 @@
       
   
   
+    
+  
   
   
     
@@ -403,15 +405,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../examples/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -430,7 +432,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -446,7 +448,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/web_app/" class="md-nav__link">
+      <a href="../web_app/" class="md-nav__link">
         
   
   
@@ -469,7 +471,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/file_migration/" class="md-nav__link">
+      <a href="../file_migration/" class="md-nav__link">
         
   
   
@@ -492,7 +494,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/batch_processing/" class="md-nav__link">
+      <a href="../batch_processing/" class="md-nav__link">
         
   
   
@@ -512,10 +514,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../examples/custom_adapter/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Custom Adapter Example
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -526,6 +550,206 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-the-custom-adapter-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run the custom adapter examples:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Concepts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-adapter-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Adapter Structure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-capability-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Capability System
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-sqlite-adapter-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. SQLite Adapter Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-your-own-adapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Your Own Adapter
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Creating Your Own Adapter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-define-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 1: Define Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-implement-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 2: Implement Services
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-create-storage-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 3: Create Storage Class
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-register-the-adapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 4: Register the Adapter
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security Considerations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-your-adapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing Your Adapter
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1011,8 +1235,6 @@
       
   
   
-    
-  
   
   
     
@@ -1032,15 +1254,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../core_concepts/" class="md-nav__link ">
               
   
   
@@ -1059,7 +1281,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             Core concepts
@@ -1072,32 +1294,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Data model
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../core_concepts/data_model/" class="md-nav__link">
         
   
   
@@ -1108,53 +1308,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#storage" class="md-nav__link">
-    <span class="md-ellipsis">
-      Storage
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#filedata" class="md-nav__link">
-    <span class="md-ellipsis">
-      FileData
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#location" class="md-nav__link">
-    <span class="md-ellipsis">
-      Location
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1167,7 +1320,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../uploads/" class="md-nav__link">
+      <a href="../../core_concepts/uploads/" class="md-nav__link">
         
   
   
@@ -1190,7 +1343,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../capabilities/" class="md-nav__link">
+      <a href="../../core_concepts/capabilities/" class="md-nav__link">
         
   
   
@@ -1631,27 +1784,180 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#storage" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
-      Storage
+      Overview
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#filedata" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      FileData
+      Prerequisites
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#location" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
-      Location
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-the-custom-adapter-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run the custom adapter examples:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Concepts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-adapter-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Adapter Structure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-capability-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Capability System
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-sqlite-adapter-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. SQLite Adapter Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-your-own-adapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Your Own Adapter
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Creating Your Own Adapter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-define-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 1: Define Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-implement-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 2: Implement Services
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-create-storage-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 3: Create Storage Class
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-register-the-adapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 4: Register the Adapter
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security Considerations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-your-adapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing Your Adapter
     </span>
   </a>
   
@@ -1676,95 +1982,182 @@
   
 
 
-<h1 id="data-model">Data model</h1>
-<p>This document details the core data models used within the file-keeper system:
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a>, <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+<h1 id="custom-adapter-example">Custom Adapter Example</h1>
+<p>This example demonstrates how to create custom storage adapters for file-keeper.</p>
+<h2 id="overview">Overview</h2>
+<p>This script shows:</p>
+<ul>
+<li>How to create a SQLite-based storage adapter</li>
+<li>How to create an encrypted file storage adapter</li>
+<li>Best practices for adapter development</li>
+<li>Minimal adapter implementation example</li>
+</ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Python 3.10+</li>
+<li>file-keeper library</li>
+<li>cryptography library (for encrypted adapter)</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>file-keeper<span class="w"> </span>cryptography
+</code></pre></div>
+<h2 id="usage">Usage</h2>
+<h3 id="run-the-custom-adapter-examples">Run the custom adapter examples:</h3>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>custom_adapter_example.py
+</code></pre></div>
+<p>This will:</p>
+<ol>
+<li>Demonstrate the SQLite storage adapter</li>
+<li>Demonstrate the encrypted storage adapter</li>
+<li>Show best practices for adapter development</li>
+<li>Provide a minimal adapter example</li>
+</ol>
+<h2 id="key-concepts">Key Concepts</h2>
+<h3 id="1-adapter-structure">1. Adapter Structure</h3>
+<p>Every adapter consists of:</p>
+<ul>
+<li><strong>Settings</strong>: Configuration class inheriting from <code>fk.Settings</code></li>
+<li><strong>Uploader</strong>: Handles file uploads (inherits from <code>fk.Uploader</code>)</li>
+<li><strong>Manager</strong>: Handles file management (inherits from <code>fk.Manager</code>)</li>
+<li><strong>Reader</strong>: Handles file reading (inherits from <code>fk.Reader</code>)</li>
+<li><strong>Storage</strong>: Main class combining all components (inherits from <code>fk.Storage</code>)</li>
+</ul>
+<h3 id="2-capability-system">2. Capability System</h3>
+<p>Adapters declare their capabilities by setting the <code>capabilities</code> attribute:</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MyUploader</span><span class="p">(</span><span class="n">Uploader</span><span class="p">):</span>
+    <span class="n">capabilities</span> <span class="o">=</span> <span class="n">Capability</span><span class="o">.</span><span class="n">CREATE</span>
 
+<span class="k">class</span><span class="w"> </span><span class="nc">MyManager</span><span class="p">(</span><span class="n">Manager</span><span class="p">):</span>
+    <span class="n">capabilities</span> <span class="o">=</span> <span class="n">Capability</span><span class="o">.</span><span class="n">EXISTS</span> <span class="o">|</span> <span class="n">Capability</span><span class="o">.</span><span class="n">ANALYZE</span> <span class="o">|</span> <span class="n">Capability</span><span class="o">.</span><span class="n">REMOVE</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a>, and
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
+<span class="k">class</span><span class="w"> </span><span class="nc">MyReader</span><span class="p">(</span><span class="n">Reader</span><span class="p">):</span>
+    <span class="n">capabilities</span> <span class="o">=</span> <span class="n">Capability</span><span class="o">.</span><span class="n">STREAM</span> <span class="o">|</span> <span class="n">Capability</span><span class="o">.</span><span class="n">RANGE</span>
+</code></pre></div>
+<h3 id="3-sqlite-adapter-example">3. SQLite Adapter Example</h3>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SQLiteStorage</span><span class="p">(</span><span class="n">Storage</span><span class="p">):</span>
+    <span class="n">SettingsFactory</span> <span class="o">=</span> <span class="n">SQLiteSettings</span>
+    <span class="n">UploaderFactory</span> <span class="o">=</span> <span class="n">SQLiteUploader</span>
+    <span class="n">ManagerFactory</span> <span class="o">=</span> <span class="n">SQLiteManager</span>
+    <span class="n">ReaderFactory</span> <span class="o">=</span> <span class="n">SQLiteReader</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a>. It explains the <em>why</em> behind these concepts
-and how they work together to provide a flexible and reliable file storage
-solution.</p>
-<h2 id="storage">Storage</h2>
-<p>The <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> class is the central point of interaction
-with any underlying storage system – whether that's a cloud provider like AWS
-S3 or Google Cloud Storage, a local filesystem, or something else entirely.
-Think of it as an adapter that translates file-keeper's generic requests into
-the specific language of the storage backend.</p>
-<p>Instead of directly dealing with the complexities of each storage system, you
-interact with <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> objects.  file-keeper handles the
-details of connecting, authenticating, and performing operations.  Each
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> instance is equipped with specialized <em>services</em>
-– <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Uploader&lt;/code&gt;" href="../../api/#file_keeper.Uploader">Uploader</a>, <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Reader&lt;/code&gt;" href="../../api/#file_keeper.Reader">Reader</a>, and
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Manager&lt;/code&gt;" href="../../api/#file_keeper.Manager">Manager</a> – to handle different types of tasks.  This
-separation of concerns makes the system more modular and easier to extend.</p>
-<h2 id="filedata">FileData</h2>
-<p><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+        <span class="c1"># Initialize database connection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">db_path</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="creating-your-own-adapter">Creating Your Own Adapter</h2>
+<h3 id="step-1-define-settings">Step 1: Define Settings</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dataclasses</span>
 
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyCustomSettings</span><span class="p">(</span><span class="n">Settings</span><span class="p">):</span>
+    <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
+    <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8080</span>
+    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">_required_options</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;host&quot;</span><span class="p">]</span>  <span class="c1"># Required fields</span>
+</code></pre></div>
+<h3 id="step-2-implement-services">Step 2: Implement Services</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">Uploader</span><span class="p">,</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Reader</span><span class="p">,</span> <span class="n">Capability</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> represents a file as <em>known to
-file-keeper</em>. It's a metadata record that contains everything we need to
-identify and manage a file, regardless of where it's physically stored.</p>
-<p>Crucially, <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+<span class="k">class</span><span class="w"> </span><span class="nc">MyUploader</span><span class="p">(</span><span class="n">Uploader</span><span class="p">):</span>
+    <span class="n">capabilities</span> <span class="o">=</span> <span class="n">Capability</span><span class="o">.</span><span class="n">CREATE</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">upload</span><span class="p">,</span> <span class="n">extras</span><span class="p">):</span>
+        <span class="c1"># Implement upload logic</span>
+        <span class="k">pass</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> is independent of the underlying
-storage. It's a consistent representation that allows file-keeper to work with
-different storage backends seamlessly.  It tracks essential information like
-the file's name, size, content type, and content hash.  It can also store
-additional, storage-specific metadata in the
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+<span class="k">class</span><span class="w"> </span><span class="nc">MyManager</span><span class="p">(</span><span class="n">Manager</span><span class="p">):</span>
+    <span class="n">capabilities</span> <span class="o">=</span> <span class="n">Capability</span><span class="o">.</span><span class="n">EXISTS</span> <span class="o">|</span> <span class="n">Capability</span><span class="o">.</span><span class="n">ANALYZE</span> <span class="o">|</span> <span class="n">Capability</span><span class="o">.</span><span class="n">REMOVE</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">extras</span><span class="p">):</span>
+        <span class="c1"># Implement existence check</span>
+        <span class="k">pass</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">storage_data</a> field.</p>
-<p><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">extras</span><span class="p">):</span>
+        <span class="k">pass</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">extras</span><span class="p">):</span>
+        <span class="k">pass</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> is the key to operations like tracking
-progress during uploads, managing file versions, and providing consistent
-access to file information across different storage systems.</p>
-<h2 id="location">Location</h2>
-<p><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
+<span class="k">class</span><span class="w"> </span><span class="nc">MyReader</span><span class="p">(</span><span class="n">Reader</span><span class="p">):</span>
+    <span class="n">capabilities</span> <span class="o">=</span> <span class="n">Capability</span><span class="o">.</span><span class="n">STREAM</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> represents the <em>address</em> of a file within a
-specific storage system.  It's a simple string, but it's given a specific
-meaning within file-keeper.</p>
-<p>Think of it as a path or key that uniquely identifies a file within its storage
-backend.  The format of a <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">extras</span><span class="p">):</span>
+        <span class="c1"># Implement streaming logic</span>
+        <span class="k">pass</span>
+</code></pre></div>
+<h3 id="step-3-create-storage-class">Step 3: Create Storage Class</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="kn">import</span> <span class="n">Storage</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> will vary depending
-on the storage system (e.g., an S3 key, a filesystem path).</p>
-<p>file-keeper uses <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
+<span class="k">class</span><span class="w"> </span><span class="nc">MyCustomStorage</span><span class="p">(</span><span class="n">Storage</span><span class="p">):</span>
+    <span class="n">SettingsFactory</span> <span class="o">=</span> <span class="n">MyCustomSettings</span>
+    <span class="n">UploaderFactory</span> <span class="o">=</span> <span class="n">MyUploader</span>
+    <span class="n">ManagerFactory</span> <span class="o">=</span> <span class="n">MyManager</span>
+    <span class="n">ReaderFactory</span> <span class="o">=</span> <span class="n">MyReader</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> objects to tell the
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> adapter <em>where</em> to find a file.  It also
-provides a mechanism for transforming <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+        <span class="c1"># Initialize your backend connection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialize_backend</span><span class="p">()</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> objects
-to different formats if needed, allowing for flexibility and compatibility with
-different storage systems.</p>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Initialize your storage backend</span>
+        <span class="k">pass</span>
+</code></pre></div>
+<h3 id="step-4-register-the-adapter">Step 4: Register the Adapter</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fk</span>
+
+<span class="c1"># initialize adapter registry. This is not required when storages</span>
+<span class="c1"># are registered via package entry-points.</span>
+<span class="n">fk</span><span class="o">.</span><span class="n">ext</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+
+<span class="c1"># Register your adapter</span>
+<span class="n">fk</span><span class="o">.</span><span class="n">adapters</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;file_keeper:myadapter&quot;</span><span class="p">,</span> <span class="n">MyCustomStorage</span><span class="p">)</span>
+
+<span class="c1"># Now you can use it</span>
+<span class="n">storage</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;my_storage&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:myadapter&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;myserver.com&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">9000</span>
+<span class="p">})</span>
+</code></pre></div>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Define appropriate settings</strong>: Include validation and required fields</li>
+<li><strong>Implement only supported capabilities</strong>: Don't claim capabilities your backend doesn't support</li>
+<li><strong>Handle errors properly</strong>: Use file-keeper's exception hierarchy</li>
+<li><strong>Respect security</strong>: Validate paths and implement proper access controls</li>
+<li><strong>Test thoroughly</strong>: Test with the standard test suite</li>
+<li><strong>Document limitations</strong>: Clearly document what your adapter supports</li>
+<li><strong>Follow interface contracts</strong>: Maintain compatibility with file-keeper interfaces</li>
+<li><strong>Consider thread safety</strong>: If your backend supports concurrent access</li>
+</ol>
+<h2 id="security-considerations">Security Considerations</h2>
+<p>When creating custom adapters, pay attention to:
+- Path traversal prevention
+- Authentication and authorization
+- Data encryption at rest
+- Secure credential handling
+- Input validation</p>
+<h2 id="performance-considerations">Performance Considerations</h2>
+<ul>
+<li>Minimize network calls when possible</li>
+<li>Implement efficient streaming for large files</li>
+<li>Use appropriate caching strategies</li>
+<li>Consider connection pooling for network backends</li>
+<li>Optimize for your specific use case</li>
+</ul>
+<h2 id="testing-your-adapter">Testing Your Adapter</h2>
+<p>Create tests that verify:</p>
+<ul>
+<li>All claimed capabilities work correctly</li>
+<li>Error conditions are handled properly</li>
+<li>Security measures are effective</li>
+<li>Performance meets requirements</li>
+<li>Edge cases are handled</li>
+</ul>
 
 
 
@@ -1800,7 +2193,7 @@ different storage systems.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Core Concepts">
+          <a href="../batch_processing/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Batch Processing Example">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1810,20 +2203,20 @@ different storage systems.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Core Concepts
+                Batch Processing Example
               </div>
             </div>
           </a>
         
         
           
-          <a href="../uploads/" class="md-footer__link md-footer__link--next" aria-label="Next: Upload">
+          <a href="../../configuration/" class="md-footer__link md-footer__link--next" aria-label="Next: Configuration">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Upload
+                Configuration
               </div>
             </div>
             <div class="md-footer__button md-icon">

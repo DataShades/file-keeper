@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://datashades.github.io/file-keeper/core_concepts/data_model/">
+        <link rel="canonical" href="https://datashades.github.io/file-keeper/examples/file_migration/">
       
       
-        <link rel="prev" href="../">
+        <link rel="prev" href="../web_app/">
       
       
-        <link rel="next" href="../uploads/">
+        <link rel="next" href="../batch_processing/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Data model - file-keeper</title>
+        <title>File Migration Example - file-keeper</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#data-model" class="md-skip">
+        <a href="#file-migration-example" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Data model
+              File Migration Example
             
           </span>
         </div>
@@ -382,6 +382,8 @@
       
   
   
+    
+  
   
   
     
@@ -403,15 +405,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../examples/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -430,7 +432,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -446,7 +448,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/web_app/" class="md-nav__link">
+      <a href="../web_app/" class="md-nav__link">
         
   
   
@@ -466,10 +468,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../examples/file_migration/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    File Migration Example
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -480,6 +504,179 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-the-basic-migration-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run the basic migration example:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features-demonstrated" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Features Demonstrated
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Features Demonstrated">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-basic-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Basic Migration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-filtered-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Filtered Migration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-validated-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Validated Migration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-world-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real-World Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real-World Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#migrating-from-s3-to-google-cloud-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Migrating from S3 to Google Cloud Storage:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#migrating-with-size-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Migrating with size limits:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security Considerations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Tips
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -492,7 +689,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/batch_processing/" class="md-nav__link">
+      <a href="../batch_processing/" class="md-nav__link">
         
   
   
@@ -515,7 +712,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/custom_adapter/" class="md-nav__link">
+      <a href="../custom_adapter/" class="md-nav__link">
         
   
   
@@ -1011,8 +1208,6 @@
       
   
   
-    
-  
   
   
     
@@ -1032,15 +1227,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../core_concepts/" class="md-nav__link ">
               
   
   
@@ -1059,7 +1254,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             Core concepts
@@ -1072,32 +1267,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Data model
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../core_concepts/data_model/" class="md-nav__link">
         
   
   
@@ -1108,53 +1281,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#storage" class="md-nav__link">
-    <span class="md-ellipsis">
-      Storage
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#filedata" class="md-nav__link">
-    <span class="md-ellipsis">
-      FileData
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#location" class="md-nav__link">
-    <span class="md-ellipsis">
-      Location
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1167,7 +1293,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../uploads/" class="md-nav__link">
+      <a href="../../core_concepts/uploads/" class="md-nav__link">
         
   
   
@@ -1190,7 +1316,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../capabilities/" class="md-nav__link">
+      <a href="../../core_concepts/capabilities/" class="md-nav__link">
         
   
   
@@ -1631,27 +1757,153 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#storage" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
-      Storage
+      Overview
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#filedata" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      FileData
+      Prerequisites
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#location" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
-      Location
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-the-basic-migration-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run the basic migration example:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features-demonstrated" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Features Demonstrated
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Features Demonstrated">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-basic-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Basic Migration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-filtered-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Filtered Migration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-validated-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Validated Migration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-world-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real-World Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real-World Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#migrating-from-s3-to-google-cloud-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Migrating from S3 to Google Cloud Storage:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#migrating-with-size-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Migrating with size limits:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security Considerations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Tips
     </span>
   </a>
   
@@ -1676,95 +1928,119 @@
   
 
 
-<h1 id="data-model">Data model</h1>
-<p>This document details the core data models used within the file-keeper system:
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a>, <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+<h1 id="file-migration-example">File Migration Example</h1>
+<p>This example demonstrates how to migrate files between different storage backends using file-keeper.</p>
+<h2 id="overview">Overview</h2>
+<p>This script shows:</p>
+<ul>
+<li>How to migrate files from one storage backend to another</li>
+<li>Validation of migrated files</li>
+<li>Error handling during migration</li>
+<li>Selective migration based on filters</li>
+<li>Examples for cloud storage migrations</li>
+</ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Python 3.10+</li>
+<li>file-keeper library</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>file-keeper
+</code></pre></div>
+<h2 id="usage">Usage</h2>
+<h3 id="run-the-basic-migration-example">Run the basic migration example:</h3>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>migration_example.py
+</code></pre></div>
+<p>This will:</p>
+<ol>
+<li>Create sample files in memory storage</li>
+<li>Migrate them to temporary filesystem storage</li>
+<li>Validate the migration</li>
+<li>Show results</li>
+</ol>
+<h2 id="key-features-demonstrated">Key Features Demonstrated</h2>
+<h3 id="1-basic-migration">1. Basic Migration</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">file_migration</span><span class="w"> </span><span class="kn">import</span> <span class="n">migrate_files</span>
 
+<span class="n">successful</span><span class="p">,</span> <span class="n">failed</span> <span class="o">=</span> <span class="n">migrate_files</span><span class="p">(</span><span class="n">source_storage</span><span class="p">,</span> <span class="n">dest_storage</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="2-filtered-migration">2. Filtered Migration</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Only migrate .txt files</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">txt_filter</span><span class="p">(</span><span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">location</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.txt&#39;</span><span class="p">)</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a>, and
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
+<span class="n">successful</span><span class="p">,</span> <span class="n">failed</span> <span class="o">=</span> <span class="n">migrate_files</span><span class="p">(</span>
+    <span class="n">source_storage</span><span class="p">,</span>
+    <span class="n">dest_storage</span><span class="p">,</span>
+    <span class="n">file_filter</span><span class="o">=</span><span class="n">txt_filter</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="3-validated-migration">3. Validated Migration</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Enable validation to ensure file integrity</span>
+<span class="n">successful</span><span class="p">,</span> <span class="n">failed</span> <span class="o">=</span> <span class="n">migrate_files</span><span class="p">(</span>
+    <span class="n">source_storage</span><span class="p">,</span>
+    <span class="n">dest_storage</span><span class="p">,</span>
+    <span class="n">validate_after_migration</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</code></pre></div>
+<h2 id="real-world-usage">Real-World Usage</h2>
+<h3 id="migrating-from-s3-to-google-cloud-storage">Migrating from S3 to Google Cloud Storage:</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">file_keeper</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fk</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a>. It explains the <em>why</em> behind these concepts
-and how they work together to provide a flexible and reliable file storage
-solution.</p>
-<h2 id="storage">Storage</h2>
-<p>The <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> class is the central point of interaction
-with any underlying storage system – whether that's a cloud provider like AWS
-S3 or Google Cloud Storage, a local filesystem, or something else entirely.
-Think of it as an adapter that translates file-keeper's generic requests into
-the specific language of the storage backend.</p>
-<p>Instead of directly dealing with the complexities of each storage system, you
-interact with <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> objects.  file-keeper handles the
-details of connecting, authenticating, and performing operations.  Each
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> instance is equipped with specialized <em>services</em>
-– <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Uploader&lt;/code&gt;" href="../../api/#file_keeper.Uploader">Uploader</a>, <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Reader&lt;/code&gt;" href="../../api/#file_keeper.Reader">Reader</a>, and
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Manager&lt;/code&gt;" href="../../api/#file_keeper.Manager">Manager</a> – to handle different types of tasks.  This
-separation of concerns makes the system more modular and easier to extend.</p>
-<h2 id="filedata">FileData</h2>
-<p><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+<span class="c1"># Source: S3</span>
+<span class="n">s3_source</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;s3_source&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:s3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;my-source-bucket&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;AWS_ACCESS_KEY_ID&#39;</span><span class="p">),</span>
+    <span class="s2">&quot;secret&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;AWS_SECRET_ACCESS_KEY&#39;</span><span class="p">),</span>
+    <span class="s2">&quot;region&quot;</span><span class="p">:</span> <span class="s2">&quot;us-east-1&quot;</span>
+<span class="p">})</span>
 
+<span class="c1"># Destination: Google Cloud Storage</span>
+<span class="n">gcs_dest</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">make_storage</span><span class="p">(</span><span class="s2">&quot;gcs_dest&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_keeper:gcs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;bucket_name&quot;</span><span class="p">:</span> <span class="s2">&quot;my-dest-bucket&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;credentials_file&quot;</span><span class="p">:</span> <span class="s2">&quot;/path/to/gcs-credentials.json&quot;</span>
+<span class="p">})</span>
 
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> represents a file as <em>known to
-file-keeper</em>. It's a metadata record that contains everything we need to
-identify and manage a file, regardless of where it's physically stored.</p>
-<p>Crucially, <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
+<span class="c1"># Perform migration</span>
+<span class="n">successful</span><span class="p">,</span> <span class="n">failed</span> <span class="o">=</span> <span class="n">migrate_files</span><span class="p">(</span><span class="n">s3_source</span><span class="p">,</span> <span class="n">gcs_dest</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="migrating-with-size-limits">Migrating with size limits:</h3>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">size_filter</span><span class="p">(</span><span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="c1"># Skip files larger than 100MB</span>
+    <span class="n">file_info</span> <span class="o">=</span> <span class="n">source_storage</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">file_info</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>
 
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> is independent of the underlying
-storage. It's a consistent representation that allows file-keeper to work with
-different storage backends seamlessly.  It tracks essential information like
-the file's name, size, content type, and content hash.  It can also store
-additional, storage-specific metadata in the
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
-
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">storage_data</a> field.</p>
-<p><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;FileData&lt;/code&gt;
-
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.FileData">FileData</a> is the key to operations like tracking
-progress during uploads, managing file versions, and providing consistent
-access to file information across different storage systems.</p>
-<h2 id="location">Location</h2>
-<p><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> represents the <em>address</em> of a file within a
-specific storage system.  It's a simple string, but it's given a specific
-meaning within file-keeper.</p>
-<p>Think of it as a path or key that uniquely identifies a file within its storage
-backend.  The format of a <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> will vary depending
-on the storage system (e.g., an S3 key, a filesystem path).</p>
-<p>file-keeper uses <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> objects to tell the
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;            &lt;code&gt;Storage&lt;/code&gt;" href="../../api/#file_keeper.Storage">Storage</a> adapter <em>where</em> to find a file.  It also
-provides a mechanism for transforming <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NewType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Location&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-module-attribute&quot;&gt;&lt;code&gt;module-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/#file_keeper.Location">Location</a> objects
-to different formats if needed, allowing for flexibility and compatibility with
-different storage systems.</p>
+<span class="n">successful</span><span class="p">,</span> <span class="n">failed</span> <span class="o">=</span> <span class="n">migrate_files</span><span class="p">(</span>
+    <span class="n">source_storage</span><span class="p">,</span>
+    <span class="n">dest_storage</span><span class="p">,</span>
+    <span class="n">file_filter</span><span class="o">=</span><span class="n">size_filter</span>
+<span class="p">)</span>
+</code></pre></div>
+<h2 id="error-handling">Error Handling</h2>
+<p>The migration function handles various error conditions:</p>
+<ul>
+<li>Network interruptions</li>
+<li>Permission issues</li>
+<li>Storage capacity limits</li>
+<li>Invalid file formats</li>
+</ul>
+<p>Failed migrations are logged and returned separately for further processing.</p>
+<h2 id="security-considerations">Security Considerations</h2>
+<ul>
+<li>Files are validated after migration to ensure integrity</li>
+<li>Content is compared between source and destination</li>
+<li>Filters can be used to prevent migration of unsafe file types</li>
+<li>All operations respect storage capabilities</li>
+</ul>
+<h2 id="performance-tips">Performance Tips</h2>
+<ul>
+<li>For large migrations, consider batching operations</li>
+<li>Use appropriate storage backends for temporary files</li>
+<li>Monitor storage quotas during migration</li>
+<li>Consider using multipart uploads for large files</li>
+</ul>
 
 
 
@@ -1800,7 +2076,7 @@ different storage systems.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Core Concepts">
+          <a href="../web_app/" class="md-footer__link md-footer__link--prev" aria-label="Previous: File Upload Web Application Example">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1810,20 +2086,20 @@ different storage systems.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Core Concepts
+                File Upload Web Application Example
               </div>
             </div>
           </a>
         
         
           
-          <a href="../uploads/" class="md-footer__link md-footer__link--next" aria-label="Next: Upload">
+          <a href="../batch_processing/" class="md-footer__link md-footer__link--next" aria-label="Next: Batch Processing Example">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Upload
+                Batch Processing Example
               </div>
             </div>
             <div class="md-footer__button md-icon">
