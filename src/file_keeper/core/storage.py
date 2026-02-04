@@ -1719,6 +1719,16 @@ def make_storage(name: str, settings: dict[str, Any]) -> Storage:
     return adapter(settings)
 
 
+@utils.ensure_setup
+def list_adapters() -> list[str]:
+    """List all registered storage adapters.
+
+    Returns:
+        list of registered storage adapter types
+    """
+    return list(adapters)
+
+
 def get_storage(name: str, settings: dict[str, Any] | None = None) -> Storage:
     """Get storage from the pool.
 

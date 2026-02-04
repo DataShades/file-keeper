@@ -125,6 +125,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S", "PL", "ANN", "D"]
+"docs/examples/*" = ["S", "BLE", "ANN", "D", "PL", "PERF", "TRY", "B", "G", "E"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

@@ -86,7 +86,17 @@ theme:
     - content.footnote.tooltips
 nav:
   - index.md
-  - configuration.md
+  - Tutorials:
+    - tutorials/getting_started.md
+    - tutorials/advanced_patterns.md
+  - Examples:
+    - examples/README.md
+    - examples/web_app/README.md
+    - examples/file_migration/README.md
+    - examples/batch_processing/README.md
+    - examples/custom_adapter/README.md
+  - Configuration:
+    - configuration.md
   - Storage adapters:
     - adapters/emulate.md
     - adapters/libcloud.md
@@ -104,6 +114,7 @@ nav:
     - adapters/zip.md
 
   - Core concepts:
+    - core_concepts/index.md
     - core_concepts/data_model.md
     - core_concepts/uploads.md
     - core_concepts/capabilities.md
@@ -113,7 +124,12 @@ nav:
       - extending/location_transformers.md
       - extending/dissection.md
 
-  - error_handling.md
-  - api.md
-  - testing.md
+  - Reference:
+    - faq.md
+    - migration_guide.md
+    - quick_reference.md
+    - error_handling.md
+    - api.md
+    - testing.md
+    - glossary.md
   - changelog.md

@@ -3,6 +3,7 @@
 Utilities available for import directly from the `file_keeper` module.
 
 ::: file_keeper.make_storage
+::: file_keeper.list_adapters
 ::: file_keeper.get_storage
 ::: file_keeper.make_upload
 

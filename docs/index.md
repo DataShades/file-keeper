@@ -1,10 +1,22 @@
-# Getting started
+# Welcome to file-keeper
 
 file-keeper provides an abstraction layer for storing and retrieving files,
 supporting various storage backends like local filesystems, cloud storage (S3,
-GCS), and more.  It simplifies file management by providing a consistent API
+GCS), and more. It simplifies file management by providing a consistent API
 regardless of the underlying storage.
 
+## Getting Started
+
+If you're new to file-keeper, start with our [Getting Started Tutorial](tutorials/getting_started.md) which covers installation, basic configuration, and fundamental operations.
+
+## Key Features
+
+- **Unified API**: Consistent interface across multiple storage backends
+- **Multiple Storage Backends**: Support for file system, memory, S3, GCS, Azure, Redis, and more
+- **Type Safety**: Comprehensive type annotations for better development experience
+- **Security**: Built-in protection against directory traversal and other attacks
+- **Extensible**: Plugin architecture for adding custom storage adapters
+- **Comprehensive Testing**: Extensive test coverage with security-focused tests
 
 ## Installation
 
@@ -49,8 +61,6 @@ pip install 'file-keeper[all]'
 
 ## Basic configuration and usage (FS adapter)
 
-Let's start with a simple example using the local filesystem (FS) adapter.
-
 /// admonition
     type: example
 ```python
@@ -91,3 +101,12 @@ content: bytes = storage.content(file_data)
 *   `storage.upload()`: Uploads the data to the storage.
 *   `FileData`:  A dataclass that contains metadata about the uploaded file, including its location, size, content type, and hash.
 *   `storage.content()`: Locates file using `FileData` and returns byte string with its content
+
+## Documentation Structure
+
+This documentation is organized to help you find what you need:
+
+- **[Tutorials](tutorials/getting_started.md)**: Step-by-step guides for beginners
+- **[Core Concepts](core_concepts/index.md)**: Understanding the fundamental ideas
+- **[Reference](api.md)**: Technical reference materials
+- **[Storage Adapters](adapters/fs.md)**: Specific information for each storage backend

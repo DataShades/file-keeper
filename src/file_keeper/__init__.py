@@ -18,6 +18,7 @@ from .core.storage import (
     Uploader,
     adapters,
     get_storage,
+    list_adapters,
     make_storage,
 )
 from .core.types import Location, SignedAction
@@ -52,6 +53,7 @@ __all__ = [
     "make_storage",
     "get_storage",
     "make_upload",
+    "list_adapters",
     "parse_filesize",
     "types",
     "ext",

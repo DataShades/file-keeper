@@ -262,7 +262,7 @@ class TestStorage:
             storage.full_path(location)
 
     @pytest.mark.parametrize(
-        "location, normalized",
+        ("location", "normalized"),
         [
             ("a/b/c/../../../etc/passwd", "etc/passwd"),
             ("test/something/../../secret", "secret"),
