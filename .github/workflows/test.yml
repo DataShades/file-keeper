@@ -58,7 +58,7 @@ jobs:
           scheme: http
 
       - name: Start MinIO
-        uses: infleet/minio-action@v0.0.1
+        uses: infleet/minio-action@v0.0.2
         with:
           port: "9000"
           version: "latest"
