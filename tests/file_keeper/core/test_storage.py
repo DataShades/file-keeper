@@ -174,33 +174,59 @@ class TestStorage:
         storage = FakeStorage({})
 
         storage.settings.location_transformers = ["uuid"]
-        extension = faker.file_extension()
-        name = faker.file_name(extension=extension)
+        name = faker.file_path()
         result = storage.prepare_location(name)
 
-        assert uuid.UUID(result)
+        dirname, filename = os.path.split(result)
+        assert os.path.dirname(name) == dirname
+
+        assert uuid.UUID(filename)
 
     def test_prepare_location_uuid_prefix(self, faker: Faker):
         """`uuid_prefix` name transformer produces valid UUID."""
         storage = FakeStorage({})
 
         storage.settings.location_transformers = ["uuid_prefix"]
-        extension = faker.file_extension()
-        name = faker.file_name(extension=extension)
+        name = faker.file_path()
         result = storage.prepare_location(name)
-        assert result.endswith(name)
-        assert uuid.UUID(result[: -len(name)])
+        dirname, filename = os.path.split(result)
+
+        assert result.endswith(os.path.basename(name))
+        assert os.path.dirname(name) == dirname
+
+        assert uuid.UUID(filename[: -len(os.path.basename(name))])
+
+        result2 = storage.prepare_location(name)
+        assert result2 != result
 
     def test_prepare_location_uuid_with_extension(self, faker: Faker):
         """`uuid_with_extension` name transformer produces valid UUID."""
         storage = FakeStorage({})
         storage.settings.location_transformers = ["uuid_with_extension"]
         extension = faker.file_extension()
-        name = faker.file_name(extension=extension)
+        name = faker.file_path(extension=extension)
         result = storage.prepare_location(name)
 
+        dirname, filename = os.path.split(result)
         assert result.endswith(extension)
-        assert uuid.UUID(result[: -len(extension) - 1])
+        assert os.path.dirname(name) == dirname
+        assert uuid.UUID(filename[: -len(extension) - 1])
+
+    def test_prepare_location_static_uuid(self, faker: Faker):
+        """`static_uuid` name transformer produces valid UUID."""
+        storage = FakeStorage({})
+
+        storage.settings.location_transformers = ["static_uuid"]
+        name = faker.file_path()
+        result = storage.prepare_location(name)
+
+        dirname, filename = os.path.split(result)
+        assert os.path.dirname(name) == dirname
+
+        assert uuid.UUID(filename)
+
+        result2 = storage.prepare_location(name)
+        assert result2 == result
 
     def test_prepare_location_datetime_prefix(
         self,
@@ -209,13 +235,13 @@ class TestStorage:
         """`datetime_prefix` name transformer produces valid UUID."""
         storage = FakeStorage({})
         storage.settings.location_transformers = ["datetime_prefix"]
-        extension = faker.file_extension()
-        name = faker.file_name(extension=extension)
+        name = faker.file_path()
         result = storage.prepare_location(name)
+        dirname, filename = os.path.split(result)
 
-        assert result[-len(name) :] == name
-
-        assert datetime.fromisoformat(result[: -len(name)])
+        assert os.path.dirname(name) == dirname
+        assert filename.endswith(os.path.basename(name))
+        assert datetime.fromisoformat(filename[: -len(os.path.basename(name))])
 
     def test_prepare_location_datetime_with_extension(
         self,
@@ -225,13 +251,62 @@ class TestStorage:
         storage = FakeStorage({})
         storage.settings.location_transformers = ["datetime_with_extension"]
         extension = faker.file_extension()
-        name = faker.file_name(extension=extension)
+        name = faker.file_path(extension=extension)
         result = storage.prepare_location(name)
+        dirname, filename = os.path.split(result)
 
-        ext = os.path.splitext(name)[1]
-        assert result[-len(ext) :] == ext
+        assert os.path.dirname(name) == dirname
+        assert filename.endswith(f".{extension}")
+        assert datetime.fromisoformat(filename[: -len(extension) - 1])
 
-        assert datetime.fromisoformat(result[: -len(ext)])
+    def test_prepare_location_safe_relative_path(
+        self,
+        faker: Faker,
+    ):
+        """`safe_relative_path` name transformer removes leading slashes and path traversal from location."""
+        storage = FakeStorage({})
+        storage.settings.location_transformers = ["safe_relative_path"]
+        name = faker.file_path()
+        assert name.startswith("/")
+
+        result = storage.prepare_location(name)
+        assert not result.startswith("/")
+        assert result == name[1:]
+
+        result = storage.prepare_location("../../" + name)
+        assert result == name[1:]
+
+        result = storage.prepare_location("./" + name)
+        assert result == name[1:]
+
+        result = storage.prepare_location("x/y/../" + name)
+        assert result == "x" + name
+
+        result = storage.prepare_location("x/../../y/../../" + name)
+        assert result == name[1:]
+
+    def test_prepare_location_fix_extension_transformer(
+        self,
+        faker: Faker,
+    ):
+        """`fix_extension` name transformer changes file extension according to file content type."""
+        storage = FakeStorage({})
+        storage.settings.location_transformers = ["fix_extension"]
+        name = faker.file_path(extension="jpeg")
+
+        base = os.path.splitext(name)[0]
+
+        result = storage.prepare_location(name, make_upload(b"hello world"))
+        expected = f"{base}.txt"
+        assert result == expected
+
+        result = storage.prepare_location(name, make_upload(b"<!doctype html><html></html>"))
+        expected = f"{base}.html"
+        assert result == expected
+
+        result = storage.prepare_location(name, make_upload(faker.image(size=(10, 10), image_format="png")))
+        expected = f"{base}.png"
+        assert result == expected
 
     def test_prepare_location_with_wrong_transformer(self):
         """`datetime_with_extension` name transformer produces valid UUID."""
