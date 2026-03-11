@@ -346,7 +346,7 @@ import file_keeper as fk
 def create_file_storage(env=None):
     """Create appropriate storage based on environment."""
     env = env or os.getenv('ENVIRONMENT', 'development')
-    
+
     if env == 'production':
         return fk.make_storage("prod", {
             "type": "file_keeper:s3",
@@ -377,27 +377,27 @@ import os
 
 def test_migration_consistency():
     """Test that old and new implementations produce same results."""
-    
+
     # Old implementation
     with tempfile.TemporaryDirectory() as tmpdir:
         old_filepath = os.path.join(tmpdir, "test.txt")
         with open(old_filepath, 'wb') as f:
             f.write(b"test content")
-        
+
         with open(old_filepath, 'rb') as f:
             old_content = f.read()
-    
+
     # New implementation
     storage = fk.make_storage("test", {
         "type": "file_keeper:fs",
         "path": tmpdir,
         "initialize": True
     })
-    
+
     upload = fk.make_upload(b"test content")
     file_info = storage.upload("test.txt", upload)
     new_content = storage.content(file_info)
-    
+
     # Compare
     assert old_content == new_content
     print("Migration test passed!")

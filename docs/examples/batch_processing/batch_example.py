@@ -221,7 +221,6 @@ def main():
     with tempfile.TemporaryDirectory() as temp_dir:
         storage = fk.make_storage("batch_example", {"type": "file_keeper:fs", "path": temp_dir, "initialize": True})
 
-
         # Create sample files
         create_sample_files(storage, 5)
 
@@ -265,7 +264,6 @@ def main():
             storage.analyze(location)
 
 
-
 def parallel_vs_sequential_demo():
     """Demonstrate the performance difference between parallel and sequential processing."""
     # Create storage
@@ -297,7 +295,6 @@ def parallel_vs_sequential_demo():
                 parallel_results.append(result)
 
         time.time() - start_time
-
 
 
 def process_single_file_metadata(storage, location):

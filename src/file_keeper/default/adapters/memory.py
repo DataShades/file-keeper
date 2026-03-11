@@ -141,7 +141,7 @@ class Manager(fk.Manager):
         return filepath in bucket
 
     @override
-    def compose(self, location: fk.Location, datas: Iterable[fk.FileData], extras: dict[str, Any]) -> fk.FileData:
+    def compose(self, location: fk.Location, data: Iterable[fk.FileData], extras: dict[str, Any]) -> fk.FileData:
         filepath = self.storage.full_path(location)
 
         bucket = self.storage.settings.bucket
@@ -149,7 +149,7 @@ class Manager(fk.Manager):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         result = b""
-        for data in datas:
+        for data in data:
             part_path = self.storage.full_path(data.location)
             if part_path not in bucket:
                 raise fk.exc.MissingFileError(self.storage, data.location)

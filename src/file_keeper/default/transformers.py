@@ -45,6 +45,7 @@ def static_uuid_transformer(location: str, upload: Upload | None, extras: dict[s
     dir, file = os.path.split(location)
     return os.path.join(dir, str(uuid.uuid5(FILE_KEEPER_DNS, location)))
 
+
 def datetime_prefix_transformer(location: str, upload: Upload | None, extras: dict[str, Any]) -> str:
     """Prefix location with current date-timestamp."""
     dir, file = os.path.split(location)

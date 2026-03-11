@@ -127,7 +127,7 @@ except exc.FilesError as e:
 
 ### How do I work with large files without loading everything into memory?
 
-`make_file` function can transform file descriptior(file opened with built-in
+`make_file` function can transform file descriptor(file opened with built-in
 `open` function) into efficient streamable object. For other content generated
 in real-time, use `IterableBytesReader`:
 

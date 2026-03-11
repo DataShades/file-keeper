@@ -310,7 +310,6 @@ def register_adapters():
     fk.adapters.register("file_keeper:encrypted", EncryptedStorage)
 
 
-
 def demonstrate_sqlite_adapter():
     """Demonstrate the SQLite adapter."""
     # Register adapters
@@ -325,7 +324,6 @@ def demonstrate_sqlite_adapter():
             "table_name": "demo_files",
         },
     )
-
 
     # Upload a file
     upload = fk.make_upload(b"Hello, SQLite storage!")
@@ -348,7 +346,6 @@ def demonstrate_sqlite_adapter():
         storage.exists(file_info)
 
 
-
 def demonstrate_encrypted_adapter():
     """Demonstrate the encrypted adapter."""
     # Create temporary directory for encrypted files
@@ -362,7 +359,6 @@ def demonstrate_encrypted_adapter():
                 # encryption_key will be auto-generated
             },
         )
-
 
         # Upload a file
         upload = fk.make_upload(b"This is a secret message!")
@@ -387,7 +383,6 @@ def demonstrate_encrypted_adapter():
             storage.exists(file_info)
 
 
-
 def adapter_best_practices():
     """Show best practices for creating adapters."""
     practices = [
@@ -405,7 +400,6 @@ def adapter_best_practices():
 
     for _practice in practices:
         pass
-
 
 
 def create_minimal_adapter():
@@ -456,9 +450,7 @@ def create_minimal_adapter():
     file_info = storage.upload("test.txt", upload)
     storage.content(file_info)
 
-
     # Show what capabilities it has
-
 
 
 def main():
@@ -467,7 +459,6 @@ def main():
     demonstrate_encrypted_adapter()
     adapter_best_practices()
     create_minimal_adapter()
-
 
 
 if __name__ == "__main__":

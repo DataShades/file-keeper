@@ -52,7 +52,7 @@ from file_keeper import make_storage, exc
 
 try:
     storage = make_storage("my_storage", {
-        "type": "file_keeper:fs", 
+        "type": "file_keeper:fs",
         "path": "/nonexistent/path",
         "initialize": False  # This will cause an error if path doesn't exist
     })
@@ -60,7 +60,7 @@ except exc.InvalidStorageConfigurationError as e:
     print(f"Storage configuration error: {e}")
     # Solution: Set initialize=True or ensure the path exists
     storage = make_storage("my_storage", {
-        "type": "file_keeper:fs", 
+        "type": "file_keeper:fs",
         "path": "/tmp/my_files",
         "initialize": True
     })
@@ -192,14 +192,14 @@ def process_file_with_cleanup(storage, upload_data):
     file_info = None
     try:
         file_info = storage.upload("temp_file.txt", upload_data)
-        
+
         # Process the file
         content = storage.content(file_info)
         processed_content = content.upper()  # Example processing
-        
+
         # Save processed file
         processed_info = storage.upload("processed_file.txt", make_upload(processed_content))
-        
+
         return processed_info
     except exc.FilesError as e:
         print(f"Processing failed: {e}")

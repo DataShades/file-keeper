@@ -234,14 +234,14 @@ class Manager(fk.Manager):
 
     # --8<-- [start:manager_compose]
     @override
-    def compose(self, location: fk.types.Location, datas: Iterable[fk.FileData], extras: dict[str, Any]) -> fk.FileData:
+    def compose(self, location: fk.types.Location, data: Iterable[fk.FileData], extras: dict[str, Any]) -> fk.FileData:
         dest = self.storage.full_path(location)
 
         if os.path.exists(dest) and not self.storage.settings.override_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
 
         sources: list[str] = []
-        for data in datas:
+        for data in data:
             src = self.storage.full_path(data.location)
 
             if not os.path.exists(src):

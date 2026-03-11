@@ -155,7 +155,6 @@ def main():
     with tempfile.TemporaryDirectory() as temp_dir:
         dest_storage = fk.make_storage("destination", {"type": "file_keeper:fs", "path": temp_dir, "initialize": True})
 
-
         # Create sample files in source storage
         create_sample_files(source_storage, 3)
 
@@ -184,13 +183,10 @@ def main():
             dest_storage.analyze(location)
 
 
-
 def migrate_between_cloud_storages():
     """Example of migrating between cloud storage services."""
     # Example configuration for cloud migrations
     # NOTE: These are examples - you would need real credentials
-
-
 
 
 def selective_migration_example():
@@ -218,7 +214,6 @@ def selective_migration_example():
         return any(location.lower().endswith(ext) for ext in safe_extensions)
 
     successful, failed = migrate_files(storage1, storage2, file_filter=safe_file_filter)
-
 
     for _location in storage2.scan():
         pass

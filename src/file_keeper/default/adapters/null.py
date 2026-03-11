@@ -82,7 +82,7 @@ class Manager(fk.Manager):
         return False
 
     @override
-    def compose(self, location: fk.Location, datas: Iterable[fk.FileData], extras: dict[str, Any]) -> fk.FileData:
+    def compose(self, location: fk.Location, data: Iterable[fk.FileData], extras: dict[str, Any]) -> fk.FileData:
         return fk.FileData(location)
 
     @override

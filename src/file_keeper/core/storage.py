@@ -269,13 +269,13 @@ class Manager(StorageService):
         raise NotImplementedError
 
     def compose(
-        self, location: types.Location, datas: Iterable[data.FileData], extras: dict[str, Any]
+        self, location: types.Location, data: Iterable[data.FileData], extras: dict[str, Any]
     ) -> data.FileData:
         """Combine multiple file inside the storage into a new one.
 
         Args:
             location: The destination location for the composed file.
-            datas: An iterable of FileData objects representing the files to combine.
+            data: An iterable of FileData objects representing the files to combine.
             extras: Additional metadata for the operation.
         """
         raise NotImplementedError
