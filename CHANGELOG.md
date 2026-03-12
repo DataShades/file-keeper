@@ -1,4 +1,15 @@
 
+## [v0.1.1](https://github.com/DataShades/file-keeper/releases/tag/v0.1.1) - 2026-03-12
+[Compare with v0.1.0](https://github.com/DataShades/file-keeper/compare/v0.1.0..v0.1.1)
+
+### 🚀 Features
+
+- add list_adapters ([2426358](https://github.com/DataShades/file-keeper/commit/2426358e4ac478fe6785b4bbfbd9cb9aa992c9ac))
+
+### 🐛 Bug Fixes
+
+- location_transformers mangle "path" part ([8d382c1](https://github.com/DataShades/file-keeper/commit/8d382c12c4a51e62fa9aef1f0a83cabd573cf123))
+
 ## [v0.1.0](https://github.com/DataShades/file-keeper/releases/tag/v0.1.0) - 2026-01-28
 [Compare with v0.1.0a7](https://github.com/DataShades/file-keeper/compare/v0.1.0a7..v0.1.0)
 
