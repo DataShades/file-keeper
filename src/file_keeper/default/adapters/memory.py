@@ -149,10 +149,10 @@ class Manager(fk.Manager):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         result = b""
-        for data in data:
-            part_path = self.storage.full_path(data.location)
+        for item in data:
+            part_path = self.storage.full_path(item.location)
             if part_path not in bucket:
-                raise fk.exc.MissingFileError(self.storage, data.location)
+                raise fk.exc.MissingFileError(self.storage, item.location)
             result += bucket[part_path]
 
         bucket[filepath] = result

@@ -241,11 +241,11 @@ class Manager(fk.Manager):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         sources: list[str] = []
-        for data in data:
-            src = self.storage.full_path(data.location)
+        for item in data:
+            src = self.storage.full_path(item.location)
 
             if not os.path.exists(src):
-                raise fk.exc.MissingFileError(self.storage, data.location)
+                raise fk.exc.MissingFileError(self.storage, item.location)
 
             sources.append(src)
 

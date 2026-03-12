@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 
 def uuid_transformer(location: str, upload: Upload | None, extras: dict[str, Any]) -> str:
     """Transform location into random UUID."""
-    dir, file = os.path.split(location)
+    dir = os.path.split(location)[0]
     return os.path.join(dir, str(uuid.uuid4()))
 
 
@@ -42,7 +42,7 @@ def static_uuid_transformer(location: str, upload: Upload | None, extras: dict[s
     combined with `fix_extension` can be used as an alternative to the
     `safe_relative_path` if you want to avoid nested folders.
     """
-    dir, file = os.path.split(location)
+    dir = os.path.split(location)[0]
     return os.path.join(dir, str(uuid.uuid5(FILE_KEEPER_DNS, location)))
 
 
