@@ -1,4 +1,11 @@
 
+## [v0.1.2](https://github.com/DataShades/file-keeper/releases/tag/v0.1.2) - 2026-03-13
+[Compare with v0.1.1](https://github.com/DataShades/file-keeper/compare/v0.1.1..v0.1.2)
+
+### 🚀 Features
+
+- extract link capabilities into Capability.LINK_CAPABILITIES ([b6c6b88](https://github.com/DataShades/file-keeper/commit/b6c6b884f62c9ea2f00f59a0c40379c6ee7a6701))
+
 ## [v0.1.1](https://github.com/DataShades/file-keeper/releases/tag/v0.1.1) - 2026-03-12
 [Compare with v0.1.0](https://github.com/DataShades/file-keeper/compare/v0.1.0..v0.1.1)
 
