@@ -223,8 +223,9 @@ class Capability(enum.Flag):
     """Return file content as stream of bytes."""
 
     MANAGER_CAPABILITIES = ANALYZE | SCAN | COPY | MOVE | APPEND | COMPOSE | EXISTS | REMOVE | SIGNED
-    READER_CAPABILITIES = RANGE | STREAM | LINK_PERMANENT | LINK_TEMPORAL | LINK_ONE_TIME
+    READER_CAPABILITIES = RANGE | STREAM
     UPLOADER_CAPABILITIES = CREATE | MULTIPART | RESUMABLE
+    LINK_CAPABILITIES = LINK_PERMANENT | LINK_TEMPORAL | LINK_ONE_TIME
 
     def exclude(self, *capabilities: Capability):
         """Remove capabilities from the cluster.
