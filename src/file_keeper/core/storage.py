@@ -435,9 +435,22 @@ class Reader(StorageService):
     def permanent_link(self, data: data.FileData, extras: dict[str, Any]) -> str:
         """Return permanent download link.
 
+        Ideally, this link should be valid as long as the file exists in the
+        storage. If adapter does not support such links, consider returning
+        temporal link with very long duration.
+
+        The link produced by this method should be as stable as possible, but
+        it is not required to be stable across different uploads of the same
+        file. For example, if file is removed and uploaded again, the link can
+        change.
+
+        Because this method may use temporal link internaly, there is no
+        guarantee that the link will remain valid for a long time.
+
         Args:
             data: The FileData object representing the file.
             extras: Additional metadata for the operation.
+
         """
         raise NotImplementedError
 
