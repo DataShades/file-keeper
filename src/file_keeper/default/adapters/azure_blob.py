@@ -207,12 +207,13 @@ class Reader(fk.Reader):
         return blob.download_blob().chunks()
 
     @override
-    def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
-        account_url = self.storage.settings.account_url
-        container = self.storage.settings.container
-        filepath = self.storage.full_path(data.location)
+    def temporal_link(self, data: fk.FileData, duration: int, extras: dict[str, Any]) -> str:
+        name = fk.Location(self.storage.full_path(data.location))
+        return self.storage.manager.signed("download", duration, name, extras=extras)
 
-        return f"{account_url}/{container.container_name}/{filepath}"
+    @override
+    def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
+        return self.temporal_link(data, int(extras.get("duration", 3600)), extras)
 
 
 class Manager(fk.Manager):

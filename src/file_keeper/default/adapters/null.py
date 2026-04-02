@@ -114,7 +114,7 @@ class Reader(fk.Reader):
     """Null reader."""
 
     storage: NullStorage
-    capabilities: fk.Capability = fk.Capability.READER_CAPABILITIES
+    capabilities: fk.Capability = fk.Capability.READER_CAPABILITIES | fk.Capability.LINK_CAPABILITIES
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:

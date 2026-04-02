@@ -7,7 +7,6 @@ import os
 import re
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, ClassVar
-from urllib.parse import urlparse, urlunparse
 
 import boto3
 from typing_extensions import override
@@ -95,13 +94,13 @@ class Reader(fk.Reader):
         return obj["Body"]
 
     @override
-    def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
-        name = self.storage.full_path(data.location)
-        signed = self.storage.settings.client.generate_presigned_url(
-            "get_object", Params={"Bucket": self.storage.settings.bucket, "Key": name}
-        )
+    def temporal_link(self, data: fk.FileData, duration: int, extras: dict[str, Any]) -> str:
+        name = fk.Location(self.storage.full_path(data.location))
+        return self.storage.manager.signed("download", duration, name, extras=extras)
 
-        return urlunparse(urlparse(signed)._replace(query=None))
+    @override
+    def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
+        return self.temporal_link(data, int(extras.get("duration", 3600)), extras)
 
 
 class Uploader(fk.Uploader):

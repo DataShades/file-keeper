@@ -300,14 +300,13 @@ class Reader(fk.Reader):
             yield from cast(Iterable[bytes], stream)
 
     @override
-    def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
-        name = self.storage.full_path(data.location)
-        bucket = self.storage.settings.bucket
-        blob = bucket.blob(name)
+    def temporal_link(self, data: fk.FileData, duration: int, extras: dict[str, Any]) -> str:
+        name = fk.Location(self.storage.full_path(data.location))
+        return self.storage.manager.signed("download", duration, name, extras=extras)
 
-        if not blob.exists():
-            raise fk.exc.MissingFileError(self.storage, data.location)
-        return blob.public_url
+    @override
+    def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
+        return self.temporal_link(data, int(extras.get("duration", 3600)), extras)
 
 
 class Manager(fk.Manager):
