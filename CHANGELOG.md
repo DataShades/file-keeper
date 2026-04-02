@@ -1,9 +1,10 @@
 
-## [v0.2.0](https://github.com/DataShades/file-keeper/releases/tag/v0.2.0) - 2026-04-02
-[Compare with v0.1.2](https://github.com/DataShades/file-keeper/compare/v0.1.2..v0.2.0)
+## [v0.2.1](https://github.com/DataShades/file-keeper/releases/tag/v0.2.1) - 2026-04-02
+[Compare with v0.1.2](https://github.com/DataShades/file-keeper/compare/v0.1.2..v0.2.1)
 
 ### 🚀 Features
 
+- [**breaking**] python v3.10; add algorithm to filedata; kw_only parameters of filedata ([9b0a2a1](https://github.com/DataShades/file-keeper/commit/9b0a2a10a28c3bca5064492e2887cabeab23330e))
 - stable permanent and temporal link for s3, azure and gcs ([36a72eb](https://github.com/DataShades/file-keeper/commit/36a72eb3f044b68d3cf5cb7e99e9bf31485864f1))
 
 ### 🚜 Refactor
