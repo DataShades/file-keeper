@@ -182,11 +182,11 @@ class TestStorage:
 
         assert uuid.UUID(filename)
 
-    def test_prepare_location_uuid_prefix(self, faker: Faker):
-        """`uuid_prefix` name transformer produces valid UUID."""
+    def test_prepare_location_uuid4_prefix(self, faker: Faker):
+        """`uuid4_prefix` name transformer produces valid UUID."""
         storage = FakeStorage({})
 
-        storage.settings.location_transformers = ["uuid_prefix"]
+        storage.settings.location_transformers = ["uuid4_prefix"]
         name = faker.file_path()
         result = storage.prepare_location(name)
         dirname, filename = os.path.split(result)
@@ -199,10 +199,10 @@ class TestStorage:
         result2 = storage.prepare_location(name)
         assert result2 != result
 
-    def test_prepare_location_uuid_with_extension(self, faker: Faker):
-        """`uuid_with_extension` name transformer produces valid UUID."""
+    def test_prepare_location_uuid4_with_extension(self, faker: Faker):
+        """`uuid4_with_extension` name transformer produces valid UUID."""
         storage = FakeStorage({})
-        storage.settings.location_transformers = ["uuid_with_extension"]
+        storage.settings.location_transformers = ["uuid4_with_extension"]
         extension = faker.file_extension()
         name = faker.file_path(extension=extension)
         result = storage.prepare_location(name)
@@ -212,11 +212,11 @@ class TestStorage:
         assert os.path.dirname(name) == dirname
         assert uuid.UUID(filename[: -len(extension) - 1])
 
-    def test_prepare_location_static_uuid(self, faker: Faker):
-        """`static_uuid` name transformer produces valid UUID."""
+    def test_prepare_location_uuid5(self, faker: Faker):
+        """`uuid5` name transformer produces valid UUID."""
         storage = FakeStorage({})
 
-        storage.settings.location_transformers = ["static_uuid"]
+        storage.settings.location_transformers = ["uuid5"]
         name = faker.file_path()
         result = storage.prepare_location(name)
 

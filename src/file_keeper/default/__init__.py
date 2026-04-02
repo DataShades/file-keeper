@@ -28,10 +28,10 @@ def register_location_transformers(registry: Registry[types.LocationTransformer]
     registry.register("datetime_with_extension", transformers.datetime_with_extension_transformer)
     registry.register("fix_extension", transformers.fix_extension_transformer)
     registry.register("safe_relative_path", transformers.safe_relative_path_transformer)
-    registry.register("uuid", transformers.uuid_transformer)
-    registry.register("uuid_prefix", transformers.uuid_prefix_transformer)
-    registry.register("uuid_with_extension", transformers.uuid_with_extension_transformer)
-    registry.register("static_uuid", transformers.static_uuid_transformer)
+    registry.register("uuid4", transformers.uuid4_transformer)
+    registry.register("uuid4_prefix", transformers.uuid4_prefix_transformer)
+    registry.register("uuid4_with_extension", transformers.uuid4_with_extension_transformer)
+    registry.register("uuid5", transformers.uuid5_transformer)
 
 
 @ext.hookimpl

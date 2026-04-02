@@ -16,26 +16,26 @@ FILE_KEEPER_DNS = uuid.UUID("5b762d43-ec0d-3270-a565-8bb44bdaf6cf")
 log = logging.getLogger(__name__)
 
 
-def uuid_transformer(location: str, upload: Upload | None, extras: dict[str, Any]) -> str:
+def uuid4_transformer(location: str, upload: Upload | None, extras: dict[str, Any]) -> str:
     """Transform location into random UUID."""
     dir = os.path.split(location)[0]
     return os.path.join(dir, str(uuid.uuid4()))
 
 
-def uuid_prefix_transformer(location: str, upload: Upload | None, extras: dict[str, Any]) -> str:
+def uuid4_prefix_transformer(location: str, upload: Upload | None, extras: dict[str, Any]) -> str:
     """Prefix the location with random UUID."""
     dir, file = os.path.split(location)
     return os.path.join(dir, f"{uuid.uuid4()}{file}")
 
 
-def uuid_with_extension_transformer(location: str, upload: Upload | None, extras: dict[str, Any]) -> str:
+def uuid4_with_extension_transformer(location: str, upload: Upload | None, extras: dict[str, Any]) -> str:
     """Replace location with random UUID, but keep the original extension."""
     dir, file = os.path.split(location)
     ext = os.path.splitext(file)[1]
     return os.path.join(dir, str(uuid.uuid4()) + ext)
 
 
-def static_uuid_transformer(location: str, upload: Upload | None, extras: dict[str, Any]) -> str:
+def uuid5_transformer(location: str, upload: Upload | None, extras: dict[str, Any]) -> str:
     """Transform location into static UUID.
 
     The same location always transformed into the same UUID. This transformer
