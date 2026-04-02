@@ -62,7 +62,7 @@ class Uploader(fk.Uploader):
 
         fs.mkdirs(os.path.dirname(filepath), exist_ok=True)
         with fs.open(filepath, "wb") as fobj:
-            reader = upload.hashing_reader()
+            reader = upload.hashing_reader(algorithm=self.storage.settings.hashing_algorithm)
             for chunk in reader:
                 fobj.write(chunk)  # pyright: ignore[reportArgumentType]
 
@@ -71,6 +71,7 @@ class Uploader(fk.Uploader):
             size=reader.position,
             content_type=upload.content_type,
             hash=reader.get_hash(),
+            algorithm=self.storage.settings.hashing_algorithm,
         )
 
 
@@ -156,13 +157,19 @@ class Manager(fk.Manager):
         if not fs.exists(filepath):
             raise fk.exc.MissingFileError(self.storage, location)
 
-        src = fs.open(filepath, "rb")  # pyright: ignore[reportUnknownVariableType]
+        src = fs.open(filepath, "rb")
         with src:
-            reader = fk.HashingReader(fk.IterableBytesReader(src))  # pyright: ignore[reportArgumentType]
+            reader = fk.HashingReader(fk.IterableBytesReader(src), algorithm=self.storage.settings.hashing_algorithm)  # pyright: ignore[reportArgumentType]
             content_type = magic.from_buffer(next(reader, b""), True)
             reader.exhaust()
 
-        return fk.FileData(location, size=reader.position, content_type=content_type, hash=reader.get_hash())
+        return fk.FileData(
+            location,
+            size=reader.position,
+            content_type=content_type,
+            hash=reader.get_hash(),
+            algorithm=self.storage.settings.hashing_algorithm,
+        )
 
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:

@@ -110,16 +110,17 @@ class Uploader(fk.Uploader):
             # opendal reuquires `/` as a last character
             op.create_dir(subpath.rstrip("/") + "/")
 
-        reader = upload.hashing_reader()
+        reader = upload.hashing_reader(algorithm=self.storage.settings.hashing_algorithm)
         with op.open(dest, "wb") as fobj:
             for chunk in reader:
                 fobj.write(chunk)
 
         return fk.FileData(
             location,
-            reader.position,
-            upload.content_type,
-            reader.get_hash(),
+            size=reader.position,
+            content_type=upload.content_type,
+            hash=reader.get_hash(),
+            algorithm=self.storage.settings.hashing_algorithm,
         )
 
 
@@ -204,7 +205,7 @@ class Manager(fk.Manager):
     def analyze(self, location: fk.types.Location, extras: dict[str, Any]) -> fk.FileData:
         stream = self.storage.stream(fk.FileData(location))
 
-        reader = fk.HashingReader(fk.IterableBytesReader(stream))
+        reader = fk.HashingReader(fk.IterableBytesReader(stream), algorithm=self.storage.settings.hashing_algorithm)
         content_type = magic.from_buffer(next(reader, b""), True)
         reader.exhaust()
 
@@ -213,6 +214,7 @@ class Manager(fk.Manager):
             size=reader.position,
             content_type=content_type,
             hash=reader.get_hash(),
+            algorithm=self.storage.settings.hashing_algorithm,
         )
 
     @override

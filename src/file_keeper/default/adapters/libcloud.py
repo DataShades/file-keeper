@@ -112,9 +112,9 @@ class Uploader(fk.Uploader):
 
         return fk.FileData(
             location,
-            result.size,
-            upload.content_type,
-            result.hash.strip('"'),
+            size=result.size,
+            content_type=upload.content_type,
+            hash=result.hash.strip('"'),
         )
 
 
@@ -205,7 +205,7 @@ class Manager(fk.Manager):
 
         content_type: str = obj.extra.get("content_type", fk.FileData.content_type)  # pyright: ignore[reportUnknownVariableType]
         hash = obj.hash.strip('"')
-        return fk.FileData(location, obj.size, content_type, hash)
+        return fk.FileData(location, size=obj.size, content_type=content_type, hash=hash)
 
 
 class LibCloudStorage(fk.Storage):

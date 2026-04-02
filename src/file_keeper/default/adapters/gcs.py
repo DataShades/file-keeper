@@ -118,9 +118,10 @@ class Uploader(fk.Uploader):
         filehash = decode(blob.md5_hash)
         return fk.FileData(
             location,
-            blob.size or upload.size,
-            upload.content_type,
-            filehash,
+            size=blob.size or upload.size,
+            content_type=upload.content_type,
+            hash=filehash,
+            algorithm="md5",
         )
 
     def _resumable_complete(self, data: fk.FileData, info: dict[str, Any]):
@@ -394,9 +395,10 @@ class Manager(fk.Manager):
 
         return fk.FileData(
             location,
-            size,
-            blob.content_type,
-            filehash,
+            size=size,
+            content_type=blob.content_type,
+            hash=filehash,
+            algorithm="md5",
         )
 
     @override

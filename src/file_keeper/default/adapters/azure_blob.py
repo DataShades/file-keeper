@@ -111,9 +111,10 @@ class Uploader(fk.Uploader):
 
         return fk.FileData(
             location,
-            upload.size,
-            upload.content_type,
-            codecs.encode(result["content_md5"], "hex").decode(),
+            size=upload.size,
+            content_type=upload.content_type,
+            hash=codecs.encode(result["content_md5"], "hex").decode(),
+            algorithm="md5",
         )
 
     @override
@@ -265,9 +266,10 @@ class Manager(fk.Manager):
         content_info = info["content_settings"]
         return fk.FileData(
             location,
-            info["size"],
-            content_info["content_type"],
-            codecs.encode(content_info["content_md5"], "hex").decode(),
+            size=info["size"],
+            content_type=content_info["content_type"],
+            hash=codecs.encode(content_info["content_md5"], "hex").decode(),
+            algorithm="md5",
         )
 
     @override

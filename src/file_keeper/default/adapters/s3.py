@@ -130,9 +130,10 @@ class Uploader(fk.Uploader):
 
         return fk.FileData(
             location,
-            upload.size,
-            upload.content_type,
-            filehash,
+            size=upload.size,
+            content_type=upload.content_type,
+            hash=filehash,
+            algorithm="md5",
         )
 
     def _presigned_part(self, key: str, upload_id: str, part: int):
@@ -289,9 +290,10 @@ class Uploader(fk.Uploader):
                     self.storage.settings.path,
                 )
             ),
-            obj["ContentLength"],
-            obj["ContentType"],
-            obj["ETag"].strip('"'),
+            size=obj["ContentLength"],
+            content_type=obj["ContentType"],
+            hash=obj["ETag"].strip('"'),
+            algorithm="md5",
         )
 
 
@@ -432,6 +434,7 @@ class Manager(fk.Manager):
             size=obj["ContentLength"],
             content_type=obj["ContentType"],
             hash=obj["ETag"].strip('"'),
+            algorithm="md5",
         )
 
 

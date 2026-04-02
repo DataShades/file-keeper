@@ -169,11 +169,11 @@ class TestStorage:
                 FileData(fk.types.Location("")),
             )
 
-    def test_prepare_location_uuid(self, faker: Faker):
+    def test_prepare_location_uuid4(self, faker: Faker):
         """`uuid`(default) name transformer produces valid UUID."""
         storage = FakeStorage({})
 
-        storage.settings.location_transformers = ["uuid"]
+        storage.settings.location_transformers = ["uuid4"]
         name = faker.file_path()
         result = storage.prepare_location(name)
 

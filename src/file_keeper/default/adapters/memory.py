@@ -34,13 +34,19 @@ class Uploader(fk.Uploader):
     @override
     def upload(self, location: fk.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         filepath = self.storage.full_path(location)
-        reader = upload.hashing_reader()
+        reader = upload.hashing_reader(algorithm=self.storage.settings.hashing_algorithm)
         if filepath in self.storage.settings.bucket and not self.storage.settings.overwrite_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
 
         self.storage.settings.bucket[filepath] = reader.read()
 
-        return fk.FileData(location, upload.size, upload.content_type, hash=reader.get_hash())
+        return fk.FileData(
+            location,
+            size=upload.size,
+            content_type=upload.content_type,
+            hash=reader.get_hash(),
+            algorithm=self.storage.settings.hashing_algorithm,
+        )
 
     @override
     def resumable_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
@@ -63,7 +69,7 @@ class Uploader(fk.Uploader):
         result.storage_data["memory"]["uploaded"] = len(bucket[filepath])
 
         if result.size == result.storage_data["memory"]["uploaded"]:
-            reader = fk.HashingReader(BytesIO(bucket[filepath]))
+            reader = fk.HashingReader(BytesIO(bucket[filepath]), algorithm=self.storage.settings.hashing_algorithm)
             reader.exhaust()
 
             hash = reader.get_hash()
@@ -94,7 +100,7 @@ class Uploader(fk.Uploader):
 
         size = len(bucket[filepath])
         if result.size == size:
-            reader = fk.HashingReader(BytesIO(bucket[filepath]))
+            reader = fk.HashingReader(BytesIO(bucket[filepath]), algorithm=self.storage.settings.hashing_algorithm)
             reader.exhaust()
 
             hash = reader.get_hash()
@@ -214,10 +220,16 @@ class Manager(fk.Manager):
         except KeyError as err:
             raise fk.exc.MissingFileError(self.storage, location) from err
 
-        reader = fk.HashingReader(BytesIO(content))
+        reader = fk.HashingReader(BytesIO(content), algorithm=self.storage.settings.hashing_algorithm)
         content_type = magic.from_buffer(next(reader, b""), True)
 
-        return fk.FileData(location, len(content), content_type, reader.get_hash())
+        return fk.FileData(
+            location,
+            size=len(content),
+            content_type=content_type,
+            hash=reader.get_hash(),
+            algorithm=self.storage.settings.hashing_algorithm,
+        )
 
 
 class Reader(fk.Reader):

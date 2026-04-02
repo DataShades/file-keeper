@@ -49,9 +49,10 @@ class Uploader(fk.Uploader):
         info: dict[str, Any] = resp.json()["file"]
         return fk.FileData(
             info["filename"],
-            upload.size,
-            upload.content_type,
-            base64.decodebytes(info["md5"].encode()).decode(),
+            size=upload.size,
+            content_type=upload.content_type,
+            hash=base64.decodebytes(info["md5"].encode()).decode(),
+            algorithm="md5",
         )
 
 
@@ -125,9 +126,10 @@ class Manager(fk.Manager):
             if record["filename"] == location:
                 return fk.FileData(
                     record["filename"],
-                    record["size"],
-                    record["content-type"],
-                    base64.decodebytes(record["md5"].encode()).decode(),
+                    size=record["size"],
+                    content_type=record["content-type"],
+                    hash=base64.decodebytes(record["md5"].encode()).decode(),
+                    algorithm="md5",
                 )
 
         raise fk.exc.MissingFileError(self.storage, location)

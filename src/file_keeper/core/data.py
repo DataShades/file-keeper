@@ -29,12 +29,13 @@ class BaseData:
     """Base class for file details."""
 
     location: types.Location
-    size: int = 0
-    content_type: str = ""
-    hash: str = ""
-    storage_data: dict[str, Any] = cast("dict[str, Any]", dataclasses.field(default_factory=dict))
+    size: int = dataclasses.field(default=0, kw_only=True)
+    content_type: str = dataclasses.field(default="", kw_only=True)
+    hash: str = dataclasses.field(default="", kw_only=True)
+    algorithm: str = dataclasses.field(default="", kw_only=True)
+    storage_data: dict[str, Any] = cast("dict[str, Any]", dataclasses.field(default_factory=dict, kw_only=True))
 
-    _plain_keys: ClassVar[list[str]] = ["location", "size", "content_type", "hash"]
+    _plain_keys: ClassVar[list[str]] = ["location", "size", "content_type", "hash", "algorithm"]
     _complex_keys: ClassVar[list[str]] = ["storage_data"]
 
     @classmethod
@@ -112,4 +113,4 @@ class FileData(BaseData):
         ```
     """
 
-    content_type: str = "application/octet-stream"
+    content_type: str = dataclasses.field(default="application/octet-stream", kw_only=True)

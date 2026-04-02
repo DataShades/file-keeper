@@ -68,7 +68,7 @@ class Uploader(fk.Uploader):
                 raise fk.exc.ExistingFileError(self.storage, location)
 
         with obstore.open_writer(store, filepath) as fobj:
-            reader = upload.hashing_reader()
+            reader = upload.hashing_reader(algorithm=self.storage.settings.hashing_algorithm)
             for chunk in reader:
                 fobj.write(chunk)
 
@@ -77,6 +77,7 @@ class Uploader(fk.Uploader):
             size=reader.position,
             content_type=upload.content_type,
             hash=reader.get_hash(),
+            algorithm=self.storage.settings.hashing_algorithm,
         )
 
 
@@ -164,11 +165,17 @@ class Manager(fk.Manager):
         except FileNotFoundError as err:
             raise fk.exc.MissingFileError(self.storage, location) from err
 
-        reader = fk.HashingReader(fk.IterableBytesReader(src))
+        reader = fk.HashingReader(fk.IterableBytesReader(src), algorithm=self.storage.settings.hashing_algorithm)
         content_type = magic.from_buffer(next(reader, b""), True)
         reader.exhaust()
 
-        return fk.FileData(location, size=reader.position, content_type=content_type, hash=reader.get_hash())
+        return fk.FileData(
+            location,
+            size=reader.position,
+            content_type=content_type,
+            hash=reader.get_hash(),
+            algorithm=self.storage.settings.hashing_algorithm,
+        )
 
     @override
     def remove(self, data: fk.FileData, extras: dict[str, Any]) -> bool:

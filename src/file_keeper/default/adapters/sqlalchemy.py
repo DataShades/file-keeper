@@ -117,7 +117,7 @@ class Uploader(fk.Uploader):
         extras: dict[str, Any],
     ) -> fk.FileData:
         filepath = self.storage.full_path(location)
-        reader = upload.hashing_reader()
+        reader = upload.hashing_reader(algorithm=self.storage.settings.hashing_algorithm)
 
         values: dict[Any, Any] = {
             self.storage.settings.location: filepath,
@@ -139,9 +139,10 @@ class Uploader(fk.Uploader):
 
         return fk.FileData(
             location,
-            upload.size,
-            upload.content_type,
-            reader.get_hash(),
+            size=upload.size,
+            content_type=upload.content_type,
+            hash=reader.get_hash(),
+            algorithm=self.storage.settings.hashing_algorithm,
         )
 
 
@@ -224,13 +225,14 @@ class Manager(fk.Manager):
             raise fk.exc.MissingFileError(self.storage, location)
 
         upload = fk.make_upload(content)
-        reader = upload.hashing_reader()
+        reader = upload.hashing_reader(algorithm=self.storage.settings.hashing_algorithm)
         reader.exhaust()
         return fk.FileData(
             location,
-            upload.size,
-            upload.content_type,
-            reader.get_hash(),
+            size=upload.size,
+            content_type=upload.content_type,
+            hash=reader.get_hash(),
+            algorithm=self.storage.settings.hashing_algorithm,
         )
 
     @override

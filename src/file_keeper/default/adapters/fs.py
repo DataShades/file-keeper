@@ -99,7 +99,7 @@ class Uploader(fk.Uploader):
         # --8<-- [end:uploader_impl_makedirs]
 
         # --8<-- [start:uploader_impl_write]
-        reader = upload.hashing_reader()
+        reader = upload.hashing_reader(algorithm=self.storage.settings.hashing_algorithm)
         with open(dest, "wb") as fd:
             for chunk in reader:
                 fd.write(chunk)
@@ -108,9 +108,10 @@ class Uploader(fk.Uploader):
         # --8<-- [start:uploader_impl_result]
         return fk.FileData(
             location,
-            os.path.getsize(dest),
-            upload.content_type,
-            reader.get_hash(),
+            size=os.path.getsize(dest),
+            content_type=upload.content_type,
+            hash=reader.get_hash(),
+            algorithm=self.storage.settings.hashing_algorithm,
         )
 
     # --8<-- [end:uploader_impl_result]
@@ -147,7 +148,7 @@ class Uploader(fk.Uploader):
         filepath = self.storage.full_path(data.location)
 
         with open(filepath, "rb") as src:
-            reader = fk.HashingReader(src)
+            reader = fk.HashingReader(src, algorithm=self.storage.settings.hashing_algorithm)
             content_type = magic.from_buffer(next(reader, b""), True)
             if data.content_type and content_type != data.content_type:
                 raise fk.exc.UploadTypeMismatchError(
@@ -352,6 +353,7 @@ class Manager(fk.Manager):
             size=self.size(location, extras),
             content_type=self.content_type(location, extras),
             hash=self.hash(location, extras),
+            algorithm=self.storage.settings.hashing_algorithm,
         )
 
     # --8<-- [end:manager_analyze]
@@ -371,7 +373,7 @@ class Manager(fk.Manager):
             raise fk.exc.MissingFileError(self.storage, location)
 
         with open(filepath, "rb") as src:
-            reader = fk.HashingReader(src)
+            reader = fk.HashingReader(src, algorithm=self.storage.settings.hashing_algorithm)
             reader.exhaust()
             return reader.get_hash()
 

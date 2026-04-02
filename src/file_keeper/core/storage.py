@@ -505,6 +505,9 @@ class Settings:
     skip_in_place_copy: bool = True
     """Skip in-place copy operations."""
 
+    hashing_algorithm: str = "md5"
+    """Hashing algorithm used for integrity verification."""
+
     _required_options: ClassVar[list[str]] = []
     _extra_settings: dict[str, Any] = cast("dict[str, Any]", dataclasses.field(default_factory=dict))
 

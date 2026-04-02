@@ -57,16 +57,17 @@ class Uploader(fk.Uploader):
         if not cfg.overwrite_existing and cfg.redis.hexists(cfg.bucket, filepath):
             raise fk.exc.ExistingFileError(self.storage, location)
 
-        reader = fk.HashingReader(upload.stream)
+        reader = upload.hashing_reader(algorithm=self.storage.settings.hashing_algorithm)
 
         content: Any = reader.read()
         cfg.redis.hset(cfg.bucket, filepath, content)
 
         return fk.FileData(
             location,
-            reader.position,
-            upload.content_type,
-            reader.get_hash(),
+            size=reader.position,
+            content_type=upload.content_type,
+            hash=reader.get_hash(),
+            algorithm=self.storage.settings.hashing_algorithm,
         )
 
     @override
@@ -141,7 +142,7 @@ class Uploader(fk.Uploader):
         if content is None:
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        reader = fk.HashingReader(BytesIO(content))
+        reader = fk.HashingReader(BytesIO(content), algorithm=self.storage.settings.hashing_algorithm)
 
         content_type = magic.from_buffer(next(reader, b""), True)
         if data.content_type and content_type != data.content_type:
@@ -272,7 +273,7 @@ class Manager(fk.Manager):
         if value is None:
             raise fk.exc.MissingFileError(self.storage, location)
 
-        reader = fk.HashingReader(BytesIO(value))
+        reader = fk.HashingReader(BytesIO(value), algorithm=self.storage.settings.hashing_algorithm)
         content_type = magic.from_buffer(next(reader, b""), True)
         reader.exhaust()
 
@@ -281,6 +282,7 @@ class Manager(fk.Manager):
             size=reader.position,
             content_type=content_type,
             hash=reader.get_hash(),
+            algorithm=self.storage.settings.hashing_algorithm,
         )
 
 

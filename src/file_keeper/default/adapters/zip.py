@@ -46,7 +46,7 @@ class Uploader(fk.Uploader):
     def upload(self, location: fk.Location, upload: fk.Upload, extras: dict[str, Any]):
         filepath = self.storage.full_path(location)
 
-        reader = fk.HashingReader(upload.stream)
+        reader = upload.hashing_reader(algorithm=self.storage.settings.hashing_algorithm)
         with _open(self.storage.settings, "a") as z:
             try:
                 info = z.getinfo(filepath)
@@ -60,9 +60,10 @@ class Uploader(fk.Uploader):
 
         return fk.FileData(
             location,
-            upload.size,
-            upload.content_type,
+            size=upload.size,
+            content_type=upload.content_type,
             hash=reader.get_hash(),
+            algorithm=self.storage.settings.hashing_algorithm,
         )
 
 
@@ -148,7 +149,7 @@ class Manager(fk.Manager):
             if not _exists(info):
                 raise fk.exc.MissingFileError(self.storage, location)
 
-            reader = fk.HashingReader(z.open(info))
+            reader = fk.HashingReader(z.open(info), algorithm=self.storage.settings.hashing_algorithm)
             content_type = magic.from_buffer(next(reader, b""), True)
             reader.exhaust()
 
@@ -157,6 +158,7 @@ class Manager(fk.Manager):
                 size=reader.position,
                 content_type=content_type,
                 hash=reader.get_hash(),
+                algorithm=self.storage.settings.hashing_algorithm,
             )
 
 

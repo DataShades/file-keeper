@@ -27,8 +27,12 @@ class Uploader(fk.Uploader):
 
     @override
     def upload(self, location: fk.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
-        reader = upload.hashing_reader()
-        return fk.FileData(location, hash=reader.get_hash())
+        reader = upload.hashing_reader(algorithm=self.storage.settings.hashing_algorithm)
+        return fk.FileData(
+            location,
+            hash=reader.get_hash(),
+            algorithm=self.storage.settings.hashing_algorithm,
+        )
 
     @override
     def multipart_start(self, location: fk.Location, size: int, extras: dict[str, Any]) -> fk.FileData:
@@ -103,7 +107,10 @@ class Manager(fk.Manager):
 
     @override
     def analyze(self, location: fk.Location, extras: dict[str, Any]) -> fk.FileData:
-        return fk.FileData(location)
+        return fk.FileData(
+            location,
+            algorithm=self.storage.settings.hashing_algorithm,
+        )
 
     @override
     def signed(self, action: fk.SignedAction, duration: int, location: fk.Location, extras: dict[str, Any]) -> str:
