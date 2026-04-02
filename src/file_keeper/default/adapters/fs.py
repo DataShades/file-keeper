@@ -90,7 +90,7 @@ class Uploader(fk.Uploader):
         # --8<-- [end:uploader_impl_path]
 
         # --8<-- [start:uploader_impl_check]
-        if not self.storage.settings.override_existing and os.path.exists(dest):
+        if not self.storage.settings.overwrite_existing and os.path.exists(dest):
             raise fk.exc.ExistingFileError(self.storage, location)
         # --8<-- [end:uploader_impl_check]
 
@@ -237,7 +237,7 @@ class Manager(fk.Manager):
     def compose(self, location: fk.types.Location, data: Iterable[fk.FileData], extras: dict[str, Any]) -> fk.FileData:
         dest = self.storage.full_path(location)
 
-        if os.path.exists(dest) and not self.storage.settings.override_existing:
+        if os.path.exists(dest) and not self.storage.settings.overwrite_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
 
         sources: list[str] = []
@@ -281,7 +281,7 @@ class Manager(fk.Manager):
         if not os.path.exists(src):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        if os.path.exists(dest) and not self.storage.settings.override_existing:
+        if os.path.exists(dest) and not self.storage.settings.overwrite_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
 
         os.makedirs(os.path.dirname(dest), exist_ok=True)
@@ -300,7 +300,7 @@ class Manager(fk.Manager):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
         if os.path.exists(dest):
-            if self.storage.settings.override_existing:
+            if self.storage.settings.overwrite_existing:
                 os.remove(dest)
             else:
                 raise fk.exc.ExistingFileError(self.storage, location)
@@ -401,7 +401,7 @@ class FsStorage(fk.Storage):
         "type": "file_keeper:fs",
         "path": "/path/to/storage",
         "initialize": True,
-        "override_existing": False,
+        "overwrite_existing": False,
     }
     storage = fk.make_storage("fs", settings)
     ```
@@ -417,7 +417,7 @@ class FsStorage(fk.Storage):
       `safe_relative_path`.
     * If `initialize` is `True`, the storage will attempt to create the
       directory if it does not exist.
-    * If `override_existing` is `False`, operations that would overwrite an
+    * If `overwrite_existing` is `False`, operations that would overwrite an
       existing file will raise an `ExistingFileError`.
     """
 

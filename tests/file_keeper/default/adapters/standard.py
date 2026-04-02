@@ -110,7 +110,7 @@ class Composer:
             storage.compose(existing.location, first, second)
 
     @pytest.mark.expect_storage_capability(fk.Capability.COMPOSE, fk.Capability.CREATE, fk.Capability.STREAM)
-    @pytest.mark.fk_storage_option("override_existing", True)
+    @pytest.mark.fk_storage_option("overwrite_existing", True)
     def test_compose_with_allowed_override(self, storage: fk.Storage, faker: Faker):
         """Overrides are supported when explicitly enabled."""
         first = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b"hello"))
@@ -193,7 +193,7 @@ class Copier:
             )
 
     @pytest.mark.expect_storage_capability(fk.Capability.COPY, fk.Capability.CREATE, fk.Capability.STREAM)
-    @pytest.mark.fk_storage_option("override_existing", True)
+    @pytest.mark.fk_storage_option("overwrite_existing", True)
     def test_copy_into_existing_can_be_enabled(self, storage: fk.Storage, faker: Faker):
         """Overrides during copy can be enabled explicitly."""
         content = faker.binary(10)
@@ -242,7 +242,7 @@ class Creator:
             storage.upload(result.location, fk.make_upload(b""))
 
     @pytest.mark.expect_storage_capability(fk.Capability.CREATE, fk.Capability.STREAM)
-    @pytest.mark.fk_storage_option("override_existing", True)
+    @pytest.mark.fk_storage_option("overwrite_existing", True)
     def test_create_replace_existing(self, storage: fk.Storage, faker: Faker):
         """Overrides can be explicitly enabled."""
         origin = storage.upload(fk.Location(faker.file_name()), fk.make_upload(b"hello world"))
@@ -354,7 +354,7 @@ class Mover:
     @pytest.mark.expect_storage_capability(
         fk.Capability.MOVE, fk.Capability.CREATE, fk.Capability.EXISTS, fk.Capability.STREAM
     )
-    @pytest.mark.fk_storage_option("override_existing", True)
+    @pytest.mark.fk_storage_option("overwrite_existing", True)
     def test_move_into_existing_can_be_enabled(self, storage: fk.Storage, faker: Faker):
         """When explicitly enabled, moved file can override existing destination."""
         content = faker.binary(10)

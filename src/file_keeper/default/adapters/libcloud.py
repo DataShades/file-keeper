@@ -99,7 +99,7 @@ class Uploader(fk.Uploader):
     def upload(self, location: fk.types.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         dest = self.storage.full_path(location)
 
-        if not self.storage.settings.override_existing:
+        if not self.storage.settings.overwrite_existing:
             with contextlib.suppress(ObjectDoesNotExistError):
                 self.storage.settings.container.get_object(dest)
                 raise fk.exc.ExistingFileError(self.storage, location)
@@ -232,7 +232,7 @@ class LibCloudStorage(fk.Storage):
         },
         "public_prefix": "https://my-bucket.s3.amazonaws.com/",  # optional, if provider supports public links
         "path": "uploads/",
-        "override_existing": False,
+        "overwrite_existing": False,
         "initialize": True,
     }
 

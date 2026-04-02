@@ -163,7 +163,7 @@ makes any sense.
 --8<-- "src/file_keeper/default/adapters/fs.py:uploader_impl_path"
 ```
 
-Now storage uses another generic option, `override_existing`. If it's disabled
+Now storage uses another generic option, `overwrite_existing`. If it's disabled
 and given location already taken by another file, uploader raises
 [ExistingFileError][file_keeper.exc.ExistingFileError]. That's recommended
 reaction in such situation and you'll notice that other storages also follow
@@ -323,7 +323,7 @@ during `upload()`.
 `copy()` creates a copy of the file, raising
 [MissingFileError][file_keeper.exc.MissingFileError] if source file is missing
 and [ExistingFileError][file_keeper.exc.ExistingFileError] if destination file
-already exist and `override_existing` is disabled.
+already exist and `overwrite_existing` is disabled.
 
 ```py
 --8<-- "src/file_keeper/default/adapters/fs.py:manager_copy"

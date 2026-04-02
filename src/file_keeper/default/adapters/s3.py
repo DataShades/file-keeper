@@ -112,7 +112,7 @@ class Uploader(fk.Uploader):
 
     @override
     def upload(self, location: fk.types.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
-        if not self.storage.settings.override_existing and self.storage.exists(fk.FileData(location), **extras):
+        if not self.storage.settings.overwrite_existing and self.storage.exists(fk.FileData(location), **extras):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         filepath = self.storage.full_path(location)
@@ -343,7 +343,7 @@ class Manager(fk.Manager):
         if not self.exists(data, extras):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        if not self.storage.settings.override_existing and self.exists(fk.FileData(location), extras):
+        if not self.storage.settings.overwrite_existing and self.exists(fk.FileData(location), extras):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         old_key = self.storage.full_path(data.location)
@@ -463,7 +463,7 @@ class S3Storage(fk.Storage):
     * The `path` option can be used to set a prefix within the bucket.
     * The `region` option can be used to set the AWS region for the bucket.
     * The `endpoint` option can be used to set a custom endpoint, e.g. for MinIO.
-    * The `override_existing` option controls whether existing files can be overwritten.
+    * The `overwrite_existing` option controls whether existing files can be overwritten.
     """
 
     settings: Settings

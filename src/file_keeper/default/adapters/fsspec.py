@@ -57,7 +57,7 @@ class Uploader(fk.Uploader):
         fs = self.storage.settings.fs
         filepath = self.storage.full_path(location)
 
-        if not self.storage.settings.override_existing and fs.exists(filepath):
+        if not self.storage.settings.overwrite_existing and fs.exists(filepath):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         fs.mkdirs(os.path.dirname(filepath), exist_ok=True)
@@ -113,7 +113,7 @@ class Manager(fk.Manager):
         if not self.exists(data, extras):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        if not self.storage.settings.override_existing and self.exists(fk.FileData(location), extras):
+        if not self.storage.settings.overwrite_existing and self.exists(fk.FileData(location), extras):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         src_location = self.storage.full_path(data.location)
@@ -131,7 +131,7 @@ class Manager(fk.Manager):
         if not self.exists(data, extras):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        if not self.storage.settings.override_existing and self.exists(fk.FileData(location), extras):
+        if not self.storage.settings.overwrite_existing and self.exists(fk.FileData(location), extras):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         src_location = self.storage.full_path(data.location)

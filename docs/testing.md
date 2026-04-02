@@ -41,7 +41,7 @@ implementation of capability is predictable. For example:
 * REMOVE: returns `True` when removing real file and `False` if file does not exists
 * CREATE: raises [ExistingFileError][file_keeper.exc.ExistingFileError] if file
   already exists at the given location and
-  [override_existing][file_keeper.Settings.override_existing] option is not
+  [overwrite_existing][file_keeper.Settings.overwrite_existing] option is not
   enabled
 * STREAM: output of [stream()][file_keeper.Storage.stream] and
   [content()][file_keeper.Storage.content] is the same

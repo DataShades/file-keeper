@@ -59,7 +59,7 @@ class Uploader(fk.Uploader):
         store = self.storage.settings.store
         filepath = self.storage.full_path(location)
 
-        if not self.storage.settings.override_existing:
+        if not self.storage.settings.overwrite_existing:
             try:
                 store.head(filepath)
             except FileNotFoundError:
@@ -119,13 +119,13 @@ class Manager(fk.Manager):
         if not self.exists(data, extras):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        if not self.storage.settings.override_existing and self.exists(fk.FileData(location), extras):
+        if not self.storage.settings.overwrite_existing and self.exists(fk.FileData(location), extras):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         src_location = self.storage.full_path(data.location)
         dest_location = self.storage.full_path(location)
 
-        store.copy(src_location, dest_location, overwrite=self.storage.settings.override_existing)
+        store.copy(src_location, dest_location, overwrite=self.storage.settings.overwrite_existing)
 
         return fk.FileData.from_object(data, location=location)
 
@@ -136,13 +136,13 @@ class Manager(fk.Manager):
         if not self.exists(data, extras):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        if not self.storage.settings.override_existing and self.exists(fk.FileData(location), extras):
+        if not self.storage.settings.overwrite_existing and self.exists(fk.FileData(location), extras):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         src_location = self.storage.full_path(data.location)
         dest_location = self.storage.full_path(location)
 
-        store.rename(src_location, dest_location, overwrite=self.storage.settings.override_existing)
+        store.rename(src_location, dest_location, overwrite=self.storage.settings.overwrite_existing)
 
         return fk.FileData.from_object(data, location=location)
 

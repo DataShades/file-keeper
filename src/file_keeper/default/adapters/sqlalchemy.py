@@ -128,7 +128,7 @@ class Uploader(fk.Uploader):
 
         with self.storage.settings.engine.begin() as conn:
             if conn.scalar(sa.select(1).select_from(table).where(self.storage.settings.location == filepath)):
-                if self.storage.settings.override_existing:
+                if self.storage.settings.overwrite_existing:
                     stmt = sa.update(table).where(self.storage.settings.location == filepath).values(values)
                     conn.execute(stmt)
                 else:
@@ -167,7 +167,7 @@ class Manager(fk.Manager):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
         if self.exists(fk.FileData(location), extras):
-            if self.storage.settings.override_existing:
+            if self.storage.settings.overwrite_existing:
                 self.remove(fk.FileData(location), extras)
             else:
                 raise fk.exc.ExistingFileError(self.storage, location)
@@ -191,7 +191,7 @@ class Manager(fk.Manager):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
         if self.exists(fk.FileData(location), extras):
-            if self.storage.settings.override_existing:
+            if self.storage.settings.overwrite_existing:
                 self.remove(fk.FileData(location), extras)
             else:
                 raise fk.exc.ExistingFileError(self.storage, location)
@@ -285,7 +285,7 @@ class SqlAlchemyStorage(fk.Storage):
         "table_name": "files",
         "location_column": "location",
         "content_column": "content",
-        "override_existing": True,
+        "overwrite_existing": True,
         "initialize": True,
     }
 
@@ -298,7 +298,7 @@ class SqlAlchemyStorage(fk.Storage):
       the table and column names to use for storing files.
     * If the specified table does not exist and `initialize` is set to `True`,
         it will be created automatically.
-    * If `override_existing` is set to `True`, existing files will be overwritten
+    * If `overwrite_existing` is set to `True`, existing files will be overwritten
         during upload, copy, or move operations.
     """
 

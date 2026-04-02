@@ -63,7 +63,7 @@ All storage adapters share these common options:
 - `type`: The adapter type (required)
 - `name`: Identifier for the storage instance
 - `path`: Base path/prefix for files
-- `override_existing`: Whether to overwrite existing files
+- `overwrite_existing`: Whether to overwrite existing files
 - `initialize`: Whether to create the storage container if it doesn't exist
 - `location_transformers`: Functions to transform file locations
 

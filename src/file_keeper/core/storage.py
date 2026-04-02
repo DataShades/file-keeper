@@ -484,7 +484,7 @@ class Settings:
     name: str = "unknown"
     """Descriptive name of the storage used for debugging."""
 
-    override_existing: bool = False
+    overwrite_existing: bool = False
     """If file already exists, replace it with new content."""
 
     path: str = ""
@@ -818,7 +818,7 @@ class Storage(ABC):  # noqa: B024
         can be of size 0, which results in empty file in the storage.
 
         When file already exists, behavior depends on
-        [override_existing][file_keeper.Settings.override_existing] setting. If
+        [overwrite_existing][file_keeper.Settings.overwrite_existing] setting. If
         it is False, [ExistingFileError][file_keeper.exc.ExistingFileError] is
         raised. If it is True, existing file is replaced with new content. In
         this case, it is possible to lose existing file if upload fails. When
@@ -843,7 +843,7 @@ class Storage(ABC):  # noqa: B024
             exceptions.UnsupportedOperationError: when storage does not support
                 CREATE operation
             exceptions.ExistingFileError: when file already exists and
-                [override_existing][file_keeper.Settings.override_existing] is False
+                [overwrite_existing][file_keeper.Settings.overwrite_existing] is False
             exceptions.LocationError: when location is outside of the storage's path
         """
         return self.uploader.upload(location, upload, kwargs)
@@ -1462,7 +1462,7 @@ class Storage(ABC):  # noqa: B024
         content and metadata as the original file.
 
         If file already exists at the destination location, behavior depends on
-        [override_existing][file_keeper.Settings.override_existing] setting. If
+        [overwrite_existing][file_keeper.Settings.overwrite_existing] setting. If
         it is False, [ExistingFileError][file_keeper.exc.ExistingFileError] is
         raised. If it is True, existing file is replaced with the copied file. In
         this case, it is possible to lose existing file if copy fails.
@@ -1480,7 +1480,7 @@ class Storage(ABC):  # noqa: B024
                 COPY operation
             exceptions.MissingFileError: when source file does not exist
             exceptions.ExistingFileError: when destination file already exists and
-                [override_existing][file_keeper.Settings.override_existing] is False
+                [overwrite_existing][file_keeper.Settings.overwrite_existing] is False
         """
         if location == data.location and self.settings.skip_in_place_copy:
             return data
@@ -1508,7 +1508,7 @@ class Storage(ABC):  # noqa: B024
                 CREATE operation
             exceptions.MissingFileError: when source file does not exist
             exceptions.ExistingFileError: when destination file already exists and
-                [override_existing][file_keeper.Settings.override_existing] is False
+                [overwrite_existing][file_keeper.Settings.overwrite_existing] is False
 
         """
         return dest_storage.upload(
@@ -1540,7 +1540,7 @@ class Storage(ABC):  # noqa: B024
                 MOVE operation
             exceptions.MissingFileError: when source file does not exist
             exceptions.ExistingFileError: when destination file already exists and
-                [override_existing][file_keeper.Settings.override_existing] is False
+                [overwrite_existing][file_keeper.Settings.overwrite_existing] is False
 
         """
         if location == data.location and self.settings.skip_in_place_move:
@@ -1569,7 +1569,7 @@ class Storage(ABC):  # noqa: B024
                 CREATE or REMOVE operation
             exceptions.MissingFileError: when source file does not exist
             exceptions.ExistingFileError: when destination file already exists and
-                [override_existing][file_keeper.Settings.override_existing] is False
+                [overwrite_existing][file_keeper.Settings.overwrite_existing] is False
 
         """
         result = dest_storage.upload(location, self.file_as_upload(data, **kwargs), **kwargs)
@@ -1599,7 +1599,7 @@ class Storage(ABC):  # noqa: B024
                 COMPOSE operation
             exceptions.MissingFileError: when any of source files do not exist
             exceptions.ExistingFileError: when destination file already exists and
-                [override_existing][file_keeper.Settings.override_existing] is False
+                [overwrite_existing][file_keeper.Settings.overwrite_existing] is False
         """
         return self.manager.compose(location, files, kwargs)
 
@@ -1625,7 +1625,7 @@ class Storage(ABC):  # noqa: B024
                 APPEND operation
             exceptions.MissingFileError: when any of source files do not exist
             exceptions.ExistingFileError: when destination file already exists and
-                [override_existing][file_keeper.Settings.override_existing] is False
+                [overwrite_existing][file_keeper.Settings.overwrite_existing] is False
 
         """
         result = dest_storage.upload(location, make_upload(b""), **kwargs)

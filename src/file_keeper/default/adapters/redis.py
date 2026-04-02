@@ -54,7 +54,7 @@ class Uploader(fk.Uploader):
 
         cfg = self.storage.settings
 
-        if not cfg.override_existing and cfg.redis.hexists(cfg.bucket, filepath):
+        if not cfg.overwrite_existing and cfg.redis.hexists(cfg.bucket, filepath):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         reader = fk.HashingReader(upload.stream)
@@ -206,7 +206,7 @@ class Manager(fk.Manager):
         if not cfg.redis.hexists(cfg.bucket, srcpath):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        if not self.storage.settings.override_existing and cfg.redis.hexists(cfg.bucket, destpath):
+        if not self.storage.settings.overwrite_existing and cfg.redis.hexists(cfg.bucket, destpath):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         content: Any = cfg.redis.hget(cfg.bucket, srcpath)
@@ -224,7 +224,7 @@ class Manager(fk.Manager):
         if not cfg.redis.hexists(cfg.bucket, srcpath):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
-        if not cfg.override_existing and cfg.redis.hexists(cfg.bucket, destpath):
+        if not cfg.overwrite_existing and cfg.redis.hexists(cfg.bucket, destpath):
             raise fk.exc.ExistingFileError(self.storage, location)
 
         content: Any = cfg.redis.hget(
@@ -300,7 +300,7 @@ class RedisStorage(fk.Storage):
         "type": "file_keeper:redis",
         "bucket": "my_bucket",
         "url": "redis://localhost:6379/0",
-        "override_existing": False,
+        "overwrite_existing": False,
     }
 
     storage = fk.make_storage("redis", settings)
@@ -309,7 +309,7 @@ class RedisStorage(fk.Storage):
     Note:
     * The `bucket` setting is required and specifies the key of the Redis HASH.
     * The `url` setting is optional. If not provided, it defaults to `redis://localhost:6379/0`.
-    * The `override_existing` setting controls whether existing files can be overwritten.
+    * The `overwrite_existing` setting controls whether existing files can be overwritten.
 
     """
 

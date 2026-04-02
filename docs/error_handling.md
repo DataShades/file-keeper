@@ -98,7 +98,7 @@ try:
     storage.upload("test.txt", make_upload(b"New content"))
 except exc.ExistingFileError as e:
     print(f"File already exists: {e}")
-    # Either enable override_existing in settings or handle differently
+    # Either enable overwrite_existing in settings or handle differently
 
 # Check capabilities before operations
 if storage.supports(exc.Capability.REMOVE):

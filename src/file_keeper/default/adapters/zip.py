@@ -53,7 +53,7 @@ class Uploader(fk.Uploader):
             except KeyError:
                 pass
             else:
-                if not self.storage.settings.override_existing and _exists(info):
+                if not self.storage.settings.overwrite_existing and _exists(info):
                     raise fk.exc.ExistingFileError(self.storage, location)
 
             z.writestr(filepath, reader.read())
@@ -174,7 +174,7 @@ class ZipStorage(fk.Storage):
     settings = {
         "type": "file_keeper:zip",
         "path": "/path/to/storage.zip",
-        "override_existing": False,  # Optional, defaults to False
+        "overwrite_existing": False,  # Optional, defaults to False
     }
 
     storage = fk.make_storage("zip", settings)
@@ -182,7 +182,7 @@ class ZipStorage(fk.Storage):
 
     Note:
     * The `path` setting specifies the location of the ZIP file.
-    * The `override_existing` setting determines whether existing files should be
+    * The `overwrite_existing` setting determines whether existing files should be
       overridden during upload. Defaults to `False`.
     * Removed files are truncated and marked within the ZIP archive, and are not
       physically deleted.

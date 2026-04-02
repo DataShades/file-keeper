@@ -35,7 +35,7 @@ class Uploader(fk.Uploader):
     def upload(self, location: fk.Location, upload: fk.Upload, extras: dict[str, Any]) -> fk.FileData:
         filepath = self.storage.full_path(location)
         reader = upload.hashing_reader()
-        if filepath in self.storage.settings.bucket and not self.storage.settings.override_existing:
+        if filepath in self.storage.settings.bucket and not self.storage.settings.overwrite_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
 
         self.storage.settings.bucket[filepath] = reader.read()
@@ -145,7 +145,7 @@ class Manager(fk.Manager):
         filepath = self.storage.full_path(location)
 
         bucket = self.storage.settings.bucket
-        if filepath in bucket and not self.storage.settings.override_existing:
+        if filepath in bucket and not self.storage.settings.overwrite_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
 
         result = b""
@@ -175,7 +175,7 @@ class Manager(fk.Manager):
         filepath = self.storage.full_path(location)
 
         bucket = self.storage.settings.bucket
-        if filepath in bucket and not self.storage.settings.override_existing:
+        if filepath in bucket and not self.storage.settings.overwrite_existing:
             raise fk.exc.ExistingFileError(self.storage, location)
 
         sourcepath = self.storage.full_path(data.location)
@@ -258,13 +258,13 @@ class MemoryStorage(fk.Storage):
 
     settings = {
         "type": "file_keeper:memory",
-        "override_existing": False,
+        "overwrite_existing": False,
     }
     storage = fk.make_storage("memory", settings)
     ```
 
     Note:
-    * The `override_existing` setting controls whether existing files can be
+    * The `overwrite_existing` setting controls whether existing files can be
       overridden. If set to `False`, attempting to upload a file to a location
       that already exists will raise an `ExistingFileError`.
     * The `bucket` setting is a dictionary that holds the uploaded files in

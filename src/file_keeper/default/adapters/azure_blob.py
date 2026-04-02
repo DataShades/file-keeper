@@ -100,7 +100,7 @@ class Uploader(fk.Uploader):
         filepath = self.storage.full_path(location)
         blob = self.storage.settings.container.get_blob_client(filepath)
 
-        if not self.storage.settings.override_existing and blob.exists():
+        if not self.storage.settings.overwrite_existing and blob.exists():
             raise fk.exc.ExistingFileError(self.storage, location)
 
         result = blob.upload_blob(
@@ -239,7 +239,7 @@ class Manager(fk.Manager):
 
         dest_filepath = self.storage.full_path(location)
         dest = self.storage.settings.container.get_blob_client(dest_filepath)
-        if not self.storage.settings.override_existing and dest.exists():
+        if not self.storage.settings.overwrite_existing and dest.exists():
             raise fk.exc.ExistingFileError(self.storage, location)
 
         account_url = self.storage.settings.account_url

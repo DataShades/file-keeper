@@ -74,7 +74,7 @@ except exc.FilesError as e:
     "type": "file_keeper:fs",
     "path": "/path/to/storage",
     "initialize": True,
-    "override_existing": False
+    "overwrite_existing": False
 }
 ```
 

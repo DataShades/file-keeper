@@ -110,7 +110,7 @@ class Uploader(fk.Uploader):
         bucket = self.storage.settings.bucket
         blob = bucket.blob(filepath)
 
-        if not self.storage.settings.override_existing and blob.exists():
+        if not self.storage.settings.overwrite_existing and blob.exists():
             raise fk.exc.ExistingFileError(self.storage, location)
 
         blob.upload_from_file(upload.stream, content_type=upload.content_type)
@@ -355,7 +355,7 @@ class Manager(fk.Manager):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
         dest_blob = bucket.blob(dest_filepath)
-        if not self.storage.settings.override_existing and dest_blob.exists():
+        if not self.storage.settings.overwrite_existing and dest_blob.exists():
             raise fk.exc.ExistingFileError(self.storage, location)
 
         bucket.rename_blob(src_blob, dest_filepath)
@@ -372,7 +372,7 @@ class Manager(fk.Manager):
             raise fk.exc.MissingFileError(self.storage, data.location)
 
         dest_blob = bucket.blob(dest_filepath)
-        if not self.storage.settings.override_existing and dest_blob.exists():
+        if not self.storage.settings.overwrite_existing and dest_blob.exists():
             raise fk.exc.ExistingFileError(self.storage, location)
 
         bucket.copy_blob(src_blob, bucket, dest_filepath)
@@ -458,7 +458,7 @@ class GoogleCloudStorage(fk.Storage):
         "path": "uploads",
         "credentials_file": "/path/to/credentials.json",
         "project_id": "my-project-id",
-        "override_existing": False,
+        "overwrite_existing": False,
         "initialize": True,
     }
 
