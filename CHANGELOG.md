@@ -1,4 +1,16 @@
 
+## [v0.2.0](https://github.com/DataShades/file-keeper/releases/tag/v0.2.0) - 2026-04-02
+[Compare with v0.1.2](https://github.com/DataShades/file-keeper/compare/v0.1.2..v0.2.0)
+
+### 🚀 Features
+
+- stable permanent and temporal link for s3, azure and gcs ([36a72eb](https://github.com/DataShades/file-keeper/commit/36a72eb3f044b68d3cf5cb7e99e9bf31485864f1))
+
+### 🚜 Refactor
+
+- [**breaking**] override_existing -> overwrite_existing ([2bc8f2c](https://github.com/DataShades/file-keeper/commit/2bc8f2ceac61fce352ec6c2a89fc55b49b8146ea))
+- [**breaking**] static_uuid renamed to uuid5, other uuid renamed to uuid4 ([a610898](https://github.com/DataShades/file-keeper/commit/a610898928de0645bc8c6535289bedc7fd390a5c))
+
 ## [v0.1.2](https://github.com/DataShades/file-keeper/releases/tag/v0.1.2) - 2026-03-13
 [Compare with v0.1.1](https://github.com/DataShades/file-keeper/compare/v0.1.1..v0.1.2)
 
