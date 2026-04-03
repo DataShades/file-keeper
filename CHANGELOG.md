@@ -1,4 +1,11 @@
 
+## [v0.2.2](https://github.com/DataShades/file-keeper/releases/tag/v0.2.2) - 2026-04-03
+[Compare with v0.2.1](https://github.com/DataShades/file-keeper/compare/v0.2.1..v0.2.2)
+
+### 🚜 Refactor
+
+- cloud storages use naive permanent link that expects public bucket ([c981968](https://github.com/DataShades/file-keeper/commit/c98196847b4f1122ae8b1fb0cff73c004c14f13e))
+
 ## [v0.2.1](https://github.com/DataShades/file-keeper/releases/tag/v0.2.1) - 2026-04-02
 [Compare with v0.1.2](https://github.com/DataShades/file-keeper/compare/v0.1.2..v0.2.1)
 
