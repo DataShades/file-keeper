@@ -7,6 +7,7 @@ import os
 import re
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, ClassVar
+from urllib.parse import urlparse, urlunparse
 
 import boto3
 from typing_extensions import override
@@ -76,7 +77,7 @@ class Reader(fk.Reader):
     """AWS S3 reader."""
 
     storage: S3Storage
-    capabilities: fk.Capability = fk.Capability.STREAM | fk.Capability.LINK_PERMANENT
+    capabilities: fk.Capability = fk.Capability.STREAM | fk.Capability.LINK_TEMPORARY | fk.Capability.LINK_PERMANENT
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
@@ -94,13 +95,18 @@ class Reader(fk.Reader):
         return obj["Body"]
 
     @override
-    def temporal_link(self, data: fk.FileData, duration: int, extras: dict[str, Any]) -> str:
+    def temporary_link(self, data: fk.FileData, duration: int, extras: dict[str, Any]) -> str:
         name = fk.Location(self.storage.full_path(data.location))
         return self.storage.manager.signed("download", duration, name, extras=extras)
 
     @override
     def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
-        return self.temporal_link(data, int(extras.get("duration", 3600)), extras)
+        name = self.storage.full_path(data.location)
+        signed = self.storage.settings.client.generate_presigned_url(
+            "get_object", Params={"Bucket": self.storage.settings.bucket, "Key": name}
+        )
+
+        return urlunparse(urlparse(signed)._replace(query=None))
 
 
 class Uploader(fk.Uploader):

@@ -195,7 +195,7 @@ class Reader(fk.Reader):
     """
 
     storage: AzureBlobStorage
-    capabilities = fk.Capability.STREAM | fk.Capability.LINK_PERMANENT
+    capabilities = fk.Capability.STREAM | fk.Capability.LINK_TEMPORARY | fk.Capability.LINK_PERMANENT
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
@@ -208,13 +208,18 @@ class Reader(fk.Reader):
         return blob.download_blob().chunks()
 
     @override
-    def temporal_link(self, data: fk.FileData, duration: int, extras: dict[str, Any]) -> str:
+    def temporary_link(self, data: fk.FileData, duration: int, extras: dict[str, Any]) -> str:
         name = fk.Location(self.storage.full_path(data.location))
         return self.storage.manager.signed("download", duration, name, extras=extras)
 
     @override
     def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
-        return self.temporal_link(data, int(extras.get("duration", 3600)), extras)
+        account_url = self.storage.settings.account_url
+        container = self.storage.settings.container
+        filepath = self.storage.full_path(data.location)
+
+        return f"{account_url}/{container.container_name}/{filepath}"
+
 
 
 class Manager(fk.Manager):

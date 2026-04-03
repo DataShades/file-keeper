@@ -813,10 +813,10 @@ class PermanentLinker:
         assert storage.supports(fk.Capability.LINK_PERMANENT), "Does not support LINK_PERMANENT"
 
 
-class TemporalLinker:
-    @pytest.mark.expect_storage_capability(fk.Capability.LINK_TEMPORAL)
-    def test_temporal_link_capabilities(self, storage: fk.Storage):
-        assert storage.supports(fk.Capability.LINK_TEMPORAL), "Does not support LINK_TEMPORAL"
+class TemporaryLinker:
+    @pytest.mark.expect_storage_capability(fk.Capability.LINK_TEMPORARY)
+    def test_temporary_link_capabilities(self, storage: fk.Storage):
+        assert storage.supports(fk.Capability.LINK_TEMPORARY), "Does not support LINK_TEMPORARY"
 
 
 class OneTimeLinker:
@@ -842,6 +842,6 @@ class Standard(
     Signer,
     Streamer,
     PermanentLinker,
-    TemporalLinker,
+    TemporaryLinker,
     OneTimeLinker,
 ): ...

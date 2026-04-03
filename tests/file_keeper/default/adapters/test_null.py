@@ -194,12 +194,12 @@ class TestStorage:
         result = storage.permanent_link(data)
         assert result == location
 
-    def test_temporal_link_always_returns_location(self, storage: fk.Storage, faker: Faker):
-        """Temporal link always returns location."""
+    def test_temporary_link_always_returns_location(self, storage: fk.Storage, faker: Faker):
+        """Temporary link always returns location."""
         location = fk.Location(faker.file_name())
         data = fk.FileData(location)
 
-        result = storage.temporal_link(data, 60)
+        result = storage.temporary_link(data, 60)
         assert result == location
 
     def test_one_time_link_always_returns_location(self, storage: fk.Storage, faker: Faker):

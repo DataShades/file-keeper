@@ -32,7 +32,7 @@ Here's a breakdown of the key capabilities:
 | [CREATE][file_keeper.Capability.CREATE]                 | Create a file as an atomic object.                                    |
 | [EXISTS][file_keeper.Capability.EXISTS]                 | Check if file exists.                                                 |
 | [LINK_PERMANENT][file_keeper.Capability.LINK_PERMANENT] | Make permanent download link.                                         |
-| [LINK_TEMPORAL][file_keeper.Capability.LINK_TEMPORAL]   | Make expiring download link.                                          |
+| [LINK_TEMPORARY][file_keeper.Capability.LINK_TEMPORARY] | Make expiring download link.                                          |
 | [LINK_ONE_TIME][file_keeper.Capability.LINK_ONE_TIME]   | Make one-time download link.                                          |
 | [MOVE][file_keeper.Capability.MOVE]                     | Move file to a different location inside the same storage.            |
 | [MULTIPART][file_keeper.Capability.MULTIPART]           | Upload fragments in parallel and combine them into a file in the end. |

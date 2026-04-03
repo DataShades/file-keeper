@@ -192,7 +192,7 @@ class Capability(enum.Flag):
     LINK_PERMANENT = enum.auto()
     """Make permanent download link."""
 
-    LINK_TEMPORAL = enum.auto()
+    LINK_TEMPORARY = enum.auto()
     """Make expiring download link."""
 
     LINK_ONE_TIME = enum.auto()
@@ -225,7 +225,7 @@ class Capability(enum.Flag):
     MANAGER_CAPABILITIES = ANALYZE | SCAN | COPY | MOVE | APPEND | COMPOSE | EXISTS | REMOVE | SIGNED
     READER_CAPABILITIES = RANGE | STREAM
     UPLOADER_CAPABILITIES = CREATE | MULTIPART | RESUMABLE
-    LINK_CAPABILITIES = LINK_PERMANENT | LINK_TEMPORAL | LINK_ONE_TIME
+    LINK_CAPABILITIES = LINK_PERMANENT | LINK_TEMPORARY | LINK_ONE_TIME
 
     def exclude(self, *capabilities: Capability):
         """Remove capabilities from the cluster.

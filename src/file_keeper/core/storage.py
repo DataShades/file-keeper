@@ -435,17 +435,10 @@ class Reader(StorageService):
     def permanent_link(self, data: data.FileData, extras: dict[str, Any]) -> str:
         """Return permanent download link.
 
-        Ideally, this link should be valid as long as the file exists in the
-        storage. If adapter does not support such links, consider returning
-        temporal link with very long duration.
-
         The link produced by this method should be as stable as possible, but
         it is not required to be stable across different uploads of the same
         file. For example, if file is removed and uploaded again, the link can
         change.
-
-        Because this method may use temporal link internaly, there is no
-        guarantee that the link will remain valid for a long time.
 
         Args:
             data: The FileData object representing the file.
@@ -454,8 +447,8 @@ class Reader(StorageService):
         """
         raise NotImplementedError
 
-    def temporal_link(self, data: data.FileData, duration: int, extras: dict[str, Any]) -> str:
-        """Return temporal download link.
+    def temporary_link(self, data: data.FileData, duration: int, extras: dict[str, Any]) -> str:
+        """Return temporary download link.
 
         Args:
             data: The FileData object representing the file.
@@ -1669,10 +1662,10 @@ class Storage(ABC):  # noqa: B024
         if self.supports(Capability.LINK_ONE_TIME):
             return self.reader.one_time_link(data, kwargs)
 
-    def temporal_link(self, data: data.FileData, duration: int, /, **kwargs: Any) -> str | None:
-        """Return temporal download link.
+    def temporary_link(self, data: data.FileData, duration: int, /, **kwargs: Any) -> str | None:
+        """Return temporary download link.
 
-        Requires [LINK_TEMPORAL][file_keeper.Capability.LINK_TEMPORAL] capability.
+        Requires [LINK_TEMPORARY][file_keeper.Capability.LINK_TEMPORARY] capability.
 
         Args:
             data: The FileData object representing the file.
@@ -1680,10 +1673,10 @@ class Storage(ABC):  # noqa: B024
             **kwargs: Additional metadata for the operation.
 
         Returns:
-            A temporal download link as a string, or None if not supported.
+            A temporary download link as a string, or None if not supported.
         """
-        if self.supports(Capability.LINK_TEMPORAL):
-            return self.reader.temporal_link(data, duration, kwargs)
+        if self.supports(Capability.LINK_TEMPORARY):
+            return self.reader.temporary_link(data, duration, kwargs)
 
     def permanent_link(self, data: data.FileData, /, **kwargs: Any) -> str | None:
         """Return permanent download link.
