@@ -118,7 +118,7 @@ class HashingReader:
         self,
         stream: types.PStream,
         chunk_size: int = CHUNK_SIZE,
-        algorithm: str = "",
+        algorithm: str = "md5",
     ):
         self.hashsum = hashlib.new(algorithm)
         self.stream = stream

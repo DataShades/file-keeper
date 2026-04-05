@@ -106,6 +106,12 @@ def make_upload(value: Any, mime: str = "") -> Upload:  # noqa: C901
     [Upload][file_keeper.Upload] manually, unless you are 100% sure you can
     provide correct MIMEtype, size and stream.
 
+    This function should be called without `mime` argument in most
+    cases. MIMEtype will be detected based on content of the file, so you don't
+    have to worry about it. Provide `mime` argument only if you want to
+    override detected MIMEtype or if content is too small for reliable
+    detection(less than 2KiB) and you know the correct MIMEtype.
+
     Example:
         Bytes, binary streams, file objects, and a number of other types can be
         converted into [Upload][file_keeper.Upload] object.

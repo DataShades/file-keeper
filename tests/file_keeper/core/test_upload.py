@@ -50,12 +50,12 @@ class TestMakeUpload:
 
     def test_content_type(self, faker: Faker):
         """Content type is detected from the file content if not provided manually."""
-        img = faker.image((20, 20), "png")
-        upload = make_upload(img)
-        assert upload.content_type == "image/png"
+        data = faker.json().encode()
+        upload = make_upload(data)
+        assert upload.content_type == "application/json"
 
     def test_manual_content_type(self, faker: Faker):
         """Manual content type overrides detected content type."""
-        img = faker.image((20, 20), "png")
-        upload = make_upload(img, "text/csv")
-        assert upload.content_type == "text/csv"
+        data = faker.json().encode()
+        upload = make_upload(data, "image/png")
+        assert upload.content_type == "image/png"

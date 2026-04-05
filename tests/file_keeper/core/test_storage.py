@@ -304,8 +304,9 @@ class TestStorage:
         expected = f"{base}.html"
         assert result == expected
 
-        result = storage.prepare_location(name, make_upload(faker.image(size=(10, 10), image_format="png")))
-        expected = f"{base}.png"
+        data = faker.json().encode()
+        result = storage.prepare_location(name, make_upload(data))
+        expected = f"{base}.json"
         assert result == expected
 
     def test_prepare_location_with_wrong_transformer(self):
