@@ -98,7 +98,7 @@ class Upload:
 
 
 @utils.ensure_setup
-def make_upload(value: Any) -> Upload:
+def make_upload(value: Any, mime: str = "") -> Upload:  # noqa: C901
     """Convert value into [Upload][file_keeper.Upload] object.
 
     Use this function for simple and reliable initialization of
@@ -137,6 +137,8 @@ def make_upload(value: Any) -> Upload:
 
     Args:
         value: content of the file
+        mime: MIMEtype of the file. If not provided, it will be guessed based on
+            content.
 
     Raises:
         TypeError: if value cannot be converted into Upload object
@@ -177,7 +179,8 @@ def make_upload(value: Any) -> Upload:
     # transform it into an Upload. Factories will choose this option to avoid
     # repeating mimetype detection logic
     if isinstance(value, BytesIO | BufferedReader):
-        mime = magic.from_buffer(value.read(utils.SAMPLE_SIZE), True)
+        if not mime:
+            mime = magic.from_buffer(value.read(utils.SAMPLE_SIZE), True)
         _ = value.seek(0, 2)
         size = value.tell()
         _ = value.seek(0)

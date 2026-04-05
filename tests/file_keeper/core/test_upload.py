@@ -47,3 +47,15 @@ class TestMakeUpload:
         """Any unexpected value causes an exception."""
         with pytest.raises(TypeError):
             make_upload(123)
+
+    def test_content_type(self, faker: Faker):
+        """Content type is detected from the file content if not provided manually."""
+        img = faker.image((20, 20), "png")
+        upload = make_upload(img)
+        assert upload.content_type == "image/png"
+
+    def test_manual_content_type(self, faker: Faker):
+        """Manual content type overrides detected content type."""
+        img = faker.image((20, 20), "png")
+        upload = make_upload(img, "text/csv")
+        assert upload.content_type == "text/csv"
