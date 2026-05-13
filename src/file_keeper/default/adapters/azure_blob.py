@@ -209,8 +209,7 @@ class Reader(fk.Reader):
 
     @override
     def temporary_link(self, data: fk.FileData, duration: int, extras: dict[str, Any]) -> str:
-        name = fk.Location(self.storage.full_path(data.location))
-        return self.storage.manager.signed("download", duration, name, extras=extras)
+        return self.storage.manager.signed("download", duration, data.location, extras=extras)
 
     @override
     def permanent_link(self, data: fk.FileData, extras: dict[str, Any]) -> str:
