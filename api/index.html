@@ -1803,9 +1803,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#file_keeper.Storage.temporal_link" class="md-nav__link">
+  <a href="#file_keeper.Storage.temporary_link" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;temporal_link
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;temporary_link
     </span>
   </a>
   
@@ -1908,9 +1908,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#file_keeper.Capability.LINK_TEMPORAL" class="md-nav__link">
+  <a href="#file_keeper.Capability.LINK_TEMPORARY" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;LINK_TEMPORAL
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;LINK_TEMPORARY
     </span>
   </a>
   
@@ -2031,6 +2031,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#file_keeper.Settings.hashing_algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;hashing_algorithm
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#file_keeper.Settings.initialize" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;initialize
@@ -2058,9 +2067,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#file_keeper.Settings.override_existing" class="md-nav__link">
+  <a href="#file_keeper.Settings.overwrite_existing" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;override_existing
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;overwrite_existing
     </span>
   </a>
   
@@ -2409,9 +2418,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#file_keeper.Reader.temporal_link" class="md-nav__link">
+  <a href="#file_keeper.Reader.temporary_link" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;temporal_link
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;temporary_link
     </span>
   </a>
   
@@ -3245,9 +3254,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#file_keeper.Storage.temporal_link" class="md-nav__link">
+  <a href="#file_keeper.Storage.temporary_link" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;temporal_link
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;temporary_link
     </span>
   </a>
   
@@ -3350,9 +3359,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#file_keeper.Capability.LINK_TEMPORAL" class="md-nav__link">
+  <a href="#file_keeper.Capability.LINK_TEMPORARY" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;LINK_TEMPORAL
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;LINK_TEMPORARY
     </span>
   </a>
   
@@ -3473,6 +3482,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#file_keeper.Settings.hashing_algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;hashing_algorithm
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#file_keeper.Settings.initialize" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;initialize
@@ -3500,9 +3518,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#file_keeper.Settings.override_existing" class="md-nav__link">
+  <a href="#file_keeper.Settings.overwrite_existing" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;override_existing
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;overwrite_existing
     </span>
   </a>
   
@@ -3851,9 +3869,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#file_keeper.Reader.temporal_link" class="md-nav__link">
+  <a href="#file_keeper.Reader.temporary_link" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;temporal_link
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;temporary_link
     </span>
   </a>
   
@@ -4483,7 +4501,7 @@ corresponding package:</p>
 
 
 <h2 id="file_keeper.make_upload" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">make_upload</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code>
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">make_upload</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></code>
 
 </h2>
 
@@ -4510,6 +4528,11 @@ corresponding package:</p>
       &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
   &lt;/span&gt;" href="#file_keeper.Upload">Upload</a> manually, unless you are 100% sure you can
 provide correct MIMEtype, size and stream.</p>
+<p>This function should be called without <code>mime</code> argument in most
+cases. MIMEtype will be detected based on content of the file, so you don't
+have to worry about it. Provide <code>mime</code> argument only if you want to
+override detected MIMEtype or if content is too small for reliable
+detection(less than 2KiB) and you know the correct MIMEtype.</p>
 
 
 <details class="example" open>
@@ -4557,6 +4580,27 @@ converted into <a class="autorefs autorefs-internal" title="&lt;code class=&quot
                   <span class="doc-param-annotation">
                     <b>TYPE:</b>
                       <code><span title="typing.Any">Any</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>mime</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>MIMEtype of the file. If not provided, it will be guessed based on
+content.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="str">str</span></code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>&#39;&#39;</code>
                   </span>
               </p>
             </td>
@@ -5625,12 +5669,12 @@ created in the storage.</p>
 <p>Content is not modified during upload, it is written as-is. And content
 can be of size 0, which results in empty file in the storage.</p>
 <p>When file already exists, behavior depends on
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;override_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;overwrite_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
       &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="#file_keeper.Settings.override_existing">override_existing</a> setting. If
+  &lt;/span&gt;" href="#file_keeper.Settings.overwrite_existing">overwrite_existing</a> setting. If
 it is False, <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;              &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;ExistingFileError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;storage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../error_handling/#file_keeper.exc.ExistingFileError">ExistingFileError</a> is
 raised. If it is True, existing file is replaced with new content. In
 this case, it is possible to lose existing file if upload fails. When
@@ -5780,12 +5824,12 @@ CREATE operation</p>
             <td class="doc-raises-details">
               <div class="doc-md-description">
                 <p>when file already exists and
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;override_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;overwrite_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
       &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="#file_keeper.Settings.override_existing">override_existing</a> is False</p>
+  &lt;/span&gt;" href="#file_keeper.Settings.overwrite_existing">overwrite_existing</a> is False</p>
               </div>
             </td>
           </tr>
@@ -9166,12 +9210,12 @@ APPEND operation</p>
 location within the same storage. The copied file retains the same
 content and metadata as the original file.</p>
 <p>If file already exists at the destination location, behavior depends on
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;override_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;overwrite_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
       &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="#file_keeper.Settings.override_existing">override_existing</a> setting. If
+  &lt;/span&gt;" href="#file_keeper.Settings.overwrite_existing">overwrite_existing</a> setting. If
 it is False, <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;              &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;ExistingFileError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;storage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="../error_handling/#file_keeper.exc.ExistingFileError">ExistingFileError</a> is
 raised. If it is True, existing file is replaced with the copied file. In
 this case, it is possible to lose existing file if copy fails.</p>
@@ -9321,12 +9365,12 @@ COPY operation</p>
             <td class="doc-raises-details">
               <div class="doc-md-description">
                 <p>when destination file already exists and
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;override_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;overwrite_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
       &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="#file_keeper.Settings.override_existing">override_existing</a> is False</p>
+  &lt;/span&gt;" href="#file_keeper.Settings.overwrite_existing">overwrite_existing</a> is False</p>
               </div>
             </td>
           </tr>
@@ -9492,12 +9536,12 @@ CREATE operation</p>
             <td class="doc-raises-details">
               <div class="doc-md-description">
                 <p>when destination file already exists and
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;override_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;overwrite_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
       &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="#file_keeper.Settings.override_existing">override_existing</a> is False</p>
+  &lt;/span&gt;" href="#file_keeper.Settings.overwrite_existing">overwrite_existing</a> is False</p>
               </div>
             </td>
           </tr>
@@ -9676,12 +9720,12 @@ MOVE operation</p>
             <td class="doc-raises-details">
               <div class="doc-md-description">
                 <p>when destination file already exists and
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;override_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;overwrite_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
       &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="#file_keeper.Settings.override_existing">override_existing</a> is False</p>
+  &lt;/span&gt;" href="#file_keeper.Settings.overwrite_existing">overwrite_existing</a> is False</p>
               </div>
             </td>
           </tr>
@@ -9879,12 +9923,12 @@ CREATE or REMOVE operation</p>
             <td class="doc-raises-details">
               <div class="doc-md-description">
                 <p>when destination file already exists and
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;override_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;overwrite_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
       &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="#file_keeper.Settings.override_existing">override_existing</a> is False</p>
+  &lt;/span&gt;" href="#file_keeper.Settings.overwrite_existing">overwrite_existing</a> is False</p>
               </div>
             </td>
           </tr>
@@ -10067,12 +10111,12 @@ COMPOSE operation</p>
             <td class="doc-raises-details">
               <div class="doc-md-description">
                 <p>when destination file already exists and
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;override_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;overwrite_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
       &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="#file_keeper.Settings.override_existing">override_existing</a> is False</p>
+  &lt;/span&gt;" href="#file_keeper.Settings.overwrite_existing">overwrite_existing</a> is False</p>
               </div>
             </td>
           </tr>
@@ -10242,12 +10286,12 @@ APPEND operation</p>
             <td class="doc-raises-details">
               <div class="doc-md-description">
                 <p>when destination file already exists and
-<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;override_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
+<a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;overwrite_existing&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;/code&gt;
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
       &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="#file_keeper.Settings.override_existing">override_existing</a> is False</p>
+  &lt;/span&gt;" href="#file_keeper.Settings.overwrite_existing">overwrite_existing</a> is False</p>
               </div>
             </td>
           </tr>
@@ -10363,21 +10407,21 @@ APPEND operation</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="file_keeper.Storage.temporal_link" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">temporal_link</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<h3 id="file_keeper.Storage.temporary_link" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">temporary_link</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
 </h3>
 
 
     <div class="doc doc-contents ">
 
-        <p>Return temporal download link.</p>
-<p>Requires <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;LINK_TEMPORAL&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;auto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;
+        <p>Return temporary download link.</p>
+<p>Requires <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-attribute&quot;&gt;&lt;/code&gt;            &lt;code class=&quot;highlight language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;LINK_TEMPORARY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;auto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-class-attribute&quot;&gt;&lt;code&gt;class-attribute&lt;/code&gt;&lt;/small&gt;
       &lt;small class=&quot;doc doc-label doc-label-instance-attribute&quot;&gt;&lt;code&gt;instance-attribute&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="#file_keeper.Capability.LINK_TEMPORAL">LINK_TEMPORAL</a> capability.</p>
+  &lt;/span&gt;" href="#file_keeper.Capability.LINK_TEMPORARY">LINK_TEMPORARY</a> capability.</p>
 
 
 <table>
@@ -10465,7 +10509,7 @@ APPEND operation</p>
             </td>
             <td class="doc-returns-details">
               <div class="doc-md-description">
-                <p>A temporal download link as a string, or None if not supported.</p>
+                <p>A temporary download link as a string, or None if not supported.</p>
               </div>
             </td>
           </tr>
@@ -10818,8 +10862,8 @@ APPEND operation</p>
 
 
 
-<h3 id="file_keeper.Capability.LINK_TEMPORAL" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">LINK_TEMPORAL</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span></code>
+<h3 id="file_keeper.Capability.LINK_TEMPORARY" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">LINK_TEMPORARY</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
@@ -11165,6 +11209,29 @@ APPEND operation</p>
 
 
 
+<h3 id="file_keeper.Settings.hashing_algorithm" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">hashing_algorithm</span> <span class="o">=</span> <span class="s1">&#39;md5&#39;</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Hashing algorithm used for integrity verification.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
 <h3 id="file_keeper.Settings.initialize" class="doc doc-heading">
 <code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">initialize</span> <span class="o">=</span> <span class="kc">False</span></code>
 
@@ -11234,8 +11301,8 @@ APPEND operation</p>
 
 
 
-<h3 id="file_keeper.Settings.override_existing" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">override_existing</span> <span class="o">=</span> <span class="kc">False</span></code>
+<h3 id="file_keeper.Settings.overwrite_existing" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">overwrite_existing</span> <span class="o">=</span> <span class="kc">False</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
@@ -13519,6 +13586,10 @@ initialization errors from dataclass constructor.</p>
     <div class="doc doc-contents ">
 
         <p>Return permanent download link.</p>
+<p>The link produced by this method should be as stable as possible, but
+it is not required to be stable across different uploads of the same
+file. For example, if file is removed and uploaded again, the link can
+change.</p>
 
 
 <table>
@@ -13743,15 +13814,15 @@ initialization errors from dataclass constructor.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="file_keeper.Reader.temporal_link" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">temporal_link</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">extras</span><span class="p">)</span></code>
+<h3 id="file_keeper.Reader.temporary_link" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">temporary_link</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">extras</span><span class="p">)</span></code>
 
 </h3>
 
 
     <div class="doc doc-contents ">
 
-        <p>Return temporal download link.</p>
+        <p>Return temporary download link.</p>
 
 
 <table>
@@ -13957,7 +14028,7 @@ initialization errors from dataclass constructor.</p>
                   </span>
                   <span class="doc-param-default">
                     <b>DEFAULT:</b>
-                      <code><span title="typing.cast">cast</span>(&#39;dict[str, Any]&#39;, <span title="dataclasses.field">field</span>(default_factory=<span title="dict">dict</span>))</code>
+                      <code><span title="typing.cast">cast</span>(&#39;dict[str, Any]&#39;, <span title="dataclasses.field">field</span>(default_factory=<span title="dict">dict</span>, kw_only=True))</code>
                   </span>
               </p>
             </td>

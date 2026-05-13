@@ -2261,7 +2261,7 @@ of file-keeper module</p>
     <span class="n">storage</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="s2">&quot;test.txt&quot;</span><span class="p">,</span> <span class="n">make_upload</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;New content&quot;</span><span class="p">))</span>
 <span class="k">except</span> <span class="n">exc</span><span class="o">.</span><span class="n">ExistingFileError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File already exists: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="c1"># Either enable override_existing in settings or handle differently</span>
+    <span class="c1"># Either enable overwrite_existing in settings or handle differently</span>
 
 <span class="c1"># Check capabilities before operations</span>
 <span class="k">if</span> <span class="n">storage</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">exc</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">REMOVE</span><span class="p">):</span>
