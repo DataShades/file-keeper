@@ -18,9 +18,9 @@ import file_keeper as fk
 class FileStream:
     """Wrapper for stream returned by OpenDAL."""
 
-    file: opendal.File
+    file: opendal.file.File
 
-    def __init__(self, file: opendal.File):
+    def __init__(self, file: opendal.file.File):
         self.file = file
 
     def __iter__(self):
@@ -241,7 +241,7 @@ class Manager(fk.Manager):
         for entry in self.storage.settings.operator.scan(path):
             stat = self.storage.settings.operator.stat(entry.path)
 
-            if opendal.EntryMode.is_file(stat.mode):
+            if stat.mode.is_file():
                 yield os.path.relpath(entry.path, path)
 
     @override
