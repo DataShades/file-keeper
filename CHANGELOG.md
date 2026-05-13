@@ -1,4 +1,15 @@
 
+## [v0.2.3](https://github.com/DataShades/file-keeper/releases/tag/v0.2.3) - 2026-05-13
+[Compare with v0.2.2](https://github.com/DataShades/file-keeper/compare/v0.2.2..v0.2.3)
+
+### 🚀 Features
+
+- make_upload accepts optional mime parameter ([feb716e](https://github.com/DataShades/file-keeper/commit/feb716e9972eb69020378e18806ced48641a5eb6))
+
+### 🐛 Bug Fixes
+
+- temporary_link duplicates storage path ([33d0a67](https://github.com/DataShades/file-keeper/commit/33d0a67e13a8e9aaaa048bc770b307d5c879c548))
+
 ## [v0.2.2](https://github.com/DataShades/file-keeper/releases/tag/v0.2.2) - 2026-04-03
 [Compare with v0.2.1](https://github.com/DataShades/file-keeper/compare/v0.2.1..v0.2.2)
 
