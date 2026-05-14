@@ -1,4 +1,11 @@
 
+## [v0.2.4](https://github.com/DataShades/file-keeper/releases/tag/v0.2.4) - 2026-05-14
+[Compare with v0.2.3](https://github.com/DataShades/file-keeper/compare/v0.2.3..v0.2.4)
+
+### 🚀 Features
+
+- s3 storage accepts `config` option for botocore.config.Config ([95100e5](https://github.com/DataShades/file-keeper/commit/95100e5eaed3a70fd4a85a11c48ff2095e8397c9))
+
 ## [v0.2.3](https://github.com/DataShades/file-keeper/releases/tag/v0.2.3) - 2026-05-13
 [Compare with v0.2.2](https://github.com/DataShades/file-keeper/compare/v0.2.2..v0.2.3)
 
