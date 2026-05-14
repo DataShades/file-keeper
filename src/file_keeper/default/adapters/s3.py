@@ -9,6 +9,7 @@ from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, ClassVar
 from urllib.parse import urlparse, urlunparse
 
+from botocore.config import Config
 import boto3
 from typing_extensions import override
 
@@ -38,6 +39,8 @@ class Settings(fk.Settings):
     """AWS Region of the bucket."""
     endpoint: str | None = None
     """Custom AWS endpoint."""
+    config: dict[str, Any] = dataclasses.field(default_factory=dict)
+    """Additional configuration for the S3 client. See botocore.config.Config for details."""
 
     _required_options: ClassVar[list[str]] = ["bucket"]
 
@@ -60,6 +63,7 @@ class Settings(fk.Settings):
                 aws_secret_access_key=self.secret,
                 region_name=self.region,
                 endpoint_url=self.endpoint,
+                config=Config(**self.config)
             )
 
         try:

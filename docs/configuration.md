@@ -179,16 +179,17 @@ No specific settings
 
 ### `file_keeper:s3`
 
-| Setting      | Type     | Default | Description                           |
-|--------------|----------|---------|---------------------------------------|
-| `bucket`     | str      | `""`    | Name of the storage bucket.           |
-| `client`     | S3Client | `None"` | Existing S3 client.                   |
-| `key`        | str      | `None`  | The AWS Access Key.                   |
-| `secret`     | str      | `None`  | The AWS Secret Key.                   |
-| `region`     | str      | `None`  | The AWS Region of the bucket.         |
-| `endpoint`   | str      | `None`  | Custom AWS endpoint.                  |
-| `path`       | str      | `""`    | Prefix for the file location.         |
-| `initialize` | bool     | `False` | Create `bucket` if it does not exist. |
+| Setting      | Type     | Default | Description                            |
+|--------------|----------|---------|----------------------------------------|
+| `bucket`     | str      | `""`    | Name of the storage bucket.            |
+| `client`     | S3Client | `None"` | Existing S3 client.                    |
+| `key`        | str      | `None`  | The AWS Access Key.                    |
+| `secret`     | str      | `None`  | The AWS Secret Key.                    |
+| `region`     | str      | `None`  | The AWS Region of the bucket.          |
+| `endpoint`   | str      | `None`  | Custom AWS endpoint.                   |
+| `path`       | str      | `""`    | Prefix for the file location.          |
+| `initialize` | bool     | `False` | Create `bucket` if it does not exist.  |
+| `config`     | dict     | `{}`    | Additional options for storage client. |
 
 ### `file_keeper:sqlalchemy`
 
