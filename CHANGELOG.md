@@ -1,4 +1,11 @@
 
+## [v0.2.6](https://github.com/DataShades/file-keeper/releases/tag/v0.2.6) - 2026-08-25
+[Compare with v0.2.5](https://github.com/DataShades/file-keeper/compare/v0.2.5..v0.2.6)
+
+### 🚀 Features
+
+- add follow_symlinks option to fs adapter ([d0d3ac2](https://github.com/DataShades/file-keeper/commit/d0d3ac222fb65c7d49cbfc900c8fcf2583153cec))
+
 ## [v0.2.5](https://github.com/DataShades/file-keeper/releases/tag/v0.2.5) - 2026-08-25
 [Compare with v0.2.4](https://github.com/DataShades/file-keeper/compare/v0.2.4..v0.2.5)
 
