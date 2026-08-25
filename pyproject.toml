@@ -20,9 +20,8 @@ authors = [
 maintainers = [
     {name = "DataShades", email = "datashades@linkdigital.com.au"},
 ]
-
-[project.license]
-text = "AGPL-3.0"
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE.txt"] 
 
 [project.readme]
 file = "README.md"
