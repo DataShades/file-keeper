@@ -268,9 +268,7 @@ class Manager(StorageService):
         """
         raise NotImplementedError
 
-    def compose(
-        self, location: types.Location, data: Iterable[data.FileData], extras: dict[str, Any]
-    ) -> data.FileData:
+    def compose(self, location: types.Location, data: Iterable[data.FileData], extras: dict[str, Any]) -> data.FileData:
         """Combine multiple file inside the storage into a new one.
 
         Args:
@@ -739,8 +737,19 @@ class Storage(ABC):  # noqa: B024
         if "\x00" in location:
             raise exceptions.LocationError(self, location)
 
+        # normalize `./` and `../`, but do not resolve absolute path to remain
+        # compatible with cloud storages
         result = os.path.normpath(os.path.join(self.settings.path, location))
-        if not result.startswith(self.settings.path):
+        try:
+            common = os.path.commonpath([self.settings.path, result])
+        except ValueError as err:
+            # most likely there is a mix of relative and absolute path, which
+            # signals about attempt to break things. As `path` is prepanded to
+            # `location`, type of both must match `path` unless you are doing
+            # something illegal
+            raise exceptions.LocationError(self, location) from err
+
+        if common != self.settings.path:
             raise exceptions.LocationError(self, location)
 
         return result

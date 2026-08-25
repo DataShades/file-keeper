@@ -337,6 +337,24 @@ class TestStorage:
         with pytest.raises(exc.LocationError):
             storage.full_path(location)
 
+    def test_full_path_commonprefix(self, faker: Faker):
+        """Location with path traversal raises LocationError on full_path access.
+
+        This prevents using the same common path prefix, like `folder` to access `folder_suffix`.
+        """
+
+        path = faker.file_path(extension=[])
+        storage = FakeStorage({"path": path})
+        storage_no_path = FakeStorage({})
+
+        dirname = path.rsplit("/", 1)[-1]
+        location = fk.Location(f"../{dirname}_evil/secrets.txt")
+        assert storage_no_path.full_path(location)
+
+        with pytest.raises(exc.LocationError):
+            storage.full_path(location)
+
+
     @pytest.mark.parametrize(
         ("location", "normalized"),
         [

@@ -9,8 +9,8 @@ from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, ClassVar
 from urllib.parse import urlparse, urlunparse
 
-from botocore.config import Config
 import boto3
+from botocore.config import Config
 from typing_extensions import override
 
 import file_keeper as fk
