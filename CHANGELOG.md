@@ -1,4 +1,11 @@
 
+## [v0.2.5](https://github.com/DataShades/file-keeper/releases/tag/v0.2.5) - 2026-08-25
+[Compare with v0.2.4](https://github.com/DataShades/file-keeper/compare/v0.2.4..v0.2.5)
+
+### 🐛 Bug Fixes
+
+- do not allow accessing files by common prefix, like `folder_evil` for path `folder` ([49ad341](https://github.com/DataShades/file-keeper/commit/49ad341c8b426fd6ecbc0db3f7149d7cc86be98c))
+
 ## [v0.2.4](https://github.com/DataShades/file-keeper/releases/tag/v0.2.4) - 2026-05-14
 [Compare with v0.2.3](https://github.com/DataShades/file-keeper/compare/v0.2.3..v0.2.4)
 
