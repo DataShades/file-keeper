@@ -15,6 +15,7 @@ import magic
 from typing_extensions import override
 
 import file_keeper as fk
+from file_keeper.core.exceptions import LocationError
 from file_keeper.core.utils import SAMPLE_SIZE
 
 log = logging.getLogger(__name__)
@@ -24,6 +25,9 @@ log = logging.getLogger(__name__)
 @dataclasses.dataclass()
 class Settings(fk.Settings):
     """Settings for FS storage."""
+
+    follow_symlinks: bool = False
+    """Whether to follow symlinks when scanning directories or reading files."""
 
     # --8<-- [end:storage_cfg]
     _required_options: ClassVar[list[str]] = ["path"]
@@ -341,7 +345,14 @@ class Manager(fk.Manager):
         for entry in glob.glob(search_path, recursive=True):
             if not os.path.isfile(entry):
                 continue
-            yield os.path.relpath(entry, path)
+            location = os.path.relpath(entry, path)
+            if not self.storage.settings.follow_symlinks:
+                try:
+                    self.storage.full_path(fk.Location(location))
+                except fk.exc.LocationError:
+                    log.debug("Skip symlink %s during scan", location)
+                    continue
+            yield location
 
     # --8<-- [end:manager_scan]
 
@@ -421,6 +432,8 @@ class FsStorage(fk.Storage):
       directory if it does not exist.
     * If `overwrite_existing` is `False`, operations that would overwrite an
       existing file will raise an `ExistingFileError`.
+    * If `follow_symlinks` is not enabled, the storage will raise a
+      `LocationError` if a symlink is encountered
     """
 
     settings: Settings
@@ -429,6 +442,15 @@ class FsStorage(fk.Storage):
     UploaderFactory = Uploader
     ReaderFactory = Reader
     ManagerFactory = Manager
+
+    @override
+    def full_path(self, location: fk.Location, /, **kwargs: Any) -> str:
+        path = super().full_path(location, **kwargs)
+
+        real_path = os.path.realpath(path)
+        if not self.settings.follow_symlinks and real_path != path:
+            raise fk.exc.LocationError(self, path)
+        return real_path
 
 
 # --8<-- [end:storage]

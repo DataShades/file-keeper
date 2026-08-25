@@ -40,4 +40,23 @@ class TestSettings:
         storage.SettingsFactory(path=path)
 
 
-class TestStorage(standard.Standard): ...
+class TestStorage(standard.Standard):
+    def test_fs_stream_symlinks(self, storage_settings: dict[str, Any], tmp_path: Path):
+        main = tmp_path / "main"
+        linked = tmp_path / "linked"
+        main.mkdir()
+        linked.mkdir()
+
+        file = linked / "file.txt"
+        file.write_bytes(b"hello world")
+        (main / "file.txt").symlink_to(file)
+
+        settings = {"name": "test", "path": str(main)}
+        settings.update(storage_settings)
+
+        storage = Storage(settings)
+        with pytest.raises(fk.exc.LocationError):
+            storage.full_path(fk.Location("file.txt"))
+
+        storage.settings.follow_symlinks = True
+        assert storage.full_path(fk.Location("file.txt")) == str(file)

@@ -94,10 +94,11 @@ In addition to the common settings, adapters have their own specific settings. C
 
 ### `file_keeper:fs`
 
-| Setting      | Type | Default | Description                                |
-|--------------|------|---------|--------------------------------------------|
-| `path`       | str  | `""`    | The base directory where files are stored. |
-| `initialize` | bool | `False` | Create `path` if it does not exist.        |
+| Setting           | Type | Default | Description                                                            |
+|-------------------|------|---------|------------------------------------------------------------------------|
+| `path`            | str  | `""`    | The base directory where files are stored.                             |
+| `initialize`      | bool | `False` | Create `path` if it does not exist.                                    |
+| `follow_symlinks` | bool | `False` | Whether to follow symlinks when scanning directories or reading files. |
 
 ### `file_keeper:gcs`
 
