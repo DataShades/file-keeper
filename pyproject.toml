@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "file-keeper"
-version = "0.2.6"
+version = "0.3.0"
 description = "Abstraction level for object storages."
 classifiers = [
 
@@ -21,7 +21,7 @@ maintainers = [
     {name = "DataShades", email = "datashades@linkdigital.com.au"},
 ]
 license = "AGPL-3.0-or-later"
-license-files = ["LICENSE.txt"] 
+license-files = ["LICENSE.txt"]
 
 [project.readme]
 file = "README.md"

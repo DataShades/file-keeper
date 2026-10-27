@@ -1,4 +1,22 @@
 
+## [v0.3.0](https://github.com/DataShades/file-keeper/releases/tag/v0.3.0) - 2026-10-27
+[Compare with v0.2.6](https://github.com/DataShades/file-keeper/compare/v0.2.6..v0.3.0)
+
+### 🚀 Features
+
+- implement RANGE capability for FS adapter ([d515ca1](https://github.com/DataShades/file-keeper/commit/d515ca1f8d2369517d4de92839e6d85d964c43b2))
+- implement RANGE capability for S3 adapter ([1fd4f85](https://github.com/DataShades/file-keeper/commit/1fd4f8521434878d8c0e0d3fe2989eaf5bafdf24))
+
+### 🐛 Bug Fixes
+
+- S3 adapter fails to move or copy big files(>5GB) ([38f164c](https://github.com/DataShades/file-keeper/commit/38f164c6e78fc5ffbc227eea85e1cc093d28a050))
+
+### 🚜 Refactor
+
+- S3 adapter uses HEAD request instead of GET to retrieve file details ([a8b7d98](https://github.com/DataShades/file-keeper/commit/a8b7d98cfb52611a89940b54acdebcbe7b5fd27e))
+- S3 adapter supports big file uploads(>5GB) without multipart ([1a2b32c](https://github.com/DataShades/file-keeper/commit/1a2b32c969e32c90ad9b50e8f2d53c229c9f54e6))
+- IterableBytesReader delegates read to underlying BufferedReader when possible ([84ca69f](https://github.com/DataShades/file-keeper/commit/84ca69f619cb948e74216300bfcd4c8fed3429fd))
+
 ## [v0.2.6](https://github.com/DataShades/file-keeper/releases/tag/v0.2.6) - 2026-08-25
 [Compare with v0.2.5](https://github.com/DataShades/file-keeper/compare/v0.2.5..v0.2.6)
 
