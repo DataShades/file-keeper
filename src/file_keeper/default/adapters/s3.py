@@ -438,10 +438,16 @@ class Manager(fk.Manager):
         filepath = self.storage.full_path(location)
         client = self.storage.settings.client
 
-        try:
-            obj = client.get_object(Bucket=self.storage.settings.bucket, Key=filepath)
-        except client.exceptions.NoSuchKey as err:
-            raise fk.exc.MissingFileError(self.storage, filepath) from err
+        if self.storage.settings.adapter_version == "v1":
+            try:
+                obj = client.get_object(Bucket=self.storage.settings.bucket, Key=filepath)
+            except client.exceptions.NoSuchKey as err:
+                raise fk.exc.MissingFileError(self.storage, filepath) from err
+        else:
+            try:
+                obj = client.head_object(Bucket=self.storage.settings.bucket, Key=filepath)
+            except client.exceptions.ClientError as err:
+                raise fk.exc.MissingFileError(self.storage, filepath) from err
 
         return fk.FileData(
             location,
