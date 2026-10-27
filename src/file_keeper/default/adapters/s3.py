@@ -83,7 +83,9 @@ class Reader(fk.Reader):
     """AWS S3 reader."""
 
     storage: S3Storage
-    capabilities: fk.Capability = fk.Capability.STREAM | fk.Capability.LINK_TEMPORARY | fk.Capability.LINK_PERMANENT
+    capabilities: fk.Capability = (
+        fk.Capability.STREAM | fk.Capability.LINK_TEMPORARY | fk.Capability.LINK_PERMANENT | fk.Capability.RANGE
+    )
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> Iterable[bytes]:
@@ -112,6 +114,25 @@ class Reader(fk.Reader):
         )
 
         return urlunparse(urlparse(signed)._replace(query=None))
+
+    @override
+    def range(self, data: fk.FileData, start: int, end: int | None, extras: dict[str, Any]) -> Iterable[bytes]:
+        client = self.storage.settings.client
+        filepath = self.storage.full_path(data.location)
+
+        try:
+            obj: Any = client.get_object(
+                Bucket=self.storage.settings.bucket,
+                Key=filepath,
+                Range=f"bytes={start}-{'' if end is None else end - 1}",
+            )
+        except client.exceptions.NoSuchKey as err:
+            raise fk.exc.MissingFileError(
+                self.storage.settings.name,
+                data.location,
+            ) from err
+
+        return obj["Body"]
 
 
 class Uploader(fk.Uploader):
