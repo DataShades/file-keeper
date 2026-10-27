@@ -2117,7 +2117,7 @@ explains how exactly bytes of content are obtained.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Filesystem reader.&quot;&quot;&quot;</span>
 
     <span class="n">storage</span><span class="p">:</span> <span class="n">FsStorage</span>
-    <span class="n">capabilities</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">STREAM</span>
+    <span class="n">capabilities</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span> <span class="o">=</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">STREAM</span> <span class="o">|</span> <span class="n">fk</span><span class="o">.</span><span class="n">Capability</span><span class="o">.</span><span class="n">RANGE</span>
 
     <span class="nd">@override</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">IO</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
@@ -2126,6 +2126,23 @@ explains how exactly bytes of content are obtained.</p>
             <span class="k">raise</span> <span class="n">fk</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">MissingFileError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>  <span class="c1"># noqa: SIM115</span>
+
+    <span class="nd">@override</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">fk</span><span class="o">.</span><span class="n">FileData</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">extras</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+            <span class="n">fd</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">DEFAULT_BUFFER_SIZE</span>
+                <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">remaining</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">fd</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">remaining</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="n">chunk_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">,</span> <span class="n">remaining</span><span class="p">)</span>
+
+                <span class="n">chunk</span> <span class="o">=</span> <span class="n">fd</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">yield</span> <span class="n">chunk</span>
 </code></pre></div>
 <p>Note how it computes the path to the file using <code>full_path()</code>, just as
 <code>Uploader</code> did. Basically, every method that access the file should use
