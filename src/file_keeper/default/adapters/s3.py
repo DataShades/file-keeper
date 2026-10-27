@@ -41,6 +41,8 @@ class Settings(fk.Settings):
     """Custom AWS endpoint."""
     config: dict[str, Any] = dataclasses.field(default_factory=dict)
     """Additional configuration for the S3 client. See botocore.config.Config for details."""
+    adapter_version: str = "v2"
+    """Version of the adapter implementation."""
 
     _required_options: ClassVar[list[str]] = ["bucket"]
 
@@ -63,7 +65,7 @@ class Settings(fk.Settings):
                 aws_secret_access_key=self.secret,
                 region_name=self.region,
                 endpoint_url=self.endpoint,
-                config=Config(**self.config)
+                config=Config(**self.config),
             )
 
         try:
