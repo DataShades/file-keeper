@@ -130,22 +130,22 @@ class Uploader(fk.Uploader):
 
         client = self.storage.settings.client
 
-        obj = client.put_object(
-            Bucket=self.storage.settings.bucket,
-            Key=filepath,
-            Body=upload.stream,  # pyright: ignore[reportArgumentType]
-            ContentType=upload.content_type,
-        )
+        if self.storage.settings.adapter_version == "v1":
+            client.put_object(
+                Bucket=self.storage.settings.bucket,
+                Key=filepath,
+                Body=upload.stream,  # pyright: ignore[reportArgumentType]
+                ContentType=upload.content_type,
+            )
+        else:
+            client.upload_fileobj(
+                Bucket=self.storage.settings.bucket,
+                Key=filepath,
+                Fileobj=fk.IterableBytesReader(upload.stream),  # pyright: ignore[reportArgumentType]
+                ExtraArgs={"ContentType": upload.content_type},
+            )
 
-        filehash = obj["ETag"].strip('"')
-
-        return fk.FileData(
-            location,
-            size=upload.size,
-            content_type=upload.content_type,
-            hash=filehash,
-            algorithm="md5",
-        )
+        return self.storage.analyze(location)
 
     def _presigned_part(self, key: str, upload_id: str, part: int):
         """Generate a presigned URL for uploading a part."""
