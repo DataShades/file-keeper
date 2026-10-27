@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import dataclasses
 import glob
+import io
 import logging
 import os
 import shutil
@@ -206,7 +207,7 @@ class Reader(fk.Reader):
     """Filesystem reader."""
 
     storage: FsStorage
-    capabilities: fk.Capability = fk.Capability.STREAM
+    capabilities: fk.Capability = fk.Capability.STREAM | fk.Capability.RANGE
 
     @override
     def stream(self, data: fk.FileData, extras: dict[str, Any]) -> IO[bytes]:
@@ -216,6 +217,22 @@ class Reader(fk.Reader):
 
         return open(filepath, "rb")  # noqa: SIM115
 
+    @override
+    def range(self, data: fk.FileData, start: int, end: int | None, extras: dict[str, Any]) -> Iterable[bytes]:
+        with self.stream(data, extras) as fd:
+            fd.seek(start)
+            while True:
+                chunk_size = io.DEFAULT_BUFFER_SIZE
+                if end is not None:
+                    remaining = end - fd.tell()
+                    if remaining <= 0:
+                        break
+                    chunk_size = min(chunk_size, remaining)
+
+                chunk = fd.read(chunk_size)
+                if not chunk:
+                    break
+                yield chunk
 
 # --8<-- [end:reader_impl]
 
