@@ -362,7 +362,10 @@ class Manager(fk.Manager):
         old_key = self.storage.full_path(data.location)
         new_key = self.storage.full_path(location)
 
-        client.copy_object(Bucket=bucket, CopySource={"Bucket": bucket, "Key": old_key}, Key=new_key)
+        if self.storage.settings.adapter_version == "v1":
+            client.copy_object(Bucket=bucket, CopySource={"Bucket": bucket, "Key": old_key}, Key=new_key)
+        else:
+            client.copy(Bucket=bucket, CopySource={"Bucket": bucket, "Key": old_key}, Key=new_key)
 
         return self.analyze(location, extras)
 
