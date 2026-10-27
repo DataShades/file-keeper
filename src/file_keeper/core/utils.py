@@ -341,7 +341,7 @@ class AbstractReader(Generic[T], abc.ABC):
         ...
 
 
-class IterableBytesReader(AbstractReader[Iterable[int]]):
+class IterableBytesReader(AbstractReader[Iterable[int] | io.BufferedReader]):
     """Wrapper that transforms iterable of bytes into readable stream.
 
     Example:
@@ -367,8 +367,13 @@ class IterableBytesReader(AbstractReader[Iterable[int]]):
     """
 
     def __init__(self, source: Iterable[bytes], chunk_size: int = CHUNK_SIZE):
-        super().__init__(itertools.chain.from_iterable(source), chunk_size)
+        super().__init__(
+            source if isinstance(source, io.BufferedReader) else itertools.chain.from_iterable(source),
+            chunk_size,
+        )
 
     @override
     def read(self, size: int | None = None):
+        if isinstance(self.source, io.BufferedReader):
+            return self.source.read(size)
         return bytes(itertools.islice(self.source, 0, size))
